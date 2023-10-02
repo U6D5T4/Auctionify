@@ -13,6 +13,7 @@
     <PackageReference Include="NLog.Extensions.Logging" Version="5.3.4" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.4" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.0-rc.2.22472.11" />
   </ItemGroup>
 
   <ItemGroup>
