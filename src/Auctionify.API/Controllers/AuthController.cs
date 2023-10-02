@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Auctionify.Application.Common.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Auctionify.API.Controllers
 {
@@ -6,6 +7,12 @@ namespace Auctionify.API.Controllers
     [Route("api/v1/[controller]")]
     public class AuthController : Controller
     {
+        private readonly IIdentityService identityService;
+
+        public AuthController(IIdentityService identityService)
+        {
+            this.identityService = identityService;
+        }
         
     }
 }
