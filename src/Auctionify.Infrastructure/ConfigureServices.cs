@@ -1,4 +1,5 @@
-﻿using Auctionify.Infrastructure.Identity;
+﻿using Auctionify.Application.Common.Interfaces;
+using Auctionify.Infrastructure.Identity;
 using Auctionify.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -41,6 +42,8 @@ namespace Auctionify.Infrastructure
                         ValidateIssuerSigningKey = true
                     };
                 });
+
+            services.AddScoped<IIdentityService, IdentityService>();
 
             return services;
         }
