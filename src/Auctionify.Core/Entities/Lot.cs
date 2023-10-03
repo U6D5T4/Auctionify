@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Auctionify.Core.Entities
 {
-    internal class Lot : BaseAuditableEntity
+    public class Lot : BaseAuditableEntity
     {
         public User SellerId { get; set; }
 

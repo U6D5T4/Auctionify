@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Auctionify.Core.Entities
 {
-    internal class Location : BaseAuditableEntity
+    public class Location : BaseAuditableEntity
     {
         [MaxLength(50)]
         public string City { get; set; }

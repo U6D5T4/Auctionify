@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Auctionify.Core.Entities
 {
-    internal class Currency : BaseAuditableEntity
+    public class Currency : BaseAuditableEntity
     {
         public string Code { get; set; }
     }

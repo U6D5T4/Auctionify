@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Auctionify.Core.Entities
 {
-    internal class Bid : BaseAuditableEntity
+    public class Bid : BaseAuditableEntity
     {
         public User BuyerId { get; set; }
 

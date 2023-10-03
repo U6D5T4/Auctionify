@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Auctionify.Core.Entities
 {
-    internal class Subscription : BaseAuditableEntity
+    public class Subscription : BaseAuditableEntity
     {
         public SubscriptionType SubscriptionType { get; set; }
 

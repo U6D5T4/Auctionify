@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Auctionify.Core.Entities
 {
-    internal class Rate : BaseAuditableEntity
+    public class Rate : BaseAuditableEntity
     {
         public int URate { get; set; }
         public string Comment { get; set; }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Auctionify.Core.Entities
 {
-    internal class User : BaseAuditableEntity
+    public class User : BaseAuditableEntity
     {
         [MaxLength(50)]
         public string? FirstName { get; set; }

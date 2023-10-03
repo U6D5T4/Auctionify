@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Auctionify.Core.Entities
 {
-    internal class ChatMessage : BaseAuditableEntity
+    public class ChatMessage : BaseAuditableEntity
     {
         public User Sender { get; set; }
         public User Reciever { get; set; }

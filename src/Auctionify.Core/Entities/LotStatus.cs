@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Auctionify.Core.Entities
 {
-    internal class LotStatus : BaseAuditableEntity
+    public class LotStatus : BaseAuditableEntity
     {
         public string Name { get; set; }
     }
