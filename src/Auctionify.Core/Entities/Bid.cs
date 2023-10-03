@@ -9,8 +9,6 @@ namespace Auctionify.Core.Entities
 {
     internal class Bid : BaseAuditableEntity
     {
-        public int Id { get; set; }
-
         public User BuyerId { get; set; }
 
         public decimal NewPrice { get; set; }

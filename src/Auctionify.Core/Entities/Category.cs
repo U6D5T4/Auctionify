@@ -10,7 +10,6 @@ namespace Auctionify.Core.Entities
 {
     internal class Category : BaseAuditableEntity
     {
-        public int Id { get; set; }
         public string Name { get; set; }
     }
 }

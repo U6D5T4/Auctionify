@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Auctionify.Core.Common;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,10 +8,8 @@ using System.Threading.Tasks;
 
 namespace Auctionify.Core.Entities
 {
-    internal class User
+    internal class User : BaseAuditableEntity
     {
-        public int Id { get; set; }
-
         [MaxLength(50)]
         public string? FirstName { get; set; }
 

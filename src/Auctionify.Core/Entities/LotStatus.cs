@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Auctionify.Core.Common;
+using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace Auctionify.Core.Entities
 {
-    internal class LotStatus
+    internal class LotStatus : BaseAuditableEntity
     {
-         public int id {  get; set; }
+        public string Name { get; set; }
     }
 }

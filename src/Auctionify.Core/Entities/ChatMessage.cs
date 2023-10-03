@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Auctionify.Core.Common;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -7,9 +8,8 @@ using System.Threading.Tasks;
 
 namespace Auctionify.Core.Entities
 {
-    internal class ChatMessage
+    internal class ChatMessage : BaseAuditableEntity
     {
-        public int Id { get; set; }
         public User Sender { get; set; }
         public User Reciever { get; set; }
         public string Message { get; set; }

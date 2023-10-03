@@ -11,8 +11,6 @@ namespace Auctionify.Core.Entities
 {
     internal class Location : BaseAuditableEntity
     {
-        public int Id { get ; set; }
-
         [MaxLength(50)]
         public string City { get; set; }
 

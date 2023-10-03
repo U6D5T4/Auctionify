@@ -11,8 +11,6 @@ namespace Auctionify.Core.Entities
 {
     internal class Lot : BaseAuditableEntity
     {
-        public int Id { get; set; }
-
         public User SellerId { get; set; }
 
         public User? BuyerId { get; set; }

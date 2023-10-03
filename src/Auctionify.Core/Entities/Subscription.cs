@@ -9,8 +9,6 @@ namespace Auctionify.Core.Entities
 {
     internal class Subscription : BaseAuditableEntity
     {
-        public int Id { get; set; }
-
         public SubscriptionType SubscriptionType { get; set; }
 
         public bool IsActive { get; set; }
