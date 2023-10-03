@@ -12,8 +12,12 @@
     <Folder Include="Interfaces\" />
     <Folder Include="Events\" />
     <Folder Include="Exceptions\" />
-    <Folder Include="Common\" />
     <Folder Include="Enums\" />
+  </ItemGroup>
+
+    
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.1.1" />
   </ItemGroup>
 
 </Project>
