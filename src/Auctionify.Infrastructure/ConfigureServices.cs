@@ -1,4 +1,5 @@
 ﻿using Auctionify.Application.Common.Interfaces;
+using Auctionify.Core.Entities;
 using Auctionify.Infrastructure.Identity;
 using Auctionify.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -20,7 +21,7 @@ namespace Auctionify.Infrastructure
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
                     builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
-            services.AddIdentityCore<ApplicationUser>()
+            services.AddIdentityCore<User>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
