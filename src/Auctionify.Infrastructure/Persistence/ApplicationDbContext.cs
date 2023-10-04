@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-
+using System.Reflection;
 
 namespace Auctionify.Infrastructure.Persistence
 {
@@ -12,6 +12,8 @@ namespace Auctionify.Infrastructure.Persistence
         {
 
         }
+
+        public DbSet<Category> Categories => Set<Category>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -31,6 +33,8 @@ namespace Auctionify.Infrastructure.Persistence
             builder.Entity<IdentityUserRole<int>>().ToTable("UserRoles");
             builder.Entity<IdentityRoleClaim<int>>().ToTable("RoleClaims");
             builder.Entity<IdentityUserClaim<int>>().ToTable("UserClaims");
+
+            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }
 }

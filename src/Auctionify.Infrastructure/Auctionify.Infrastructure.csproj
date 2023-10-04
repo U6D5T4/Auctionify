@@ -17,8 +17,4 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.0-rc.2.22472.11" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Data\Config\" />
-  </ItemGroup>
-
 </Project>
