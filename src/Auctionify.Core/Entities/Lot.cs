@@ -1,32 +1,35 @@
 ﻿using Auctionify.Core.Common;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Auctionify.Core.Entities
 {
     public class Lot : BaseAuditableEntity
     {
-        public User SellerId { get; set; }
+        public int SellerId { get; set; }
 
-        public User? BuyerId { get; set; }
+        public User Seller { get; set; }
 
-        public Category? CategoryId { get; set; }
+        public int BuyerId { get; set; }
 
-        public LotStatus Status { get; set; }
+        public User? Buyer { get; set; }
+
+        public int CategoryId { get; set; }
+
+        public Category? Category { get; set; }
+
+        public int LotStatusId { get; set; }
+
+        public LotStatus LotStatus { get; set; }
+
+        public int LocationId { get; set; }
 
         public Location? Location { get; set; }
 
+        public int CurrencyId { get; set; }
+
         public Currency? Currency { get; set; }
 
-        [MaxLength(100)]
         public string? Title { get; set; }
 
-        [MaxLength(500)]
         public string? Description { get; set; }
 
         public decimal? StartingPrice { get; set; }
