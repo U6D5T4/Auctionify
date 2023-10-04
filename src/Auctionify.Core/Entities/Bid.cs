@@ -1,15 +1,12 @@
 ﻿using Auctionify.Core.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Auctionify.Core.Entities
 {
     public class Bid : BaseAuditableEntity
     {
-        public User BuyerId { get; set; }
+        public int BuyerId { get; set; }
+
+        public User Buyer { get; set; }
 
         public decimal NewPrice { get; set; }
 
