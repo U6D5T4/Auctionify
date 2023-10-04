@@ -9,7 +9,6 @@ namespace Auctionify.Infrastructure.Data.Config
         public void Configure(EntityTypeBuilder<Category> builder)
         {
             builder.Property(c => c.Name).HasMaxLength(50).IsRequired(true);
-            //builder.HasOne(c => c.ParentCategory).WithMany(c => c.Children);
             builder.HasMany(c => c.Children).WithOne(c => c.ParentCategory).IsRequired(false);
         }
     }

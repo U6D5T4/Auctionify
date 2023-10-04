@@ -6,10 +6,10 @@ namespace Auctionify.Core.Entities
     {
         public int BuyerId { get; set; }
 
-        public User Buyer { get; set; }
+        public virtual User Buyer { get; set; }
 
         public decimal NewPrice { get; set; }
 
-        public DateTime TimeStamp { get; set; }
+        public virtual DateTime TimeStamp { get; set; }
     }
 }

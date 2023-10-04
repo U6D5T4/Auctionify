@@ -6,11 +6,11 @@ namespace Auctionify.Core.Entities
     {
         public int RecieverId { get; set; }
 
-        public User Reciever { get; set; }
+        public virtual User Reciever { get; set; }
 
         public int SenderId { get; set; }
 
-        public User Sender { get; set; }
+        public virtual User Sender { get; set; }
 
         public int RatingValue { get; set; }
 

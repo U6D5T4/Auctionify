@@ -6,27 +6,27 @@ namespace Auctionify.Core.Entities
     {
         public int SellerId { get; set; }
 
-        public User Seller { get; set; }
+        public virtual User Seller { get; set; }
 
         public int BuyerId { get; set; }
 
-        public User? Buyer { get; set; }
+        public virtual User? Buyer { get; set; }
 
         public int CategoryId { get; set; }
 
-        public Category? Category { get; set; }
+        public virtual Category? Category { get; set; }
 
         public int LotStatusId { get; set; }
 
-        public LotStatus LotStatus { get; set; }
+        public virtual LotStatus LotStatus { get; set; }
 
         public int LocationId { get; set; }
 
-        public Location? Location { get; set; }
+        public virtual Location? Location { get; set; }
 
         public int CurrencyId { get; set; }
 
-        public Currency? Currency { get; set; }
+        public virtual Currency? Currency { get; set; }
 
         public string? Title { get; set; }
 
@@ -34,8 +34,8 @@ namespace Auctionify.Core.Entities
 
         public decimal? StartingPrice { get; set; }
 
-        public DateTime StartDate { get; set; }
+        public virtual DateTime StartDate { get; set; }
 
-        public DateTime EndDate { get; set; }
+        public virtual DateTime EndDate { get; set; }
     }
 }
