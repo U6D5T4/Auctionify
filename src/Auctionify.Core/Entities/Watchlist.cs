@@ -8,7 +8,7 @@ namespace Auctionify.Core.Entities
 
         public virtual User User { get; set; }
 
-        public int LotId { get; set; }
+        public ICollection<Lot> Lots { get; set; }
 
         public virtual Lot Lot { get; set; }
     }
