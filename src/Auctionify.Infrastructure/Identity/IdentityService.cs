@@ -53,6 +53,15 @@ namespace Auctionify.Infrastructure.Identity
                 };
             }
 
+            if (user.EmailConfirmed == false)
+            {
+                return new LoginResponse
+                {
+                    Errors = new[] { "User is not active" },
+                    IsSuccess = false,
+                };
+            }
+
             var result = await signInManager.PasswordSignInAsync(user, userModel.Password, false, false);
 
             if (result.Succeeded)
