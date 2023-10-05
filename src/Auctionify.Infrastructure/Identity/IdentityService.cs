@@ -32,17 +32,26 @@ namespace Auctionify.Infrastructure.Identity
             this.configuration = configuration;
         }
 
-        public async Task<UserManagerResponse> LoginUserAsync(LoginViewModel userModel)
+        public async Task<LoginResponse> LoginUserAsync(LoginViewModel userModel)
         {
             if (userModel == null || string.IsNullOrEmpty(userModel.Email) || string.IsNullOrEmpty(userModel.Password))
             {
-                return new UserManagerResponse
+                return new LoginResponse
                 {
-                    Errors = new[] { "user data is emtpy" },
+                    Errors = new[] { "User data is emtpy" },
                     IsSuccess = false,
                 };
             }
             var user = await userManager.FindByEmailAsync(userModel.Email);
+
+            if (user == null)
+            {
+                return new LoginResponse
+                {
+                    Errors = new[] { "User is not found" },
+                    IsSuccess = false,
+                };
+            }
 
             var result = await signInManager.PasswordSignInAsync(user, userModel.Password, false, false);
 
@@ -54,7 +63,7 @@ namespace Auctionify.Infrastructure.Identity
 
             var token = await GenerateJWTTokenWithUserClaimsAsync(user);
 
-            return new UserManagerResponse
+            return new LoginResponse
             {
                 IsSuccess = true,
                 Result = token

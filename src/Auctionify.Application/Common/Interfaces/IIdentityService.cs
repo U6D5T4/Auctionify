@@ -8,6 +8,6 @@ namespace Auctionify.Application.Common.Interfaces
     /// Add your corresponding method here like LoginAsync, RegisterAsync and etc.
     public interface IIdentityService
     {
-        Task<UserManagerResponse> LoginUserAsync(LoginViewModel userModel);
+        Task<LoginResponse> LoginUserAsync(LoginViewModel userModel);
     }
 }

@@ -1,6 +1,6 @@
-﻿namespace Auctionify.Application.Common.Models.Account
+﻿namespace Auctionify.Application.Common.Models.BaseModels
 {
-    public class UserManagerResponse
+    public abstract class BaseResponse
     {
         public string Message { get; set; }
 
@@ -8,6 +8,5 @@
 
         public IEnumerable<string> Errors { get; set; }
 
-        public object Result { get; set; }
     }
 }
