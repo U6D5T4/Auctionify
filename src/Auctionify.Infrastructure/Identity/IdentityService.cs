@@ -53,6 +53,21 @@ namespace Auctionify.Infrastructure.Identity
                 };
             }
 
+            var result = await signInManager.PasswordSignInAsync(user, userModel.Password, false, false);
+
+            if (result.Succeeded)
+            {
+                logger.LogInformation("User logged in");
+            }
+            else
+            {
+                return new LoginResponse
+                {
+                    Errors = new[] { "Wrong password or email" },
+                    IsSuccess = false,
+                };
+            }
+
             if (user.EmailConfirmed == false)
             {
                 return new LoginResponse
@@ -60,14 +75,6 @@ namespace Auctionify.Infrastructure.Identity
                     Errors = new[] { "User is not active" },
                     IsSuccess = false,
                 };
-            }
-
-            var result = await signInManager.PasswordSignInAsync(user, userModel.Password, false, false);
-
-            if (result.Succeeded)
-            {
-                logger.LogInformation("User logged in");
-
             }
 
             var token = await GenerateJWTTokenWithUserClaimsAsync(user);
