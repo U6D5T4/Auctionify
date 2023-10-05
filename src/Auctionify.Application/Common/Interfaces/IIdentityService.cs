@@ -1,4 +1,4 @@
-﻿using Auctionify.Application.Common.Models;
+﻿using Auctionify.Application.Common.Models.Account;
 
 namespace Auctionify.Application.Common.Interfaces
 {
@@ -8,6 +8,6 @@ namespace Auctionify.Application.Common.Interfaces
     /// Add your corresponding method here like LoginAsync, RegisterAsync and etc.
     public interface IIdentityService
     {
-        Task<LoginResponse> LoginUserAsync(LoginViewModel userModel);
+        Task<UserManagerResponse> LoginUserAsync(LoginViewModel userModel);
     }
 }

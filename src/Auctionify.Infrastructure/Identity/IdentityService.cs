@@ -1,7 +1,6 @@
 ﻿using Auctionify.Application.Common.Interfaces;
-using Auctionify.Application.Common.Models;
+using Auctionify.Application.Common.Models.Account;
 using Auctionify.Core.Entities;
-using Azure.Core;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -33,14 +32,14 @@ namespace Auctionify.Infrastructure.Identity
             this.configuration = configuration;
         }
 
-        public async Task<LoginResponse> LoginUserAsync(LoginViewModel userModel)
+        public async Task<UserManagerResponse> LoginUserAsync(LoginViewModel userModel)
         {
             if (userModel == null || string.IsNullOrEmpty(userModel.Email) || string.IsNullOrEmpty(userModel.Password))
             {
-                return new LoginResponse
+                return new UserManagerResponse
                 {
-                    ErrorMessage = "user data is emtpy",
-                    Succeeded = false,
+                    Errors = new[] { "user data is emtpy" },
+                    IsSuccess = false,
                 };
             }
             var user = await userManager.FindByEmailAsync(userModel.Email);
@@ -55,9 +54,9 @@ namespace Auctionify.Infrastructure.Identity
 
             var token = await GenerateJWTTokenWithUserClaimsAsync(user);
 
-            return new LoginResponse
+            return new UserManagerResponse
             {
-                Succeeded = true,
+                IsSuccess = true,
                 Result = token
             };
         }

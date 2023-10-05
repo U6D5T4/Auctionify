@@ -1,5 +1,5 @@
 ﻿using Auctionify.Application.Common.Interfaces;
-using Auctionify.Application.Common.Models;
+using Auctionify.Application.Common.Models.Account;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Auctionify.API.Controllers
@@ -20,12 +20,12 @@ namespace Auctionify.API.Controllers
         {
             var result = await identityService.LoginUserAsync(loginModel);
 
-            if (result.Succeeded)
+            if (result.IsSuccess)
             {
                 return Ok(result);
             }
 
-            return BadRequest(result.ErrorMessage);
+            return BadRequest(result.Errors);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Auctionify.Application.Common.Models
+namespace Auctionify.Application.Common.Models.Account
 {
     /// <summary>
     /// View model for auth flow

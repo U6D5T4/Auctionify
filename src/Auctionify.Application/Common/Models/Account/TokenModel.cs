@@ -1,4 +1,4 @@
-﻿namespace Auctionify.Application.Common.Models
+﻿namespace Auctionify.Application.Common.Models.Account
 {
     /// <summary>
     /// Token model
