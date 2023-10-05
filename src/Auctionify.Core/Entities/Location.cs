@@ -2,15 +2,16 @@
 
 namespace Auctionify.Core.Entities
 {
-    public class Location : BaseAuditableEntity
-    {
-        public string City { get; set; }
+	public class Location : BaseAuditableEntity
+	{
+		public string City { get; set; }
 
-        public string State { get; set; }
+		public string State { get; set; }
 
-        public string Country { get; set; }
+		public string Country { get; set; }
 
-        public string Address { get; set; }
+		public string Address { get; set; }
 
-    }
+		public virtual Lot Lot { get; set; }
+	}
 }
