@@ -21,9 +21,15 @@ namespace Auctionify.Infrastructure
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
                     builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
-            services.AddIdentityCore<User>()
-                .AddRoles<Role>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddIdentity<User, Role>(options =>
+            {
+                options.Password.RequiredLength = 8;
+                options.Password.RequireDigit = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+            })
+                .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
             services.AddAuthentication(options =>
             {
@@ -45,6 +51,7 @@ namespace Auctionify.Infrastructure
                 });
 
             services.AddScoped<IIdentityService, IdentityService>();
+            services.AddTransient<IEmailService, SendGridEmailService>();
 
             return services;
         }
