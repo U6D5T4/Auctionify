@@ -23,7 +23,7 @@ namespace Auctionify.Infrastructure.Data.Config
 				.WithOne(l => l.Rate)
 				.IsRequired(false);
 
-			builder.Property(r => r.RatingValue).HasMaxLength(5).IsRequired(true);
+			builder.Property(r => r.RatingValue).IsRequired(true);
 			builder.Property(r => r.Comment).HasMaxLength(2048).IsRequired(false);
 		}
 	}

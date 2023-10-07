@@ -12,7 +12,7 @@ namespace Auctionify.Core.Entities
 
 		public virtual User Sender { get; set; }
 
-		public uint RatingValue { get; set; }
+		public byte RatingValue { get; set; }
 
 		public string Comment { get; set; }
 
