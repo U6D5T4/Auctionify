@@ -1,4 +1,5 @@
 ﻿using Auctionify.Core.Entities;
+using Auctionify.Infrastructure.Interceptors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -8,9 +9,12 @@ namespace Auctionify.Infrastructure.Persistence
 {
     public class ApplicationDbContext : IdentityDbContext<User, Role, int>
     {
-        public ApplicationDbContext(DbContextOptions options) : base(options)
+        private readonly AuditableEntitySaveChangesInterceptor auditableEntitiesInterceptor;
+
+        public ApplicationDbContext(DbContextOptions options,
+            AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor) : base(options)
         {
-            
+            this.auditableEntitiesInterceptor = auditableEntitySaveChangesInterceptor;
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -31,6 +35,11 @@ namespace Auctionify.Infrastructure.Persistence
             builder.Entity<IdentityUserRole<int>>().ToTable("UserRoles");
             builder.Entity<IdentityRoleClaim<int>>().ToTable("RoleClaims");
             builder.Entity<IdentityUserClaim<int>>().ToTable("UserClaims");
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.AddInterceptors(auditableEntitiesInterceptor);
         }
     }
 }
