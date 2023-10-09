@@ -2,7 +2,8 @@
 
 namespace Auctionify.Core.Entities
 {
-    public class Role : IdentityRole<int>
-    {
-    }
+	public class Role : IdentityRole<int>
+	{
+
+	}
 }
