@@ -18,6 +18,6 @@ namespace Auctionify.Core.Entities
 
 		public virtual Lot Lot { get; set; }
 
-		public int LoId { get; set; }
+		public int LotId { get; set; }
 	}
 }

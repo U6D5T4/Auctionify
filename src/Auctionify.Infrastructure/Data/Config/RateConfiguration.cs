@@ -21,6 +21,7 @@ namespace Auctionify.Infrastructure.Data.Config
 
 			builder.HasOne(r => r.Lot)
 				.WithOne(l => l.Rate)
+				.HasForeignKey<Rate>(r => r.LotId)
 				.IsRequired(false);
 
 			builder.Property(r => r.RatingValue).IsRequired(true);
