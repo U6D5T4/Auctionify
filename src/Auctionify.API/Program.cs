@@ -1,4 +1,4 @@
-
+using Auctionify.Application;
 using Auctionify.Infrastructure;
 
 namespace Auctionify.API
@@ -9,6 +9,7 @@ namespace Auctionify.API
 		{
 			var builder = WebApplication.CreateBuilder(args);
 
+			builder.Services.AddApplicationServices();
 			builder.Services.AddInfrastructureServices(builder.Configuration);
 
             // Add services to the container.

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Auctionify.Core.Common;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
@@ -21,7 +22,7 @@ namespace Auctionify.Infrastructure.Interceptors
 
                 if (entry.State == EntityState.Modified || entry.HasChangedOwnedEntities())
                 {
-                    entry.Entity.LastModified = DateTime.Now;
+                    entry.Entity.ModificationDate = DateTime.Now;
                 }
             }
         }
