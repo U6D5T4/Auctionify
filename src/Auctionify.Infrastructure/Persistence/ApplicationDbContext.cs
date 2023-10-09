@@ -1,5 +1,7 @@
 ﻿using Auctionify.Core.Entities;
+using Auctionify.Infrastructure.Common;
 using Auctionify.Infrastructure.Interceptors;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -9,12 +11,15 @@ namespace Auctionify.Infrastructure.Persistence
 {
     public class ApplicationDbContext : IdentityDbContext<User, Role, int>
     {
+        private readonly IMediator mediator;
         private readonly AuditableEntitySaveChangesInterceptor auditableEntitiesInterceptor;
 
         public ApplicationDbContext(DbContextOptions options,
-            AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor) : base(options)
+            AuditableEntitySaveChangesInterceptor auditableEntitiesInterceptor,
+            IMediator mediator) : base(options)
         {
-            this.auditableEntitiesInterceptor = auditableEntitySaveChangesInterceptor;
+            this.auditableEntitiesInterceptor = auditableEntitiesInterceptor;
+            this.mediator = mediator;
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -40,6 +45,13 @@ namespace Auctionify.Infrastructure.Persistence
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.AddInterceptors(auditableEntitiesInterceptor);
+        }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            await mediator.DispatchDomainEvents(this);
+
+            return await base.SaveChangesAsync(cancellationToken);
         }
     }
 }
