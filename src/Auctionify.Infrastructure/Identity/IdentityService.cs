@@ -16,7 +16,6 @@ namespace Auctionify.Infrastructure.Identity
         private readonly UserManager<User> userManager;
         private readonly IConfiguration configuration;
         private readonly IEmailService emailService;
-        //private RoleManager<IdentityRole> _roleManager;
 
         public IdentityService(UserManager<User> userManager, IConfiguration configuration, IEmailService emailService)
         {
@@ -24,13 +23,13 @@ namespace Auctionify.Infrastructure.Identity
             this.configuration = configuration;
             this.emailService = emailService;
         }
-        public async Task<UserManagerResponse> RegisterUserAsync(RegisterViewModel model)
+        public async Task<RegisterResponse> RegisterUserAsync(RegisterViewModel model)
         {
             if (model == null)
                 throw new NullReferenceException("Register Model is null");
 
             if (model.Password != model.ConfirmPassword)
-                return new UserManagerResponse
+                return new RegisterResponse
                 {
                     Message = "Confirm password doesn't match the password",
                     IsSuccess = false,
@@ -58,14 +57,14 @@ namespace Auctionify.Infrastructure.Identity
                 await emailService.SendEmailAsync(user.Email, "Confirm your email", $"<h1>Welcome to Auctionify</h1>" +
                                         $"<p>Please confirm your email by <a href='{url}'>clicking here</a></p>");
 
-                return new UserManagerResponse
+                return new RegisterResponse
                 {
                     Message = "User created successfully!",
                     IsSuccess = true,
                 };
             }
 
-            return new UserManagerResponse
+            return new RegisterResponse
             {
                 Message = "User did not create",
                 IsSuccess = false,
@@ -74,11 +73,11 @@ namespace Auctionify.Infrastructure.Identity
 
         }
 
-        public async Task<UserManagerResponse> ConfirmUserEmailAsync(string userId, string token)
+        public async Task<RegisterResponse> ConfirmUserEmailAsync(string userId, string token)
         {
             var user = await userManager.FindByIdAsync(userId);
             if (user == null)
-                return new UserManagerResponse
+                return new RegisterResponse
                 {
                     IsSuccess = false,
                     Message = "User not found",
@@ -90,13 +89,13 @@ namespace Auctionify.Infrastructure.Identity
             var result = await userManager.ConfirmEmailAsync(user, normalToken);
 
             if (result.Succeeded)
-                return new UserManagerResponse
+                return new RegisterResponse
                 {
                     Message = "Email confirmed successfully!",
                     IsSuccess = true,
                 };
 
-            return new UserManagerResponse
+            return new RegisterResponse
             {
                 Message = "Email did not confirm",
                 IsSuccess = false,

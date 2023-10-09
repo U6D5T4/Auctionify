@@ -45,7 +45,7 @@ namespace Auctionify.API.Controllers
             var result = await identityService.ConfirmUserEmailAsync(userId, token);
 
             if (result.IsSuccess)
-                return Redirect($"{configuration["AppUrl"]}/confirmemail.html");
+                return Ok("Confirmed");
 
             return BadRequest(result);
         }

@@ -28,7 +28,6 @@ namespace Auctionify.API
 			}
 
 			app.UseHttpsRedirection();
-            app.UseStaticFiles();
             app.UseAuthorization();
 
 

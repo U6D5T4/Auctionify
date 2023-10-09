@@ -8,8 +8,8 @@ namespace Auctionify.Application.Common.Interfaces
     /// Add your corresponding method here like LoginAsync, RegisterAsync and etc.
     public interface IIdentityService
     {
-        Task<UserManagerResponse> RegisterUserAsync(RegisterViewModel model);
+        Task<RegisterResponse> RegisterUserAsync(RegisterViewModel model);
 
-        Task<UserManagerResponse> ConfirmUserEmailAsync(string userId, string token); // why namely userId and token? because we need to confirm the email of a specific user
+        Task<RegisterResponse> ConfirmUserEmailAsync(string userId, string token);
     }
 }
