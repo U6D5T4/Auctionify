@@ -31,7 +31,7 @@ namespace Auctionify.API.Controllers
                 return BadRequest(result);
             }
 
-            return BadRequest("Some properties are not valid"); // statusCode: 400 (something wrong with client request)
+            return BadRequest("Some properties are not valid");
         }
 
         // api/auth/confirmemail?userid&token
