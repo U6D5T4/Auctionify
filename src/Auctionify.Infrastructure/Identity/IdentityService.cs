@@ -43,13 +43,13 @@ namespace Auctionify.Infrastructure.Identity
 
             string url = $"{configuration["AppUrl"]}/ResetPassword?email={email}&token={validToken}";
 
-            await emailService.SendEmailAsync(email, "Rest Password", "<h1>Follow the instructions to reset your passwrod</h1>" +
+            await emailService.SendEmailAsync(email, "Reset Password", "<h1>Follow the instructions to reset your password</h1>" +
                 $"<p>To reset your password <a href='{url}'>Click here</p>");
 
             return new ResetPasswordResponse
             {
                 IsSuccess = true,
-                Message = "Reset password URL has benn sent to the eamil successfully"
+                Message = "Reset password URL has been sent to the eamil successfully"
             };
         }
 
