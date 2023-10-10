@@ -30,8 +30,6 @@ namespace Auctionify.Infrastructure
                 options.Password.RequireNonAlphanumeric = true;
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
-            services.AddIdentity<User, Role>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddAuthentication(options =>
             {
