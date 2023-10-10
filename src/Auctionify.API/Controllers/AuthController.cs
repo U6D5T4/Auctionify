@@ -1,4 +1,4 @@
-﻿using Auctionify.Application.Common.Interfaces;
+using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Models.Account;
 using Microsoft.AspNetCore.Mvc;
 
@@ -47,5 +47,17 @@ namespace Auctionify.API.Controllers
             return BadRequest("Some properties are not valid");
         }
 
+        [HttpPost("[action]")]
+        public async Task<IActionResult> Login(LoginViewModel loginModel)
+        {
+            var result = await identityService.LoginUserAsync(loginModel);
+
+            if (result.IsSuccess)
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result);
+        }
     }
 }
