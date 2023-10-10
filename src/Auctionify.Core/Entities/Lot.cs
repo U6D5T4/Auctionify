@@ -8,7 +8,7 @@ namespace Auctionify.Core.Entities
 
 		public virtual User Seller { get; set; }
 
-		public int BuyerId { get; set; }
+		public int? BuyerId { get; set; }
 
 		public virtual User? Buyer { get; set; }
 
