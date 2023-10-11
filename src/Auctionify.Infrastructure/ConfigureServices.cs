@@ -60,6 +60,7 @@ namespace Auctionify.Infrastructure
 
             //Example of concrete repository registration
             services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<ILotRepository, LotRepository>();
 
             return services;
         }
