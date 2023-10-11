@@ -1,5 +1,7 @@
-﻿using Auctionify.Core.Entities;
+﻿using Auctionify.Application.Common.Interfaces.Repositories;
+using Auctionify.Core.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace Auctionify.Application.Features.Lots.Commands.Create
 {
@@ -21,15 +23,22 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 
         public int CurrencyId { get; set; }
 
+        public IList<IFormFile> Photos { get; set; }
+
+        public IList<IFormFile> AdditionalDocuments {  get; set; }
+
     }
 
-    public class CreateLotCommandHandler : IRequestHandler<CreatedLotResponse>
+    public class CreateLotCommandHandler : IRequestHandler<CreateLotCommand, CreatedLotResponse>
     {
-        private readonly 
+        private readonly ICategoryRepository categoryRepository;
 
-        public CreateLotCommandHandler() { }
+        public CreateLotCommandHandler(ICategoryRepository categoryRepository)
+        { 
+            this.categoryRepository = categoryRepository;
+        }
 
-        public Task Handle(CreatedLotResponse request, CancellationToken cancellationToken)
+        public Task<CreatedLotResponse> Handle(CreateLotCommand request, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
