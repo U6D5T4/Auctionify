@@ -4,6 +4,7 @@ using Auctionify.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Auctionify.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231005165216_BusinessModelsSetup")]
+    partial class BusinessModelsSetup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -290,6 +293,10 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasIndex("LotStatusId");
 
+                    b.HasIndex("RateId")
+                        .IsUnique()
+                        .HasFilter("[RateId] IS NOT NULL");
+
                     b.HasIndex("SellerId");
 
                     b.ToTable("Lots");
@@ -334,14 +341,15 @@ namespace Auctionify.Infrastructure.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("LotId")
+                    b.Property<int>("LoId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ModificationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<byte>("RatingValue")
-                        .HasColumnType("tinyint");
+                    b.Property<long>("RatingValue")
+                        .HasMaxLength(5)
+                        .HasColumnType("bigint");
 
                     b.Property<int>("RecieverId")
                         .HasColumnType("int");
@@ -350,9 +358,6 @@ namespace Auctionify.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LotId")
-                        .IsUnique();
 
                     b.HasIndex("RecieverId");
 
@@ -700,6 +705,10 @@ namespace Auctionify.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Auctionify.Core.Entities.Rate", "Rate")
+                        .WithOne("Lot")
+                        .HasForeignKey("Auctionify.Core.Entities.Lot", "RateId");
+
                     b.HasOne("Auctionify.Core.Entities.User", "Seller")
                         .WithMany("SellingLots")
                         .HasForeignKey("SellerId")
@@ -716,15 +725,13 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.Navigation("LotStatus");
 
+                    b.Navigation("Rate");
+
                     b.Navigation("Seller");
                 });
 
             modelBuilder.Entity("Auctionify.Core.Entities.Rate", b =>
                 {
-                    b.HasOne("Auctionify.Core.Entities.Lot", "Lot")
-                        .WithOne("Rate")
-                        .HasForeignKey("Auctionify.Core.Entities.Rate", "LotId");
-
                     b.HasOne("Auctionify.Core.Entities.User", "Reciever")
                         .WithMany("ReceiverRates")
                         .HasForeignKey("RecieverId")
@@ -736,8 +743,6 @@ namespace Auctionify.Infrastructure.Migrations
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-
-                    b.Navigation("Lot");
 
                     b.Navigation("Reciever");
 
@@ -837,14 +842,18 @@ namespace Auctionify.Infrastructure.Migrations
                 {
                     b.Navigation("Bids");
 
-                    b.Navigation("Rate");
-
                     b.Navigation("Watchlists");
                 });
 
             modelBuilder.Entity("Auctionify.Core.Entities.LotStatus", b =>
                 {
                     b.Navigation("Lots");
+                });
+
+            modelBuilder.Entity("Auctionify.Core.Entities.Rate", b =>
+                {
+                    b.Navigation("Lot")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Auctionify.Core.Entities.SubscriptionType", b =>

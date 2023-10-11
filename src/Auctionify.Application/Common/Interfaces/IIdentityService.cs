@@ -1,4 +1,4 @@
-﻿using Auctionify.Application.Common.Models.Account;
+using Auctionify.Application.Common.Models.Account;
 
 namespace Auctionify.Application.Common.Interfaces
 {
@@ -11,5 +11,11 @@ namespace Auctionify.Application.Common.Interfaces
         Task<RegisterResponse> RegisterUserAsync(RegisterViewModel model);
 
         Task<RegisterResponse> ConfirmUserEmailAsync(string userId, string token);
+
+        Task<ResetPasswordResponse> ForgetPasswordAsync(string email);
+
+        Task<ResetPasswordResponse> ResetPasswordAsync(ResetPasswordViewModel model);
+
+        Task<LoginResponse> LoginUserAsync(LoginViewModel userModel);
     }
 }
