@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Auctionify.API.Controllers
 {
     [ApiController]
-    [Route("api/v1/[controller]")]
+    [Route("api/[controller]")]
     public class AuthController : Controller
     {
         private readonly IIdentityService identityService;
@@ -15,7 +15,6 @@ namespace Auctionify.API.Controllers
             this.identityService = identityService;
         }
 
-        // api/v1/auth/forgetpassword
         [HttpPost("ForgetPassword")]
         public async Task<IActionResult> ForgetPassword(string email)
         {
@@ -30,7 +29,6 @@ namespace Auctionify.API.Controllers
             return BadRequest(result);
         }
 
-        // api/v1/auth/resetpassword
         [HttpPost("ResetPassword")]
         public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordViewModel model)
         {
