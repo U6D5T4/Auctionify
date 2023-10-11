@@ -15,4 +15,10 @@
     <ProjectReference Include="..\Auctionify.Core\Auctionify.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Lots\Commands\" />
+    <Folder Include="Features\Lots\Constants\" />
+    <Folder Include="Features\Lots\Rules\" />
+  </ItemGroup>
+
 </Project>

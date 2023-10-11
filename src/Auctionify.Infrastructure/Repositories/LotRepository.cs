@@ -5,9 +5,9 @@ using Auctionify.Infrastructure.Persistence;
 
 namespace Auctionify.Infrastructure.Repositories
 {
-	public class CategoryRepository : EfBaseRepository<Category, ApplicationDbContext>, ICategoryRepository
+	public class LotRepository : EfBaseRepository<Lot, ApplicationDbContext>, ILotRepository
 	{
-		public CategoryRepository(ApplicationDbContext dbContext) : base(dbContext) 
+		public LotRepository(ApplicationDbContext dbContext) : base(dbContext)
 		{
 		}
 	}

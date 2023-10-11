@@ -13,6 +13,5 @@ namespace Auctionify.Application.Common.Interfaces
         Task<ResetPasswordResponse> ResetPasswordAsync(ResetPasswordViewModel model);
 
         Task<LoginResponse> LoginUserAsync(LoginViewModel userModel);
-
     }
 }

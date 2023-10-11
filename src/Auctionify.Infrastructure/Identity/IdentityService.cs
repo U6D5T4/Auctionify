@@ -72,7 +72,7 @@ namespace Auctionify.Infrastructure.Identity
                 };
             }
 
-            if (user.EmailConfirmed == false)
+            if (user.EmailConfirmed)
             {
                 return new LoginResponse
                 {
