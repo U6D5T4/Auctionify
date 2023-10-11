@@ -1,36 +1,27 @@
-﻿using Auctionify.Application.Features.Lots.Queries.GetAllLots;
+﻿using Auctionify.Application.Features.Lots.Commands.Create;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Auctionify.API.Controllers
 {
-	[Route("api/[controller]")]
-    [ApiController]
-    [Route("api/v1/[controller]")]
-    public class LotController : ControllerBase
-    {
-        private readonly IMediator _mediator;
+	[Route("api/v1/[controller]")]
+	[ApiController]
+	public class LotController : ControllerBase
+	{
+		private readonly IMediator mediator;
 
-        public LotController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
+		public LotController(IMediator mediator)
+		{
+			this.mediator = mediator;
+		}
 
-        // api/v1/auth/getalllots
-        [HttpGet("GetAllLots")]
-        public async Task<IActionResult> GetAllLots()
-        {
-            try
-            {
-                var query = new GetAllLotsQuery();
-                var lots = await _mediator.Send(query);
+		[HttpPost]
+		public async Task<IActionResult> CreateLot(CreateLotCommand createLotCommand)
+		{
+			var result = await mediator.Send(createLotCommand);
 
-                return Ok(lots);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest($"Error: {ex.Message}");
-            }
-        }
-    }
+			return Ok(result);
+		}
+	}
 }
