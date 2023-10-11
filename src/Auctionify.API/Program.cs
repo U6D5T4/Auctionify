@@ -12,12 +12,11 @@ namespace Auctionify.API
 			builder.Services.AddApplicationServices();
 			builder.Services.AddInfrastructureServices(builder.Configuration);
 
-            // Add services to the container.
-
-            builder.Services.AddControllers();
-            builder.Services.AddRazorPages();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
+			// Add services to the container.
+			builder.Services.AddControllers();
+			builder.Services.AddRazorPages();
+			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen();
 
 			var app = builder.Build();
@@ -30,14 +29,11 @@ namespace Auctionify.API
 			}
 
 			app.UseHttpsRedirection();
-
 			app.UseAuthentication();
 			app.UseAuthorization();
-
-
 			app.MapControllers();
-            app.MapRazorPages();
-            app.Run();
+			app.MapRazorPages();
+			app.Run();
 		}
 	}
 }

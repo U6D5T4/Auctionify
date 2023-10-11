@@ -16,8 +16,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Features\Lots\Commands\" />
     <Folder Include="Features\Lots\Constants\" />
-    <Folder Include="Features\Lots\Profiles\" />
+    <Folder Include="Features\Lots\Rules\" />
   </ItemGroup>
 
 </Project>
