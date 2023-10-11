@@ -1,3 +1,4 @@
+using Auctionify.API.Middlewares;
 using Auctionify.Application;
 using Auctionify.Infrastructure;
 using Microsoft.OpenApi.Models;
@@ -77,6 +78,7 @@ namespace Auctionify.API
 				app.UseHttpsRedirection();
 				app.UseAuthentication();
 				app.UseAuthorization();
+				app.UseCustomExceptionHandler(); // Custom exception handler middleware
 				app.MapControllers();
 				app.MapRazorPages();
 				app.Run();
