@@ -1,4 +1,7 @@
 ﻿using Auctionify.Core.Entities;
+using Auctionify.Infrastructure.Common;
+using Auctionify.Infrastructure.Interceptors;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -6,12 +9,18 @@ using System.Reflection;
 
 namespace Auctionify.Infrastructure.Persistence
 {
-	public class ApplicationDbContext : IdentityDbContext<User, Role, int>
-	{
-		public ApplicationDbContext(DbContextOptions options) : base(options)
-		{
+    public class ApplicationDbContext : IdentityDbContext<User, Role, int>
+    {
+        private readonly IMediator mediator;
+        private readonly AuditableEntitySaveChangesInterceptor auditableEntitiesInterceptor;
 
-		}
+        public ApplicationDbContext(DbContextOptions options,
+            AuditableEntitySaveChangesInterceptor auditableEntitiesInterceptor,
+            IMediator mediator) : base(options)
+        {
+            this.auditableEntitiesInterceptor = auditableEntitiesInterceptor;
+            this.mediator = mediator;
+        }
 
 		public DbSet<Category> Categories => Set<Category>();
 		public DbSet<ChatMessage> ChatMessages => Set<ChatMessage>();
@@ -39,13 +48,25 @@ namespace Auctionify.Infrastructure.Persistence
 				.Ignore(u => u.TwoFactorEnabled)
 				.Ignore(u => u.PhoneNumberConfirmed);
 
-			builder.Entity<User>().ToTable("Users");
-			builder.Entity<Role>().ToTable("Roles");
-			builder.Entity<IdentityUserRole<int>>().ToTable("UserRoles");
-			builder.Entity<IdentityRoleClaim<int>>().ToTable("RoleClaims");
-			builder.Entity<IdentityUserClaim<int>>().ToTable("UserClaims");
+            builder.Entity<User>().ToTable("Users");
+            builder.Entity<Role>().ToTable("Roles");
+            builder.Entity<IdentityUserRole<int>>().ToTable("UserRoles");
+            builder.Entity<IdentityRoleClaim<int>>().ToTable("RoleClaims");
+            builder.Entity<IdentityUserClaim<int>>().ToTable("UserClaims");
 
-			builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-		}
-	}
+            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.AddInterceptors(auditableEntitiesInterceptor);
+        }
+
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            await mediator.DispatchDomainEvents(this);
+
+            return await base.SaveChangesAsync(cancellationToken);
+        }
+    }
 }

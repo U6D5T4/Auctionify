@@ -1,7 +1,10 @@
 ﻿using Auctionify.Application.Common.Interfaces;
+using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Core.Entities;
 using Auctionify.Infrastructure.Identity;
+using Auctionify.Infrastructure.Interceptors;
 using Auctionify.Infrastructure.Persistence;
+using Auctionify.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +19,8 @@ namespace Auctionify.Infrastructure
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddScoped<AuditableEntitySaveChangesInterceptor>();
+
             // Add DbContext service
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
@@ -52,6 +57,9 @@ namespace Auctionify.Infrastructure
 
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddTransient<IEmailService, SendGridEmailService>();
+
+            //Example of concrete repository registration
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
 
             return services;
         }

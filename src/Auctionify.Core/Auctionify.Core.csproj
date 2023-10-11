@@ -8,14 +8,15 @@
 
     
   <ItemGroup>
-    <Folder Include="Interfaces\" />
     <Folder Include="Events\" />
     <Folder Include="Exceptions\" />
     <Folder Include="Enums\" />
+    <Folder Include="Interfaces\" />
   </ItemGroup>
 
     
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0-rc.2.22472.11" />
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="7.0.0-rc.2.22476.2" />
     <PackageReference Include="MediatR" Version="12.1.1" />
   </ItemGroup>
