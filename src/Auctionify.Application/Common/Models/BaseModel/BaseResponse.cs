@@ -1,6 +1,6 @@
 ﻿namespace Auctionify.Application.Common.Models.BaseModel
 {
-    public class BaseResponse
+    public abstract class BaseResponse
     {
         public string Message { get; set; }
 
