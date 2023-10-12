@@ -22,7 +22,7 @@ namespace Auctionify.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await identityService.RegisterUserAsync(model);
+                var result = await _identityService.RegisterUserAsync(model);
 
                 if (result.IsSuccess)
                     return Ok(result);
@@ -40,7 +40,7 @@ namespace Auctionify.API.Controllers
             if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(token))
                 return NotFound();
 
-            var result = await identityService.ConfirmUserEmailAsync(userId, token);
+            var result = await _identityService.ConfirmUserEmailAsync(userId, token);
 
             if (result.IsSuccess)
                 return Ok("Confirmed");
