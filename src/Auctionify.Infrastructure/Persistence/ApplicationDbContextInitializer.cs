@@ -73,9 +73,9 @@ namespace Auctionify.Infrastructure.Persistence
             // Default users
             var users = new List<User>
             {
-                new User { UserName = "admin@localhost", Email = "admin@localhost" },
-                new User { UserName = "buyer@localhost", Email = "buyer@localhost" },
-                new User { UserName = "seller@localhost", Email = "seller@localhost" },
+                new User { UserName = "admin@localhost.com", Email = "admin@localhost.com", EmailConfirmed = true },
+                new User { UserName = "buyer@localhost.com", Email = "buyer@localhost.com", EmailConfirmed = true },
+                new User { UserName = "seller@localhost.com", Email = "seller@localhost.com", EmailConfirmed = true  },
             };
 
             foreach(var user in users)
@@ -84,7 +84,7 @@ namespace Auctionify.Infrastructure.Persistence
                 {
                     await _userManager.CreateAsync(user, "Test123!");
                     switch (user.UserName) {
-                        case "admin@localhost":
+                        case "admin@localhost.com":
                             if (roles is null) return;
                             var adminRole = roles.FirstOrDefault(r => r.Name == "Administrator");
                             if (adminRole != null)
@@ -92,7 +92,7 @@ namespace Auctionify.Infrastructure.Persistence
                                 await _userManager.AddToRolesAsync(user, new List<string> { adminRole.Name });
                             }
                             break;
-                        case "buyer@localhost":
+                        case "buyer@localhost.com":
                             if (roles is null) return;
                             var buyerRole = roles.FirstOrDefault(r => r.Name == "Buyer");
                             if (buyerRole != null)
@@ -100,7 +100,7 @@ namespace Auctionify.Infrastructure.Persistence
                                 await _userManager.AddToRolesAsync(user, new List<string> { buyerRole.Name });
                             }
                             break;
-                        case "seller@localhost":
+                        case "seller@localhost.com":
                             if (roles is null) return;
                             var sellerRole = roles.FirstOrDefault(r => r.Name == "Seller");
                             if (sellerRole != null)
@@ -110,6 +110,56 @@ namespace Auctionify.Infrastructure.Persistence
                             break;
                     }
                 }
+            }
+
+            if(!_context.Categories.Any())
+            {
+                var foodCategory = _context.Categories.Add(new Category
+                {
+                    Name = "Food",
+                });
+
+                await _context.SaveChangesAsync();
+
+                _context.Categories.Add(new Category
+                {
+                    Name = "Meat",
+                    ParentCategoryId = foodCategory.Entity.Id
+                });
+            }
+
+            if (!_context.LotStatuses.Any())
+            {
+                _context.LotStatuses.AddRange(new LotStatus[]
+                {
+                    new LotStatus
+                    {
+                        Name = "Draft"
+                    },
+                    new LotStatus
+                    {
+                        Name = "Upcoming"
+                    },
+                    new LotStatus
+                    {
+                        Name = "Active"
+                    }
+                });
+            }
+
+            if (!_context.Currency.Any())
+            {
+                _context.Currency.AddRange(new Currency[]
+                {
+                    new Currency
+                    {
+                        Code = "USD"
+                    },
+                    new Currency
+                    {
+                        Code = "RUB"
+                    }
+                });
             }
 
             await _context.SaveChangesAsync();
