@@ -1,3 +1,4 @@
+using Auctionify.API.Middlewares.Auctionify.API.Middlewares;
 using Auctionify.Application;
 using Auctionify.Infrastructure;
 
@@ -34,7 +35,7 @@ namespace Auctionify.API
 			app.UseAuthentication();
 			app.UseAuthorization();
 
-
+			app.UseCustomExceptionHandler();
 			app.MapControllers();
             app.MapRazorPages();
             app.Run();
