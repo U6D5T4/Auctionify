@@ -1,6 +1,9 @@
 using Auctionify.API.Middlewares;
+using Auctionify.API.Services;
 using Auctionify.Application;
+using Auctionify.Application.Common.Interfaces;
 using Auctionify.Infrastructure;
+using Auctionify.Infrastructure.Persistence;
 using Microsoft.OpenApi.Models;
 using NLog;
 using NLog.Web;
@@ -10,7 +13,7 @@ namespace Auctionify.API
 {
 	public class Program
 	{
-		public static void Main(string[] args)
+		public async static Task Main(string[] args)
 		{
 			var logger = NLog.LogManager.Setup()
 			.LoadConfigurationFromAppSettings()
@@ -24,16 +27,17 @@ namespace Auctionify.API
 				builder.Services.AddApplicationServices();
 				builder.Services.AddInfrastructureServices(builder.Configuration);
 				// Add services to the container.
-				builder.Services.AddControllers();
+				builder.Services.AddControllers()
+								.AddJsonOptions(options =>
+												options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 				// So that the URLs are lowercase
 				builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
-				// To display enum values as strings in the response
-				builder.Services
-					.AddControllers()
-					.AddJsonOptions(options =>
-						options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+				builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
+				// Add services to the container.
+				builder.Services.AddRazorPages();
+				// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 				builder.Services.AddEndpointsApiExplorer();
 				builder.Services.AddSwaggerGen(c =>
 				{
@@ -45,15 +49,17 @@ namespace Auctionify.API
 					});
 				});
 
+				// To display enum values as strings in the response
+				builder.Services
+					.AddControllers()
+					.AddJsonOptions(options =>
+						options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
+
 				// NLog: Setup NLog for Dependency injection
 				builder.Logging.ClearProviders();
 				builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
 				builder.Host.UseNLog();
-
-				builder.Services.AddRazorPages();
-				// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-				builder.Services.AddEndpointsApiExplorer();
-				builder.Services.AddSwaggerGen();
 
 				var app = builder.Build();
 
@@ -62,6 +68,11 @@ namespace Auctionify.API
 				{
 					app.UseSwagger();
 					app.UseSwaggerUI();
+
+					using var scope = app.Services.CreateScope();
+					var initialiser = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitializer>();
+					await initialiser.InitialiseAsync();
+					await initialiser.SeedAsync();
 				}
 
 				// So that the Swagger UI is available in production
@@ -87,7 +98,7 @@ namespace Auctionify.API
 			}
 			catch (Exception ex)
 			{
-				logger.Error(ex, "Stopped program because of exception");
+				logger.Error(ex, "Stopped program because of exception.");
 				throw;
 			}
 			finally

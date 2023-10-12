@@ -55,10 +55,14 @@ namespace Auctionify.Infrastructure
                     };
                 });
 
+            services.AddScoped<ApplicationDbContextInitializer>();
+
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddTransient<IEmailService, SendGridEmailService>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ILotRepository, LotRepository>();
+            services.AddScoped<ILotStatusRepository, LotStatusRepository>();
+            services.AddScoped<ICurrencyRepository, CurrencyRepository>();
 
             return services;
         }

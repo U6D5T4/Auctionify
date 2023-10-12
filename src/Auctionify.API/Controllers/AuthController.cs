@@ -31,7 +31,7 @@ namespace Auctionify.API.Controllers
 			return BadRequest("Some properties are not valid.");
 		}
 
-		// api/auth/confirmemail?userid&token
+
 		[HttpGet]
 		[Route("confirm-email")]
 		public async Task<IActionResult> ConfirmEmailAsync(string userId, string token)
@@ -74,7 +74,7 @@ namespace Auctionify.API.Controllers
 				return BadRequest(result);
 			}
 
-			return BadRequest("Some properties are not valid");
+			return BadRequest("Some properties are not valid.");
 		}
 
 		[HttpPost("login")]

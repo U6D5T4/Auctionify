@@ -1,8 +1,12 @@
-﻿using Auctionify.Application.Common.Interfaces.Repositories;
+﻿using Auctionify.Application.Common.DTOs;
+using Auctionify.Application.Common.Interfaces;
+using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Core.Entities;
+using Auctionify.Core.Enums;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 namespace Auctionify.Application.Features.Lots.Commands.Create
 {
@@ -32,31 +36,35 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 
     }
 
-    public class LocationDto
-    {
-        public string City { get; set; }
-
-        public string State { get; set; }
-
-        public string Country { get; set; }
-
-        public string Address { get; set; }
-    }
-
     public class CreateLotCommandHandler : IRequestHandler<CreateLotCommand, CreatedLotResponse>
     {
         private readonly ILotRepository _lotRepository;
+        private readonly ILotStatusRepository _lotStatusRepository;
+        private readonly ICurrentUserService _currentUserService;
+        private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
 
         public CreateLotCommandHandler(ILotRepository lotRepository,
+            ILotStatusRepository lotStatusRepository,
+            ICurrentUserService currentUserService,
+            UserManager<User> userManager,
             IMapper mapper)
         { 
             _lotRepository = lotRepository;
+            _lotStatusRepository = lotStatusRepository;
+            _currentUserService = currentUserService;
+            _userManager = userManager;
             _mapper = mapper;
         }
 
         public async Task<CreatedLotResponse> Handle(CreateLotCommand request, CancellationToken cancellationToken)
         {
+            AuctionStatus status = request.IsDraft ? AuctionStatus.Draft : AuctionStatus.Upcoming;
+
+            var lotStatus = await _lotStatusRepository.GetAsync(s => s.Name == status.ToString());
+
+            var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail);
+
             var location = new Location
             {
                 Address = request.Location.Address,
@@ -67,6 +75,7 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 
             var lot = new Lot
             {
+                SellerId = user.Id,
                 Title = request.Title,
                 Description = request.Description,
                 StartingPrice = request.StartingPrice,
@@ -75,6 +84,7 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
                 CategoryId = request.CategoryId,
                 Location = location,
                 CurrencyId = request.CurrencyId,
+                LotStatusId = lotStatus.Id
             };
 
             var createdLot = await _lotRepository.AddAsync(lot);
