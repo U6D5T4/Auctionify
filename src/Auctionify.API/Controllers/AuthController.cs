@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Auctionify.API.Controllers
 {
     [ApiController]
-    [Route("api/v1/[controller]")]
+    [Route("api/[controller]")]
     public class AuthController : Controller
     {
         private readonly IIdentityService identityService;
