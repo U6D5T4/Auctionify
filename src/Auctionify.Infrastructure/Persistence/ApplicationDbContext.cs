@@ -11,15 +11,15 @@ namespace Auctionify.Infrastructure.Persistence
 {
     public class ApplicationDbContext : IdentityDbContext<User, Role, int>
     {
-        private readonly IMediator mediator;
-        private readonly AuditableEntitySaveChangesInterceptor auditableEntitiesInterceptor;
+        private readonly IMediator _mediator;
+        private readonly AuditableEntitySaveChangesInterceptor _auditableEntitiesInterceptor;
 
         public ApplicationDbContext(DbContextOptions options,
             AuditableEntitySaveChangesInterceptor auditableEntitiesInterceptor,
             IMediator mediator) : base(options)
         {
-            this.auditableEntitiesInterceptor = auditableEntitiesInterceptor;
-            this.mediator = mediator;
+            _auditableEntitiesInterceptor = auditableEntitiesInterceptor;
+            _mediator = mediator;
         }
 
 		public DbSet<Category> Categories => Set<Category>();
@@ -59,12 +59,12 @@ namespace Auctionify.Infrastructure.Persistence
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.AddInterceptors(auditableEntitiesInterceptor);
+            optionsBuilder.AddInterceptors(_auditableEntitiesInterceptor);
         }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            await mediator.DispatchDomainEvents(this);
+            await _mediator.DispatchDomainEvents(this);
 
             return await base.SaveChangesAsync(cancellationToken);
         }

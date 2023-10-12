@@ -2,5 +2,14 @@
 {
 	public enum LotStatus
 	{
+		Draft,
+		PendingApproval,
+		Rejected,
+		Upcoming,
+		Active,
+		Sold,
+		NotSold,
+		Cancelled,
+		Reopened
 	}
 }

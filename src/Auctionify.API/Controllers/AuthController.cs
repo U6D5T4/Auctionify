@@ -8,11 +8,11 @@ namespace Auctionify.API.Controllers
     [Route("api/[controller]")]
     public class AuthController : Controller
     {
-        private readonly IIdentityService identityService;
+        private readonly IIdentityService _identityService;
 
         public AuthController(IIdentityService identityService)
         {
-            this.identityService = identityService;
+			_identityService = identityService;
         }
 
         [HttpPost("ForgetPassword")]
@@ -21,7 +21,7 @@ namespace Auctionify.API.Controllers
             if (string.IsNullOrEmpty(email))
                 return NotFound();
 
-            var result = await identityService.ForgetPasswordAsync(email);
+            var result = await _identityService.ForgetPasswordAsync(email);
 
             if (result.IsSuccess)
                 return Ok(result);
@@ -34,7 +34,7 @@ namespace Auctionify.API.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await identityService.ResetPasswordAsync(model);
+                var result = await _identityService.ResetPasswordAsync(model);
 
                 if (result.IsSuccess)
                     return Ok(result);
@@ -48,7 +48,7 @@ namespace Auctionify.API.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Login(LoginViewModel loginModel)
         {
-            var result = await identityService.LoginUserAsync(loginModel);
+            var result = await _identityService.LoginUserAsync(loginModel);
 
             if (result.IsSuccess)
             {

@@ -45,14 +45,14 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 
     public class CreateLotCommandHandler : IRequestHandler<CreateLotCommand, CreatedLotResponse>
     {
-        private readonly ILotRepository lotRepository;
-        private readonly IMapper mapper;
+        private readonly ILotRepository _lotRepository;
+        private readonly IMapper _mapper;
 
         public CreateLotCommandHandler(ILotRepository lotRepository,
             IMapper mapper)
         { 
-            this.lotRepository = lotRepository;
-            this.mapper = mapper;
+            _lotRepository = lotRepository;
+            _mapper = mapper;
         }
 
         public async Task<CreatedLotResponse> Handle(CreateLotCommand request, CancellationToken cancellationToken)
@@ -77,9 +77,9 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
                 CurrencyId = request.CurrencyId,
             };
 
-            var createdLot = await lotRepository.AddAsync(lot);
+            var createdLot = await _lotRepository.AddAsync(lot);
 
-            return mapper.Map<CreatedLotResponse>(createdLot);
+            return _mapper.Map<CreatedLotResponse>(createdLot);
         }
     }
 }
