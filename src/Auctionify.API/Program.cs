@@ -1,4 +1,6 @@
+using Auctionify.API.Services;
 using Auctionify.Application;
+using Auctionify.Application.Common.Interfaces;
 using Auctionify.Infrastructure;
 using Auctionify.Infrastructure.Persistence;
 
@@ -9,6 +11,8 @@ namespace Auctionify.API
 		public async static Task Main(string[] args)
 		{
 			var builder = WebApplication.CreateBuilder(args);
+
+			builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 			builder.Services.AddApplicationServices();
 			builder.Services.AddInfrastructureServices(builder.Configuration);
