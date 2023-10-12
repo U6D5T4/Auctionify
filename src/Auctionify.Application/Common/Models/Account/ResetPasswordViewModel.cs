@@ -1,5 +1,4 @@
-﻿using Auctionify.Application.Common.Models.BaseModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Auctionify.Application.Common.Models.Account
 {

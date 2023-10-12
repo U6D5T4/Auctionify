@@ -25,6 +25,8 @@ namespace Auctionify.API
 				builder.Services.AddInfrastructureServices(builder.Configuration);
 				// Add services to the container.
 				builder.Services.AddControllers();
+				// So that the URLs are lowercase
+				builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
 				// To display enum values as strings in the response
 				builder.Services

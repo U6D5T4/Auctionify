@@ -211,11 +211,11 @@ namespace Auctionify.Infrastructure.Identity
                 Email = model.Email,
                 UserName = model.Email,
             };
-            var result = await userManager.CreateAsync(user, model.Password);
+            var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)
             {
-                var confirmEmailToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                var confirmEmailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
                 // usually browser can't handle special characters in url, so we need to encode the token
                 var encodedEmailToken = Encoding.UTF8.GetBytes(confirmEmailToken);
@@ -223,9 +223,9 @@ namespace Auctionify.Infrastructure.Identity
                 // we need to encode the token to base64 so that we can pass it in the url
                 var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
 
-                var url = $"{configuration["AppUrl"]}/api/v1/auth/confirmemail?userid={user.Id}&token={validEmailToken}";
+                var url = $"{_configuration["AppUrl"]}/api/v1/auth/confirmemail?userid={user.Id}&token={validEmailToken}";
 
-                await emailService.SendEmailAsync(user.Email, "Confirm your email", $"<h1>Welcome to Auctionify</h1>" +
+                await _emailService.SendEmailAsync(user.Email, "Confirm your email", $"<h1>Welcome to Auctionify</h1>" +
                                         $"<p>Please confirm your email by <a href='{url}'>clicking here</a></p>");
 
                 return new RegisterResponse
@@ -246,7 +246,7 @@ namespace Auctionify.Infrastructure.Identity
 
         public async Task<RegisterResponse> ConfirmUserEmailAsync(string userId, string token)
         {
-            var user = await userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
                 return new RegisterResponse
                 {
@@ -257,7 +257,7 @@ namespace Auctionify.Infrastructure.Identity
             var decodedToken = WebEncoders.Base64UrlDecode(token);
             string normalToken = Encoding.UTF8.GetString(decodedToken);
 
-            var result = await userManager.ConfirmEmailAsync(user, normalToken);
+            var result = await _userManager.ConfirmEmailAsync(user, normalToken);
 
             if (result.Succeeded)
                 return new RegisterResponse
