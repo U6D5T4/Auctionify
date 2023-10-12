@@ -55,6 +55,8 @@ namespace Auctionify.Infrastructure
                     };
                 });
 
+            services.AddScoped<ApplicationDbContextInitializer>();
+
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddTransient<IEmailService, SendGridEmailService>();
 

@@ -1,11 +1,12 @@
 using Auctionify.Application;
 using Auctionify.Infrastructure;
+using Auctionify.Infrastructure.Persistence;
 
 namespace Auctionify.API
 {
 	public class Program
 	{
-		public static void Main(string[] args)
+		public async static Task Main(string[] args)
 		{
 			var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +27,14 @@ namespace Auctionify.API
 			{
 				app.UseSwagger();
 				app.UseSwaggerUI();
-			}
+
+                using (var scope = app.Services.CreateScope())
+				{
+                    var initialiser = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitializer>();
+                    await initialiser.InitialiseAsync();
+                    await initialiser.SeedAsync();
+                }
+            }
 
 			app.UseHttpsRedirection();
 			app.UseAuthentication();
