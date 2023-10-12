@@ -86,8 +86,8 @@ namespace Auctionify.Core.Persistence.Repositories
             if (predicate != null)
                 queryable = queryable.Where(predicate);
             if (orderBy != null)
-                return await orderBy(queryable).ToListAsync();
-            return await queryable.ToListAsync();
+                return await orderBy(queryable).ToListAsync(cancellationToken: cancellationToken);
+            return await queryable.ToListAsync(cancellationToken: cancellationToken);
         }
 
         public async Task<TEntity> UpdateAsync(TEntity entity)
