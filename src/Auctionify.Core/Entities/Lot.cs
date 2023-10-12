@@ -12,7 +12,7 @@ namespace Auctionify.Core.Entities
 
 		public virtual User? Buyer { get; set; }
 
-		public int CategoryId { get; set; }
+		public int? CategoryId { get; set; }
 
 		public virtual Category? Category { get; set; }
 
@@ -24,7 +24,7 @@ namespace Auctionify.Core.Entities
 
 		public virtual Location? Location { get; set; }
 
-		public int CurrencyId { get; set; }
+		public int? CurrencyId { get; set; }
 
 		public virtual Currency? Currency { get; set; }
 
