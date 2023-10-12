@@ -5,12 +5,11 @@ using AutoMapper;
 
 namespace Auctionify.Application.Features.Lots.Profiles
 {
-	public class MappingProfiles: Profile
+	public class MappingProfiles : Profile
 	{
-		public MappingProfiles()
-		{
+		public MappingProfiles() { 
 			CreateMap<Lot, CreatedLotResponse>().ReverseMap();
-			CreateMap<Lot, GetByIdLotResponse>().ReverseMap();
-		}
+            CreateMap<Lot, GetByIdLotResponse>().ReverseMap();
+        }
 	}
 }
