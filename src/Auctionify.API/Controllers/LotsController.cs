@@ -1,5 +1,6 @@
-﻿using Auctionify.Application.Features.Lots.Commands.Create;
+using Auctionify.Application.Features.Lots.Commands.Create;
 using Auctionify.Application.Features.Lots.Queries.GetById;
+using Auctionify.Application.Features.Lots.Queries.GetAllLots;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,4 +33,5 @@ namespace Auctionify.API.Controllers
 			return Ok(result);
 		}
 	}
+
 }
