@@ -59,7 +59,6 @@ namespace Auctionify.Infrastructure
 
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddTransient<IEmailService, SendGridEmailService>();
-
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ILotRepository, LotRepository>();
             services.AddScoped<ILotStatusRepository, LotStatusRepository>();

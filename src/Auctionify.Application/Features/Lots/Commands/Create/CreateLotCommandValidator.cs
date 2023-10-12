@@ -26,9 +26,6 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
                 .NotEmpty();
 
             RuleFor(l => l.AdditionalDocuments);
-
-
-
         }
     }
 }

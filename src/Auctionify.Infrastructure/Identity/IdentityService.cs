@@ -17,11 +17,11 @@ namespace Auctionify.Infrastructure.Identity
     /// </summary>
     public class IdentityService : IIdentityService
     {
-        private readonly SignInManager<User> signInManager;
-        private readonly UserManager<User> userManager;
-        private readonly ILogger<IdentityService> logger;
-        private readonly IConfiguration configuration;
-        private readonly IEmailService emailService;
+        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<User> _userManager;
+        private readonly ILogger<IdentityService> _logger;
+        private readonly IConfiguration _configuration;
+        private readonly IEmailService _emailService;
 
         public IdentityService(SignInManager<User> signInManager,
             UserManager<User> userManager,
@@ -29,11 +29,11 @@ namespace Auctionify.Infrastructure.Identity
             IConfiguration configuration,
             IEmailService emailService)
         {
-            this.signInManager = signInManager;
-            this.userManager = userManager;
-            this.logger = logger;
-            this.configuration = configuration;
-            this.emailService = emailService;
+            _signInManager = signInManager;
+            _userManager = userManager;
+            _logger = logger;
+            _configuration = configuration;
+            _emailService = emailService;
         }
 
         public async Task<LoginResponse> LoginUserAsync(LoginViewModel userModel)
@@ -46,7 +46,7 @@ namespace Auctionify.Infrastructure.Identity
                     IsSuccess = false,
                 };
             }
-            var user = await userManager.FindByEmailAsync(userModel.Email);
+            var user = await _userManager.FindByEmailAsync(userModel.Email);
 
             if (user == null)
             {
@@ -57,11 +57,11 @@ namespace Auctionify.Infrastructure.Identity
                 };
             }
 
-            var result = await signInManager.PasswordSignInAsync(user, userModel.Password, false, false);
+            var result = await _signInManager.PasswordSignInAsync(user, userModel.Password, false, false);
 
             if (result.Succeeded)
             {
-                logger.LogInformation("User logged in");
+                _logger.LogInformation("User logged in");
             }
             else
             {
@@ -97,7 +97,7 @@ namespace Auctionify.Infrastructure.Identity
         /// <returns></returns>
         private async Task<TokenModel> GenerateJWTTokenWithUserClaimsAsync(User user)
         {
-            var roles = await userManager.GetRolesAsync(user);
+            var roles = await _userManager.GetRolesAsync(user);
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Email, user.Email),
@@ -108,11 +108,11 @@ namespace Auctionify.Infrastructure.Identity
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["AuthSettings:Key"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSettings:Key"]));
 
             var token = new JwtSecurityToken(
-                issuer: configuration["AuthSettings:Issuer"],
-                audience: configuration["AuthSettings:Audience"],
+                issuer: _configuration["AuthSettings:Issuer"],
+                audience: _configuration["AuthSettings:Audience"],
                 claims: claims,
                 expires: DateTime.Now.AddDays(1),
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
@@ -128,7 +128,7 @@ namespace Auctionify.Infrastructure.Identity
         
         public async Task<ResetPasswordResponse> ForgetPasswordAsync(string email)
         {
-            var user = await userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
             {
                 return new ResetPasswordResponse
@@ -138,14 +138,14 @@ namespace Auctionify.Infrastructure.Identity
                 };
             }
 
-            var token = await userManager.GeneratePasswordResetTokenAsync(user);
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
             var encodedToken = Encoding.UTF8.GetBytes(token);
             var validToken = WebEncoders.Base64UrlEncode(encodedToken);
 
-            string url = $"{configuration["AppUrl"]}/ResetPassword?email={email}&token={validToken}";
+            string url = $"{_configuration["AppUrl"]}/ResetPassword?email={email}&token={validToken}";
 
-            await emailService.SendEmailAsync(email, "Reset Password", "<h1>Follow the instructions to reset your password</h1>" +
+            await _emailService.SendEmailAsync(email, "Reset Password", "<h1>Follow the instructions to reset your password</h1>" +
                 $"<p>To reset your password <a href='{url}'>Click here</p>");
 
             return new ResetPasswordResponse
@@ -157,7 +157,7 @@ namespace Auctionify.Infrastructure.Identity
 
         public async Task<ResetPasswordResponse> ResetPasswordAsync(ResetPasswordViewModel model)
         {
-            var user = await userManager.FindByEmailAsync(model.Email);
+            var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
                 return new ResetPasswordResponse
@@ -177,7 +177,7 @@ namespace Auctionify.Infrastructure.Identity
             var decodedToken = WebEncoders.Base64UrlDecode(model.Token);
             string normalToken = Encoding.UTF8.GetString(decodedToken);
 
-            var result = await userManager.ResetPasswordAsync(user, normalToken, model.NewPassword);
+            var result = await _userManager.ResetPasswordAsync(user, normalToken, model.NewPassword);
 
             if (result.Succeeded)
                 return new ResetPasswordResponse
@@ -192,6 +192,85 @@ namespace Auctionify.Infrastructure.Identity
                 Message = "Something went wrong",
                 IsSuccess = false,
                 Errors = result.Errors.Select(e => e.Description)
+            };
+        }
+        public async Task<RegisterResponse> RegisterUserAsync(RegisterViewModel model)
+        {
+            if (model == null)
+                throw new NullReferenceException("Register Model is null");
+
+            if (model.Password != model.ConfirmPassword)
+                return new RegisterResponse
+                {
+                    Message = "Confirm password doesn't match the password",
+                    IsSuccess = false,
+                };
+
+            var user = new User
+            {
+                Email = model.Email,
+                UserName = model.Email,
+            };
+            var result = await userManager.CreateAsync(user, model.Password);
+
+            if (result.Succeeded)
+            {
+                var confirmEmailToken = await userManager.GenerateEmailConfirmationTokenAsync(user);
+
+                // usually browser can't handle special characters in url, so we need to encode the token
+                var encodedEmailToken = Encoding.UTF8.GetBytes(confirmEmailToken);
+
+                // we need to encode the token to base64 so that we can pass it in the url
+                var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
+
+                var url = $"{configuration["AppUrl"]}/api/v1/auth/confirmemail?userid={user.Id}&token={validEmailToken}";
+
+                await emailService.SendEmailAsync(user.Email, "Confirm your email", $"<h1>Welcome to Auctionify</h1>" +
+                                        $"<p>Please confirm your email by <a href='{url}'>clicking here</a></p>");
+
+                return new RegisterResponse
+                {
+                    Message = "User created successfully!",
+                    IsSuccess = true,
+                };
+            }
+
+            return new RegisterResponse
+            {
+                Message = "User did not create",
+                IsSuccess = false,
+                Errors = result.Errors.Select(e => e.Description),
+            };
+
+        }
+
+        public async Task<RegisterResponse> ConfirmUserEmailAsync(string userId, string token)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null)
+                return new RegisterResponse
+                {
+                    IsSuccess = false,
+                    Message = "User not found",
+                };
+
+            var decodedToken = WebEncoders.Base64UrlDecode(token);
+            string normalToken = Encoding.UTF8.GetString(decodedToken);
+
+            var result = await userManager.ConfirmEmailAsync(user, normalToken);
+
+            if (result.Succeeded)
+                return new RegisterResponse
+                {
+                    Message = "Email confirmed successfully!",
+                    IsSuccess = true,
+                };
+
+            return new RegisterResponse
+            {
+                Message = "Email did not confirm",
+                IsSuccess = false,
+                Errors = result.Errors.Select(e => e.Description),
             };
         }
     }
