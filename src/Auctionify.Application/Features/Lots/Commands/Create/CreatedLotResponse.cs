@@ -26,6 +26,6 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
         public CurrencyDto Currency { get; set; }
 
         public ICollection<BidDto> Bids { get; set; }
-
     }
+
 }
