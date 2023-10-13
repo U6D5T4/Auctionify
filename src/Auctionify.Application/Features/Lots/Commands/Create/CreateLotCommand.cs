@@ -24,7 +24,13 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 
         public int? CategoryId { get; set; }
 
-        public LocationDto Location { get; set; }
+        public string? City { get; set; }
+
+        public string? State { get; set; }
+
+        public string? Country { get; set; }
+
+        public string? Address { get; set; }
 
         public int? CurrencyId { get; set; }
 
@@ -67,10 +73,10 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 
             var location = new Location
             {
-                Address = request.Location.Address,
-                City = request.Location.City,
-                State = request.Location.State,
-                Country = request.Location.Country,
+                Address = request.Address,
+                City = request.City,
+                State = request.State,
+                Country = request.Country,
             };
 
             var lot = new Lot

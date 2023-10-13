@@ -1,3 +1,4 @@
+using FluentValidation;
 using Newtonsoft.Json;
 using System.Net;
 
@@ -47,6 +48,10 @@ namespace Auctionify.API.Middlewares
 			if (exception is ArgumentException)
 			{
 				code = HttpStatusCode.BadRequest; // 400 if bad request
+			}
+			else if (exception is ValidationException)
+			{
+				code = HttpStatusCode.BadRequest;
 			}
 
 			var result = JsonConvert.SerializeObject(new { error = exception.Message });

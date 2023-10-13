@@ -1,6 +1,7 @@
 ﻿using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Core.Entities;
+using Auctionify.Infrastructure.Common.Options;
 using Auctionify.Infrastructure.Identity;
 using Auctionify.Infrastructure.Interceptors;
 using Auctionify.Infrastructure.Persistence;
@@ -54,6 +55,9 @@ namespace Auctionify.Infrastructure
                         ValidateIssuerSigningKey = true
                     };
                 });
+
+            var usersSeedingData = configuration.GetSection("UsersSeedingData");
+            services.Configure<UsersSeedingData>(usersSeedingData);
 
             services.AddScoped<ApplicationDbContextInitializer>();
 

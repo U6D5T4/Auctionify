@@ -1,4 +1,5 @@
 using Auctionify.Application.Features.Lots.Commands.Create;
+using Auctionify.Application.Features.Lots.Queries.GetAllLots;
 using Auctionify.Application.Features.Lots.Queries.GetById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -19,7 +20,7 @@ namespace Auctionify.API.Controllers
 
 		[HttpPost]
 		[Authorize(Roles = "Seller")]
-		public async Task<IActionResult> Create(CreateLotCommand createLotCommand)
+		public async Task<IActionResult> Create([FromForm] CreateLotCommand createLotCommand)
 		{
 			var result = await _mediator.Send(createLotCommand);
 
@@ -33,6 +34,14 @@ namespace Auctionify.API.Controllers
 
 			return Ok(result);
 		}
-	}
 
+		[HttpGet]
+		public async Task<IActionResult> GetAll()
+		{
+			var query = new GetAllLotsQuery();
+			var lots = await _mediator.Send(query);
+
+			return Ok(lots);
+		}
+	}
 }

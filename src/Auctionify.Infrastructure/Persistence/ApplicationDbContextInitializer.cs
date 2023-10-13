@@ -1,7 +1,10 @@
 ﻿using Auctionify.Core.Entities;
+using Auctionify.Infrastructure.Common.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Auctionify.Infrastructure.Persistence
 {
@@ -11,16 +14,19 @@ namespace Auctionify.Infrastructure.Persistence
         private readonly ApplicationDbContext _context;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
+        private readonly UsersSeedingData _usersData;
 
         public ApplicationDbContextInitializer(ILogger<ApplicationDbContextInitializer> logger,
             ApplicationDbContext context,
             UserManager<User> userManager,
-            RoleManager<Role> roleManager)
+            RoleManager<Role> roleManager,
+            IOptions<UsersSeedingData> usersData)
         {
             _logger = logger;
             _context = context;
             _userManager = userManager;
             _roleManager = roleManager;
+            _usersData = usersData.Value;
         }
 
         public async Task InitialiseAsync()
@@ -64,7 +70,8 @@ namespace Auctionify.Infrastructure.Persistence
 
             foreach (var role in roles)
             {
-                if (_roleManager.Roles.All(r => r.Name != role.Name))
+
+                if (!(await _roleManager.RoleExistsAsync(role.Name)))
                 {
                     await _roleManager.CreateAsync(role);
                 }
@@ -73,14 +80,14 @@ namespace Auctionify.Infrastructure.Persistence
             // Default users
             var users = new List<User>
             {
-                new User { UserName = "admin@localhost.com", Email = "admin@localhost.com", EmailConfirmed = true },
-                new User { UserName = "buyer@localhost.com", Email = "buyer@localhost.com", EmailConfirmed = true },
-                new User { UserName = "seller@localhost.com", Email = "seller@localhost.com", EmailConfirmed = true  },
+                new User { UserName = _usersData.Emails.Admin, Email = _usersData.Emails.Admin, EmailConfirmed = true },
+                new User { UserName = _usersData.Emails.Buyer, Email = _usersData.Emails.Buyer, EmailConfirmed = true },
+                new User { UserName = _usersData.Emails.Seller, Email = _usersData.Emails.Seller, EmailConfirmed = true  },
             };
 
             foreach(var user in users)
             {
-                if (_userManager.Users.All(u => u.UserName != user.UserName))
+                if ((await _userManager.FindByNameAsync(user.UserName) is null))
                 {
                     await _userManager.CreateAsync(user, "Test123!");
                     switch (user.UserName) {

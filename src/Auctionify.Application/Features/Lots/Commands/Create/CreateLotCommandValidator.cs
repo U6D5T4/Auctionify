@@ -81,7 +81,15 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
             //    .NotEmpty()
             //    .When(l => !l.IsDraft);
 
-            RuleFor(l => l.Location)
+            RuleFor(l => l.City)
+                .NotEmpty()
+                .When(l => !l.IsDraft);
+
+            RuleFor(l => l.Country)
+                .NotEmpty()
+                .When(l => !l.IsDraft);
+
+            RuleFor(l => l.Address)
                 .NotEmpty()
                 .When(l => !l.IsDraft);
 
@@ -110,7 +118,7 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
                     return false;
                 })
                 .When(l => !l.IsDraft)
-                .When(l => l.EndDate == DateTime.MinValue ? false : true)
+                .When(l => l.EndDate == DateTime.MinValue)
                 .WithMessage("End date has to be at least 4 hours ahead than start date");
         }
     }
