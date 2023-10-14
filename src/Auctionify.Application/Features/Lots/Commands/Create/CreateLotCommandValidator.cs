@@ -118,7 +118,7 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
                     return false;
                 })
                 .When(l => !l.IsDraft)
-                .When(l => l.EndDate == DateTime.MinValue)
+                .When(l => l.EndDate >= DateTime.MinValue)
                 .WithMessage("End date has to be at least 4 hours ahead than start date");
         }
     }
