@@ -50,12 +50,14 @@ namespace Auctionify.Application.Features.Lots.Commands.Update
                     return lot == null ? false : true;
                 })
                 .WithMessage("Lot with indicated ID does not exist")
-                .MustAsync(async (id, cancellationToken) =>
+                .MustAsync(async (lotMain, id, context, cancellationToken) =>
                 {
                     var lot = await _lotRepository.GetAsync(l => l.Id == id,
                         include: x => x.Include(l => l.LotStatus),
                         enableTracking: false,
                         cancellationToken: cancellationToken);
+                    
+                    if (lot == null) return false;
 
                     if (lot.LotStatus.Name == AuctionStatus.Draft.ToString() ||
                         lot.LotStatus.Name == AuctionStatus.PendingApproval.ToString() ||
@@ -63,10 +65,9 @@ namespace Auctionify.Application.Features.Lots.Commands.Update
                     {
                         return true;
                     }
-
+                    context.AddFailure("Lot's status does not allow edit");
                     return false;
-                })
-                .WithMessage("It is not possible to edit active lots");
+                });
 
             RuleFor(l => l.Title)
                 .MinimumLength(6)
@@ -155,7 +156,7 @@ namespace Auctionify.Application.Features.Lots.Commands.Update
                     return false;
                 })
                 .When(l => !l.IsDraft)
-                .When(l => l.EndDate == DateTime.MinValue)
+                .When(l => l.EndDate >= DateTime.MinValue)
                 .WithMessage("End date has to be at least 4 hours ahead than start date");
         }
     }
