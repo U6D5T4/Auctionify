@@ -19,16 +19,17 @@ namespace Auctionify.API.Controllers
 		[Route("register")]
 		public async Task<IActionResult> RegisterAsync([FromBody] RegisterViewModel model)
 		{
-			if (ModelState.IsValid)
+			if (!ModelState.IsValid)
 			{
-				var result = await _identityService.RegisterUserAsync(model);
+				return BadRequest("Some properties are not valid.");
+            }
 
-				if (result.IsSuccess)
-					return Ok(result);
-				return BadRequest(result);
-			}
+            var result = await _identityService.RegisterUserAsync(model);
 
-			return BadRequest("Some properties are not valid.");
+            if (!result.IsSuccess)
+                return BadRequest(result);
+
+            return Ok(result);
 		}
 
 
@@ -41,10 +42,10 @@ namespace Auctionify.API.Controllers
 
 			var result = await _identityService.ConfirmUserEmailAsync(userId, token);
 
-			if (result.IsSuccess)
-				return Ok("Confirmed");
+			if (!result.IsSuccess)
+				return BadRequest(result);
 
-			return BadRequest(result);
+			return Ok("Confirmed");
 		}
 
 		[HttpPost("forget-password")]
@@ -55,26 +56,27 @@ namespace Auctionify.API.Controllers
 
 			var result = await _identityService.ForgetPasswordAsync(email);
 
-			if (result.IsSuccess)
-				return Ok(result);
+			if (!result.IsSuccess)
+				return BadRequest(result);
 
-			return BadRequest(result);
+			return Ok(result);
 		}
 
 		[HttpPost("reset-password")]
 		public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordViewModel model)
 		{
-			if (ModelState.IsValid)
+			if (!ModelState.IsValid)
 			{
-				var result = await _identityService.ResetPasswordAsync(model);
-
-				if (result.IsSuccess)
-					return Ok(result);
-
-				return BadRequest(result);
+				return BadRequest("Some properties are not valid.");
 			}
 
-			return BadRequest("Some properties are not valid.");
+			var result = await _identityService.ResetPasswordAsync(model);
+
+			if (!result.IsSuccess)
+                return BadRequest(result);
+
+            return Ok(result);
+
 		}
 
 		[HttpPost("login")]
@@ -82,12 +84,12 @@ namespace Auctionify.API.Controllers
 		{
 			var result = await _identityService.LoginUserAsync(loginModel);
 
-			if (result.IsSuccess)
+			if (!result.IsSuccess)
 			{
-				return Ok(result);
+				return BadRequest(result);
 			}
 
-			return BadRequest(result);
+			return Ok(result);
 		}
 	}
 }
