@@ -1,4 +1,5 @@
 using Auctionify.Application.Features.Lots.Commands.Create;
+using Auctionify.Application.Features.Lots.Commands.Delete;
 using Auctionify.Application.Features.Lots.Queries.GetById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +31,14 @@ namespace Auctionify.API.Controllers
 			var result = await _mediator.Send(new GetByIdLotQuery { Id = id });
 
 			return Ok(result);
+		}
+
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> Delete([FromRoute] int id)
+		{
+			var result = await _mediator.Send(new DeleteLotCommand { Id = id });
+
+			return Ok($"Successfully deleted lot with id: {result.Id}");
 		}
 	}
 

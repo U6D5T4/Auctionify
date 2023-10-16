@@ -1,6 +1,7 @@
 ﻿using Auctionify.Application.Common.Interfaces.Repositories;
 using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Auctionify.Application.Features.Lots.Queries.GetById
 {
@@ -21,8 +22,7 @@ namespace Auctionify.Application.Features.Lots.Queries.GetById
 
 			public async Task<GetByIdLotResponse> Handle(GetByIdLotQuery request, CancellationToken cancellationToken)
 			{
-				var lot = await _lotRepository.GetAsync(predicate: x => x.Id == request.Id, cancellationToken: cancellationToken);
-
+				var lot = await _lotRepository.GetAsync(predicate: x => x.Id == request.Id, include: x => x.Include(x => x.Category).Include(x => x.Currency).Include(x => x.Location).Include(x => x.LotStatus).Include(x => x.Bids));
 				var result = _mapper.Map<GetByIdLotResponse>(lot);
 				return result;
 			}
