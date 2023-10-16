@@ -2,8 +2,9 @@
 using Auctionify.Application.Common.Interfaces.Repositories;
 using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
-namespace Auctionify.Application.Features.Lots.Queries.GetAllLots
+namespace Auctionify.Application.Features.Lots.Queries.GetAll
 {
     public class GetAllLotsQuery : IRequest<List<GetAllLotsResponse>>
     {
@@ -25,7 +26,7 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAllLots
         {
             var lots = await _lotRepository.GetListAsync();
 
-            var response = _mapper.Map<List<GetAllLotsResponse>>(lots);
+			var response = _mapper.Map<List<GetAllLotsResponse>>(lots);
 
             return response;
         }
