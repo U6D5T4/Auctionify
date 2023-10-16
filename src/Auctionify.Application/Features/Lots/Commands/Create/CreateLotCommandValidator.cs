@@ -72,6 +72,15 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
                 .Unless(l => l.CurrencyId == null)
                 .WithMessage("Currency entered does not exist in the system");
 
+            RuleFor(l => l.City)
+                .NotEmpty();
+
+            RuleFor(l => l.Country)
+                .NotEmpty();
+
+            RuleFor(l => l.Address)
+                .NotEmpty();
+
             ConfigureValidationWhenConcreteCreating();
         }
 
@@ -80,18 +89,6 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
             //RuleFor(l => l.Photos)
             //    .NotEmpty()
             //    .When(l => !l.IsDraft);
-
-            RuleFor(l => l.City)
-                .NotEmpty()
-                .When(l => !l.IsDraft);
-
-            RuleFor(l => l.Country)
-                .NotEmpty()
-                .When(l => !l.IsDraft);
-
-            RuleFor(l => l.Address)
-                .NotEmpty()
-                .When(l => !l.IsDraft);
 
             RuleFor(l => l.StartDate)
                 .NotEmpty()
