@@ -1,4 +1,4 @@
-﻿using Auctionify.Application.Common.DTOs;
+﻿         using Auctionify.Application.Common.DTOs;
 using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Core.Entities;
 using Auctionify.Core.Enums;
@@ -66,11 +66,13 @@ namespace Auctionify.Application.Features.Lots.Commands.Update
 
 
             var lot = await _lotRepository.GetAsync(l => l.Id == request.Id,
-                include: x => x.Include(l => l.Category).Include(l => l.LotStatus).Include(l => l.Currency).Include(l => l.Location),
-                cancellationToken: cancellationToken);
+                include: x => x.Include(l => l.Location),
+                cancellationToken: cancellationToken,
+                enableTracking: false);
+
             lot.LotStatus = lotStatus;
 
-            var lotUpdated = MapLotToRequest(lot, request);
+            var lotUpdated = _mapper.Map(request, lot);
 
             await _lotRepository.UpdateAsync(lotUpdated);
 

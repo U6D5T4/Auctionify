@@ -15,6 +15,13 @@ namespace Auctionify.Application.Features.Lots.Profiles
             CreateMap<Lot, CreatedLotResponse>().ReverseMap();
 			CreateMap<Lot, GetByIdLotResponse>().ReverseMap();
 			CreateMap<Lot, UpdateLotResponse>().ReverseMap();
+
+			CreateMap<Lot, UpdateLotCommand>()
+				.ForMember(l => l.Address, cd => cd.MapFrom(ul => ul.Location.Address))
+				.ForMember(l => l.City, cd => cd.MapFrom(ul => ul.Location.City))
+				.ForMember(l => l.Country, cd => cd.MapFrom(ul => ul.Location.Country))
+				.ForMember(l => l.State, cd => cd.MapFrom(ul => ul.Location.State))
+				.ReverseMap();
 		}
 	}
 }
