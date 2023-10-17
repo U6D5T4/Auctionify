@@ -1,28 +1,47 @@
-﻿using Auctionify.Application.Features.Lots.Queries.GetAllLots;
+using Auctionify.Application.Features.Lots.Commands.Create;
+using Auctionify.Application.Features.Lots.Queries.GetAllLots;
+using Auctionify.Application.Features.Lots.Queries.GetById;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Auctionify.API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class LotsController : ControllerBase
-    {
-        private readonly IMediator mediator;
+	[Route("api/[controller]")]
+	[ApiController]
+	public class LotsController : ControllerBase
+	{
+		private readonly IMediator _mediator;
 
-        public LotsController(IMediator mediator)
-        {
-            
-            this.mediator = mediator;
-        }
+		public LotsController(IMediator mediator)
+		{
+			_mediator = mediator;
+		}
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var query = new GetAllLotsQuery();
-            var lots = await mediator.Send(query);
+		[HttpPost]
+		[Authorize(Roles = "Seller")]
+		public async Task<IActionResult> Create([FromForm] CreateLotCommand createLotCommand)
+		{
+			var result = await _mediator.Send(createLotCommand);
 
-            return Ok(lots);
-        }
-    }
+			return Ok(result);
+		}
+
+		[HttpGet("{id}")]
+		public async Task<IActionResult> GetById([FromRoute] int id)
+		{
+			var result = await _mediator.Send(new GetByIdLotQuery { Id = id });
+
+			return Ok(result);
+		}
+
+		[HttpGet]
+		public async Task<IActionResult> GetAll()
+		{
+			var query = new GetAllLotsQuery();
+			var lots = await _mediator.Send(query);
+
+			return Ok(lots);
+		}
+	}
 }

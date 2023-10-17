@@ -5,10 +5,10 @@ using Auctionify.Infrastructure.Persistence;
 
 namespace Auctionify.Infrastructure.Repositories
 {
-	public class LotRepository : EfBaseRepository<Lot, ApplicationDbContext>, ILotRepository
-	{
-		public LotRepository(ApplicationDbContext dbContext) : base(dbContext)
-		{
-		}
-	}
+    public class LotStatusRepository : EfBaseRepository<LotStatus, ApplicationDbContext>, ILotStatusRepository
+    {
+        public LotStatusRepository(ApplicationDbContext context) : base(context)
+        {
+        }
+    }
 }

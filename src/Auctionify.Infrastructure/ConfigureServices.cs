@@ -1,6 +1,7 @@
 ﻿using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Core.Entities;
+using Auctionify.Infrastructure.Common.Options;
 using Auctionify.Infrastructure.Identity;
 using Auctionify.Infrastructure.Interceptors;
 using Auctionify.Infrastructure.Persistence;
@@ -55,12 +56,17 @@ namespace Auctionify.Infrastructure
                     };
                 });
 
+            var usersSeedingData = configuration.GetSection("UsersSeedingData");
+            services.Configure<UsersSeedingData>(usersSeedingData);
+
+            services.AddScoped<ApplicationDbContextInitializer>();
+
             services.AddScoped<IIdentityService, IdentityService>();
             services.AddTransient<IEmailService, SendGridEmailService>();
-
-            //Example of concrete repository registration
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ILotRepository, LotRepository>();
+            services.AddScoped<ILotStatusRepository, LotStatusRepository>();
+            services.AddScoped<ICurrencyRepository, CurrencyRepository>();
 
             return services;
         }

@@ -5,9 +5,10 @@ using Auctionify.Infrastructure.Persistence;
 
 namespace Auctionify.Infrastructure.Repositories
 {
-    public class CategoryRepository : EfBaseRepository<Category, ApplicationDbContext>, ICategoryRepository
-    {
-        public CategoryRepository(ApplicationDbContext dbContext)
-            : base(dbContext) { }
-    }
+	public class CategoryRepository : EfBaseRepository<Category, ApplicationDbContext>, ICategoryRepository
+	{
+		public CategoryRepository(ApplicationDbContext dbContext) : base(dbContext) 
+		{
+		}
+	}
 }

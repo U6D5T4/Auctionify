@@ -9,43 +9,43 @@ namespace Auctionify.Core.Persistence.Repositories
         where TEntity : BaseEntity
         where TContext : DbContext
     {
-        protected readonly TContext context;
+        protected readonly TContext _context;
 
         public EfBaseRepository(TContext context)
         {
-            this.context = context;
+            _context = context;
         }
 
         public IQueryable<TEntity> Query()
         {
-            return context.Set<TEntity>();
+            return _context.Set<TEntity>();
         }
 
         public async Task<TEntity> AddAsync(TEntity entity)
         {
-            await context.AddAsync(entity);
-            await context.SaveChangesAsync();
+            await _context.AddAsync(entity);
+            await _context.SaveChangesAsync();
             return entity;
         }
 
         public async Task<ICollection<TEntity>> AddRangeAsync(ICollection<TEntity> entities)
         {
-            await context.AddRangeAsync(entities);
-            await context.SaveChangesAsync();
+            await _context.AddRangeAsync(entities);
+            await _context.SaveChangesAsync();
             return entities;
         }
 
         public async Task<TEntity> DeleteAsync(TEntity entity, bool permanent = false)
         {
-            context.Remove(entity);
-            await context.SaveChangesAsync();
+            _context.Remove(entity);
+            await _context.SaveChangesAsync();
             return entity;
         }
 
         public async Task<ICollection<TEntity>> DeleteRangeAsync(ICollection<TEntity> entities, bool permanent = false)
         {
-            context.RemoveRange(entities);
-            await context.SaveChangesAsync();
+            _context.RemoveRange(entities);
+            await _context.SaveChangesAsync();
             return entities;
         }
 
@@ -86,21 +86,21 @@ namespace Auctionify.Core.Persistence.Repositories
             if (predicate != null)
                 queryable = queryable.Where(predicate);
             if (orderBy != null)
-                return await orderBy(queryable).ToListAsync();
-            return await queryable.ToListAsync();
+                return await orderBy(queryable).ToListAsync(cancellationToken: cancellationToken);
+            return await queryable.ToListAsync(cancellationToken: cancellationToken);
         }
 
         public async Task<TEntity> UpdateAsync(TEntity entity)
         {
-            context.Update(entity);
-            await context.SaveChangesAsync();
+            _context.Update(entity);
+            await _context.SaveChangesAsync();
             return entity;
         }
 
         public async Task<ICollection<TEntity>> UpdateRangeAsync(ICollection<TEntity> entities)
         {
-            context.UpdateRange(entities);
-            await context.SaveChangesAsync();
+            _context.UpdateRange(entities);
+            await _context.SaveChangesAsync();
             return entities;
         }
     }

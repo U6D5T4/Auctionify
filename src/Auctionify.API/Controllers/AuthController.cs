@@ -4,95 +4,92 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Auctionify.API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class AuthController : Controller
-    {
-        private readonly IIdentityService identityService;
-        private readonly IConfiguration configuration;
+	[ApiController]
+	[Route("api/[controller]")]
+	public class AuthController : Controller
+	{
+		private readonly IIdentityService _identityService;
 
-        public AuthController(IIdentityService identityService, IConfiguration configuration)
-        {
-            this.identityService = identityService;
-            this.configuration = configuration;
-        }
+		public AuthController(IIdentityService identityService)
+		{
+			_identityService = identityService;
+		}
 
-        // api/auth/register
-        [HttpPost]
-        [Route("register")]
-        public async Task<IActionResult> RegisterAsync([FromBody] RegisterViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var result = await identityService.RegisterUserAsync(model);
+		[HttpPost]
+		[Route("register")]
+		public async Task<IActionResult> RegisterAsync([FromBody] RegisterViewModel model)
+		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest("Some properties are not valid.");
+            }
 
-                if (result.IsSuccess)
-                    return Ok(result);
+            var result = await _identityService.RegisterUserAsync(model);
+
+            if (!result.IsSuccess)
                 return BadRequest(result);
-            }
 
-            return BadRequest("Some properties are not valid");
-        }
+            return Ok(result);
+		}
 
-        // api/auth/confirmemail?userid&token
-        [HttpGet]
-        [Route("confirmemail")]
-        public async Task<IActionResult> ConfirmEmailAsync(string userId, string token)
-        {
-            if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(token))
-                return NotFound();
 
-            var result = await identityService.ConfirmUserEmailAsync(userId, token);
+		[HttpGet]
+		[Route("confirm-email")]
+		public async Task<IActionResult> ConfirmEmailAsync(string userId, string token)
+		{
+			if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(token))
+				return NotFound();
 
-            if (result.IsSuccess)
-                return Ok("Confirmed");
+			var result = await _identityService.ConfirmUserEmailAsync(userId, token);
 
-            return BadRequest(result);
-        }
+			if (!result.IsSuccess)
+				return BadRequest(result);
 
-        // api/v1/auth/forgetpassword
-        [HttpPost("ForgetPassword")]
-        public async Task<IActionResult> ForgetPassword(string email)
-        {
-            if (string.IsNullOrEmpty(email))
-                return NotFound();
+			return Ok("Confirmed");
+		}
 
-            var result = await identityService.ForgetPasswordAsync(email);
+		[HttpPost("forget-password")]
+		public async Task<IActionResult> ForgetPassword(string email)
+		{
+			if (string.IsNullOrEmpty(email))
+				return NotFound();
 
-            if (result.IsSuccess)
-                return Ok(result);
+			var result = await _identityService.ForgetPasswordAsync(email);
 
-            return BadRequest(result);
-        }
+			if (!result.IsSuccess)
+				return BadRequest(result);
 
-        // api/v1/auth/resetpassword
-        [HttpPost("ResetPassword")]
-        public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var result = await identityService.ResetPasswordAsync(model);
+			return Ok(result);
+		}
 
-                if (result.IsSuccess)
-                    return Ok(result);
+		[HttpPost("reset-password")]
+		public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordViewModel model)
+		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest("Some properties are not valid.");
+			}
 
+			var result = await _identityService.ResetPasswordAsync(model);
+
+			if (!result.IsSuccess)
                 return BadRequest(result);
-            }
 
-            return BadRequest("Some properties are not valid");
-        }
+            return Ok(result);
 
-        [HttpPost("[action]")]
-        public async Task<IActionResult> Login(LoginViewModel loginModel)
-        {
-            var result = await identityService.LoginUserAsync(loginModel);
+		}
 
-            if (result.IsSuccess)
-            {
-                return Ok(result);
-            }
+		[HttpPost("login")]
+		public async Task<IActionResult> Login(LoginViewModel loginModel)
+		{
+			var result = await _identityService.LoginUserAsync(loginModel);
 
-            return BadRequest(result);
-        }
-    }
+			if (!result.IsSuccess)
+			{
+				return BadRequest(result);
+			}
+
+			return Ok(result);
+		}
+	}
 }
