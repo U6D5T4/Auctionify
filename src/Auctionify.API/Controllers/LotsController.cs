@@ -37,6 +37,7 @@ namespace Auctionify.API.Controllers
 		}
 
 		[HttpDelete("{id}")]
+		[Authorize(Roles = "Seller")]
 		public async Task<IActionResult> Delete([FromRoute] int id)
 		{
 			var result = await _mediator.Send(new DeleteLotCommand { Id = id });
