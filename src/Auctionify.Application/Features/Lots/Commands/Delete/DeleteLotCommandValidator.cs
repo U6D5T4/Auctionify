@@ -12,10 +12,6 @@ namespace Auctionify.Application.Features.Lots.Commands.Delete
 			_lotRepository = lotRepository;
 
 			RuleFor(x => x.Id)
-				.GreaterThan(0)
-				.WithMessage("Id must be greater than 0");
-
-			RuleFor(x => x.Id)
 				.MustAsync(async (id, cancellationToken) =>
 				{
 					var lot = await _lotRepository.GetAsync(predicate: x => x.Id == id, cancellationToken: cancellationToken);
