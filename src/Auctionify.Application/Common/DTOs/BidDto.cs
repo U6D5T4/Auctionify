@@ -8,7 +8,7 @@ namespace Auctionify.Application.Common.DTOs
 
         public int BuyerId { get; set; }
 
-        public virtual User Buyer { get; set; }
+        public virtual UserDto Buyer { get; set; }
 
         public decimal NewPrice { get; set; }
 
