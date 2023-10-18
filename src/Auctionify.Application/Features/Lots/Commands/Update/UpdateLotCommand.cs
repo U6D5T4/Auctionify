@@ -1,5 +1,6 @@
 ﻿         using Auctionify.Application.Common.DTOs;
 using Auctionify.Application.Common.Interfaces.Repositories;
+using Auctionify.Application.Features.Lots.BaseValidators.Lots;
 using Auctionify.Core.Entities;
 using Auctionify.Core.Enums;
 using AutoMapper;
@@ -9,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Auctionify.Application.Features.Lots.Commands.Update
 {
-    public class UpdateLotCommand : IRequest<UpdateLotResponse>
+    public class UpdateLotCommand : IRequest<UpdateLotResponse>, ILotCommandsValidator
     {
         public int Id { get; set; }
 
@@ -25,13 +26,13 @@ namespace Auctionify.Application.Features.Lots.Commands.Update
 
         public int? CategoryId { get; set; }
 
-        public string? City { get; set; }
+        public string City { get; set; }
 
         public string? State { get; set; }
 
-        public string? Country { get; set; }
+        public string Country { get; set; }
 
-        public string? Address { get; set; }
+        public string Address { get; set; }
 
         public int? CurrencyId { get; set; }
 
