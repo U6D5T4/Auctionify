@@ -1,7 +1,5 @@
-﻿         using Auctionify.Application.Common.DTOs;
-using Auctionify.Application.Common.Interfaces.Repositories;
+﻿using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Features.Lots.BaseValidators.Lots;
-using Auctionify.Core.Entities;
 using Auctionify.Core.Enums;
 using AutoMapper;
 using MediatR;
@@ -79,27 +77,6 @@ namespace Auctionify.Application.Features.Lots.Commands.Update
 
             return _mapper.Map<UpdateLotResponse>(lotUpdated);
 
-        }
-
-        private Lot MapLotToRequest(Lot lot, UpdateLotCommand requestLot)
-        {
-            lot.Location.Address = requestLot.Address;
-            lot.Location.City = requestLot.City;
-            lot.Location.Country = requestLot.Country;
-            lot.Location.State = requestLot.State;
-
-            lot.Title = requestLot.Title;
-            lot.Description = requestLot.Description;
-
-            lot.StartingPrice = requestLot.StartingPrice;
-
-            lot.CurrencyId = requestLot.CurrencyId;
-            lot.CategoryId = requestLot.CategoryId;
-
-            lot.StartDate = requestLot.StartDate;
-            lot.EndDate = requestLot.EndDate;
-
-            return lot;
         }
     }
 }

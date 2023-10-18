@@ -1,6 +1,5 @@
 ﻿using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Features.Lots.BaseValidators.Lots;
-using Auctionify.Core.Enums;
 using FluentValidation;
 
 namespace Auctionify.Application.Features.Lots.Commands.Create
