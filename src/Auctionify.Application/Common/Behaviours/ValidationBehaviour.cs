@@ -6,8 +6,12 @@ namespace Auctionify.Application.Common.Behaviours
     /// <summary>
     /// ValidationBehaviour is implementation of MediatR pipeline and used for validating commands/queries if they have validation classes implemented
     /// </summary>
-    /// <typeparam name="TRequest"></typeparam>
-    /// <typeparam name="TResponse"></typeparam>
+    /// <typeparam name="TRequest">
+    /// TRequest is the command/query that is being validated
+    /// </typeparam>
+    /// <typeparam name="TResponse">
+    /// TResponse is the response that is being returned from the command/query
+    /// </typeparam>
     public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
     {

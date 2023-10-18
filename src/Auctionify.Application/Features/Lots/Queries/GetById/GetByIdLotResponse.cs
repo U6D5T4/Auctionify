@@ -1,5 +1,4 @@
 ﻿using Auctionify.Application.Common.DTOs;
-using Auctionify.Core.Entities;
 
 namespace Auctionify.Application.Features.Lots.Queries.GetById
 {

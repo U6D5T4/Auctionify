@@ -1,4 +1,4 @@
-﻿namespace Auctionify.Application.Features.Lots.Queries.GetAllLots
+﻿namespace Auctionify.Application.Features.Lots.Queries.GetAll
 {
     public class GetAllLotsResponse
     {
