@@ -85,12 +85,13 @@ namespace Auctionify.Infrastructure.Persistence
                 new User { UserName = _usersData.Emails.Seller, Email = _usersData.Emails.Seller, EmailConfirmed = true  },
             };
 
-            foreach(var user in users)
+            foreach (var user in users)
             {
                 if ((await _userManager.FindByNameAsync(user.UserName) is null))
                 {
                     await _userManager.CreateAsync(user, "Test123!");
-                    switch (user.UserName) {
+                    switch (user.UserName)
+                    {
                         case "admin@localhost.com":
                             if (roles is null) return;
                             var adminRole = roles.FirstOrDefault(r => r.Name == "Administrator");
@@ -119,7 +120,7 @@ namespace Auctionify.Infrastructure.Persistence
                 }
             }
 
-            if(!_context.Categories.Any())
+            if (!_context.Categories.Any())
             {
                 var foodCategory = _context.Categories.Add(new Category
                 {
