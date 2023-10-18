@@ -25,6 +25,9 @@ jobs:
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
+      - name: Update Database
+        run: dotnet ef database update --project Auctionify.Infrastructure --startup-project Auctionify.API  --context ApplicationDbContext
+
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
