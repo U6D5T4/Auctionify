@@ -58,6 +58,7 @@ namespace Auctionify.API.Controllers
 		}
 
 		[HttpGet]
+		[Authorize(Roles = "Buyer")]
 		public async Task<IActionResult> GetAll([FromQuery] PageRequest pageRequest)
 		{
 			var query = new GetAllLotsQuery { PageRequest = pageRequest };
