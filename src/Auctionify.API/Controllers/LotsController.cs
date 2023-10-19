@@ -1,5 +1,6 @@
 using Auctionify.Application.Common.Models.Requests;
 using Auctionify.Application.Features.Lots.Commands.Create;
+using Auctionify.Application.Features.Lots.Commands.Update;
 using Auctionify.Application.Features.Lots.Commands.Delete;
 using Auctionify.Application.Features.Lots.Queries.GetAll;
 using Auctionify.Application.Features.Lots.Queries.GetAllByName;
@@ -30,7 +31,16 @@ namespace Auctionify.API.Controllers
 			return Ok(result);
 		}
 
-		[HttpGet("{id}")]
+		[HttpPut]
+		[Authorize(Roles = "Seller")]
+        public async Task<IActionResult> Update([FromForm] UpdateLotCommand updateLotCommand)
+        {
+            var result = await _mediator.Send(updateLotCommand);
+
+            return Ok(result);
+        }
+
+        [HttpGet("{id}")]
 		public async Task<IActionResult> GetById([FromRoute] int id)
 		{
 			var result = await _mediator.Send(new GetByIdLotQuery { Id = id });
