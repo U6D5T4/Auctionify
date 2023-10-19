@@ -68,7 +68,7 @@ namespace Auctionify.Core.Persistence.Repositories
             return await queryable.FirstOrDefaultAsync(predicate, cancellationToken);
         }
 
-        public async Task<IList<TEntity>> GetListAsync(
+        public async Task<IPaginate<TEntity>> GetListAsync(
             Expression<Func<TEntity, bool>>? predicate = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
             Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
@@ -88,8 +88,8 @@ namespace Auctionify.Core.Persistence.Repositories
             if (predicate != null)
                 queryable = queryable.Where(predicate);
             if (orderBy != null)
-                return await orderBy(queryable).ToListAsync(cancellationToken: cancellationToken);
-            return await queryable.ToListAsync(cancellationToken: cancellationToken);
+                return await orderBy(queryable).ToPaginateAsync(index, size, from: 0, cancellationToken: cancellationToken);
+            return await queryable.ToPaginateAsync(index, size, from: 0, cancellationToken: cancellationToken);
         }
 
         public async Task<IPaginate<TEntity>> GetListByDynamicAsync(
