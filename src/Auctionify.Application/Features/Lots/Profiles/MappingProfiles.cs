@@ -1,9 +1,12 @@
-﻿using Auctionify.Application.Features.Lots.Commands.Create;
+﻿using Auctionify.Application.Common.DTOs;
+using Auctionify.Application.Features.Lots.Commands.Create;
 using Auctionify.Application.Features.Lots.Commands.Delete;
 using Auctionify.Application.Features.Lots.Commands.Update;
 using Auctionify.Application.Features.Lots.Queries.GetAll;
+using Auctionify.Application.Features.Lots.Queries.GetAllByName;
 using Auctionify.Application.Features.Lots.Queries.GetById;
 using Auctionify.Core.Entities;
+using Auctionify.Core.Persistence.Paging;
 using AutoMapper;
 
 namespace Auctionify.Application.Features.Lots.Profiles
@@ -24,6 +27,8 @@ namespace Auctionify.Application.Features.Lots.Profiles
 				.ForMember(l => l.Country, cd => cd.MapFrom(ul => ul.Location.Country))
 				.ForMember(l => l.State, cd => cd.MapFrom(ul => ul.Location.State))
 				.ReverseMap();
+
+			CreateMap<IPaginate<Lot>, GetListResponseDto<GetAllLotsByLocationResponse>>().ReverseMap();
 		}
 	}
 }
