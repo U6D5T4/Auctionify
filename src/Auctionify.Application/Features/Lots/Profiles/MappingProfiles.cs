@@ -21,6 +21,7 @@ namespace Auctionify.Application.Features.Lots.Profiles
 			CreateMap<Lot, GetAllLotsByNameResponse>().ReverseMap();
 
 			CreateMap<IPaginate<Lot>, GetListResponseDto<GetAllLotsByNameResponse>>().ReverseMap();
+			CreateMap<IPaginate<Lot>, GetListResponseDto<GetAllLotsResponse>>().ReverseMap();
 		}
 	}
 }

@@ -48,9 +48,15 @@ namespace Auctionify.API.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> GetAll()
+		public async Task<IActionResult> GetAll([FromRoute] int pageIndex, int pageSize)
 		{
-			var query = new GetAllLotsQuery();
+			var pageRequest = new PageRequest
+			{
+				PageIndex = pageIndex,
+				PageSize = pageSize
+			};
+
+			var query = new GetAllLotsQuery() { PageRequest = pageRequest};
 			var lots = await _mediator.Send(query);
 
 			return Ok(lots);
