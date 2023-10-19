@@ -1,6 +1,7 @@
 using Auctionify.Application.Features.Lots.Commands.Create;
 using Auctionify.Application.Features.Lots.Commands.Delete;
 using Auctionify.Application.Features.Lots.Queries.GetAll;
+using Auctionify.Application.Features.Lots.Queries.GetAllByName;
 using Auctionify.Application.Features.Lots.Queries.GetById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -53,5 +54,15 @@ namespace Auctionify.API.Controllers
 
 			return Ok(lots);
 		}
-	}
+
+		[HttpGet("[action]/{name}")]
+		[Authorize(Roles = "Buyer")]
+        public async Task<IActionResult> GetLotsByName([FromRoute] string name)
+        {
+			var query = new GetAllLotsByNameQuery { Name = name };
+            var lots = await _mediator.Send(query);
+
+            return Ok(lots);
+        }
+    }
 }
