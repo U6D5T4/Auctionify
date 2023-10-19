@@ -58,31 +58,18 @@ namespace Auctionify.API.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> GetAll([FromRoute] int pageIndex, int pageSize)
+		public async Task<IActionResult> GetAll([FromQuery] PageRequest pageRequest)
 		{
-			var pageRequest = new PageRequest
-			{
-				PageIndex = pageIndex,
-				PageSize = pageSize
-			};
-
-			var query = new GetAllLotsQuery() { PageRequest = pageRequest};
+			var query = new GetAllLotsQuery { PageRequest = pageRequest };
 			var lots = await _mediator.Send(query);
 
 			return Ok(lots);
 		}
 
-		[HttpGet("[action]/{name}")]
+		[HttpGet("[action]")]
 		[Authorize(Roles = "Buyer")]
-        public async Task<IActionResult> GetLotsByName([FromRoute] string name, int pageIndex, int pageSize)
+        public async Task<IActionResult> GetLotsByName([FromQuery] string name, [FromQuery] PageRequest pageRequest)
         {
-			var pageRequest = new PageRequest
-				{
-					PageIndex = pageIndex,
-					PageSize = pageSize
-				};
-
-
 			var query = new GetAllLotsByNameQuery { Name = name, PageRequest = pageRequest };
             var lots = await _mediator.Send(query);
 
