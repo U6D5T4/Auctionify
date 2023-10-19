@@ -6,6 +6,8 @@ using Auctionify.Application.Features.Lots.Queries.GetById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Auctionify.Core.Enums;
+using Auctionify.Application.Features.Lots.Commands.UpdateLotStatus;
 
 namespace Auctionify.API.Controllers
 {
@@ -62,6 +64,14 @@ namespace Auctionify.API.Controllers
 			var lots = await _mediator.Send(query);
 
 			return Ok(lots);
+		}
+
+		[HttpPut("status/{id}")]
+		public async Task<IActionResult> UpdateLotStatus([FromRoute] int id, [FromQuery] AuctionStatus status)
+		{
+			var result = await _mediator.Send(new UpdateLotStatusCommand { Id = id, Name = status.ToString() });
+
+			return Ok("Successfully updated lot status of lot with id: " + result.Id + " to " + status.ToString());
 		}
 	}
 }
