@@ -223,7 +223,7 @@ namespace Auctionify.Infrastructure.Identity
                 // we need to encode the token to base64 so that we can pass it in the url
                 var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
 
-                var url = $"{_configuration["AppUrl"]}/api/v1/auth/confirmemail?userid={user.Id}&token={validEmailToken}";
+                var url = $"{_configuration["AppUrl"]}/api/auth/confirm-email?userid={user.Id}&token={validEmailToken}";
 
                 await _emailService.SendEmailAsync(user.Email, "Confirm your email", $"<h1>Welcome to Auctionify</h1>" +
                                         $"<p>Please confirm your email by <a href='{url}'>clicking here</a></p>");
