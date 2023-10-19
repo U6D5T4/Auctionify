@@ -1,3 +1,4 @@
+using Auctionify.Application.Common.Models.Requests;
 using Auctionify.Application.Features.Lots.Commands.Create;
 using Auctionify.Application.Features.Lots.Commands.Delete;
 using Auctionify.Application.Features.Lots.Queries.GetAll;
@@ -57,9 +58,16 @@ namespace Auctionify.API.Controllers
 
 		[HttpGet("[action]/{name}")]
 		[Authorize(Roles = "Buyer")]
-        public async Task<IActionResult> GetLotsByName([FromRoute] string name)
+        public async Task<IActionResult> GetLotsByName([FromRoute] string name, int pageIndex, int pageSize)
         {
-			var query = new GetAllLotsByNameQuery { Name = name };
+			var pageRequest = new PageRequest
+				{
+					PageIndex = pageIndex,
+					PageSize = pageSize
+				};
+
+
+			var query = new GetAllLotsByNameQuery { Name = name, PageRequest = pageRequest };
             var lots = await _mediator.Send(query);
 
             return Ok(lots);

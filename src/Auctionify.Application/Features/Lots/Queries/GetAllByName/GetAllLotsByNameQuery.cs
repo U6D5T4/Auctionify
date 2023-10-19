@@ -1,5 +1,6 @@
 ﻿using Auctionify.Application.Common.DTOs;
 using Auctionify.Application.Common.Interfaces.Repositories;
+using Auctionify.Application.Common.Models.Requests;
 using Auctionify.Core.Persistence.Dynamic;
 using AutoMapper;
 using MediatR;
@@ -9,6 +10,8 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAllByName
 {
     public class GetAllLotsByNameQuery : IRequest<GetListResponseDto<GetAllLotsByNameResponse>>
     {
+        public PageRequest PageRequest { get; set; }
+
         public string Name { get; set; }
     }
 
@@ -44,6 +47,8 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAllByName
                                 .Include(l => l.Currency)
                                 .Include(l => l.LotStatus),
                 enableTracking: false,
+                size: request.PageRequest.PageSize,
+                index: request.PageRequest.PageIndex,
                 cancellationToken: cancellationToken);
 
             var response = _mapper.Map<GetListResponseDto<GetAllLotsByNameResponse>>(lots);
