@@ -13,20 +13,25 @@ namespace Auctionify.Application.Features.Lots.Commands.Delete
 
 		public class DeleteLotCommandHandler : IRequestHandler<DeleteLotCommand, DeletedLotResponse>
 		{
-			private readonly ILotRepository _lotRepository;
 			private readonly IMapper _mapper;
+			private readonly ILotRepository _lotRepository;
 			private readonly ILotStatusRepository _lotStatusRepository;
+			private readonly IBidRepository _bidRepository;
 
-			public DeleteLotCommandHandler(ILotRepository lotRepository, IMapper mapper, ILotStatusRepository lotStatusRepository)
+			public DeleteLotCommandHandler(IMapper mapper, 
+										   ILotRepository lotRepository, 
+										   ILotStatusRepository lotStatusRepository, 
+										   IBidRepository bidRepository)
 			{
-				_lotRepository = lotRepository;
 				_mapper = mapper;
+				_lotRepository = lotRepository;
 				_lotStatusRepository = lotStatusRepository;
+				_bidRepository = bidRepository;
 			}
 
 			public async Task<DeletedLotResponse> Handle(DeleteLotCommand request, CancellationToken cancellationToken)
 			{
-				var lot = await _lotRepository.GetAsync(predicate: x => x.Id == request.Id, cancellationToken: cancellationToken, include: x => x.Include(x => x.LotStatus));
+				var lot = await _lotRepository.GetAsync(predicate: x => x.Id == request.Id, cancellationToken: cancellationToken, include: x => x.Include(x => x.LotStatus).Include(x => x.Bids));
 
 				var currentLotStatus = lot!.LotStatus.Name;
 
@@ -35,6 +40,9 @@ namespace Auctionify.Application.Features.Lots.Commands.Delete
 				if (currentLotStatus == AuctionStatus.Active.ToString())
 				{
 					lot!.LotStatusId = newLotStatus!.Id;
+
+					if (lot!.Bids.Any())
+						await _bidRepository.DeleteRangeAsync(lot!.Bids.ToList());
 
 					await _lotRepository.UpdateAsync(lot!);
 

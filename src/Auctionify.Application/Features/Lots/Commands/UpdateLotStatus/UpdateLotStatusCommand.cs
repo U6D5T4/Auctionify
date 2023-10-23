@@ -1,5 +1,4 @@
 ﻿using Auctionify.Application.Common.Interfaces.Repositories;
-using Auctionify.Application.Features.Lots.BaseValidators.Lots;
 using Auctionify.Core.Enums;
 using AutoMapper;
 using FluentValidation;
@@ -31,38 +30,44 @@ namespace Auctionify.Application.Features.Lots.Commands.UpdateLotStatus
 
 		public async Task<UpdateLotStatusResponse> Handle(UpdateLotStatusCommand request, CancellationToken cancellationToken)
 		{
-			var lot = await _lotRepository.GetAsync(predicate: x => x.Id == request.Id, include: x => x.Include(x => x.LotStatus), cancellationToken: cancellationToken);
+			var lot = await _lotRepository.GetAsync(predicate: x => x.Id == request.Id, 
+													  include: x => x.Include(x => x.LotStatus), 
+											cancellationToken: cancellationToken);
 
-			var lotStatus = await _lotStatusRepository.GetAsync(predicate: s => s.Name == request.Name, cancellationToken: cancellationToken);
-			
-			if (lotStatus!.Name == AuctionStatus.Active.ToString() && lot!.LotStatus.Name == AuctionStatus.Upcoming.ToString())
+			var lotStatus = await _lotStatusRepository.GetAsync(predicate: s => s.Name == request.Name, 
+														cancellationToken: cancellationToken);
+
+			_ = Enum.TryParse(lot!.LotStatus.Name, out AuctionStatus currentLostStatus);
+			_ = Enum.TryParse(lotStatus!.Name, out AuctionStatus newLotStatus);
+
+			if (newLotStatus == AuctionStatus.Active && currentLostStatus == AuctionStatus.Upcoming)
 			{
 				lot!.LotStatusId = lotStatus!.Id;
 			}
-			else if (lotStatus!.Name == AuctionStatus.Cancelled.ToString() && (lot!.LotStatus.Name == AuctionStatus.Active.ToString() ||
-																				lot!.LotStatus.Name == AuctionStatus.Upcoming.ToString()))
+			else if (newLotStatus == AuctionStatus.Cancelled && (currentLostStatus == AuctionStatus.Active ||
+																 currentLostStatus == AuctionStatus.Upcoming))
 			{
 				lot!.LotStatusId = lotStatus!.Id;
 			}
-			else if (lotStatus!.Name == AuctionStatus.Sold.ToString() && lot!.LotStatus.Name == AuctionStatus.Active.ToString())
+			else if (newLotStatus == AuctionStatus.Sold && currentLostStatus == AuctionStatus.Active)
 			{
 				lot!.LotStatusId = lotStatus!.Id;
 			}
-			else if (lotStatus!.Name == AuctionStatus.NotSold.ToString() && lot!.LotStatus.Name == AuctionStatus.Active.ToString())
+			else if (newLotStatus == AuctionStatus.NotSold && currentLostStatus == AuctionStatus.Active)
 			{
 				lot!.LotStatusId = lotStatus!.Id;
 			}
-			else if (lotStatus!.Name == AuctionStatus.Reopened.ToString() && lot!.LotStatus.Name == AuctionStatus.Sold.ToString())
+			else if (newLotStatus == AuctionStatus.Reopened && currentLostStatus == AuctionStatus.Sold)
 			{
 				lot!.LotStatusId = lotStatus!.Id;
 			}
-			else if (lotStatus!.Name == AuctionStatus.Draft.ToString() && lot!.LotStatus.Name == AuctionStatus.Draft.ToString())
+			else if (newLotStatus == AuctionStatus.Draft && currentLostStatus == AuctionStatus.Draft)
 			{
 				lot!.LotStatusId = lotStatus!.Id;
 			}
-			else if (lotStatus!.Name == AuctionStatus.Upcoming.ToString() && (lot!.LotStatus.Name == AuctionStatus.Draft.ToString() || 
-																			  lot!.LotStatus.Name == AuctionStatus.Reopened.ToString() || 
-																			  lot!.LotStatus.Name == AuctionStatus.Upcoming.ToString()))
+			else if (newLotStatus == AuctionStatus.Upcoming && (currentLostStatus == AuctionStatus.Draft ||
+																currentLostStatus == AuctionStatus.Reopened ||
+																currentLostStatus == AuctionStatus.Upcoming))
 			{
 				lot!.LotStatusId = lotStatus!.Id;
 			}

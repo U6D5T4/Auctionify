@@ -67,6 +67,7 @@ namespace Auctionify.Infrastructure
             services.AddScoped<ILotRepository, LotRepository>();
             services.AddScoped<ILotStatusRepository, LotStatusRepository>();
             services.AddScoped<ICurrencyRepository, CurrencyRepository>();
+            services.AddScoped<IBidRepository, BidRepository>();
 
             return services;
         }

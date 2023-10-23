@@ -56,7 +56,8 @@ namespace Auctionify.API.Controllers
 
 			return Ok(result.WasDeleted 
 				? $"Successfully deleted lot with id: {result.Id}" 
-				: $"Could not delete lot with id: {result.Id}, but successfully updated status to {AuctionStatus.Cancelled.ToString()}");
+				: $"Could not delete lot with id: {result.Id} since its status is {AuctionStatus.Active.ToString()}," +
+				  $" but successfully updated status to {AuctionStatus.Cancelled.ToString()} and deleted all related bids.");
 		}
 
 		[HttpGet]
