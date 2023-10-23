@@ -54,14 +54,15 @@ namespace Auctionify.API.Controllers
 		{
 			var result = await _mediator.Send(new DeleteLotCommand { Id = id });
 
-			return Ok($"Successfully deleted lot with id: {result.Id}");
+			return Ok(result.WasDeleted 
+				? $"Successfully deleted lot with id: {result.Id}" 
+				: $"Could not delete lot with id: {result.Id}, but successfully updated status to {AuctionStatus.Cancelled.ToString()}");
 		}
 
 		[HttpGet]
 		public async Task<IActionResult> GetAll()
 		{
-			var query = new GetAllLotsQuery();
-			var lots = await _mediator.Send(query);
+			var lots = await _mediator.Send(new GetAllLotsQuery());
 
 			return Ok(lots);
 		}

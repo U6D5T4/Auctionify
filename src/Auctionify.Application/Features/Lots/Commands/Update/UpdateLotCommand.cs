@@ -61,22 +61,20 @@ namespace Auctionify.Application.Features.Lots.Commands.Update
         {
             AuctionStatus status = request.IsDraft ? AuctionStatus.Draft : AuctionStatus.Upcoming;
 
-            var lotStatus = await _lotStatusRepository.GetAsync(s => s.Name == status.ToString());
-
+            var lotStatus = await _lotStatusRepository.GetAsync(s => s.Name == status.ToString(), cancellationToken: cancellationToken);
 
             var lot = await _lotRepository.GetAsync(l => l.Id == request.Id,
-                include: x => x.Include(l => l.Location),
+                include: x => x.Include(l => l.Location)!,
                 cancellationToken: cancellationToken,
                 enableTracking: false);
 
-            lot.LotStatus = lotStatus;
+            lot!.LotStatus = lotStatus!;
 
             var lotUpdated = _mapper.Map(request, lot);
 
             await _lotRepository.UpdateAsync(lotUpdated);
 
             return _mapper.Map<UpdateLotResponse>(lotUpdated);
-
         }
     }
 }
