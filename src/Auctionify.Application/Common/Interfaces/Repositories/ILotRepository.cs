@@ -5,6 +5,6 @@ namespace Auctionify.Application.Common.Interfaces.Repositories
 {
 	public interface ILotRepository : IAsyncRepository<Lot>
 	{
-		
+		Task DeleteRangeAsync(ICollection<Bid> bids);
 	}
 }
