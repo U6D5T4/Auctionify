@@ -37,37 +37,37 @@ namespace Auctionify.Application.Features.Lots.Commands.UpdateLotStatus
 			var lotStatus = await _lotStatusRepository.GetAsync(predicate: s => s.Name == request.Name, 
 														cancellationToken: cancellationToken);
 
-			_ = Enum.TryParse(lot!.LotStatus.Name, out AuctionStatus currentLostStatus);
+			_ = Enum.TryParse(lot!.LotStatus.Name, out AuctionStatus currentLotStatus);
 			_ = Enum.TryParse(lotStatus!.Name, out AuctionStatus newLotStatus);
 
-			if (newLotStatus == AuctionStatus.Active && currentLostStatus == AuctionStatus.Upcoming)
+			if (newLotStatus == AuctionStatus.Active && currentLotStatus == AuctionStatus.Upcoming)
 			{
 				lot.LotStatusId = lotStatus.Id;
 			}
-			else if (newLotStatus == AuctionStatus.Cancelled && (currentLostStatus == AuctionStatus.Active ||
-																 currentLostStatus == AuctionStatus.Upcoming))
+			else if (newLotStatus == AuctionStatus.Cancelled && (currentLotStatus == AuctionStatus.Active ||
+																 currentLotStatus == AuctionStatus.Upcoming))
 			{
 				lot.LotStatusId = lotStatus.Id;
 			}
-			else if (newLotStatus == AuctionStatus.Sold && currentLostStatus == AuctionStatus.Active)
+			else if (newLotStatus == AuctionStatus.Sold && currentLotStatus == AuctionStatus.Active)
 			{
 				lot.LotStatusId = lotStatus.Id;
 			}
-			else if (newLotStatus == AuctionStatus.NotSold && currentLostStatus == AuctionStatus.Active)
+			else if (newLotStatus == AuctionStatus.NotSold && currentLotStatus == AuctionStatus.Active)
 			{
 				lot.LotStatusId = lotStatus.Id;
 			}
-			else if (newLotStatus == AuctionStatus.Reopened && currentLostStatus == AuctionStatus.Sold)
+			else if (newLotStatus == AuctionStatus.Reopened && currentLotStatus == AuctionStatus.Sold)
 			{
 				lot.LotStatusId = lotStatus.Id;
 			}
-			else if (newLotStatus == AuctionStatus.Draft && currentLostStatus == AuctionStatus.Draft)
+			else if (newLotStatus == AuctionStatus.Draft && currentLotStatus == AuctionStatus.Draft)
 			{
 				lot.LotStatusId = lotStatus.Id;
 			}
-			else if (newLotStatus == AuctionStatus.Upcoming && (currentLostStatus == AuctionStatus.Draft ||
-																currentLostStatus == AuctionStatus.Reopened ||
-																currentLostStatus == AuctionStatus.Upcoming))
+			else if (newLotStatus == AuctionStatus.Upcoming && (currentLotStatus == AuctionStatus.Draft ||
+																currentLotStatus == AuctionStatus.Reopened ||
+																currentLotStatus == AuctionStatus.Upcoming))
 			{
 				lot.LotStatusId = lotStatus.Id;
 			}
