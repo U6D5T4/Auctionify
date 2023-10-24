@@ -42,34 +42,34 @@ namespace Auctionify.Application.Features.Lots.Commands.UpdateLotStatus
 
 			if (newLotStatus == AuctionStatus.Active && currentLostStatus == AuctionStatus.Upcoming)
 			{
-				lot!.LotStatusId = lotStatus!.Id;
+				lot.LotStatusId = lotStatus.Id;
 			}
 			else if (newLotStatus == AuctionStatus.Cancelled && (currentLostStatus == AuctionStatus.Active ||
 																 currentLostStatus == AuctionStatus.Upcoming))
 			{
-				lot!.LotStatusId = lotStatus!.Id;
+				lot.LotStatusId = lotStatus.Id;
 			}
 			else if (newLotStatus == AuctionStatus.Sold && currentLostStatus == AuctionStatus.Active)
 			{
-				lot!.LotStatusId = lotStatus!.Id;
+				lot.LotStatusId = lotStatus.Id;
 			}
 			else if (newLotStatus == AuctionStatus.NotSold && currentLostStatus == AuctionStatus.Active)
 			{
-				lot!.LotStatusId = lotStatus!.Id;
+				lot.LotStatusId = lotStatus.Id;
 			}
 			else if (newLotStatus == AuctionStatus.Reopened && currentLostStatus == AuctionStatus.Sold)
 			{
-				lot!.LotStatusId = lotStatus!.Id;
+				lot.LotStatusId = lotStatus.Id;
 			}
 			else if (newLotStatus == AuctionStatus.Draft && currentLostStatus == AuctionStatus.Draft)
 			{
-				lot!.LotStatusId = lotStatus!.Id;
+				lot.LotStatusId = lotStatus.Id;
 			}
 			else if (newLotStatus == AuctionStatus.Upcoming && (currentLostStatus == AuctionStatus.Draft ||
 																currentLostStatus == AuctionStatus.Reopened ||
 																currentLostStatus == AuctionStatus.Upcoming))
 			{
-				lot!.LotStatusId = lotStatus!.Id;
+				lot.LotStatusId = lotStatus.Id;
 			}
 			else
 			{
