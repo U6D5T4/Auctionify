@@ -18,7 +18,7 @@ namespace Auctionify.Infrastructure.Identity
 		{
       var apiKey = _configuration["EmailSender"];
 			var client = new SendGridClient(apiKey);
-			var from = new EmailAddress(_configuration["EmailSender"], "Auctionify");
+			var from = new EmailAddress(_configuration["EmailSenderSendGrid"], "Auctionify");
 			var to = new EmailAddress(toEmail);
 			var htmlContent = $"<strong>{content}</strong>";
 			var msg = MailHelper.CreateSingleEmail(from, to, subject, content, htmlContent);
