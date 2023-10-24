@@ -57,6 +57,7 @@ namespace Auctionify.API.Controllers
 		}
 
 		[HttpGet]
+		[Authorize(Roles = "Buyer")]
 		public async Task<IActionResult> GetAll()
 		{
 			var query = new GetAllLotsQuery();
