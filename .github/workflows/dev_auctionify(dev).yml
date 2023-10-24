@@ -49,6 +49,7 @@ jobs:
   #        include-prerelease: true
 
   #    - name: Run unit tests
+  #      run: cd..
   #      run: dotnet test --configuration Release
   
   deploy:
