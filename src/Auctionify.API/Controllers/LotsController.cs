@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Auctionify.Core.Enums;
 using Auctionify.Application.Features.Lots.Commands.UpdateLotStatus;
+using Auctionify.Application.Common.Interfaces;
 
 namespace Auctionify.API.Controllers
 {
@@ -16,7 +17,6 @@ namespace Auctionify.API.Controllers
 	public class LotsController : ControllerBase
 	{
 		private readonly IMediator _mediator;
-
 		public LotsController(IMediator mediator)
 		{
 			_mediator = mediator;

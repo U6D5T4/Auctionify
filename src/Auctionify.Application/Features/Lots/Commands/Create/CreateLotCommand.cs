@@ -1,10 +1,10 @@
-﻿using Auctionify.Application.Common.DTOs;
-using Auctionify.Application.Common.Interfaces;
+﻿using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Features.Lots.BaseValidators.Lots;
 using Auctionify.Core.Entities;
 using Auctionify.Core.Enums;
 using AutoMapper;
+using Azure.Storage.Blobs;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -35,12 +35,11 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 
         public int? CurrencyId { get; set; }
 
-        public IList<IFormFile>? Photos { get; set; }
+		public IList<IFormFile>? Photos { get; set; } = new List<IFormFile>();
 
-        public IList<IFormFile>? AdditionalDocuments {  get; set; }
+		public IList<IFormFile>? AdditionalDocuments {  get; set; }
 
         public bool IsDraft { get; set; }
-
     }
 
     public class CreateLotCommandHandler : IRequestHandler<CreateLotCommand, CreatedLotResponse>
@@ -50,39 +49,46 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
         private readonly ICurrentUserService _currentUserService;
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
+		private readonly IBlobService _blobService;
+		private readonly BlobServiceClient _blobServiceClient;
 
-        public CreateLotCommandHandler(ILotRepository lotRepository,
+		public CreateLotCommandHandler(ILotRepository lotRepository,
             ILotStatusRepository lotStatusRepository,
-            ICurrentUserService currentUserService,
-            UserManager<User> userManager,
-            IMapper mapper)
-        { 
-            _lotRepository = lotRepository;
-            _lotStatusRepository = lotStatusRepository;
-            _currentUserService = currentUserService;
-            _userManager = userManager;
-            _mapper = mapper;
-        }
+			ICurrentUserService currentUserService,
+			UserManager<User> userManager,
+			IMapper mapper,
+			IBlobService blobService,
+			BlobServiceClient blobServiceClient)
 
-        public async Task<CreatedLotResponse> Handle(CreateLotCommand request, CancellationToken cancellationToken)
+		{
+			_lotRepository = lotRepository;
+			_lotStatusRepository = lotStatusRepository;
+			_currentUserService = currentUserService;
+			_userManager = userManager;
+			_mapper = mapper;
+			_blobService = blobService;
+			_blobServiceClient = blobServiceClient;
+		}
+
+		public async Task<CreatedLotResponse> Handle(CreateLotCommand request, CancellationToken cancellationToken)
         {
             AuctionStatus status = request.IsDraft ? AuctionStatus.Draft : AuctionStatus.Upcoming;
 
-            var lotStatus = await _lotStatusRepository.GetAsync(s => s.Name == status.ToString());
+            var lotStatus = await _lotStatusRepository.GetAsync(s => s.Name == status.ToString(), cancellationToken: cancellationToken);
 
-            var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail);
+            var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
 
             var location = new Location
             {
                 Address = request.Address,
                 City = request.City,
-                State = request.State,
+                State = request.State!,
                 Country = request.Country,
             };
 
-            var lot = new Lot
+			var lot = new Lot
             {
-                SellerId = user.Id,
+                SellerId = user!.Id,
                 Title = request.Title,
                 Description = request.Description,
                 StartingPrice = request.StartingPrice,
@@ -91,12 +97,38 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
                 CategoryId = request.CategoryId,
                 Location = location,
                 CurrencyId = request.CurrencyId,
-                LotStatusId = lotStatus.Id
+                LotStatusId = lotStatus!.Id
             };
 
             var createdLot = await _lotRepository.AddAsync(lot);
 
+            if (request.Photos != null)
+            {
+				foreach (var photo in request.Photos)
+                {
+					var uniqueFileName = GenerateUniqueFileName(photo.FileName);
+					await UploadFileBlobAsync(photo, uniqueFileName);
+				}
+			}
+
             return _mapper.Map<CreatedLotResponse>(createdLot);
         }
-    }
+
+		private async Task UploadFileBlobAsync(IFormFile file, string fileName)
+		{
+			using var stream = file.OpenReadStream();
+			var containerClient = _blobServiceClient.GetBlobContainerClient("auctionify-files/photos");
+			var blobClient = containerClient.GetBlobClient(fileName);
+
+			await blobClient.UploadAsync(stream, new Azure.Storage.Blobs.Models.BlobHttpHeaders
+			{ ContentType = file.ContentType });
+		}
+
+		private static string GenerateUniqueFileName(string fileName)
+		{
+			// Generate a GUID and append it to the fileName
+			var uniqueFileName = Path.GetFileNameWithoutExtension(fileName) + "-" + Guid.NewGuid() + Path.GetExtension(fileName);
+			return uniqueFileName;
+		}
+	}
 }

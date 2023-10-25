@@ -6,6 +6,8 @@ using Auctionify.Infrastructure.Identity;
 using Auctionify.Infrastructure.Interceptors;
 using Auctionify.Infrastructure.Persistence;
 using Auctionify.Infrastructure.Repositories;
+using Auctionify.Infrastructure.Services;
+using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +28,9 @@ namespace Auctionify.Infrastructure
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
                     builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+
+            // Add BlobServiceClient service
+            services.AddSingleton(x => new BlobServiceClient(configuration.GetValue<string>("AzureBlobStorageConnectionString")));
 
             services.AddIdentity<User, Role>(options =>
             {
@@ -51,7 +56,7 @@ namespace Auctionify.Infrastructure
                         ValidAudience = configuration["AuthSettings:Audience"],
                         ValidIssuer = configuration["AuthSettings:Issuer"],
                         RequireExpirationTime = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["AuthSettings:Key"])),
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["AuthSettings:Key"]!)),
                         ValidateIssuerSigningKey = true
                     };
                 });
@@ -59,15 +64,18 @@ namespace Auctionify.Infrastructure
             var usersSeedingData = configuration.GetSection("UsersSeedingData");
             services.Configure<UsersSeedingData>(usersSeedingData);
 
+
             services.AddScoped<ApplicationDbContextInitializer>();
 
             services.AddScoped<IIdentityService, IdentityService>();
-            services.AddTransient<IEmailService, SendGridEmailService>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ILotRepository, LotRepository>();
             services.AddScoped<ILotStatusRepository, LotStatusRepository>();
             services.AddScoped<ICurrencyRepository, CurrencyRepository>();
             services.AddScoped<IBidRepository, BidRepository>();
+
+            services.AddTransient<IEmailService, SendGridEmailService>();
+            services.AddSingleton<IBlobService, BlobService>();
 
             return services;
         }
