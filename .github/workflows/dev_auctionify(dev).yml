@@ -22,6 +22,12 @@ jobs:
           dotnet-version: '7.x'
           include-prerelease: true
 
+      - name: Install dotnet-ef
+        run: dotnet tool install --global dotnet-ef
+
+      - name: Restore tools
+        run: dotnet tool restore
+
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
