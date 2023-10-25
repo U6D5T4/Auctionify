@@ -10,6 +10,7 @@
 		Sold,
 		NotSold,
 		Cancelled,
-		Reopened
+		Reopened,
+		Archive
 	}
 }

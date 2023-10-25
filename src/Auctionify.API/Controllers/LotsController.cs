@@ -8,6 +8,8 @@ using Auctionify.Application.Features.Lots.Queries.GetById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Auctionify.Core.Enums;
+using Auctionify.Application.Features.Lots.Commands.UpdateLotStatus;
 
 namespace Auctionify.API.Controllers
 {
@@ -54,7 +56,10 @@ namespace Auctionify.API.Controllers
 		{
 			var result = await _mediator.Send(new DeleteLotCommand { Id = id });
 
-			return Ok($"Successfully deleted lot with id: {result.Id}");
+			return Ok(result.WasDeleted 
+				? $"Successfully deleted lot with id: {result.Id}" 
+				: $"Could not delete lot with id: {result.Id} since its status is {AuctionStatus.Active.ToString()}," +
+				  $" but successfully updated status to {AuctionStatus.Cancelled.ToString()} and deleted all related bids.");
 		}
 
 		[HttpGet]
@@ -74,7 +79,15 @@ namespace Auctionify.API.Controllers
 			var query = new GetAllLotsByNameQuery { Name = name, PageRequest = pageRequest };
             var lots = await _mediator.Send(query);
 
-            return Ok(lots);
-        }
-    }
+			return Ok(lots);
+		}
+
+		[HttpPut("{id}/status")]
+		public async Task<IActionResult> UpdateLotStatus([FromRoute] int id, [FromQuery] AuctionStatus status)
+		{
+			var result = await _mediator.Send(new UpdateLotStatusCommand { Id = id, Name = status.ToString() });
+
+			return Ok("Successfully updated lot status of lot with id: " + result.Id + " to " + status.ToString());
+		}
+	}
 }
