@@ -33,6 +33,8 @@ jobs:
 
       - name: Update Database
         run: dotnet ef database update --project src/Auctionify.Infrastructure --startup-project src/Auctionify.API  --context ApplicationDbContext
+        env:
+            ASPNETCORE_ENVIRONMENT: dev
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
