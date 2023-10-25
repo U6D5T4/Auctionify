@@ -120,6 +120,10 @@ namespace Auctionify.API
                 app.MapFallbackToFile("index.html");
 
                 app.Run();
+			}
+            catch (HostAbortedException ex)
+            {
+                logger.Info("Ignore HostAbortedException", ex.Message);
             }
             catch (Exception ex)
             {
@@ -127,9 +131,9 @@ namespace Auctionify.API
                 throw;
             }
             finally
-            {
-                NLog.LogManager.Shutdown();
-            }
-        }
-    }
+			{
+				NLog.LogManager.Shutdown();
+			}
+		}
+	}
 }
