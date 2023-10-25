@@ -7,6 +7,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Auctionify.Application.Features.Lots.Queries.GetAllByName;
+using Auctionify.Application.Common.Models.Requests;
 
 namespace Auctionify.API.Controllers
 {
@@ -68,9 +69,9 @@ namespace Auctionify.API.Controllers
 
         [HttpGet("[action]/{location}")]
         [Authorize(Roles = "Buyer")]
-        public async Task<IActionResult> GetLotsByLocation([FromRoute] string location)
+        public async Task<IActionResult> GetLotsByCity([FromRoute] string location, [FromQuery] PageRequest pageRequest)
         {
-            var query = new GetAllLotsByLocationQuery { Location = location };
+            var query = new GetAllLotsByLocationQuery { Location = location, PageRequest = pageRequest };
             var lots = await _mediator.Send(query);
 
             return Ok(lots);
