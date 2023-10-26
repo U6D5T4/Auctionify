@@ -33,21 +33,38 @@ namespace Auctionify.Core.Persistence.Dynamic
 
         private static IQueryable<T> Filter<T>(IQueryable<T> queryable, Filter filter)
         {
-            string where = Transform(filter);
-            if (!string.IsNullOrEmpty(where) &&  filter.Value != null)
-                queryable = queryable.Where(where, filter.Value);
+            IList<Filter> filters = GetAllFilters(filter);
+            string?[] values = filters.Select(f => f.Value).ToArray();
+            string where = Transform(filter, filters);
+            if (!string.IsNullOrEmpty(where) && values != null)
+                queryable = queryable.Where(where, values);
 
             return queryable;
         }
 
-        public static string Transform(Filter filter)
+        public static IList<Filter> GetAllFilters(Filter filter)
         {
-            var index = 0;
+            List<Filter> filters = new();
+            GetFilters(filter, filters);
+            return filters;
+        }
+
+        private static void GetFilters(Filter filter, IList<Filter> filters)
+        {
+            filters.Add(filter);
+            if (filter.Filters is not null && filter.Filters.Any())
+                foreach (Filter item in filter.Filters)
+                    GetFilters(item, filters);
+        }
+
+        public static string Transform(Filter filter, IList<Filter> filters)
+        {
             if (string.IsNullOrEmpty(filter.Field))
                 throw new ArgumentException("Invalid Field");
             if (string.IsNullOrEmpty(filter.Operator) || !_operators.ContainsKey(filter.Operator))
                 throw new ArgumentException("Invalid Operator");
 
+            int index = filters.IndexOf(filter);
             string comparison = _operators[filter.Operator];
             StringBuilder where = new();
 
@@ -63,6 +80,13 @@ namespace Auctionify.Core.Persistence.Dynamic
             else if (filter.Operator is "isnull" or "isnotnull")
             {
                 where.Append($"np({filter.Field}) {comparison}");
+            }
+
+            if (filter.Logic is not null && filter.Filters is not null && filter.Filters.Any())
+            {
+                if (!_logics.Contains(filter.Logic))
+                    throw new ArgumentException("Invalid Logic");
+                return $"{where} {filter.Logic} ({string.Join(separator: $" {filter.Logic} ", value: filter.Filters.Select(f => Transform(f, filters)).ToArray())})";
             }
 
             return where.ToString();

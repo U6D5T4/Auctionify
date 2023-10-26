@@ -6,6 +6,7 @@
         public string Operator { get; set; }
         public string? Value { get; set; }
         public string? Logic { get; set; }
+        public IList<Filter>? Filters { get; set; }
 
         public Filter()
         {
