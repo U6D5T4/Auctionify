@@ -73,6 +73,7 @@ namespace Auctionify.Infrastructure
             services.AddScoped<ILotStatusRepository, LotStatusRepository>();
             services.AddScoped<ICurrencyRepository, CurrencyRepository>();
             services.AddScoped<IBidRepository, BidRepository>();
+            services.AddScoped<IFileRepository, FileRepository>();
 
             services.AddTransient<IEmailService, SendGridEmailService>();
             services.AddSingleton<IBlobService, BlobService>();

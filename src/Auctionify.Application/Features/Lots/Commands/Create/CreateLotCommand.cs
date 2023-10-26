@@ -1,10 +1,10 @@
-﻿using Auctionify.Application.Common.Interfaces;
+﻿using Auctionify.Application.Common.DTOs;
+using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Features.Lots.BaseValidators.Lots;
 using Auctionify.Core.Entities;
 using Auctionify.Core.Enums;
 using AutoMapper;
-using Azure.Storage.Blobs;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -35,7 +35,7 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 
         public int? CurrencyId { get; set; }
 
-		public IList<IFormFile>? Photos { get; set; } = new List<IFormFile>();
+		public IList<IFormFile>? Photos { get; set; }
 
 		public IList<IFormFile>? AdditionalDocuments {  get; set; }
 
@@ -50,7 +50,7 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
 		private readonly IBlobService _blobService;
-		private readonly BlobServiceClient _blobServiceClient;
+        private readonly IFileRepository _fileRepository;
 
 		public CreateLotCommandHandler(ILotRepository lotRepository,
             ILotStatusRepository lotStatusRepository,
@@ -58,7 +58,7 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 			UserManager<User> userManager,
 			IMapper mapper,
 			IBlobService blobService,
-			BlobServiceClient blobServiceClient)
+			IFileRepository fileRepository)
 
 		{
 			_lotRepository = lotRepository;
@@ -67,7 +67,7 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 			_userManager = userManager;
 			_mapper = mapper;
 			_blobService = blobService;
-			_blobServiceClient = blobServiceClient;
+			_fileRepository = fileRepository;
 		}
 
 		public async Task<CreatedLotResponse> Handle(CreateLotCommand request, CancellationToken cancellationToken)
@@ -97,38 +97,34 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
                 CategoryId = request.CategoryId,
                 Location = location,
                 CurrencyId = request.CurrencyId,
-                LotStatusId = lotStatus!.Id
+                LotStatusId = lotStatus!.Id,
             };
 
             var createdLot = await _lotRepository.AddAsync(lot);
 
-            if (request.Photos != null)
+            if(request.Photos != null)
             {
+				var folderName = Guid.NewGuid().ToString();
+				var path = "photos/";
+				var folderPath = path + folderName;
+
 				foreach (var photo in request.Photos)
                 {
-					var uniqueFileName = GenerateUniqueFileName(photo.FileName);
-					await UploadFileBlobAsync(photo, uniqueFileName);
+					await _blobService.UploadFileBlobAsync(photo, folderPath);
+
+                    var file = new Core.Entities.File
+                    {
+						FileName = photo.FileName,
+                        Path = folderPath,
+                        LotId = createdLot.Id,
+					};
+
+                    await _fileRepository.AddAsync(file);
 				}
 			}
 
+
             return _mapper.Map<CreatedLotResponse>(createdLot);
-        }
-
-		private async Task UploadFileBlobAsync(IFormFile file, string fileName)
-		{
-			using var stream = file.OpenReadStream();
-			var containerClient = _blobServiceClient.GetBlobContainerClient("auctionify-files/photos");
-			var blobClient = containerClient.GetBlobClient(fileName);
-
-			await blobClient.UploadAsync(stream, new Azure.Storage.Blobs.Models.BlobHttpHeaders
-			{ ContentType = file.ContentType });
-		}
-
-		private static string GenerateUniqueFileName(string fileName)
-		{
-			// Generate a GUID and append it to the fileName
-			var uniqueFileName = Path.GetFileNameWithoutExtension(fileName) + "-" + Guid.NewGuid() + Path.GetExtension(fileName);
-			return uniqueFileName;
-		}
+        }		
 	}
 }

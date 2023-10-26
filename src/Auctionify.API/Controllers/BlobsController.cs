@@ -30,9 +30,9 @@ namespace Auctionify.API.Controllers
 		}
 
 		[HttpPost("upload-file")]
-		public async Task<IActionResult> UploadFile([FromBody] UploadFileRequest request)
+		public async Task<IActionResult> UploadFile([FromForm] UploadFileRequest request)
 		{
-			await _blobService.UploadFileBlobAsync(request.FilePath, request.FileName);
+			await _blobService.UploadFileBlobAsync(request.File, request.FilePath);
 			return Ok("File uploaded successfully");
 		}
 
@@ -49,5 +49,40 @@ namespace Auctionify.API.Controllers
 			await _blobService.DeleteBlobAsync(name);
 			return Ok("Blob deleted successfully");
 		}
+
+		[HttpPost("upload-files")]
+		public async Task<IActionResult> UploadFiles([FromForm] UploadFilesRequest request)
+		{
+			var folderName = Guid.NewGuid().ToString();
+
+			await _blobService.UploadFilesBlobAsync(request.Files, folderName);
+			return Ok("Files uploaded successfully");
+		}
+
+		[HttpGet("list-folder/{folderName}")]
+		public async Task<IActionResult> ListBlobsInFolder(string folderName)
+		{
+			var data = await _blobService.ListBlobsInFolderAsync(folderName);
+			return Ok(data);
+		}
+
+		[HttpGet("get-folder/{folderName}/{blobName}")]
+		public async Task<IActionResult> GetBlobInFolder(string folderName, string blobName)
+		{
+			var data = await _blobService.GetBlobInFolderAsync(folderName, blobName);
+			return File(data.Content, data.ContentType);
+		}
+
+		[HttpDelete("delete-folder/{folderName}")]
+		public async Task<IActionResult> DeleteFolder(string folderName)
+		{
+			await _blobService.DeleteFolderAsync(folderName);
+			return Ok("Folder deleted successfully");
+		}
+	}
+
+	public class UploadFilesRequest
+	{
+		public IList<IFormFile> Files { get; set; }
 	}
 }

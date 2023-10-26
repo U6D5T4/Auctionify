@@ -13,6 +13,7 @@ namespace Auctionify.Application.Common.Profiles
             CreateMap<Currency, CurrencyDto>();
             CreateMap<LotStatus, LotStatusDto>();
             CreateMap<Location, LocationDto>();
+            CreateMap<Core.Entities.File, FileDto>();
         }
     }
 }

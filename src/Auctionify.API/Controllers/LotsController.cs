@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Auctionify.Core.Enums;
 using Auctionify.Application.Features.Lots.Commands.UpdateLotStatus;
-using Auctionify.Application.Common.Interfaces;
 
 namespace Auctionify.API.Controllers
 {
