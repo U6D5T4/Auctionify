@@ -14,14 +14,14 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAllByName
         public string Location { get; set; }
     }
 
-    public class GetAllLotsByNameQueryHandler : IRequestHandler<GetAllLotsByLocationQuery, GetListResponseDto<GetAllLotsByLocationResponse>>
+    public class GetAllLotsByLocationQueryHandler : IRequestHandler<GetAllLotsByLocationQuery, GetListResponseDto<GetAllLotsByLocationResponse>>
     {
         private readonly ILotRepository _lotRepository;
         private readonly IMapper _mapper;
         private readonly string namePropertyField = "Location.City";
         private readonly string operatorPropertyField = "contains";
 
-        public GetAllLotsByNameQueryHandler(ILotRepository lotRepository, IMapper mapper)
+        public GetAllLotsByLocationQueryHandler(ILotRepository lotRepository, IMapper mapper)
         {
             _lotRepository = lotRepository;
             _mapper = mapper;
