@@ -47,27 +47,33 @@ namespace Auctionify.Application.Features.Lots.Queries.FIlter
 
             if (request.LotStatuses != null)
             {
-                var statusFiltersBase = new Filter();
+                var statusFiltersBase = new Filter
+                {
+                    Field = lotStatusField,
+                    Logic = "and",
+                    Operator = "isnotnull",
+                    Filters = new List<Filter>(),
+                };
+
+                Filter? localFilter = null;
 
                 for (int i = 0; i < request.LotStatuses.Count; i++)
                 {
-                    var statusFilter = new Filter();
+                    var statusFilter = new Filter
+                    {
+                        Filters = new List<Filter>()
+                    };
+
                     statusFilter.Field = lotStatusField;
                     statusFilter.Logic = "or";
                     statusFilter.Value = request.LotStatuses[i].ToString();
                     statusFilter.Operator = "eq";
-                    statusFilter.Filters = new List<Filter>();
 
-                    if (i > 0)
-                    {
-                        statusFilter.Filters.Add(statusFiltersBase);
-                        statusFiltersBase = statusFilter;
-                    }
-                    else
-                    {
-                        statusFiltersBase = statusFilter;
-                    }
+                    if (localFilter != null) statusFilter.Filters.Add(localFilter);
+
+                    localFilter = statusFilter;
                 }
+                statusFiltersBase.Filters.Add(localFilter);
                 filterBase.Filters.Add(statusFiltersBase);
             }
 
