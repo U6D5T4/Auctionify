@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Auctionify.Core.Enums;
 using Auctionify.Application.Features.Lots.Commands.UpdateLotStatus;
+using Auctionify.Application.Features.Lots.Queries.FIlter;
 
 namespace Auctionify.API.Controllers
 {
@@ -88,6 +89,13 @@ namespace Auctionify.API.Controllers
 			var result = await _mediator.Send(new UpdateLotStatusCommand { Id = id, Name = status.ToString() });
 
 			return Ok("Successfully updated lot status of lot with id: " + result.Id + " to " + status.ToString());
+		}
+
+		[HttpGet("[action]")]
+		public async Task<IActionResult> FilterLots([FromQuery] FilterLotsQuery query)
+		{
+			var result = await _mediator.Send(query);
+			return Ok(result);
 		}
 	}
 }
