@@ -6,6 +6,7 @@ namespace Auctionify.Core.Persistence.Dynamic
     public static class IQueryableDynamicFilterExtensions
     {
         private static readonly string[] _logics = { "and", "or" };
+        private static readonly string[] _orders = { "asc", "desc" };
 
         private static readonly IDictionary<string, string> _operators = new Dictionary<string, string>
         {
@@ -27,6 +28,8 @@ namespace Auctionify.Core.Persistence.Dynamic
         {
             if (dynamicQuery.Filter is not null)
                 query = Filter(query, dynamicQuery.Filter);
+            if (dynamicQuery.Sort is not null && dynamicQuery.Sort.Any())
+                query = Sort(query, dynamicQuery.Sort);
 
             return query;
         }
@@ -38,6 +41,25 @@ namespace Auctionify.Core.Persistence.Dynamic
             string where = Transform(filter, filters);
             if (!string.IsNullOrEmpty(where) && values != null)
                 queryable = queryable.Where(where, values);
+
+            return queryable;
+        }
+
+        private static IQueryable<T> Sort<T>(IQueryable<T> queryable, IEnumerable<Sort> sort)
+        {
+            foreach (Sort item in sort)
+            {
+                if (string.IsNullOrEmpty(item.Field))
+                    throw new ArgumentException("Invalid Field");
+                if (string.IsNullOrEmpty(item.Dir) || !_orders.Contains(item.Dir))
+                    throw new ArgumentException("Invalid Order Type");
+            }
+
+            if (sort.Any())
+            {
+                string ordering = string.Join(separator: ",", values: sort.Select(s => $"{s.Field} {s.Dir}"));
+                return queryable.OrderBy(ordering);
+            }
 
             return queryable;
         }
