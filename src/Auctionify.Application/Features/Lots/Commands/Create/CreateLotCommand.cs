@@ -11,49 +11,49 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Auctionify.Application.Features.Lots.Commands.Create
 {
-    public class CreateLotCommand : IRequest<CreatedLotResponse>, ILotCommandsValidator
-    {
-        public string Title { get; set; }
+	public class CreateLotCommand : IRequest<CreatedLotResponse>, ILotCommandsValidator
+	{
+		public string Title { get; set; }
 
-        public string Description { get; set; }
+		public string Description { get; set; }
 
-        public decimal? StartingPrice { get; set; }
+		public decimal? StartingPrice { get; set; }
 
-        public DateTime StartDate { get; set; }
+		public DateTime StartDate { get; set; }
 
-        public DateTime EndDate { get; set; }
+		public DateTime EndDate { get; set; }
 
-        public int? CategoryId { get; set; }
+		public int? CategoryId { get; set; }
 
-        public string City { get; set; }
+		public string City { get; set; }
 
-        public string? State { get; set; }
+		public string? State { get; set; }
 
-        public string Country { get; set; }
+		public string Country { get; set; }
 
-        public string Address { get; set; }
+		public string Address { get; set; }
 
-        public int? CurrencyId { get; set; }
+		public int? CurrencyId { get; set; }
 
 		public IList<IFormFile>? Photos { get; set; }
 
-		public IList<IFormFile>? AdditionalDocuments {  get; set; }
+		public IList<IFormFile>? AdditionalDocuments { get; set; }
 
-        public bool IsDraft { get; set; }
-    }
+		public bool IsDraft { get; set; }
+	}
 
-    public class CreateLotCommandHandler : IRequestHandler<CreateLotCommand, CreatedLotResponse>
-    {
-        private readonly ILotRepository _lotRepository;
-        private readonly ILotStatusRepository _lotStatusRepository;
-        private readonly ICurrentUserService _currentUserService;
-        private readonly UserManager<User> _userManager;
-        private readonly IMapper _mapper;
+	public class CreateLotCommandHandler : IRequestHandler<CreateLotCommand, CreatedLotResponse>
+	{
+		private readonly ILotRepository _lotRepository;
+		private readonly ILotStatusRepository _lotStatusRepository;
+		private readonly ICurrentUserService _currentUserService;
+		private readonly UserManager<User> _userManager;
+		private readonly IMapper _mapper;
 		private readonly IBlobService _blobService;
-        private readonly IFileRepository _fileRepository;
+		private readonly IFileRepository _fileRepository;
 
 		public CreateLotCommandHandler(ILotRepository lotRepository,
-            ILotStatusRepository lotStatusRepository,
+			ILotStatusRepository lotStatusRepository,
 			ICurrentUserService currentUserService,
 			UserManager<User> userManager,
 			IMapper mapper,
@@ -71,60 +71,92 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 		}
 
 		public async Task<CreatedLotResponse> Handle(CreateLotCommand request, CancellationToken cancellationToken)
-        {
-            AuctionStatus status = request.IsDraft ? AuctionStatus.Draft : AuctionStatus.Upcoming;
+		{
+			AuctionStatus status = request.IsDraft ? AuctionStatus.Draft : AuctionStatus.Upcoming;
 
-            var lotStatus = await _lotStatusRepository.GetAsync(s => s.Name == status.ToString(), cancellationToken: cancellationToken);
+			var lotStatus = await _lotStatusRepository.GetAsync(s => s.Name == status.ToString(), cancellationToken: cancellationToken);
 
-            var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
 
-            var location = new Location
-            {
-                Address = request.Address,
-                City = request.City,
-                State = request.State!,
-                Country = request.Country,
-            };
+			var location = new Location
+			{
+				Address = request.Address,
+				City = request.City,
+				State = request.State!,
+				Country = request.Country,
+			};
 
 			var lot = new Lot
-            {
-                SellerId = user!.Id,
-                Title = request.Title,
-                Description = request.Description,
-                StartingPrice = request.StartingPrice,
-                StartDate = request.StartDate,
-                EndDate = request.EndDate,
-                CategoryId = request.CategoryId,
-                Location = location,
-                CurrencyId = request.CurrencyId,
-                LotStatusId = lotStatus!.Id,
-            };
+			{
+				SellerId = user!.Id,
+				Title = request.Title,
+				Description = request.Description,
+				StartingPrice = request.StartingPrice,
+				StartDate = request.StartDate,
+				EndDate = request.EndDate,
+				CategoryId = request.CategoryId,
+				Location = location,
+				CurrencyId = request.CurrencyId,
+				LotStatusId = lotStatus!.Id,
+			};
 
-            var createdLot = await _lotRepository.AddAsync(lot);
+			var createdLot = await _lotRepository.AddAsync(lot);
 
-            if(request.Photos != null)
-            {
+			var createdPhotos = new List<FileDto>();
+			var createdAdditionalDocuments = new List<FileDto>();
+
+
+			if (request.Photos != null)
+			{
 				var folderName = Guid.NewGuid().ToString();
 				var path = "photos/";
 				var folderPath = path + folderName;
 
 				foreach (var photo in request.Photos)
-                {
+				{
 					await _blobService.UploadFileBlobAsync(photo, folderPath);
 
-                    var file = new Core.Entities.File
-                    {
+					var file = new Core.Entities.File
+					{
 						FileName = photo.FileName,
-                        Path = folderPath,
-                        LotId = createdLot.Id,
+						Path = folderPath,
+						LotId = createdLot.Id,
 					};
 
-                    await _fileRepository.AddAsync(file);
+					var res = await _fileRepository.AddAsync(file);
+					createdPhotos.Add(_mapper.Map<FileDto>(res));
 				}
 			}
 
+			if (request.AdditionalDocuments != null)
+			{
+				var folderName = Guid.NewGuid().ToString();
+				var path = "additional-documents/";
+				var folderPath = path + folderName;
 
-            return _mapper.Map<CreatedLotResponse>(createdLot);
-        }		
+				foreach (var doc in request.AdditionalDocuments)
+				{
+					await _blobService.UploadFileBlobAsync(doc, folderPath);
+
+					var file = new Core.Entities.File
+					{
+						FileName = doc.FileName,
+						Path = folderPath,
+						LotId = createdLot.Id,
+					};
+
+					var res = await _fileRepository.AddAsync(file);
+					createdAdditionalDocuments.Add(_mapper.Map<FileDto>(res));
+				}
+			}
+
+			var mappedLot = _mapper.Map<CreatedLotResponse>(createdLot);
+
+			mappedLot.Photos = createdPhotos;
+			mappedLot.AdditionalDocuments = createdAdditionalDocuments;
+
+
+			return mappedLot;
+		}
 	}
 }
