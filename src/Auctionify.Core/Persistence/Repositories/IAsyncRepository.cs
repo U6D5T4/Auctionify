@@ -29,7 +29,7 @@ namespace Auctionify.Core.Persistence.Repositories
         /// <param name="enableTracking"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        Task<IList<TEntity>> GetListAsync(
+        Task<IPaginate<TEntity>> GetListAsync(
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,

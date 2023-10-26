@@ -25,7 +25,7 @@ namespace Auctionify.Infrastructure
             // Add DbContext service
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
-                    builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+                    builder => builder.EnableRetryOnFailure(maxRetryCount: 5).MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
             services.AddIdentity<User, Role>(options =>
             {
@@ -67,6 +67,7 @@ namespace Auctionify.Infrastructure
             services.AddScoped<ILotRepository, LotRepository>();
             services.AddScoped<ILotStatusRepository, LotStatusRepository>();
             services.AddScoped<ICurrencyRepository, CurrencyRepository>();
+            services.AddScoped<IBidRepository, BidRepository>();
 
             return services;
         }

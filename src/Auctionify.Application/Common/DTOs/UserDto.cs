@@ -12,5 +12,6 @@ namespace Auctionify.Application.Common.DTOs
 
         public string? PhoneNumber { get; set; }
 
+        public string? Email { get; set; }
     }
 }
