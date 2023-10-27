@@ -1,5 +1,6 @@
 ﻿using Auctionify.Application.Features.Categories.Queries.GetAll;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Auctionify.API.Controllers
@@ -16,7 +17,8 @@ namespace Auctionify.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        [Authorize]
+        public async Task<ActionResult<IList<GetAllCateogoriesResponse>>> GetAll()
         {
             var resul = await _mediator.Send(new GetAllCategoriesQuery());
             return Ok(resul);
