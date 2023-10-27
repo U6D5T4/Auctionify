@@ -102,8 +102,8 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 
 			var createdLot = await _lotRepository.AddAsync(lot);
 
-			var createdPhotos = new List<FileDto>();
 			var createdAdditionalDocuments = new List<FileDto>();
+			var createdPhotos = new List<FileDto>();
 
 
 			if (request.Photos != null)

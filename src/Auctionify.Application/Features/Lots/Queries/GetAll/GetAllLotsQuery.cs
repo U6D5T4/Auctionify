@@ -24,7 +24,7 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAll
 
         public async Task<List<GetAllLotsResponse>> Handle(GetAllLotsQuery request, CancellationToken cancellationToken)
         {
-            var lots = await _lotRepository.GetListAsync();
+            var lots = await _lotRepository.GetListAsync(cancellationToken: cancellationToken);
 
 			var response = _mapper.Map<List<GetAllLotsResponse>>(lots);
 

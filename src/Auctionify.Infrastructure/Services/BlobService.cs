@@ -16,6 +16,65 @@ namespace Auctionify.Infrastructure.Services
 			_blobServiceClient = blobServiceClient;
 		}
 
+		public async Task UploadFileBlobAsync(IFormFile file, string filePath)
+		{
+			var containerClient = _blobServiceClient.GetBlobContainerClient("auctionify-files");
+			var blobClient = containerClient.GetBlobClient($"{filePath}/{file.FileName}");
+
+			if (await blobClient.ExistsAsync())
+			{
+				throw new InvalidOperationException($"File '{file.FileName}' already exists in the specified path.");
+			}
+
+			var blobUploadOptions = new BlobUploadOptions
+			{
+				HttpHeaders = new BlobHttpHeaders
+				{
+					ContentType = file.ContentType
+				}
+			};
+
+			await blobClient.UploadAsync(file.OpenReadStream(), blobUploadOptions);
+		}
+		public string GetBlobUrl(string filePath, string fileName)
+		{
+			var containerClient = _blobServiceClient.GetBlobContainerClient("auctionify-files");
+			var blobClient = containerClient.GetBlobClient($"{filePath}/{fileName}");
+			var url = blobClient.Uri.AbsoluteUri;
+
+			return url;
+		}
+
+		public async Task DeleteFileBlobAsync(string filePath, string fileName)
+		{
+			var containerClient = _blobServiceClient.GetBlobContainerClient("auctionify-files");
+			var blobClient = containerClient.GetBlobClient($"{filePath}/{fileName}");
+
+			await blobClient.DeleteIfExistsAsync();
+		}
+
+		public async Task DeleteBlobAsync(string blobName)
+		{
+			var containerClient = _blobServiceClient.GetBlobContainerClient("auctionify-files");
+			var blobClient = containerClient.GetBlobClient(blobName);
+
+			await blobClient.DeleteIfExistsAsync();
+		}
+
+
+		public async Task<Application.Common.Models.Blob.BlobInfo> DownloadFileBlobAsync(string filePath, string fileName)
+		{
+			var containerClient = _blobServiceClient.GetBlobContainerClient("auctionify-files");
+			var blobClient = containerClient.GetBlobClient($"{filePath}/{fileName}");
+
+			var blobDownloadInfo = await blobClient.DownloadAsync();
+
+			return new Application.Common.Models.Blob.BlobInfo(blobDownloadInfo.Value.Content, blobDownloadInfo.Value.ContentType);
+		}
+
+
+
+
 		public async Task<Application.Common.Models.Blob.BlobInfo> GetBlobAsync(string blobName)
 		{
 			var containerClient = _blobServiceClient.GetBlobContainerClient("auctionify-files");
@@ -37,26 +96,6 @@ namespace Auctionify.Infrastructure.Services
 
 			return items;
 		}
-		public async Task UploadFileBlobAsync(IFormFile file, string filePath)
-		{
-			var containerClient = _blobServiceClient.GetBlobContainerClient("auctionify-files");
-			var blobClient = containerClient.GetBlobClient($"{filePath}/{file.FileName}");
-
-			if (await blobClient.ExistsAsync())
-			{
-				throw new InvalidOperationException($"File '{file.FileName}' already exists in the specified path.");
-			}
-
-			var blobUploadOptions = new BlobUploadOptions
-			{
-				HttpHeaders = new BlobHttpHeaders
-				{
-					ContentType = file.ContentType
-				}
-			};
-
-			await blobClient.UploadAsync(file.OpenReadStream(), blobUploadOptions);
-		}
 
 		public async Task UploadContentBlobAsync(string content, string fileName)
 		{
@@ -73,13 +112,6 @@ namespace Auctionify.Infrastructure.Services
 			{ ContentType = fileName.GetContentType() });
 		}
 
-		public async Task DeleteBlobAsync(string blobName)
-		{
-			var containerClient = _blobServiceClient.GetBlobContainerClient("auctionify-files");
-			var blobClient = containerClient.GetBlobClient(blobName);
-
-			await blobClient.DeleteIfExistsAsync();
-		}
 
 		public async Task UploadFilesBlobAsync(IList<IFormFile> files, string folderName)
 		{

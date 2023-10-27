@@ -19,6 +19,7 @@ namespace Auctionify.API.Controllers
 		public async Task<IActionResult> GetBlob(string name)
 		{
 			var data = await _blobService.GetBlobAsync(name);
+
 			return File(data.Content, data.ContentType);	
 		}
 

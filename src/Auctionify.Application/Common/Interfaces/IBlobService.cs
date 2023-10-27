@@ -9,6 +9,13 @@ namespace Auctionify.Application.Common.Interfaces
 		public Task<BlobInfo> GetBlobAsync(string blobName);
 		public Task<IEnumerable<string>> ListBlobsAsync();
 		public Task UploadFileBlobAsync(IFormFile file, string filePath);
+		public string GetBlobUrl(string filePath, string fileName);
+		public Task DeleteFileBlobAsync(string filePath, string fileName);
+
+
+
+		public Task <BlobInfo>DownloadFileBlobAsync(string filePath, string fileName);
+
 		public Task UploadContentBlobAsync(string content, string fileName);
 		public Task DeleteBlobAsync(string blobName);
 		public Task UploadFilesBlobAsync(IList<IFormFile> files, string folderName);

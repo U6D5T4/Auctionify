@@ -1,4 +1,5 @@
-﻿using Auctionify.Application.Common.Interfaces.Repositories;
+﻿using Auctionify.Application.Common.Interfaces;
+using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Core.Entities;
 using Auctionify.Core.Enums;
 using AutoMapper;
@@ -17,16 +18,22 @@ namespace Auctionify.Application.Features.Lots.Commands.Delete
 			private readonly ILotRepository _lotRepository;
 			private readonly ILotStatusRepository _lotStatusRepository;
 			private readonly IBidRepository _bidRepository;
+			private readonly IFileRepository _fileRepository;
+			private readonly IBlobService _blobService;
 
 			public DeleteLotCommandHandler(IMapper mapper, 
 										   ILotRepository lotRepository, 
 										   ILotStatusRepository lotStatusRepository, 
-										   IBidRepository bidRepository)
+										   IBidRepository bidRepository,
+										   IFileRepository fileRepository,
+										   IBlobService blobService)
 			{
 				_mapper = mapper;
 				_lotRepository = lotRepository;
 				_lotStatusRepository = lotStatusRepository;
 				_bidRepository = bidRepository;
+				_fileRepository = fileRepository;
+				_blobService = blobService;
 			}
 
 			public async Task<DeletedLotResponse> Handle(DeleteLotCommand request, CancellationToken cancellationToken)
@@ -51,6 +58,25 @@ namespace Auctionify.Application.Features.Lots.Commands.Delete
 					updateStatusResponse.WasDeleted = false;
 
 					return updateStatusResponse;
+				}
+
+				var photos = await _fileRepository.GetListAsync(predicate: x => x.LotId == lot.Id && x.Path.Contains("photos/"), cancellationToken: cancellationToken);
+				var additionalDocuments = await _fileRepository.GetListAsync(predicate: x => x.LotId == lot.Id && x.Path.Contains("additional-documents/"), cancellationToken: cancellationToken);
+
+				if (photos.Count > 0)
+				{
+					foreach (var photo in photos)
+					{
+						await _blobService.DeleteFileBlobAsync(photo.Path, photo.FileName);
+					}
+				}
+
+				if (additionalDocuments.Count > 0)
+				{
+					foreach (var additionalDocument in additionalDocuments)
+					{
+						await _blobService.DeleteFileBlobAsync(additionalDocument.Path, additionalDocument.FileName);
+					}
 				}
 
 				await _lotRepository.DeleteAsync(lot!);

@@ -25,5 +25,9 @@ namespace Auctionify.Application.Features.Lots.Commands.Update
         public CurrencyDto Currency { get; set; }
 
         public ICollection<BidDto> Bids { get; set; }
-    }
+
+		public ICollection<FileDto> Photos { get; set; }
+
+		public ICollection<FileDto> AdditionalDocuments { get; set; }
+	}
 }
