@@ -143,10 +143,11 @@ namespace Auctionify.Infrastructure.Identity
             var encodedToken = Encoding.UTF8.GetBytes(token);
             var validToken = WebEncoders.Base64UrlEncode(encodedToken);
 
-            string url = $"{_configuration["AppUrl"]}/ResetPassword?email={email}&token={validToken}";
+            string url = $"{_configuration["AppUrl"]}/api/auth/reset-assword?email={email}&token={validToken}";
 
             await _emailService.SendEmailAsync(email, "Reset Password", "<h1>Follow the instructions to reset your password</h1>" +
-                $"<p>To reset your password <a href='{url}'>Click here</p>");
+                $"<p>To reset your password <a href='{url}'>Click here</p> <br>" +
+                $"<p> Token: {token}</p>" );
 
             return new ResetPasswordResponse
             {
@@ -237,7 +238,7 @@ namespace Auctionify.Infrastructure.Identity
 
             return new RegisterResponse
             {
-                Message = "User did not create",
+                Message = "User have not created",
                 IsSuccess = false,
                 Errors = result.Errors.Select(e => e.Description),
             };
