@@ -22,16 +22,15 @@ namespace Auctionify.API.Controllers
 			if (!ModelState.IsValid)
 			{
 				return BadRequest("Some properties are not valid.");
-            }
+			}
 
-            var result = await _identityService.RegisterUserAsync(model);
+			var result = await _identityService.RegisterUserAsync(model);
 
-            if (!result.IsSuccess)
-                return BadRequest(result);
+			if (!result.IsSuccess)
+				return BadRequest(result);
 
-            return Ok(result);
+			return Ok(result);
 		}
-
 
 		[HttpGet]
 		[Route("confirm-email")]
@@ -73,9 +72,9 @@ namespace Auctionify.API.Controllers
 			var result = await _identityService.ResetPasswordAsync(model);
 
 			if (!result.IsSuccess)
-                return BadRequest(result);
+				return BadRequest(result);
 
-            return Ok(result);
+			return Ok(result);
 
 		}
 

@@ -1,9 +1,8 @@
-﻿using Auctionify.Application.Common.Models.Blob;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace Auctionify.Application.Common.Interfaces
 {
-    public interface IBlobService
+	public interface IBlobService
 	{
 		public Task UploadFileBlobAsync(IFormFile file, string filePath);
 		public string GetBlobUrl(string filePath, string fileName);

@@ -1,9 +1,7 @@
-﻿using Auctionify.Application.Common.Extensions;
-using Auctionify.Application.Common.Interfaces;
+﻿using Auctionify.Application.Common.Interfaces;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Http;
-using System.Text;
 
 namespace Auctionify.Infrastructure.Services
 {
