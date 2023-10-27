@@ -119,12 +119,16 @@ namespace Auctionify.API
 				app.MapRazorPages();
 				app.Run();
 			}
-			catch (Exception ex)
-			{
-				logger.Error(ex, "Stopped program because of exception.");
-				throw;
-			}
-			finally
+            catch (HostAbortedException ex)
+            {
+                logger.Info("Ignore HostAbortedException", ex.Message);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Stopped program because of exception.");
+                throw;
+            }
+            finally
 			{
 				NLog.LogManager.Shutdown();
 			}

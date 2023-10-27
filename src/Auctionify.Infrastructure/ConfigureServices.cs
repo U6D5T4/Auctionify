@@ -31,7 +31,7 @@ namespace Auctionify.Infrastructure
             // Add DbContext service
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
-                    builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+                    builder => builder.EnableRetryOnFailure(maxRetryCount: 5).MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
 			// Add Azure Blob Storage service
 			services.AddSingleton(x => new BlobServiceClient(configuration.GetValue<string>("AzureBlobStorageSettings:ConnectionString")));
