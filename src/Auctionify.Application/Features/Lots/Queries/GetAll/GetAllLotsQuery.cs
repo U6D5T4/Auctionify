@@ -33,7 +33,7 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAll
 
 			foreach (var lot in lots)
 			{
-				var photo = await _fileRepository.GetAsync(predicate: x => x.LotId == lot.Id && x.Path.Contains("photos/"), cancellationToken: cancellationToken);
+				var photo = await _fileRepository.GetAsync(predicate: x => x.LotId == lot.Id && x.Path.Contains("photos"), cancellationToken: cancellationToken);
 
 				var lotResponse = _mapper.Map<GetAllLotsResponse>(lot);
 
@@ -41,7 +41,7 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAll
 				{
 					var linkToPhoto = _blobService.GetBlobUrl(photo.Path, photo.FileName);
 
-					lotResponse.MainPhoto = linkToPhoto;
+					lotResponse.MainPhotoUrl = linkToPhoto;
 				}
 
 				response.Add(lotResponse);

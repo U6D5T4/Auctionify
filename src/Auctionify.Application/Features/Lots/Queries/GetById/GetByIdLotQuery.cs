@@ -36,8 +36,8 @@ namespace Auctionify.Application.Features.Lots.Queries.GetById
 
 				if (lot != null)
 				{
-					var photos = await _fileRepository.GetListAsync(predicate: x => x.LotId == lot.Id && x.Path.Contains("photos/"), cancellationToken: cancellationToken);
-					var additionalDocuments = await _fileRepository.GetListAsync(predicate: x => x.LotId == lot.Id && x.Path.Contains("additional-documents/"), cancellationToken: cancellationToken);
+					var photos = await _fileRepository.GetListAsync(predicate: x => x.LotId == lot.Id && x.Path.Contains("photos"), cancellationToken: cancellationToken);
+					var additionalDocuments = await _fileRepository.GetListAsync(predicate: x => x.LotId == lot.Id && x.Path.Contains("additional-documents"), cancellationToken: cancellationToken);
 
 					var photoLinks = new List<string>();
 					var additionalDocumentLinks = new List<string>();
@@ -54,8 +54,8 @@ namespace Auctionify.Application.Features.Lots.Queries.GetById
 						additionalDocumentLinks.Add(linkToAdditionalDocument);
 					}
 
-					result.Photos = photoLinks;
-					result.AdditionalDocuments = additionalDocumentLinks;
+					result.PhotosUrl = photoLinks;
+					result.AdditionalDocumentsUrl = additionalDocumentLinks;
 				}
 
 				return result;

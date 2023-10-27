@@ -60,8 +60,8 @@ namespace Auctionify.Application.Features.Lots.Commands.Delete
 					return updateStatusResponse;
 				}
 
-				var photos = await _fileRepository.GetListAsync(predicate: x => x.LotId == lot.Id && x.Path.Contains("photos/"), cancellationToken: cancellationToken);
-				var additionalDocuments = await _fileRepository.GetListAsync(predicate: x => x.LotId == lot.Id && x.Path.Contains("additional-documents/"), cancellationToken: cancellationToken);
+				var photos = await _fileRepository.GetListAsync(predicate: x => x.LotId == lot.Id && x.Path.Contains("photos"), cancellationToken: cancellationToken);
+				var additionalDocuments = await _fileRepository.GetListAsync(predicate: x => x.LotId == lot.Id && x.Path.Contains("additional-documents"), cancellationToken: cancellationToken);
 
 				if (photos.Count > 0)
 				{

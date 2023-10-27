@@ -109,20 +109,16 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 			if (request.Photos != null)
 			{
 				var folderName = Guid.NewGuid().ToString();
-				var path = "photos/";
-				var folderPath = path + folderName;
-
+				var photosPath = Path.Combine("photos", folderName);
 				foreach (var photo in request.Photos)
 				{
-					await _blobService.UploadFileBlobAsync(photo, folderPath);
-
+					await _blobService.UploadFileBlobAsync(photo, photosPath);
 					var file = new Core.Entities.File
 					{
 						FileName = photo.FileName,
-						Path = folderPath,
+						Path = photosPath,
 						LotId = createdLot.Id,
 					};
-
 					var res = await _fileRepository.AddAsync(file);
 					createdPhotos.Add(_mapper.Map<FileDto>(res));
 				}
@@ -131,20 +127,16 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 			if (request.AdditionalDocuments != null)
 			{
 				var folderName = Guid.NewGuid().ToString();
-				var path = "additional-documents/";
-				var folderPath = path + folderName;
-
-				foreach (var doc in request.AdditionalDocuments)
+				var additionalDocumentsPath = Path.Combine("additional-documents", folderName);
+				foreach (var document in request.AdditionalDocuments)
 				{
-					await _blobService.UploadFileBlobAsync(doc, folderPath);
-
+					await _blobService.UploadFileBlobAsync(document, additionalDocumentsPath);
 					var file = new Core.Entities.File
 					{
-						FileName = doc.FileName,
-						Path = folderPath,
+						FileName = document.FileName,
+						Path = additionalDocumentsPath,
 						LotId = createdLot.Id,
 					};
-
 					var res = await _fileRepository.AddAsync(file);
 					createdAdditionalDocuments.Add(_mapper.Map<FileDto>(res));
 				}
@@ -154,7 +146,6 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 
 			mappedLot.Photos = createdPhotos;
 			mappedLot.AdditionalDocuments = createdAdditionalDocuments;
-
 
 			return mappedLot;
 		}

@@ -18,6 +18,6 @@
 
 		public DateTime EndDate { get; set; }
 
-		public string MainPhoto { get; set; }
+		public string MainPhotoUrl { get; set; }
 	}
 }

@@ -85,9 +85,9 @@ namespace Auctionify.Application.Features.Lots.Commands.Update
 
 			if (request.Photos != null)
 			{
-				var existingPhotos = await _fileRepository.GetListAsync(predicate: x => x.LotId == lot.Id && x.Path.Contains("photos/"), cancellationToken: cancellationToken);
+				var existingPhotos = await _fileRepository.GetListAsync(predicate: x => x.LotId == lot.Id && x.Path.Contains("photos"), cancellationToken: cancellationToken);
 
-				var folderPath = "photos/";
+				var folderPath = "photos";
 
 				if (existingPhotos.Count > 0)
 				{
@@ -95,7 +95,7 @@ namespace Auctionify.Application.Features.Lots.Commands.Update
 				}
 				else
 				{
-					folderPath += Guid.NewGuid().ToString();
+					folderPath = Path.Combine(folderPath, Guid.NewGuid().ToString());
 				}
 
 				foreach (var photo in request.Photos)
@@ -118,16 +118,16 @@ namespace Auctionify.Application.Features.Lots.Commands.Update
 
 			if (request.AdditionalDocuments != null)
 			{
-				var existingAdditionalDocuments = await _fileRepository.GetListAsync(predicate: x => x.LotId == lot.Id && x.Path.Contains("additional-documents/"), cancellationToken: cancellationToken);
+				var existingAdditionalDocuments = await _fileRepository.GetListAsync(predicate: x => x.LotId == lot.Id && x.Path.Contains("additional-documents"), cancellationToken: cancellationToken);
 
-				var folderPath = "additional-documents/";
+				var folderPath = "additional-documents";
 				if (existingAdditionalDocuments.Count > 0)
 				{
 					folderPath = existingAdditionalDocuments[0].Path;
 				}
 				else
 				{
-					folderPath += Guid.NewGuid().ToString();
+					folderPath = Path.Combine(folderPath, Guid.NewGuid().ToString());
 				}
 
 				foreach (var additionalDocument in request.AdditionalDocuments)
