@@ -94,7 +94,7 @@ namespace Auctionify.Application.Features.Lots.Commands.Update
 
 				if (existingPhotos.Count > 0)
 				{
-					folderPath = existingPhotos[0].Path;
+					folderPath = existingPhotos.Items[0].Path;
 				}
 				else
 				{
@@ -116,7 +116,7 @@ namespace Auctionify.Application.Features.Lots.Commands.Update
 
 					createdPhotos.Add(_mapper.Map<FileDto>(res));
 				}
-				createdPhotos.AddRange(_mapper.Map<IEnumerable<FileDto>>(existingPhotos));
+				createdPhotos.AddRange(_mapper.Map<IEnumerable<FileDto>>(existingPhotos.Items));
 			}
 
 			if (request.AdditionalDocuments != null)
@@ -130,7 +130,7 @@ namespace Auctionify.Application.Features.Lots.Commands.Update
 
 				if (existingAdditionalDocuments.Count > 0)
 				{
-					folderPath = existingAdditionalDocuments[0].Path;
+					folderPath = existingAdditionalDocuments.Items[0].Path;
 				}
 				else
 				{
@@ -154,7 +154,7 @@ namespace Auctionify.Application.Features.Lots.Commands.Update
 				}
 
 				createdAdditionalDocuments.AddRange(
-					_mapper.Map<IEnumerable<FileDto>>(existingAdditionalDocuments)
+					_mapper.Map<IEnumerable<FileDto>>(existingAdditionalDocuments.Items)
 				);
 			}
 

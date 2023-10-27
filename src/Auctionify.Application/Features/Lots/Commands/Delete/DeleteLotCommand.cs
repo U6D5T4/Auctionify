@@ -92,7 +92,7 @@ namespace Auctionify.Application.Features.Lots.Commands.Delete
 
 				if (photos.Count > 0)
 				{
-					foreach (var photo in photos)
+					foreach (var photo in photos.Items)
 					{
 						await _blobService.DeleteFileBlobAsync(photo.Path, photo.FileName);
 					}
@@ -100,7 +100,7 @@ namespace Auctionify.Application.Features.Lots.Commands.Delete
 
 				if (additionalDocuments.Count > 0)
 				{
-					foreach (var additionalDocument in additionalDocuments)
+					foreach (var additionalDocument in additionalDocuments.Items)
 					{
 						await _blobService.DeleteFileBlobAsync(
 							additionalDocument.Path,

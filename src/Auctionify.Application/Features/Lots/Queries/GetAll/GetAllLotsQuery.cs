@@ -2,10 +2,11 @@
 using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Common.Options;
 using Auctionify.Application.Common.Models.Requests;
-using Auctionify.Core.Persistence.Dynamic;
 using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore;
+using Auctionify.Application.Common.Interfaces;
 
 namespace Auctionify.Application.Features.Lots.Queries.GetAll
 {
@@ -52,7 +53,7 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAll
 
             var response = _mapper.Map<GetListResponseDto<GetAllLotsResponse>>(lots);
 
-            foreach (var lot in lots)
+            foreach (var lot in response.Items)
             {
                 var photo = await _fileRepository.GetAsync(
                     predicate: x =>
@@ -61,16 +62,12 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAll
                     cancellationToken: cancellationToken
                 );
 
-                var lotResponse = _mapper.Map<GetAllLotsResponse>(lot);
-
                 if (photo != null)
                 {
                     var linkToPhoto = _blobService.GetBlobUrl(photo.Path, photo.FileName);
 
-                    lotResponse.MainPhotoUrl = linkToPhoto;
+                    lot.MainPhotoUrl = linkToPhoto;
                 }
-
-                response.Add(lotResponse);
             }
 
             return response;

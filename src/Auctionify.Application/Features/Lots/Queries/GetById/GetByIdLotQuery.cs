@@ -73,13 +73,13 @@ namespace Auctionify.Application.Features.Lots.Queries.GetById
 					var photoLinks = new List<string>();
 					var additionalDocumentLinks = new List<string>();
 
-					foreach (var photo in photos)
+					foreach (var photo in photos.Items)
 					{
 						var linkToPhoto = _blobService.GetBlobUrl(photo.Path, photo.FileName);
 						photoLinks.Add(linkToPhoto);
 					}
 
-					foreach (var additionalDocument in additionalDocuments)
+					foreach (var additionalDocument in additionalDocuments.Items)
 					{
 						var linkToAdditionalDocument = _blobService.GetBlobUrl(
 							additionalDocument.Path,
