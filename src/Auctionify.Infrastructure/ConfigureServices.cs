@@ -1,5 +1,6 @@
 ﻿using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Interfaces.Repositories;
+using Auctionify.Application.Common.Options;
 using Auctionify.Core.Entities;
 using Auctionify.Infrastructure.Common.Options;
 using Auctionify.Infrastructure.Identity;
@@ -22,6 +23,9 @@ namespace Auctionify.Infrastructure
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
+            // Registering Options
+            services.Configure<AzureBlobStorageOptions>(configuration.GetSection(AzureBlobStorageOptions.AzureBlobStorageSettings));
+
             services.AddScoped<AuditableEntitySaveChangesInterceptor>();
 
             // Add DbContext service
@@ -29,10 +33,11 @@ namespace Auctionify.Infrastructure
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
                     builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
-            // Add BlobServiceClient service
-            services.AddSingleton(x => new BlobServiceClient(configuration.GetValue<string>("AzureBlobStorageConnectionString")));
+			// Add Azure Blob Storage service
+			services.AddSingleton(x => new BlobServiceClient(configuration.GetValue<string>("AzureBlobStorageSettings:ConnectionString")));
 
-            services.AddIdentity<User, Role>(options =>
+			// Add Identity service
+			services.AddIdentity<User, Role>(options =>
             {
                 options.Password.RequiredLength = 8;
                 options.Password.RequireDigit = true;

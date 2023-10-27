@@ -1,10 +1,11 @@
 ﻿using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Interfaces.Repositories;
-using Auctionify.Core.Entities;
+using Auctionify.Application.Common.Options;
 using Auctionify.Core.Enums;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace Auctionify.Application.Features.Lots.Commands.Delete
 {
@@ -20,13 +21,17 @@ namespace Auctionify.Application.Features.Lots.Commands.Delete
 			private readonly IBidRepository _bidRepository;
 			private readonly IFileRepository _fileRepository;
 			private readonly IBlobService _blobService;
+			private readonly AzureBlobStorageOptions _azureBlobStorageOptions;
 
-			public DeleteLotCommandHandler(IMapper mapper, 
-										   ILotRepository lotRepository, 
-										   ILotStatusRepository lotStatusRepository, 
-										   IBidRepository bidRepository,
-										   IFileRepository fileRepository,
-										   IBlobService blobService)
+			public DeleteLotCommandHandler(
+				IMapper mapper,
+				ILotRepository lotRepository,
+				ILotStatusRepository lotStatusRepository,
+				IBidRepository bidRepository,
+				IFileRepository fileRepository,
+				IBlobService blobService,
+				IOptions<AzureBlobStorageOptions> azureBlobStorageOptions
+			)
 			{
 				_mapper = mapper;
 				_lotRepository = lotRepository;
@@ -34,15 +39,26 @@ namespace Auctionify.Application.Features.Lots.Commands.Delete
 				_bidRepository = bidRepository;
 				_fileRepository = fileRepository;
 				_blobService = blobService;
+				_azureBlobStorageOptions = azureBlobStorageOptions.Value;
 			}
 
-			public async Task<DeletedLotResponse> Handle(DeleteLotCommand request, CancellationToken cancellationToken)
+			public async Task<DeletedLotResponse> Handle(
+				DeleteLotCommand request,
+				CancellationToken cancellationToken
+			)
 			{
-				var lot = await _lotRepository.GetAsync(predicate: x => x.Id == request.Id, cancellationToken: cancellationToken, include: x => x.Include(x => x.LotStatus).Include(x => x.Bids));
+				var lot = await _lotRepository.GetAsync(
+					predicate: x => x.Id == request.Id,
+					cancellationToken: cancellationToken,
+					include: x => x.Include(x => x.LotStatus).Include(x => x.Bids)
+				);
 
 				var currentLotStatus = lot!.LotStatus.Name;
 
-				var newLotStatus = await _lotStatusRepository.GetAsync(predicate: s => s.Name == AuctionStatus.Cancelled.ToString(), cancellationToken: cancellationToken);
+				var newLotStatus = await _lotStatusRepository.GetAsync(
+					predicate: s => s.Name == AuctionStatus.Cancelled.ToString(),
+					cancellationToken: cancellationToken
+				);
 
 				if (currentLotStatus == AuctionStatus.Active.ToString())
 				{
@@ -60,8 +76,19 @@ namespace Auctionify.Application.Features.Lots.Commands.Delete
 					return updateStatusResponse;
 				}
 
-				var photos = await _fileRepository.GetListAsync(predicate: x => x.LotId == lot.Id && x.Path.Contains("photos"), cancellationToken: cancellationToken);
-				var additionalDocuments = await _fileRepository.GetListAsync(predicate: x => x.LotId == lot.Id && x.Path.Contains("additional-documents"), cancellationToken: cancellationToken);
+				var photos = await _fileRepository.GetListAsync(
+					predicate: x =>
+						x.LotId == lot.Id
+						&& x.Path.Contains(_azureBlobStorageOptions.PhotosFolderName),
+					cancellationToken: cancellationToken
+				);
+
+				var additionalDocuments = await _fileRepository.GetListAsync(
+					predicate: x =>
+						x.LotId == lot.Id
+						&& x.Path.Contains(_azureBlobStorageOptions.AdditionalDocumentsFolderName),
+					cancellationToken: cancellationToken
+				);
 
 				if (photos.Count > 0)
 				{
@@ -75,7 +102,10 @@ namespace Auctionify.Application.Features.Lots.Commands.Delete
 				{
 					foreach (var additionalDocument in additionalDocuments)
 					{
-						await _blobService.DeleteFileBlobAsync(additionalDocument.Path, additionalDocument.FileName);
+						await _blobService.DeleteFileBlobAsync(
+							additionalDocument.Path,
+							additionalDocument.FileName
+						);
 					}
 				}
 
@@ -90,6 +120,5 @@ namespace Auctionify.Application.Features.Lots.Commands.Delete
 				return response;
 			}
 		}
-
 	}
 }

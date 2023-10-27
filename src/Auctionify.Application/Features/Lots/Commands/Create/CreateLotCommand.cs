@@ -1,6 +1,7 @@
 ﻿using Auctionify.Application.Common.DTOs;
 using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Interfaces.Repositories;
+using Auctionify.Application.Common.Options;
 using Auctionify.Application.Features.Lots.BaseValidators.Lots;
 using Auctionify.Core.Entities;
 using Auctionify.Core.Enums;
@@ -8,37 +9,26 @@ using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 
 namespace Auctionify.Application.Features.Lots.Commands.Create
 {
 	public class CreateLotCommand : IRequest<CreatedLotResponse>, ILotCommandsValidator
 	{
 		public string Title { get; set; }
-
 		public string Description { get; set; }
-
 		public decimal? StartingPrice { get; set; }
-
 		public DateTime StartDate { get; set; }
-
 		public DateTime EndDate { get; set; }
-
 		public int? CategoryId { get; set; }
-
 		public string City { get; set; }
-
 		public string? State { get; set; }
-
 		public string Country { get; set; }
-
 		public string Address { get; set; }
-
 		public int? CurrencyId { get; set; }
 
 		public IList<IFormFile>? Photos { get; set; }
-
 		public IList<IFormFile>? AdditionalDocuments { get; set; }
-
 		public bool IsDraft { get; set; }
 	}
 
@@ -51,15 +41,18 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 		private readonly IMapper _mapper;
 		private readonly IBlobService _blobService;
 		private readonly IFileRepository _fileRepository;
+		private readonly AzureBlobStorageOptions _azureBlobStorageOptions;
 
-		public CreateLotCommandHandler(ILotRepository lotRepository,
+		public CreateLotCommandHandler(
+			ILotRepository lotRepository,
 			ILotStatusRepository lotStatusRepository,
 			ICurrentUserService currentUserService,
 			UserManager<User> userManager,
 			IMapper mapper,
 			IBlobService blobService,
-			IFileRepository fileRepository)
-
+			IFileRepository fileRepository,
+			IOptions<AzureBlobStorageOptions> azureBlobStorageOptions
+		)
 		{
 			_lotRepository = lotRepository;
 			_lotStatusRepository = lotStatusRepository;
@@ -68,13 +61,20 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 			_mapper = mapper;
 			_blobService = blobService;
 			_fileRepository = fileRepository;
+			_azureBlobStorageOptions = azureBlobStorageOptions.Value;
 		}
 
-		public async Task<CreatedLotResponse> Handle(CreateLotCommand request, CancellationToken cancellationToken)
+		public async Task<CreatedLotResponse> Handle(
+			CreateLotCommand request,
+			CancellationToken cancellationToken
+		)
 		{
 			AuctionStatus status = request.IsDraft ? AuctionStatus.Draft : AuctionStatus.Upcoming;
 
-			var lotStatus = await _lotStatusRepository.GetAsync(s => s.Name == status.ToString(), cancellationToken: cancellationToken);
+			var lotStatus = await _lotStatusRepository.GetAsync(
+				s => s.Name == status.ToString(),
+				cancellationToken: cancellationToken
+			);
 
 			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
 
@@ -105,11 +105,14 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 			var createdAdditionalDocuments = new List<FileDto>();
 			var createdPhotos = new List<FileDto>();
 
-
 			if (request.Photos != null)
 			{
 				var folderName = Guid.NewGuid().ToString();
-				var photosPath = Path.Combine("photos", folderName);
+				var photosPath = Path.Combine(
+					_azureBlobStorageOptions.PhotosFolderName,
+					folderName
+				);
+
 				foreach (var photo in request.Photos)
 				{
 					await _blobService.UploadFileBlobAsync(photo, photosPath);
@@ -127,7 +130,10 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 			if (request.AdditionalDocuments != null)
 			{
 				var folderName = Guid.NewGuid().ToString();
-				var additionalDocumentsPath = Path.Combine("additional-documents", folderName);
+				var additionalDocumentsPath = Path.Combine(
+					_azureBlobStorageOptions.AdditionalDocumentsFolderName,
+					folderName
+				);
 				foreach (var document in request.AdditionalDocuments)
 				{
 					await _blobService.UploadFileBlobAsync(document, additionalDocumentsPath);
