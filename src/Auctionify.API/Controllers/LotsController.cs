@@ -81,7 +81,6 @@ namespace Auctionify.API.Controllers
 
             return Ok(lots);
         }
-    }
 
 		[HttpGet("[action]")]
 		[Authorize(Roles = "Buyer")]
