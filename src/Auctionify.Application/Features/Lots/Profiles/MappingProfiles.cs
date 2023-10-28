@@ -1,6 +1,7 @@
 ﻿using Auctionify.Application.Common.DTOs;
 using Auctionify.Application.Features.Lots.Commands.Create;
 using Auctionify.Application.Features.Lots.Commands.Delete;
+using Auctionify.Application.Features.Lots.Commands.DeleteLotFile;
 using Auctionify.Application.Features.Lots.Commands.Update;
 using Auctionify.Application.Features.Lots.Commands.UpdateLotStatus;
 using Auctionify.Application.Features.Lots.Queries.GetAll;
@@ -27,6 +28,8 @@ namespace Auctionify.Application.Features.Lots.Profiles
 			CreateMap<Lot, UpdateLotResponse>().ReverseMap();
 			CreateMap<Lot, GetAllLotsByLocationResponse>().ReverseMap();
 			CreateMap<Lot, UpdateLotStatusResponse>().ReverseMap();
+			
+			CreateMap<Core.Entities.File, DeleteLotFileCommand>().ReverseMap();
 
 			CreateMap<Lot, UpdateLotCommand>()
 				.ForMember(l => l.Address, cd => cd.MapFrom(ul => ul.Location!.Address))

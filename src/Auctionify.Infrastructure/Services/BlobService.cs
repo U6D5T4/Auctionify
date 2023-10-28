@@ -1,43 +1,56 @@
 ﻿using Auctionify.Application.Common.Interfaces;
+using Auctionify.Application.Common.Options;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace Auctionify.Infrastructure.Services
 {
 	public class BlobService : IBlobService
 	{
 		private readonly BlobServiceClient _blobServiceClient;
+		private readonly AzureBlobStorageOptions _azureBlobStorageOptions;
 
-		public BlobService(BlobServiceClient blobServiceClient)
+		public BlobService(
+			BlobServiceClient blobServiceClient,
+			IOptions<AzureBlobStorageOptions> azureBlobStorageOptions
+		)
 		{
 			_blobServiceClient = blobServiceClient;
+			_azureBlobStorageOptions = azureBlobStorageOptions.Value;
 		}
 
 		public async Task UploadFileBlobAsync(IFormFile file, string filePath)
 		{
-			var containerClient = _blobServiceClient.GetBlobContainerClient("auctionify-files");
-			var blobClient = containerClient.GetBlobClient($"{filePath}/{file.FileName}");
+			var containerClient = _blobServiceClient.GetBlobContainerClient(
+				_azureBlobStorageOptions.ContainerName
+			);
+			var blobClient = containerClient.GetBlobClient(Path.Combine(filePath, file.FileName));
 
 			if (await blobClient.ExistsAsync())
 			{
-				throw new InvalidOperationException($"File '{file.FileName}' already exists in the specified path.");
+				throw new InvalidOperationException(
+					$"File '{file.FileName}' already exists in the specified path."
+				);
 			}
 
 			var blobUploadOptions = new BlobUploadOptions
 			{
-				HttpHeaders = new BlobHttpHeaders
-				{
-					ContentType = file.ContentType
-				}
+				HttpHeaders = new BlobHttpHeaders { ContentType = file.ContentType }
 			};
 
 			await blobClient.UploadAsync(file.OpenReadStream(), blobUploadOptions);
 		}
+
 		public string GetBlobUrl(string filePath, string fileName)
 		{
-			var containerClient = _blobServiceClient.GetBlobContainerClient("auctionify-files");
-			var blobClient = containerClient.GetBlobClient($"{filePath}/{fileName}");
+			var containerClient = _blobServiceClient.GetBlobContainerClient(
+				_azureBlobStorageOptions.ContainerName
+			);
+
+			var blobClient = containerClient.GetBlobClient(Path.Combine(filePath, fileName));
+			
 			var url = blobClient.Uri.AbsoluteUri;
 
 			return url;
@@ -45,9 +58,12 @@ namespace Auctionify.Infrastructure.Services
 
 		public async Task DeleteFileBlobAsync(string filePath, string fileName)
 		{
-			var containerClient = _blobServiceClient.GetBlobContainerClient("auctionify-files");
-			var blobClient = containerClient.GetBlobClient($"{filePath}/{fileName}");
-
+			var containerClient = _blobServiceClient.GetBlobContainerClient(
+				_azureBlobStorageOptions.ContainerName
+			);
+			
+			var blobClient = containerClient.GetBlobClient(Path.Combine(filePath, fileName));
+			
 			await blobClient.DeleteIfExistsAsync();
 		}
 	}

@@ -1,6 +1,7 @@
 using Auctionify.Application.Common.Models.Requests;
 using Auctionify.Application.Features.Lots.Commands.Create;
 using Auctionify.Application.Features.Lots.Commands.Delete;
+using Auctionify.Application.Features.Lots.Commands.DeleteLotFile;
 using Auctionify.Application.Features.Lots.Commands.Update;
 using Auctionify.Application.Features.Lots.Commands.UpdateLotStatus;
 using Auctionify.Application.Features.Lots.Queries.GetAll;
@@ -98,6 +99,15 @@ namespace Auctionify.API.Controllers
 			var result = await _mediator.Send(new UpdateLotStatusCommand { Id = id, Name = status.ToString() });
 
 			return Ok("Successfully updated lot status of lot with id: " + result.Id + " to " + status.ToString());
+		}
+
+		[HttpDelete("{id}/files")]
+		public async Task<IActionResult> DeleteLotFile([FromRoute] int id, [FromBody] List<string> url)
+		{
+			await _mediator.Send(new DeleteLotFileCommand { LotId = id, FileUrl = url });
+
+			// deleted files successfully
+			return Ok("Successfully deleted specified files from lot with id: " + id);
 		}
 	}
 }
