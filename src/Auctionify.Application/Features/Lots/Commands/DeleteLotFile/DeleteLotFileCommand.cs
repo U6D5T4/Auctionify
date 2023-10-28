@@ -7,13 +7,13 @@ using Microsoft.Extensions.Options;
 
 namespace Auctionify.Application.Features.Lots.Commands.DeleteLotFile
 {
-	public class DeleteLotFileCommand : IRequest<DeleteLotFileResponse>
+	public class DeleteLotFileCommand : IRequest<DeletedLotFileResponse>
 	{
 		public int LotId { get; set; }
 		public List<string> FileUrl { get; set; }
 
 		public class DeleteLotFileCommandHandler
-			: IRequestHandler<DeleteLotFileCommand, DeleteLotFileResponse>
+			: IRequestHandler<DeleteLotFileCommand, DeletedLotFileResponse>
 		{
 			private readonly IMapper _mapper;
 			private readonly IFileRepository _fileRepository;
@@ -33,7 +33,7 @@ namespace Auctionify.Application.Features.Lots.Commands.DeleteLotFile
 				_azureBlobStorageOptions = azureBlobStorageOptions.Value;
 			}
 
-			public async Task<DeleteLotFileResponse> Handle(
+			public async Task<DeletedLotFileResponse> Handle(
 				DeleteLotFileCommand request,
 				CancellationToken cancellationToken
 			)
@@ -42,10 +42,7 @@ namespace Auctionify.Application.Features.Lots.Commands.DeleteLotFile
 					.Where(
 						x =>
 							x.Contains(
-								Path.Combine(
-									_azureBlobStorageOptions.ContainerName,
-									_azureBlobStorageOptions.PhotosFolderName
-								)
+								_azureBlobStorageOptions.PhotosFolderName
 							)
 					)
 					.ToList();
@@ -54,17 +51,16 @@ namespace Auctionify.Application.Features.Lots.Commands.DeleteLotFile
 					.Where(
 						x =>
 							x.Contains(
-								Path.Combine(
-									_azureBlobStorageOptions.ContainerName,
-									_azureBlobStorageOptions.AdditionalDocumentsFolderName
-								)
+								_azureBlobStorageOptions.AdditionalDocumentsFolderName
 							)
 					)
 					.ToList();
 
 				foreach (var photoUrl in photosUrl)
 				{
-					var fileName = Path.GetFileName(photoUrl);
+					Uri photoUri = new(photoUrl);
+					var fileName = Path.GetFileName(photoUri.LocalPath);
+
 					int lastSlashIndex = photoUrl.LastIndexOf('/');
 					var filePath = photoUrl.Substring(
 						photoUrl.IndexOf(_azureBlobStorageOptions.ContainerName)
@@ -78,6 +74,8 @@ namespace Auctionify.Application.Features.Lots.Commands.DeleteLotFile
 							)
 					);
 
+					Console.WriteLine(filePath);
+
 					await _blobService.DeleteFileBlobAsync(filePath, fileName);
 
 					var photoFile = await _fileRepository.GetAsync(
@@ -85,12 +83,15 @@ namespace Auctionify.Application.Features.Lots.Commands.DeleteLotFile
 						cancellationToken: cancellationToken
 					);
 
-					await _fileRepository.DeleteAsync(photoFile!);
+					if(photoFile != null)
+						await _fileRepository.DeleteAsync(photoFile);
 				}
 
 				foreach (var additionalDocumentUrl in additionalDocumentsUrl)
 				{
-					var fileName = Path.GetFileName(additionalDocumentUrl);
+					Uri additionalDocumentUri = new(additionalDocumentUrl);
+					var fileName = Path.GetFileName(additionalDocumentUri.LocalPath);
+					
 					int lastSlashIndex = additionalDocumentUrl.LastIndexOf('/');
 					var filePath = additionalDocumentUrl.Substring(
 						additionalDocumentUrl.IndexOf(_azureBlobStorageOptions.ContainerName)
@@ -106,6 +107,8 @@ namespace Auctionify.Application.Features.Lots.Commands.DeleteLotFile
 							)
 					);
 
+					Console.WriteLine(filePath);
+
 					await _blobService.DeleteFileBlobAsync(filePath, fileName);
 
 					var additionalDocumentFile = await _fileRepository.GetAsync(
@@ -113,12 +116,13 @@ namespace Auctionify.Application.Features.Lots.Commands.DeleteLotFile
 						cancellationToken: cancellationToken
 					);
 
-					await _fileRepository.DeleteAsync(additionalDocumentFile!);
+					if(additionalDocumentFile != null)
+						await _fileRepository.DeleteAsync(additionalDocumentFile);
 				}
 
 				bool wasDeleted = true;
 
-				var response = _mapper.Map<DeleteLotFileResponse>(request);
+				var response = _mapper.Map<DeletedLotFileResponse>(request);
 
 				response.WasDeleted = wasDeleted;
 

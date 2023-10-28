@@ -109,7 +109,7 @@ namespace Auctionify.Application.Features.Lots.Commands.Delete
 					}
 				}
 
-				await _lotRepository.DeleteAsync(lot!);
+				await _lotRepository.DeleteAsync(lot);
 
 				bool wasDeleted = true;
 

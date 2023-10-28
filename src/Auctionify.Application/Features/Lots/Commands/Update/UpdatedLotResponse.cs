@@ -2,7 +2,7 @@
 
 namespace Auctionify.Application.Features.Lots.Commands.Update
 {
-    public class UpdateLotResponse
+    public class UpdatedLotResponse
     {
         public int Id { get; set; }
 

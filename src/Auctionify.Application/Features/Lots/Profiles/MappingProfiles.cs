@@ -25,11 +25,11 @@ namespace Auctionify.Application.Features.Lots.Profiles
 
 			CreateMap<IPaginate<Lot>, GetListResponseDto<GetAllLotsByNameResponse>>().ReverseMap();
 			CreateMap<IPaginate<Lot>, GetListResponseDto<GetAllLotsResponse>>().ReverseMap();
-			CreateMap<Lot, UpdateLotResponse>().ReverseMap();
+			CreateMap<Lot, UpdatedLotResponse>().ReverseMap();
 			CreateMap<Lot, GetAllLotsByLocationResponse>().ReverseMap();
-			CreateMap<Lot, UpdateLotStatusResponse>().ReverseMap();
+			CreateMap<Lot, UpdatedLotStatusResponse>().ReverseMap();
 			
-			CreateMap<Core.Entities.File, DeleteLotFileCommand>().ReverseMap();
+			CreateMap<Core.Entities.File, DeletedLotFileResponse>().ReverseMap();
 
 			CreateMap<Lot, UpdateLotCommand>()
 				.ForMember(l => l.Address, cd => cd.MapFrom(ul => ul.Location!.Address))

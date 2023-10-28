@@ -26,7 +26,8 @@ namespace Auctionify.Infrastructure.Services
 			var containerClient = _blobServiceClient.GetBlobContainerClient(
 				_azureBlobStorageOptions.ContainerName
 			);
-			var blobClient = containerClient.GetBlobClient(Path.Combine(filePath, file.FileName));
+			
+			var blobClient = containerClient.GetBlobClient($"{filePath}/{file.FileName}");
 
 			if (await blobClient.ExistsAsync())
 			{
@@ -49,7 +50,7 @@ namespace Auctionify.Infrastructure.Services
 				_azureBlobStorageOptions.ContainerName
 			);
 
-			var blobClient = containerClient.GetBlobClient(Path.Combine(filePath, fileName));
+			var blobClient = containerClient.GetBlobClient($"{filePath}/{fileName}");
 			
 			var url = blobClient.Uri.AbsoluteUri;
 
@@ -62,7 +63,7 @@ namespace Auctionify.Infrastructure.Services
 				_azureBlobStorageOptions.ContainerName
 			);
 			
-			var blobClient = containerClient.GetBlobClient(Path.Combine(filePath, fileName));
+			var blobClient = containerClient.GetBlobClient($"{filePath}/{fileName}");
 			
 			await blobClient.DeleteIfExistsAsync();
 		}

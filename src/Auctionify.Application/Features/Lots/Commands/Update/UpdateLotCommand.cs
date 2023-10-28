@@ -12,7 +12,7 @@ using Microsoft.Extensions.Options;
 
 namespace Auctionify.Application.Features.Lots.Commands.Update
 {
-	public class UpdateLotCommand : IRequest<UpdateLotResponse>, ILotCommandsValidator
+	public class UpdateLotCommand : IRequest<UpdatedLotResponse>, ILotCommandsValidator
 	{
 		public int Id { get; set; }
 		public string Title { get; set; }
@@ -31,7 +31,7 @@ namespace Auctionify.Application.Features.Lots.Commands.Update
 		public bool IsDraft { get; set; }
 	}
 
-	public class UpdateLotCommandHandler : IRequestHandler<UpdateLotCommand, UpdateLotResponse>
+	public class UpdateLotCommandHandler : IRequestHandler<UpdateLotCommand, UpdatedLotResponse>
 	{
 		private readonly ILotRepository _lotRepository;
 		private readonly ILotStatusRepository _lotStatusRepository;
@@ -57,7 +57,7 @@ namespace Auctionify.Application.Features.Lots.Commands.Update
 			_azureBlobStorageOptions = azureBlobStorageOptions.Value;
 		}
 
-		public async Task<UpdateLotResponse> Handle(
+		public async Task<UpdatedLotResponse> Handle(
 			UpdateLotCommand request,
 			CancellationToken cancellationToken
 		)
@@ -98,7 +98,8 @@ namespace Auctionify.Application.Features.Lots.Commands.Update
 				}
 				else
 				{
-					folderPath = Path.Combine(folderPath, Guid.NewGuid().ToString());
+					var folderName = Guid.NewGuid().ToString();
+					folderPath = $"{folderPath}/{folderName}";
 				}
 
 				foreach (var photo in request.Photos)
@@ -134,7 +135,8 @@ namespace Auctionify.Application.Features.Lots.Commands.Update
 				}
 				else
 				{
-					folderPath = Path.Combine(folderPath, Guid.NewGuid().ToString());
+					var folderName = Guid.NewGuid().ToString();
+					folderPath = $"{folderPath}/{folderName}";
 				}
 
 				foreach (var additionalDocument in request.AdditionalDocuments)
@@ -160,7 +162,7 @@ namespace Auctionify.Application.Features.Lots.Commands.Update
 
 			await _lotRepository.UpdateAsync(lotUpdated);
 
-			var mappedLot = _mapper.Map<UpdateLotResponse>(lotUpdated);
+			var mappedLot = _mapper.Map<UpdatedLotResponse>(lotUpdated);
 
 			mappedLot.Photos = createdPhotos;
 			mappedLot.AdditionalDocuments = createdAdditionalDocuments;

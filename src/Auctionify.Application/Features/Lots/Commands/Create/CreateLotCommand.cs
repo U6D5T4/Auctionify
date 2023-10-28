@@ -108,10 +108,7 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 			if (request.Photos != null)
 			{
 				var folderName = Guid.NewGuid().ToString();
-				var photosPath = Path.Combine(
-					_azureBlobStorageOptions.PhotosFolderName,
-					folderName
-				);
+				var photosPath = $"{_azureBlobStorageOptions.PhotosFolderName}/{folderName}";
 
 				foreach (var photo in request.Photos)
 				{
@@ -130,10 +127,8 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 			if (request.AdditionalDocuments != null)
 			{
 				var folderName = Guid.NewGuid().ToString();
-				var additionalDocumentsPath = Path.Combine(
-					_azureBlobStorageOptions.AdditionalDocumentsFolderName,
-					folderName
-				);
+				var additionalDocumentsPath = $"{_azureBlobStorageOptions.AdditionalDocumentsFolderName}/{folderName}";
+
 				foreach (var document in request.AdditionalDocuments)
 				{
 					await _blobService.UploadFileBlobAsync(document, additionalDocumentsPath);

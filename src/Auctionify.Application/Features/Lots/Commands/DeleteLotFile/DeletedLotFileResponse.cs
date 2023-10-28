@@ -1,6 +1,6 @@
 ﻿namespace Auctionify.Application.Features.Lots.Commands.DeleteLotFile
 {
-	public class DeleteLotFileResponse
+	public class DeletedLotFileResponse
 	{
 		public int LotId { get; set; }
 
