@@ -6,6 +6,7 @@ using Auctionify.Core.Persistence.Dynamic;
 using Auctionify.Core.Persistence.Paging;
 using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace Auctionify.Application.Features.Lots.Queries.FIlter
@@ -97,8 +98,19 @@ namespace Auctionify.Application.Features.Lots.Queries.FIlter
             };
 
             var result = await (request.PageRequest != null
-                ? _lotRepository.GetListByDynamicAsync(dynamicQuery, index: request.PageRequest.PageIndex, size: request.PageRequest.PageSize)
-                : _lotRepository.GetListByDynamicAsync(dynamicQuery));
+                ? _lotRepository.GetListByDynamicAsync(dynamicQuery,
+                include: x => x.Include(l => l.Location)
+                                .Include(l => l.Category)
+                                .Include(l => l.Currency)
+                                .Include(l => l.LotStatus),
+                index: request.PageRequest.PageIndex,
+                size: request.PageRequest.PageSize)
+                : _lotRepository.GetListByDynamicAsync(dynamicQuery,
+                    include: x => x.Include(l => l.Category)
+                                    .Include(l => l.Location)
+                                    .Include(l => l.Currency)
+                                    .Include(l => l.LotStatus)
+                                    ));
 
             return _mapper.Map<GetListResponseDto<FilterLotsResponse>>(result);
         }
