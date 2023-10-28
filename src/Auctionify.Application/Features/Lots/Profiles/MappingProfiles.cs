@@ -22,14 +22,9 @@ namespace Auctionify.Application.Features.Lots.Profiles
 			CreateMap<Lot, GetByIdLotResponse>().ReverseMap();
 			CreateMap<Lot, DeletedLotResponse>().ReverseMap();
 			CreateMap<Lot, GetAllLotsByNameResponse>().ReverseMap();
-
-			CreateMap<IPaginate<Lot>, GetListResponseDto<GetAllLotsByNameResponse>>().ReverseMap();
-			CreateMap<IPaginate<Lot>, GetListResponseDto<GetAllLotsResponse>>().ReverseMap();
 			CreateMap<Lot, UpdatedLotResponse>().ReverseMap();
 			CreateMap<Lot, GetAllLotsByLocationResponse>().ReverseMap();
 			CreateMap<Lot, UpdatedLotStatusResponse>().ReverseMap();
-			
-			CreateMap<Core.Entities.File, DeletedLotFileResponse>().ReverseMap();
 
 			CreateMap<Lot, UpdateLotCommand>()
 				.ForMember(l => l.Address, cd => cd.MapFrom(ul => ul.Location!.Address))
@@ -37,7 +32,11 @@ namespace Auctionify.Application.Features.Lots.Profiles
 				.ForMember(l => l.Country, cd => cd.MapFrom(ul => ul.Location!.Country))
 				.ForMember(l => l.State, cd => cd.MapFrom(ul => ul.Location!.State))
 				.ReverseMap();
+			
+			CreateMap<DeleteLotFileCommand, DeletedLotFileResponse>().ReverseMap();
 
+			CreateMap<IPaginate<Lot>, GetListResponseDto<GetAllLotsByNameResponse>>().ReverseMap();
+			CreateMap<IPaginate<Lot>, GetListResponseDto<GetAllLotsResponse>>().ReverseMap();
 			CreateMap<IPaginate<Lot>, GetListResponseDto<GetAllLotsByLocationResponse>>().ReverseMap();
 		}
 	}

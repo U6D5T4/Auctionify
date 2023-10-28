@@ -73,7 +73,7 @@ namespace Auctionify.API.Controllers
 			return Ok(lots);
 		}
     
-        [HttpGet("[action]/{location}")]
+        [HttpGet("{location}")]
         [Authorize(Roles = "Buyer")]
         public async Task<IActionResult> GetLotsByCity([FromRoute] string location, [FromQuery] PageRequest pageRequest)
         {
@@ -83,7 +83,7 @@ namespace Auctionify.API.Controllers
             return Ok(lots);
         }
 
-		[HttpGet("[action]")]
+		[HttpGet("{name}")]
 		[Authorize(Roles = "Buyer")]
         public async Task<IActionResult> GetLotsByName([FromQuery] string name, [FromQuery] PageRequest pageRequest)
         {
@@ -93,7 +93,7 @@ namespace Auctionify.API.Controllers
 			return Ok(lots);
 		}
 
-		[HttpPut("{id}/status")]
+		[HttpPut("{id}/statuses")]
 		public async Task<IActionResult> UpdateLotStatus([FromRoute] int id, [FromQuery] AuctionStatus status)
 		{
 			var result = await _mediator.Send(new UpdateLotStatusCommand { Id = id, Name = status.ToString() });
@@ -102,12 +102,14 @@ namespace Auctionify.API.Controllers
 		}
 
 		[HttpDelete("{id}/files")]
+		[Authorize(Roles = "Seller")]
 		public async Task<IActionResult> DeleteLotFile([FromRoute] int id, [FromBody] List<string> url)
 		{
-			await _mediator.Send(new DeleteLotFileCommand { LotId = id, FileUrl = url });
+			var result = await _mediator.Send(new DeleteLotFileCommand { LotId = id, FileUrl = url });
 
-			// deleted files successfully
-			return Ok("Successfully deleted specified files from lot with id: " + id);
+			return Ok(result.WasDeleted
+				? $"Successfully deleted specified files of lot with id: {result.LotId}"
+				: $"Could not delete specified files of lot with id: {result.LotId}");
 		}
 	}
 }
