@@ -69,7 +69,6 @@ namespace Auctionify.Infrastructure
             var usersSeedingData = configuration.GetSection("UsersSeedingData");
             services.Configure<UsersSeedingData>(usersSeedingData);
 
-
             services.AddScoped<ApplicationDbContextInitializer>();
 
             services.AddScoped<IIdentityService, IdentityService>();
@@ -82,6 +81,7 @@ namespace Auctionify.Infrastructure
 
             services.AddTransient<IEmailService, SendGridEmailService>();
             services.AddSingleton<IBlobService, BlobService>();
+            services.AddScoped<IPhotoService, PhotoService>();
 
             return services;
         }
