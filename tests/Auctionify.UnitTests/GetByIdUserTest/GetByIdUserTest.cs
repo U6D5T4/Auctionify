@@ -34,17 +34,17 @@ namespace Auctionify.UnitTests.GetByIdUserTest
             Assert.Equal(user.Id.ToString(), result.Id);
         }
 
-        //[Fact]
-        //public async Task Handle_ShouldThrowException_WhenUserDoesNotExist()
-        //{
-        //    // Arrange
-        //    _userManagerMock.Setup(um => um.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(null);
+        [Fact]
+        public async Task Handle_ShouldThrowException_WhenUserDoesNotExist()
+        {
+            // Arrange
+            _userManagerMock.Setup(um => um.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(() => null);
 
-        //    // Act
-        //    var action = async () => await _handler.Handle(new GetByIdUserQuery { Id = "2" }, CancellationToken.None);
+            // Act
+            var action = async () => await _handler.Handle(new GetByIdUserQuery { Id = "2" }, CancellationToken.None);
 
-        //    // Assert
-        //    await Assert.ThrowsAsync<KeyNotFoundException>(action);
-        //}
+            // Assert
+            await Assert.ThrowsAsync<KeyNotFoundException>(action);
+        }
     }
 }
