@@ -1,24 +1,28 @@
-﻿using Auctionify.Application.Common.Interfaces.Repositories;
+﻿using Auctionify.Application.Common.Interfaces;
+using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Core.Entities;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 
-namespace Auctionify.Application.Features.Watchlists.Commands.AddLot
+namespace Auctionify.Application.Features.Users.Commands.RemoveLotFromWatchlist
 {
-	public class AddToWatchlistValidator : AbstractValidator<AddToWatchlistCommand>
+	public class RemoveLotFromWatchlistValidator : AbstractValidator<RemoveLotFromWatchlistCommand>
 	{
 		private readonly IWatchlistRepository _watchlistRepository;
 		private readonly ILotRepository _lotRepository;
+		private readonly ICurrentUserService _currentUserService;
 		private readonly UserManager<User> _userManager;
 
-		public AddToWatchlistValidator(
+		public RemoveLotFromWatchlistValidator(
 			IWatchlistRepository watchlistRepository,
 			ILotRepository lotRepository,
+			ICurrentUserService currentUserService,
 			UserManager<User> userManager
 		)
 		{
 			_watchlistRepository = watchlistRepository;
 			_lotRepository = lotRepository;
+			_currentUserService = currentUserService;
 			_userManager = userManager;
 
 			RuleFor(x => x.LotId)
@@ -35,32 +39,23 @@ namespace Auctionify.Application.Features.Watchlists.Commands.AddLot
 				)
 				.WithMessage("Lot with this Id does not exist");
 
-			RuleFor(x => x.UserId)
+			RuleFor(x => x.LotId)
 				.MustAsync(
-					async (userId, cancellationToken) =>
+					async (lotId, cancellationToken) =>
 					{
-						var user = await _userManager.FindByIdAsync(userId.ToString());
+						var user = await _userManager.FindByEmailAsync(
+							_currentUserService.UserEmail!
+						);
 
-						return user != null;
-					}
-				)
-				.WithMessage("User with this Id does not exist");
-
-			RuleFor(x => x)
-				.MustAsync(
-					async (addToWatchlistCommand, cancellationToken) =>
-					{
 						var watchlist = await _watchlistRepository.GetAsync(
-							predicate: x =>
-								x.LotId == addToWatchlistCommand.LotId
-								&& x.UserId == addToWatchlistCommand.UserId,
+							predicate: x => x.LotId == lotId && x.UserId == user!.Id,
 							cancellationToken: cancellationToken
 						);
 
-						return watchlist == null;
+						return watchlist != null;
 					}
 				)
-				.WithMessage("Lot already exists in user's watchlist");
+				.WithMessage("User does not have this lot in his watchlist");
 		}
 	}
 }

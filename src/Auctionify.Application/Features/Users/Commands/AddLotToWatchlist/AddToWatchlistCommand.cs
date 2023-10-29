@@ -1,14 +1,15 @@
-﻿using Auctionify.Application.Common.Interfaces.Repositories;
+﻿using Auctionify.Application.Common.Interfaces;
+using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Core.Entities;
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 
-namespace Auctionify.Application.Features.Watchlists.Commands.AddLot
+namespace Auctionify.Application.Features.Users.Commands.AddLotToWatchlist
 {
 	public class AddToWatchlistCommand : IRequest<AddedToWatchlistResponse>
 	{
 		public int LotId { get; set; }
-		public int UserId { get; set; }
 	}
 
 	public class AddToWatchListCommandHandler
@@ -16,14 +17,20 @@ namespace Auctionify.Application.Features.Watchlists.Commands.AddLot
 	{
 		private readonly IMapper _mapper;
 		private readonly IWatchlistRepository _watchlistRepository;
+		private readonly ICurrentUserService _currentUserService;
+		private readonly UserManager<User> _userManager;
 
 		public AddToWatchListCommandHandler(
 			IMapper mapper,
-			IWatchlistRepository watchlistRepository
+			IWatchlistRepository watchlistRepository,
+			ICurrentUserService currentUserService,
+			UserManager<User> userManager
 		)
 		{
 			_mapper = mapper;
 			_watchlistRepository = watchlistRepository;
+			_currentUserService = currentUserService;
+			_userManager = userManager;
 		}
 
 		public async Task<AddedToWatchlistResponse> Handle(
@@ -31,7 +38,9 @@ namespace Auctionify.Application.Features.Watchlists.Commands.AddLot
 			CancellationToken cancellationToken
 		)
 		{
-			var watchlist = new Watchlist { LotId = request.LotId, UserId = request.UserId };
+			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+
+			var watchlist = new Watchlist { LotId = request.LotId, UserId = user!.Id };
 
 			var result = await _watchlistRepository.AddAsync(watchlist);
 

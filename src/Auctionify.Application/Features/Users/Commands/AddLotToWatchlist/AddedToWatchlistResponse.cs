@@ -1,4 +1,4 @@
-﻿namespace Auctionify.Application.Features.Watchlists.Commands.AddLot
+﻿namespace Auctionify.Application.Features.Users.Commands.AddLotToWatchlist
 {
 	public class AddedToWatchlistResponse
 	{

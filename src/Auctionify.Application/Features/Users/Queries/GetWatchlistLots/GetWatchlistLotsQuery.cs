@@ -2,52 +2,62 @@
 using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Common.Models.Requests;
+using Auctionify.Core.Entities;
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace Auctionify.Application.Features.Watchlists.Queries.GetByUserId
+namespace Auctionify.Application.Features.Users.Queries.GetByUserWatchlist
 {
-	public class GetByUserIdWatchlistQuery
-		: IRequest<GetListResponseDto<GetByUserIdWatchlistResponse>>
+	public class GetWatchlistLotsQuery
+		: IRequest<GetListResponseDto<GetWatchlistLotsResponse>>
 	{
-		public int UserId { get; set; }
 		public PageRequest PageRequest { get; set; }
 	}
 
 	public class GetByUserIdWatchlistQueryHandler
 		: IRequestHandler<
-			GetByUserIdWatchlistQuery,
-			GetListResponseDto<GetByUserIdWatchlistResponse>
+			GetWatchlistLotsQuery,
+			GetListResponseDto<GetWatchlistLotsResponse>
 		>
 	{
 		private readonly IWatchlistRepository _watchlistRepository;
 		private readonly ILotRepository _lotRepository;
 		private readonly IMapper _mapper;
 		private readonly IPhotoService _photoService;
+		private readonly ICurrentUserService _currentUserService;
+		private readonly UserManager<User> _userManager;
 
 		public GetByUserIdWatchlistQueryHandler(
 			IWatchlistRepository watchlistRepository,
 			ILotRepository lotRepository,
 			IMapper mapper,
-			IPhotoService photoService
+			IPhotoService photoService,
+			ICurrentUserService currentUserService,
+			UserManager<User> userManager
 		)
 		{
 			_watchlistRepository = watchlistRepository;
 			_lotRepository = lotRepository;
 			_mapper = mapper;
 			_photoService = photoService;
+			_currentUserService = currentUserService;
+			_userManager = userManager;
 		}
 
-		public async Task<GetListResponseDto<GetByUserIdWatchlistResponse>> Handle(
-			GetByUserIdWatchlistQuery request,
+		public async Task<GetListResponseDto<GetWatchlistLotsResponse>> Handle(
+			GetWatchlistLotsQuery request,
 			CancellationToken cancellationToken
 		)
 		{
+			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+
 			var watchlist = await _watchlistRepository.GetListAsync(
-				predicate: x => x.UserId == request.UserId,
+				predicate: x => x.UserId == user!.Id,
+				include: x => x.Include(x => x.Lot),
 				enableTracking: false,
-				size: 100,
+				size: int.MaxValue,
 				cancellationToken: cancellationToken
 			);
 
@@ -55,12 +65,18 @@ namespace Auctionify.Application.Features.Watchlists.Queries.GetByUserId
 
 			var lots = await _lotRepository.GetListAsync(
 				predicate: x => lotsId.Contains(x.Id),
+				include: x =>
+					x.Include(l => l.Seller)
+						.Include(l => l.Location)
+						.Include(l => l.Category)
+						.Include(l => l.Currency)
+						.Include(l => l.LotStatus),
 				enableTracking: false,
 				size: request.PageRequest.PageSize,
 				index: request.PageRequest.PageIndex,
 				cancellationToken: cancellationToken);
 			
-			var response = _mapper.Map<GetListResponseDto<GetByUserIdWatchlistResponse>>(lots);
+			var response = _mapper.Map<GetListResponseDto<GetWatchlistLotsResponse>>(lots);
 
 			foreach (var lot in response.Items)
 			{
