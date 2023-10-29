@@ -1,1 +1,30 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+    --color-main: #2B5293;
+    --color-error: #AB2D25;
+    
+    --color-text-primary: #242424;
+    --color-placeholder: #bdbdbd;
+
+    --color-grey-3: #828282;
+    --color-grey-4: #BDBDBD;
+    --color-grey-5:#E0E0E0;
+    --color-grey-6:#ECEDEE;
+
+    font-family: 'Onest', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+}
+
+a, button {
+    cursor: pointer;
+}

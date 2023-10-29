@@ -1,1 +1,31 @@
-<p>login works!</p>
+<div class="login">
+    <div class="login__container">
+        <div class="login__container-inner">
+            <div class="login__header">
+            <h1>Login</h1>
+            <p>Your one-stop shop for <br>
+                bidding and buying</p>
+        </div>
+
+        <form action="submit" class="login__form form">
+            <app-input type="text" placeholder="Email"></app-input>
+            <app-input type="text" placeholder="Password"></app-input>
+
+            <!-- <button class="form__btn" type="submit">Log in</button> -->
+            <app-button type="submit">Log in</app-button>
+            <a class="form__link" href="#">Forgot password?</a>
+
+            <p class="form__paragraph">Don’t have an account? <a href="#" class="form__link">Sign up</a></p>
+        </form>
+        <div class="login__border"></div>
+        <a href="" class="login__google-link">
+            <app-button appearance="outline-grey">
+                <img width="24px" src="../../../assets/icons/google-logo.svg" alt="">
+                Sign in with Google</app-button>
+        </a>
+        <p class="login__policy">By signing up to create an account I accept <br>
+            Company’s Terms of Use and Privacy Policy
+        </p>
+    </div>
+    </div>
+</div>
