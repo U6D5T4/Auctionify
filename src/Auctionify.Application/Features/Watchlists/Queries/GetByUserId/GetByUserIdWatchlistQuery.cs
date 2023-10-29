@@ -46,14 +46,19 @@ namespace Auctionify.Application.Features.Watchlists.Queries.GetByUserId
 		{
 			var watchlist = await _watchlistRepository.GetListAsync(
 				predicate: x => x.UserId == request.UserId,
-				include: x => x.Include(x => x.Lot),
 				enableTracking: false,
-				size: request.PageRequest.PageSize,
-				index: request.PageRequest.PageIndex,
+				size: 100,
 				cancellationToken: cancellationToken
 			);
 
-			var lots = watchlist.Items.Select(x => x.Lot).ToList();
+			var lotsId = watchlist.Items.Select(x => x.LotId).ToList();
+
+			var lots = await _lotRepository.GetListAsync(
+				predicate: x => lotsId.Contains(x.Id),
+				enableTracking: false,
+				size: request.PageRequest.PageSize,
+				index: request.PageRequest.PageIndex,
+				cancellationToken: cancellationToken);
 			
 			var response = _mapper.Map<GetListResponseDto<GetByUserIdWatchlistResponse>>(lots);
 

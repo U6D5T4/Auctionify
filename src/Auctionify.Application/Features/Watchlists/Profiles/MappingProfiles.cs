@@ -14,12 +14,12 @@ namespace Auctionify.Application.Features.Watchlists.Profiles
 		{
 			CreateMap<Watchlist, AddedToWatchlistResponse>();	
 			CreateMap<Watchlist, RemovedLotFromWatchlistResponse>();
-			CreateMap<Watchlist, GetByUserIdWatchlistResponse>();
+			//CreateMap<Watchlist, GetByUserIdWatchlistResponse>();
 
-			CreateMap<IPaginate<Watchlist>, GetListResponseDto<GetByUserIdWatchlistResponse>>().ReverseMap();
+			//CreateMap<IPaginate<Watchlist>, GetListResponseDto<GetByUserIdWatchlistResponse>>().ReverseMap();
 
-			CreateMap<List<Lot>, GetListResponseDto<GetByUserIdWatchlistResponse>>();
-
-		}
-	}
+			CreateMap<Lot, GetByUserIdWatchlistResponse>().ReverseMap();
+			CreateMap<IPaginate<Lot>, GetListResponseDto<GetByUserIdWatchlistResponse>>().ReverseMap();
+        }
+    }
 }
