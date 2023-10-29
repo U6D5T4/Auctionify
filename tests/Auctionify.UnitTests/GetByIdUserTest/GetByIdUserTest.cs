@@ -9,42 +9,47 @@ namespace Auctionify.UnitTests.GetByIdUserTest
 {
     public class GetByIdUserTests
     {
-        private readonly Mock<UserManager<User>> _userManagerMock;
-        private readonly GetByIdUserQueryHandler _handler;
-
-        public GetByIdUserTests()
-        {
-            _userManagerMock = new Mock<UserManager<User>>();
-            _handler = new GetByIdUserQueryHandler(_userManagerMock.Object, new MapperConfiguration(cfg => cfg.CreateMap<User, GetByIdUserResponse>()).CreateMapper());
-        }
-
         [Fact]
-        public async Task Handle_ShouldReturnUser_WhenUserExists()
+        public async Task Handle_ValidId_ReturnsUser()
         {
-            // Arrange
-            var user = new User { Id = 1 };
+            var userId = 1;
+            var user = new User { Id = userId, FirstName = "JohnDoe" };
 
-            _userManagerMock.Setup(um => um.FindByIdAsync(user.Id.ToString())).ReturnsAsync(user);
+            var userManagerMock = new Mock<UserManager<User>>(Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
+            userManagerMock.Setup(m => m.FindByIdAsync(userId.ToString()))
+                .ReturnsAsync(user);
 
-            // Act
-            var result = await _handler.Handle(new GetByIdUserQuery { Id = user.Id.ToString() }, CancellationToken.None);
+            var mapperMock = new Mock<IMapper>();
+            mapperMock.Setup(m => m.Map<GetByIdUserResponse>(user))
+                .Returns(new GetByIdUserResponse { Id = userId.ToString(), FirstName = "JohnDoe" });
 
-            // Assert
+            var handler = new GetByIdUserQueryHandler(userManagerMock.Object, mapperMock.Object);
+            var query = new GetByIdUserQuery { Id = userId.ToString() };
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
             Assert.NotNull(result);
-            Assert.Equal(user.Id.ToString(), result.Id);
+            Assert.Equal(userId.ToString(), result.Id);
+            Assert.Equal("JohnDoe", result.FirstName);
         }
 
         [Fact]
-        public async Task Handle_ShouldThrowException_WhenUserDoesNotExist()
+        public async Task Handle_InvalidId_ReturnsNull()
         {
-            // Arrange
-            _userManagerMock.Setup(um => um.FindByIdAsync(It.IsAny<string>())).ReturnsAsync(() => null);
+            var userId = 2;
 
-            // Act
-            var action = async () => await _handler.Handle(new GetByIdUserQuery { Id = "2" }, CancellationToken.None);
+            var userManagerMock = new Mock<UserManager<User>>(Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
+            userManagerMock.Setup(m => m.FindByIdAsync(userId.ToString()))
+                .ReturnsAsync((User)null);
 
-            // Assert
-            await Assert.ThrowsAsync<KeyNotFoundException>(action);
+            var mapperMock = new Mock<IMapper>();
+
+            var handler = new GetByIdUserQueryHandler(userManagerMock.Object, mapperMock.Object);
+            var query = new GetByIdUserQuery { Id = userId.ToString() };
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            Assert.Null(result);
         }
     }
 }
