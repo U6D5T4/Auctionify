@@ -4,18 +4,17 @@ using FluentValidation;
 
 namespace Auctionify.Application.Features.Lots.Commands.Create
 {
-    public class CreateLotCommandValidator : AbstractValidator<CreateLotCommand>
-    {
+	public class CreateLotCommandValidator : AbstractValidator<CreateLotCommand>
+	{
+		public CreateLotCommandValidator(ICategoryRepository categoryRepository,
+			ILotStatusRepository lotStatusRepository,
+			ICurrencyRepository currencyRepository)
+		{
 
-        public CreateLotCommandValidator(ICategoryRepository categoryRepository,
-            ILotStatusRepository lotStatusRepository,
-            ICurrencyRepository currencyRepository)
-        {
-
-            Include(new BaseLotCommandsValidator(
-                categoryRepository,
-                lotStatusRepository,
-                currencyRepository));
-        }
-    }
+			Include(new BaseLotCommandsValidator(
+				categoryRepository,
+				lotStatusRepository,
+				currencyRepository));
+		}
+	}
 }

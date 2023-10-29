@@ -26,7 +26,6 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 		public string Country { get; set; }
 		public string Address { get; set; }
 		public int? CurrencyId { get; set; }
-
 		public IList<IFormFile>? Photos { get; set; }
 		public IList<IFormFile>? AdditionalDocuments { get; set; }
 		public bool IsDraft { get; set; }
@@ -127,6 +126,7 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 			if (request.AdditionalDocuments != null)
 			{
 				var folderName = Guid.NewGuid().ToString();
+
 				var additionalDocumentsPath = $"{_azureBlobStorageOptions.AdditionalDocumentsFolderName}/{folderName}";
 
 				foreach (var document in request.AdditionalDocuments)

@@ -43,7 +43,7 @@ namespace Auctionify.API.Controllers
 		}
 
 		[HttpGet("{id}")]
-		[Authorize(Roles = "Seller")]
+		[Authorize(Roles = "Seller,Buyer")]
 		public async Task<IActionResult> GetById([FromRoute] int id)
 		{
 			var result = await _mediator.Send(new GetByIdLotQuery { Id = id });
@@ -72,23 +72,23 @@ namespace Auctionify.API.Controllers
 
 			return Ok(lots);
 		}
-    
-        [HttpGet("location/{location}")]
-        [Authorize(Roles = "Buyer")]
-        public async Task<IActionResult> GetLotsByCity([FromRoute] string location, [FromQuery] PageRequest pageRequest)
-        {
-            var query = new GetAllLotsByLocationQuery { Location = location, PageRequest = pageRequest };
-            var lots = await _mediator.Send(query);
 
-            return Ok(lots);
-        }
+		[HttpGet("location/{location}")]
+		[Authorize(Roles = "Buyer")]
+		public async Task<IActionResult> GetLotsByCity([FromRoute] string location, [FromQuery] PageRequest pageRequest)
+		{
+			var query = new GetAllLotsByLocationQuery { Location = location, PageRequest = pageRequest };
+			var lots = await _mediator.Send(query);
+
+			return Ok(lots);
+		}
 
 		[HttpGet("name/{name}")]
 		[Authorize(Roles = "Buyer")]
-        public async Task<IActionResult> GetLotsByName([FromRoute] string name, [FromQuery] PageRequest pageRequest)
-        {
+		public async Task<IActionResult> GetLotsByName([FromRoute] string name, [FromQuery] PageRequest pageRequest)
+		{
 			var query = new GetAllLotsByNameQuery { Name = name, PageRequest = pageRequest };
-            var lots = await _mediator.Send(query);
+			var lots = await _mediator.Send(query);
 
 			return Ok(lots);
 		}
