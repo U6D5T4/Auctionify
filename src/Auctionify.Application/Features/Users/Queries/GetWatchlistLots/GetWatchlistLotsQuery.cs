@@ -16,7 +16,7 @@ namespace Auctionify.Application.Features.Users.Queries.GetByUserWatchlist
 		public PageRequest PageRequest { get; set; }
 	}
 
-	public class GetByUserIdWatchlistQueryHandler
+	public class GetWatchlistLotsQueryHandler
 		: IRequestHandler<
 			GetWatchlistLotsQuery,
 			GetListResponseDto<GetWatchlistLotsResponse>
@@ -29,7 +29,7 @@ namespace Auctionify.Application.Features.Users.Queries.GetByUserWatchlist
 		private readonly ICurrentUserService _currentUserService;
 		private readonly UserManager<User> _userManager;
 
-		public GetByUserIdWatchlistQueryHandler(
+		public GetWatchlistLotsQueryHandler(
 			IWatchlistRepository watchlistRepository,
 			ILotRepository lotRepository,
 			IMapper mapper,

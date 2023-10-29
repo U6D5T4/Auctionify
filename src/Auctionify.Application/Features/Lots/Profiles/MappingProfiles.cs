@@ -6,7 +6,8 @@ using Auctionify.Application.Features.Lots.Commands.Update;
 using Auctionify.Application.Features.Lots.Commands.UpdateLotStatus;
 using Auctionify.Application.Features.Lots.Queries.GetAll;
 using Auctionify.Application.Features.Lots.Queries.GetAllByName;
-using Auctionify.Application.Features.Lots.Queries.GetById;
+using Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer;
+using Auctionify.Application.Features.Lots.Queries.GetByIdForSeller;
 using Auctionify.Core.Entities;
 using Auctionify.Core.Persistence.Paging;
 using AutoMapper;
@@ -19,7 +20,8 @@ namespace Auctionify.Application.Features.Lots.Profiles
 		{
 			CreateMap<Lot, GetAllLotsResponse>().ReverseMap();
 			CreateMap<Lot, CreatedLotResponse>().ReverseMap();
-			CreateMap<Lot, GetByIdLotResponse>().ReverseMap();
+			CreateMap<Lot, GetByIdForSellerLotResponse>().ReverseMap();
+			CreateMap<Lot, GetByIdForBuyerLotResponse>().ReverseMap();
 			CreateMap<Lot, DeletedLotResponse>().ReverseMap();
 			CreateMap<Lot, GetAllLotsByNameResponse>().ReverseMap();
 			CreateMap<Lot, UpdatedLotResponse>().ReverseMap();

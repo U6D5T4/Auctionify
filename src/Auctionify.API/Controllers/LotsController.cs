@@ -6,7 +6,8 @@ using Auctionify.Application.Features.Lots.Commands.Update;
 using Auctionify.Application.Features.Lots.Commands.UpdateLotStatus;
 using Auctionify.Application.Features.Lots.Queries.GetAll;
 using Auctionify.Application.Features.Lots.Queries.GetAllByName;
-using Auctionify.Application.Features.Lots.Queries.GetById;
+using Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer;
+using Auctionify.Application.Features.Lots.Queries.GetByIdForSeller;
 using Auctionify.Core.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -42,11 +43,20 @@ namespace Auctionify.API.Controllers
 			return Ok(result);
 		}
 
-		[HttpGet("{id}")]
-		[Authorize(Roles = "Seller,Buyer")]
-		public async Task<IActionResult> GetById([FromRoute] int id)
+		[HttpGet("{id}/sellers")]
+		[Authorize(Roles = "Seller")]
+		public async Task<IActionResult> GetByIdForSeller([FromRoute] int id)
 		{
-			var result = await _mediator.Send(new GetByIdLotQuery { Id = id });
+			var result = await _mediator.Send(new GetByIdForSellerLotQuery { Id = id });
+
+			return Ok(result);
+		}
+
+		[HttpGet("{id}/buyers")]
+		[Authorize(Roles = "Buyer")]
+		public async Task<IActionResult> GetByIdForBuyer([FromRoute] int id)
+		{
+			var result = await _mediator.Send(new GetByIdForBuyerLotQuery { Id = id });
 
 			return Ok(result);
 		}
@@ -73,7 +83,7 @@ namespace Auctionify.API.Controllers
 			return Ok(lots);
 		}
 
-		[HttpGet("location/{location}")]
+		[HttpGet("locations/{location}")]
 		[Authorize(Roles = "Buyer")]
 		public async Task<IActionResult> GetLotsByCity([FromRoute] string location, [FromQuery] PageRequest pageRequest)
 		{
@@ -83,7 +93,7 @@ namespace Auctionify.API.Controllers
 			return Ok(lots);
 		}
 
-		[HttpGet("name/{name}")]
+		[HttpGet("names/{name}")]
 		[Authorize(Roles = "Buyer")]
 		public async Task<IActionResult> GetLotsByName([FromRoute] string name, [FromQuery] PageRequest pageRequest)
 		{
