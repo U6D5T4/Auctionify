@@ -94,6 +94,11 @@ $ClientApp-theme: mat.define-light-theme((color: (primary: $ClientApp-primary,
     --color-grey-6: #ECEDEE;
 }
 
+* {
+  margin: 0;
+  padding: 0;
+}
+
 html,
 body {
     height: 100%;
