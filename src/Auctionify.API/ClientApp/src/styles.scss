@@ -113,3 +113,13 @@ a,
 button {
     cursor: pointer;
 }
+
+.mdc-text-field.mdc-text-field--outlined {
+    --mdc-outlined-text-field-container-shape: 8px;
+}
+
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__leading,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__notch,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing {
+    border-color: var(--color-grey-4);
+}
