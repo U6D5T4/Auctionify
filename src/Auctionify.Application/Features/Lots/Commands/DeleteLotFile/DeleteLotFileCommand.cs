@@ -74,8 +74,6 @@ namespace Auctionify.Application.Features.Lots.Commands.DeleteLotFile
 							)
 					);
 
-					Console.WriteLine(filePath);
-
 					await _blobService.DeleteFileBlobAsync(filePath, fileName);
 
 					var photoFile = await _fileRepository.GetAsync(
@@ -106,8 +104,6 @@ namespace Auctionify.Application.Features.Lots.Commands.DeleteLotFile
 								+ 1
 							)
 					);
-
-					Console.WriteLine(filePath);
 
 					await _blobService.DeleteFileBlobAsync(filePath, fileName);
 
