@@ -7,6 +7,7 @@ import { HomeComponent } from './components/home/home.component';
 import { ApiAuthorizationModule } from './api-authorization/api-authorization.module';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthorizeInterceptor } from './api-authorization/authorize.interceptor';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { AuthorizeInterceptor } from './api-authorization/authorize.interceptor'
     BrowserModule,
     AppRoutingModule,
     ApiAuthorizationModule,
-    HttpClientModule
+    HttpClientModule,
+    NoopAnimationsModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true}
