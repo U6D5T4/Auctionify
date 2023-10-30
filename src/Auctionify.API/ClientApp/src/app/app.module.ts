@@ -21,7 +21,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
     AppRoutingModule,
     ApiAuthorizationModule,
     HttpClientModule,
-    UiElementsModule
+    UiElementsModule,
     NoopAnimationsModule
   ],
   providers: [
