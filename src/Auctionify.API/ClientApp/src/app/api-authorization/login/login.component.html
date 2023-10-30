@@ -8,10 +8,14 @@
         </div>
 
         <form action="submit" class="login__form form">
-            <app-input type="text" placeholder="Email"></app-input>
-            <app-input type="text" placeholder="Password"></app-input>
-
-            <!-- <button class="form__btn" type="submit">Log in</button> -->
+            <mat-form-field appearance="outline">
+                <mat-label>Email</mat-label>
+                <input matInput>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Password</mat-label>
+                <input matInput>
+            </mat-form-field>
             <app-button type="submit">Log in</app-button>
             <a class="form__link" href="#">Forgot password?</a>
 

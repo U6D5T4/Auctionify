@@ -6,6 +6,9 @@ import { ApplicationPaths } from '../api-authorization/api-authorization.constan
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { UiElementsModule } from '../ui-elements/ui-elements.module';
+import {MatIconModule} from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
 
 @NgModule({
   declarations: [
@@ -19,7 +22,10 @@ import { UiElementsModule } from '../ui-elements/ui-elements.module';
       { path: ApplicationPaths.Login, component: LoginComponent },
       { path: ApplicationPaths.Register, component: RegisterComponent },
     ]),
-    UiElementsModule
+    UiElementsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatIconModule
   ],
 })
 export class ApiAuthorizationModule {}

@@ -9,7 +9,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthorizeInterceptor } from './api-authorization/authorize.interceptor';
 import { UiElementsModule } from './ui-elements/ui-elements.module';
 import { InputComponent } from './ui-elements/input/input.component';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -22,7 +22,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
     ApiAuthorizationModule,
     HttpClientModule,
     UiElementsModule,
-    NoopAnimationsModule
+    BrowserAnimationsModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true}
