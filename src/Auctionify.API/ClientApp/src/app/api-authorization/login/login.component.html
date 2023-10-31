@@ -18,16 +18,22 @@
                 <input formControlName="password" matInput>
                 <mat-error>Password required</mat-error>
             </mat-form-field>
-            <button mat-raised-button color="primary">Log in</button>
-            <a class="form__link" href="#">Forgot password?</a>
+            <button disabled="{{isLoading}}" mat-raised-button color="primary">
+                <mat-spinner *ngIf="isLoading" diameter="25"></mat-spinner>
+                <div *ngIf="!isLoading">Log in</div>
+            </button>
+            <a class="form__link" [routerLink]="['/auth/forgot-password']">Forgot password?</a>
 
-            <p class="form__paragraph">Don’t have an account? <a href="#" class="form__link">Sign up</a></p>
+            <p class="form__paragraph">Don’t have an account? <a [routerLink]="['/auth/register']" class="form__link">Sign up</a></p>
         </form>
         <div class="login__border"></div>
         <a href="" class="login__google-link">
-            <app-button appearance="outline-grey">
-                <img width="24px" src="../../../assets/icons/google-logo.svg" alt="">
-                Sign in with Google</app-button>
+            <button mat-stroked-button>
+                <div class="google-link__label">
+                    <img width="24px" src="../../../assets/icons/google-logo.svg" alt="">
+                    Sign in with Google
+                </div>
+            </button>
         </a>
         <p class="login__policy">By signing up to create an account I accept <br>
             Company’s Terms of Use and Privacy Policy

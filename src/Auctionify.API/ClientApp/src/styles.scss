@@ -70,17 +70,17 @@ $main-error: (
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$my-primary: mat.define-palette($main-palette, 500);
+$ClientApp-primary: mat.define-palette($main-palette);
 $ClientApp-accent: mat.define-palette(mat.$pink-palette);
 
 // The warn palette is optional (defaults to red).
-$my-warn: mat.define-palette($main-error);
+$ClientApp-warn: mat.define-palette($main-error);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
-$ClientApp-theme: mat.define-light-theme((color: (primary: $my-primary,
+$ClientApp-theme: mat.define-light-theme((color: (primary: $ClientApp-primary,
                 accent: $ClientApp-accent,
-                warn: $my-warn,
+                warn: $ClientApp-warn,
             )));
 
 // Include theme styles for core and each component used in your app.
@@ -141,4 +141,6 @@ mat-error {
     height: 48px !important;
     font-size: 16px !important;
     font-family: 'Onest', sans-serif !important;
+    border-radius: 8px !important;
+    width: 100%;
 }

@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 
 export interface DialogData {
-  text: string;
+  text: string[];
   isError: boolean;
 }
 
@@ -12,5 +12,16 @@ export interface DialogData {
   styleUrls: ['./dialog-popup.component.scss']
 })
 export class DialogPopupComponent {
-  constructor(public dialogRef: DialogRef<string>, @Inject(DIALOG_DATA) public data: DialogData) {}
+  iconPath: string = "";
+  message: string = "";
+  constructor(public dialogRef: DialogRef<string>, @Inject(DIALOG_DATA) public data: DialogData) {
+    this.message = data.text[0];
+    this.iconPath = data.isError ?
+    "../../../assets/icons/alert-hexagon.svg" :
+    "../../../assets/icons/warning_triangle.svg";
+  }
+
+  closeDialog() {
+    this.dialogRef.close();
+  }
 }

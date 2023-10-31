@@ -1,5 +1,13 @@
 <div class="modal">
-    <div class="error-main">
-        
+    <div class="modal__inner">
+        <div class="error-main">
+            <img src="{{iconPath}}" alt="info_icon">
+            <h2>{{message}}</h2>
+        </div>
+        <p>
+            Oops, something went wrong <br>
+            Try to refresh this page or come back later
+        </p>
+        <button mat-raised-button (click)="closeDialog()" color="primary">Go back</button>
     </div>
 </div>

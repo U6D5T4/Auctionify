@@ -3,6 +3,8 @@ import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { AuthorizeService } from '../authorize.service';
 import { Dialog } from '@angular/cdk/dialog';
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
+import { LoginResponse } from 'src/app/web-api-client';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +15,9 @@ import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-po
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
+  isLoading = false;
 
-  constructor(private authService: AuthorizeService, public dialog: Dialog) {
+  constructor(private authService: AuthorizeService, public dialog: Dialog, private router: Router) {
 
   }
   loginForm = new FormGroup({
@@ -23,26 +26,36 @@ export class LoginComponent {
   })
 
   onSubmit() {
-    if (this.loginForm.invalid) return;
+    this.isLoading = true;
+    if (this.loginForm.invalid) {
+      this.isLoading = false;
+      return;
+    }
 
     this.authService.login(
       this.loginForm.controls.email.value!,
       this.loginForm.controls.password.value!)
       .subscribe({
         next: (result) => {
-          console.log(result);
+          this.router.navigate(['/home'])
         },
-        error: (error) => {
-          console.log(error);
-          this.openDialog(error, true);
+        error: (error: LoginResponse) => {
+          this.openDialog(error.errors!, true);
         }
       })
   }
 
-  openDialog(text: string, error: boolean) {
+  openDialog(text: string[], error: boolean) {
     const dialogRef = this.dialog.open<string>(DialogPopupComponent, {
-      width: '250px',
-      data: {text, error},
+      data: {
+        text,
+        isError: error
+      },
     });
+
+    dialogRef.closed.subscribe((res) => {
+      this.isLoading = false;
+      this.loginForm.controls.password.reset();
+    })
   }
 }
