@@ -8,6 +8,10 @@ namespace Auctionify.Application.Features.Users.Queries.GetById
 
         public string? FirstName { get; set; }
 
+        public string? LastName { get; set; }
+
+        public string? PhoneNumber { get; set; }
+
         public ICollection<LotDto> SellingLots { get; set; }
 
         public ICollection<RateDto> ReceiverRates { get; set; }

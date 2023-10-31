@@ -16,6 +16,7 @@ namespace Auctionify.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Buyer")]
         public async Task<IActionResult> GetById([FromRoute] string id)
         {
             var result = await _mediator.Send(new GetByIdUserQuery { Id = id });
