@@ -2,9 +2,11 @@
 using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Common.Models.Requests;
+using Auctionify.Core.Entities;
 using Auctionify.Core.Persistence.Dynamic;
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Auctionify.Application.Features.Lots.Queries.GetAllByName
@@ -23,6 +25,9 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAllByName
 		>
 	{
 		private readonly ILotRepository _lotRepository;
+		private readonly ICurrentUserService _currentUserService;
+		private readonly UserManager<User> _userManager;
+		private readonly IWatchlistService _watchlistService;
 		private readonly IPhotoService _photoService;
 		private readonly IMapper _mapper;
 		private readonly string namePropertyField = "Location.City";
@@ -30,11 +35,17 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAllByName
 
 		public GetAllLotsByLocationQueryHandler(
 			ILotRepository lotRepository,
+			ICurrentUserService currentUserService,
+			UserManager<User> userManager,
+			IWatchlistService watchlistService,
 			IPhotoService photoService,
 			IMapper mapper
 		)
 		{
 			_lotRepository = lotRepository;
+			_currentUserService = currentUserService;
+			_userManager = userManager;
+			_watchlistService = watchlistService;
 			_photoService = photoService;
 			_mapper = mapper;
 		}
@@ -44,6 +55,8 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAllByName
 			CancellationToken cancellationToken
 		)
 		{
+			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+
 			var dynamicQuery = new DynamicQuery
 			{
 				Filter = new Filter
@@ -72,6 +85,12 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAllByName
 
 			foreach (var lot in response.Items)
 			{
+				lot.IsInWatchlist = await _watchlistService.IsLotInUserWatchlist(
+					lot.Id,
+					user!.Id,
+					cancellationToken
+				);
+
 				lot.MainPhotoUrl = await _photoService.GetMainPhotoUrlAsync(
 					lot.Id,
 					cancellationToken

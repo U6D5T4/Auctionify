@@ -1,8 +1,10 @@
 ﻿using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Common.Options;
+using Auctionify.Core.Entities;
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -20,13 +22,17 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForSeller
 			private readonly IBlobService _blobService;
 			private readonly IFileRepository _fileRepository;
 			private readonly AzureBlobStorageOptions _azureBlobStorageOptions;
+			private readonly ICurrentUserService _currentUserService;
+			private readonly UserManager<User> _userManager;
 
 			public GetByIdForSellerLotQueryHandler(
 				ILotRepository lotRepository,
 				IMapper mapper,
 				IBlobService blobService,
 				IFileRepository fileRepository,
-				IOptions<AzureBlobStorageOptions> azureBlobStorageOptions
+				IOptions<AzureBlobStorageOptions> azureBlobStorageOptions,
+				ICurrentUserService currentUserService,
+				UserManager<User> userManager
 			)
 			{
 				_lotRepository = lotRepository;
@@ -34,6 +40,8 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForSeller
 				_blobService = blobService;
 				_fileRepository = fileRepository;
 				_azureBlobStorageOptions = azureBlobStorageOptions.Value;
+				_currentUserService = currentUserService;
+				_userManager = userManager;
 			}
 
 			public async Task<GetByIdForSellerLotResponse> Handle(
@@ -41,8 +49,10 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForSeller
 				CancellationToken cancellationToken
 			)
 			{
+				var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+
 				var lot = await _lotRepository.GetAsync(
-					predicate: x => x.Id == request.Id,
+					predicate: x => x.Id == request.Id && x.SellerId == user!.Id,
 					include: x =>
 						x.Include(x => x.Category)
 							.Include(x => x.Currency)

@@ -22,9 +22,9 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer
 			private readonly IBlobService _blobService;
 			private readonly IFileRepository _fileRepository;
 			private readonly AzureBlobStorageOptions _azureBlobStorageOptions;
-			private readonly IWatchlistRepository _watchlistRepository;
 			private readonly ICurrentUserService _currentUserService;
 			private readonly UserManager<User> _userManager;
+			private readonly IWatchlistService _watchlistService;
 
 			public GetByIdForBuyerLotQueryHandler(
 				ILotRepository lotRepository,
@@ -32,9 +32,9 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer
 				IBlobService blobService,
 				IFileRepository fileRepository,
 				IOptions<AzureBlobStorageOptions> azureBlobStorageOptions,
-				IWatchlistRepository watchlistRepository,
 				ICurrentUserService currentUserService,
-				UserManager<User> userManager
+				UserManager<User> userManager,
+				IWatchlistService watchlistService
 			)
 			{
 				_lotRepository = lotRepository;
@@ -42,9 +42,9 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer
 				_blobService = blobService;
 				_fileRepository = fileRepository;
 				_azureBlobStorageOptions = azureBlobStorageOptions.Value;
-				_watchlistRepository = watchlistRepository;
 				_currentUserService = currentUserService;
 				_userManager = userManager;
+				_watchlistService = watchlistService;
 			}
 
 			public async Task<GetByIdForBuyerLotResponse> Handle(
@@ -68,12 +68,12 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer
 				if (lot != null)
 				{
 					var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
-					var isInWatchlist = await _watchlistRepository.GetAsync(
-						predicate: x => x.UserId == user!.Id && x.LotId == lot.Id,
-						cancellationToken: cancellationToken
-					);
 
-					result.IsInWatchlist = isInWatchlist != null;
+					result.IsInWatchlist = await _watchlistService.IsLotInUserWatchlist(
+						lot.Id,
+						user!.Id,
+						cancellationToken
+					);
 
 					var photos = await _fileRepository.GetListAsync(
 						predicate: x =>

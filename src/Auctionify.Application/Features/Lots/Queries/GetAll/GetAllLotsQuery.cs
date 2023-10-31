@@ -2,8 +2,10 @@
 using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Common.Models.Requests;
+using Auctionify.Core.Entities;
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Auctionify.Application.Features.Lots.Queries.GetAll
@@ -19,16 +21,25 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAll
 		private readonly ILotRepository _lotRepository;
 		private readonly IMapper _mapper;
 		private readonly IPhotoService _photoService;
+		private readonly ICurrentUserService _currentUserService;
+		private readonly UserManager<User> _userManager;
+		private readonly IWatchlistService _watchlistService;
 
 		public GetAllLotsQueryHandler(
 			ILotRepository lotRepository,
 			IMapper mapper,
-			IPhotoService photoService
+			IPhotoService photoService,
+			ICurrentUserService currentUserService,
+			UserManager<User> userManager,
+			IWatchlistService watchlistService
 		)
 		{
 			_lotRepository = lotRepository;
 			_mapper = mapper;
 			_photoService = photoService;
+			_currentUserService = currentUserService;
+			_userManager = userManager;
+			_watchlistService = watchlistService;
 		}
 
 		public async Task<GetListResponseDto<GetAllLotsResponse>> Handle(
@@ -36,6 +47,8 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAll
 			CancellationToken cancellationToken
 		)
 		{
+			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+
 			var lots = await _lotRepository.GetListAsync(
 				include: x =>
 					x.Include(l => l.Seller)
@@ -53,6 +66,11 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAll
 
 			foreach (var lot in response.Items)
 			{
+				lot.IsInWatchlist = await _watchlistService.IsLotInUserWatchlist(
+					lot.Id,
+					user!.Id,
+					cancellationToken
+				);
 				lot.MainPhotoUrl = await _photoService.GetMainPhotoUrlAsync(
 					lot.Id,
 					cancellationToken
