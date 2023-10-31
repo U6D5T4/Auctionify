@@ -25,16 +25,27 @@ namespace Auctionify.Infrastructure.Persistence
         }
 
 		public virtual DbSet<Category> Categories => Set<Category>();
+
 		public virtual DbSet<ChatMessage> ChatMessages => Set<ChatMessage>();
+
 		public virtual DbSet<Lot> Lots => Set<Lot>();
+
 		public virtual DbSet<Rate> Rates => Set<Rate>();
+
 		public virtual DbSet<Watchlist> Watchlists => Set<Watchlist>();
+
 		public virtual DbSet<Bid> Bids => Set<Bid>();
+
 		public virtual DbSet<Currency> Currency => Set<Currency>();
+
 		public virtual DbSet<Location> Locations => Set<Location>();
+
 		public virtual DbSet<LotStatus> LotStatuses => Set<LotStatus>();
+
 		public virtual DbSet<Core.Entities.File> Files => Set<Core.Entities.File>();
+
 		public virtual DbSet<Subscription> Subscriptions => Set<Subscription>();
+
 		public virtual DbSet<SubscriptionType> SubscriptionTypes => Set<SubscriptionType>();
 
 		protected override void OnModelCreating(ModelBuilder builder)

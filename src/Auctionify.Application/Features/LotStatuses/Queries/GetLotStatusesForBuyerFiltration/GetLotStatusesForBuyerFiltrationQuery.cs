@@ -6,7 +6,6 @@ namespace Auctionify.Application.Features.LotStatuses.Queries.GetLotStatusesForB
 {
     public class GetLotStatusesForBuyerFiltrationQuery : IRequest<IList<GetLotStatusesForBuyerFiltrationResponse>>
     {
-
     }
 
     public class GetLotStatusesForBuyerFiltrationQueryHandler : IRequestHandler<GetLotStatusesForBuyerFiltrationQuery, IList<GetLotStatusesForBuyerFiltrationResponse>>

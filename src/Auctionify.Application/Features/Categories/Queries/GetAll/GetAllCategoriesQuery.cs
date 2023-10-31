@@ -5,12 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Auctionify.Application.Features.Categories.Queries.GetAll
 {
-    public class GetAllCategoriesQuery : IRequest<IList<GetAllCateogoriesResponse>>
+    public class GetAllCategoriesQuery : IRequest<IList<GetAllCategoriesResponse>>
     {
-
     }
 
-    public class GetAllCategoriesHandler : IRequestHandler<GetAllCategoriesQuery, IList<GetAllCateogoriesResponse>>
+    public class GetAllCategoriesHandler : IRequestHandler<GetAllCategoriesQuery, IList<GetAllCategoriesResponse>>
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMapper _mapper;
@@ -22,14 +21,14 @@ namespace Auctionify.Application.Features.Categories.Queries.GetAll
             _mapper = mapper;
         }
 
-        public async Task<IList<GetAllCateogoriesResponse>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
+        public async Task<IList<GetAllCategoriesResponse>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
         {
             var result = await _categoryRepository.GetListAsync(
                 predicate: c => c.ParentCategoryId == null,
-                include: c => c.Include(c => c.Children),
+                include: x => x.Include(c => c.Children),
                 size: 50);
 
-            return _mapper.Map<IList<GetAllCateogoriesResponse>>(result.Items);
+            return _mapper.Map<IList<GetAllCategoriesResponse>>(result.Items);
         }
     }
 }

@@ -18,10 +18,10 @@ namespace Auctionify.API.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<IList<GetAllCateogoriesResponse>>> GetAll()
+        public async Task<ActionResult<IList<GetAllCategoriesResponse>>> GetAll()
         {
-            var resul = await _mediator.Send(new GetAllCategoriesQuery());
-            return Ok(resul);
+            var result = await _mediator.Send(new GetAllCategoriesQuery());
+            return Ok(result);
         }
     }
 }

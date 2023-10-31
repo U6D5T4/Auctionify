@@ -1,8 +1,6 @@
-﻿using Auctionify.Application.Common.DTOs;
-using Auctionify.Application.Features.LotStatuses.Queries.GetLotStatusesForBuyerFiltration;
+﻿using Auctionify.Application.Features.LotStatuses.Queries.GetLotStatusesForBuyerFiltration;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Auctionify.API.Controllers
@@ -22,8 +20,8 @@ namespace Auctionify.API.Controllers
         [Authorize]
         public async Task<ActionResult<IList<GetLotStatusesForBuyerFiltrationResponse>>> GetAll()
         {
-            var resul = await _mediator.Send(new GetLotStatusesForBuyerFiltrationQuery());
-            return Ok(resul);
+            var result = await _mediator.Send(new GetLotStatusesForBuyerFiltrationQuery());
+            return Ok(result);
         }
     }
 }

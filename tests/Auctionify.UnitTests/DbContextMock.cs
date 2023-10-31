@@ -28,14 +28,6 @@ namespace Auctionify.UnitTests
                 foreach (var t in ts) { lstData.Remove(t); }
             });
 
-            if (includes != null)
-            {
-                //foreach (var include in includes)
-                //{
-                //    dbSetMock.Setup(x => x.Inc).Returns(dbSetMock.Object);
-                //}
-            }
-
             dbContext.Setup(ctx => ctx.Set<TData>()).Returns(dbSetMock.Object);
             dbContext.Setup(dbSetSelectionExpression).Returns(dbSetMock.Object);
 

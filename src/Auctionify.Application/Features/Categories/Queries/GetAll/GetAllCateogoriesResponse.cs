@@ -2,7 +2,7 @@
 
 namespace Auctionify.Application.Features.Categories.Queries.GetAll
 {
-    public class GetAllCateogoriesResponse
+    public class GetAllCategoriesResponse
     {
         public int Id { get; set; }
 

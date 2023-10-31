@@ -3,6 +3,7 @@
     public class DynamicQuery
     {
         public Filter? Filter { get; set; }
+
         public IEnumerable<Sort>? Sort { get; set; }
 
         public DynamicQuery() { }

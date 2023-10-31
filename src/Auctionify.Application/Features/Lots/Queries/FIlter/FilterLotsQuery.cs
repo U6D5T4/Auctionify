@@ -3,11 +3,9 @@ using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Common.Models.Requests;
 using Auctionify.Core.Entities;
 using Auctionify.Core.Persistence.Dynamic;
-using Auctionify.Core.Persistence.Paging;
 using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace Auctionify.Application.Features.Lots.Queries.FIlter
 {
@@ -30,10 +28,10 @@ namespace Auctionify.Application.Features.Lots.Queries.FIlter
 
     public class FilterLotsQueryHandler : IRequestHandler<FilterLotsQuery, GetListResponseDto<FilterLotsResponse>>
     {
-        private string startingPriceField = "StartingPrice";
-        private string categoryField = "CategoryId";
-        private string lotStatusField = "LotStatusId";
-        private string defaultOrder = "asc";
+        private const string startingPriceField = nameof(Lot.StartingPrice);
+        private const string categoryField = nameof(Lot.CategoryId);
+        private const string lotStatusField = nameof(Lot.LotStatusId);
+        private const string defaultOrder = "asc";
         private readonly ILotRepository _lotRepository;
         private readonly IMapper _mapper;
 
@@ -127,17 +125,16 @@ namespace Auctionify.Application.Features.Lots.Queries.FIlter
 
             Filter? localFilter = null;
 
-            for (int i = 0; i < statuses.Count; i++)
+            foreach (var status in statuses)
             {
                 var statusFilter = new Filter
                 {
-                    Filters = new List<Filter>()
+                    Filters = new List<Filter>(),
+                    Field = lotStatusField,
+                    Logic = "or",
+                    Value = status.ToString(),
+                    Operator = "eq",
                 };
-
-                statusFilter.Field = lotStatusField;
-                statusFilter.Logic = "or";
-                statusFilter.Value = statuses[i].ToString();
-                statusFilter.Operator = "eq";
 
                 if (localFilter != null) statusFilter.Filters.Add(localFilter);
 
@@ -149,7 +146,7 @@ namespace Auctionify.Application.Features.Lots.Queries.FIlter
             return statusFiltersBase;
         }
 
-        Filter CreatePriceFilter(decimal? minPrice, decimal? maxPrice, string field)
+        private Filter CreatePriceFilter(decimal? minPrice, decimal? maxPrice, string field)
         {
             var priceBaseFilter = new Filter
             {
