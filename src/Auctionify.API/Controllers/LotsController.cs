@@ -72,6 +72,16 @@ namespace Auctionify.API.Controllers
 
 			return Ok(lots);
 		}
+    
+        [HttpGet("[action]/{location}")]
+        [Authorize(Roles = "Buyer")]
+        public async Task<IActionResult> GetLotsByCity([FromRoute] string location, [FromQuery] PageRequest pageRequest)
+        {
+            var query = new GetAllLotsByLocationQuery { Location = location, PageRequest = pageRequest };
+            var lots = await _mediator.Send(query);
+
+            return Ok(lots);
+        }
 
 		[HttpGet("[action]")]
 		[Authorize(Roles = "Buyer")]
