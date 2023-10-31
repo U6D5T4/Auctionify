@@ -43,7 +43,6 @@ export class AuthorizeService {
       .login(loginData)
       .pipe(map((response): boolean => {
         if (response.result === undefined) throw new Error("user not found");
-
           let newUser: IUser = {
             userToken: response.result.accessToken,
             role: response.result.role,

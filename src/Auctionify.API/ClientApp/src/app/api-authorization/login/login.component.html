@@ -7,16 +7,18 @@
                 bidding and buying</p>
         </div>
 
-        <form action="submit" class="login__form form">
-            <mat-form-field appearance="outline">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" action="submit" class="login__form form">
+            <mat-form-field color="primary" appearance="outline">
                 <mat-label>Email</mat-label>
-                <input matInput>
+                <mat-error>Email required</mat-error>
+                <input formControlName="email" matInput>
             </mat-form-field>
-            <mat-form-field appearance="outline">
+            <mat-form-field color="primary" appearance="outline">
                 <mat-label>Password</mat-label>
-                <input matInput>
+                <input formControlName="password" matInput>
+                <mat-error>Password required</mat-error>
             </mat-form-field>
-            <app-button type="submit">Log in</app-button>
+            <button mat-raised-button color="primary">Log in</button>
             <a class="form__link" href="#">Forgot password?</a>
 
             <p class="form__paragraph">Don’t have an account? <a href="#" class="form__link">Sign up</a></p>

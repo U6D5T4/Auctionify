@@ -6,15 +6,15 @@ import { ApplicationPaths } from '../api-authorization/api-authorization.constan
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { UiElementsModule } from '../ui-elements/ui-elements.module';
-import {MatIconModule} from '@angular/material/icon';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
+import { ReactiveFormsModule } from '@angular/forms';
+import { DialogModule } from '@angular/cdk/dialog';
 
 @NgModule({
-  declarations: [
-    LoginComponent,
-    RegisterComponent,
-  ],
+  declarations: [LoginComponent, RegisterComponent],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -25,7 +25,10 @@ import {MatFormFieldModule} from '@angular/material/form-field';
     UiElementsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatIconModule
+    MatIconModule,
+    ReactiveFormsModule,
+    DialogModule,
+    MatButtonModule
   ],
 })
 export class ApiAuthorizationModule {}
