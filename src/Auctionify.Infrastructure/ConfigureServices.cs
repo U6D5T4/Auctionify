@@ -1,5 +1,6 @@
 ﻿using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Interfaces.Repositories;
+using Auctionify.Application.Common.Options;
 using Auctionify.Core.Entities;
 using Auctionify.Infrastructure.Common.Options;
 using Auctionify.Infrastructure.Identity;
@@ -20,6 +21,10 @@ namespace Auctionify.Infrastructure
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
+            // Register Google sign-in options
+            services.Configure<SignInWithGoogleOptions>(
+                configuration.GetSection(SignInWithGoogleOptions.Google));
+
             services.AddScoped<AuditableEntitySaveChangesInterceptor>();
 
             // Add DbContext service

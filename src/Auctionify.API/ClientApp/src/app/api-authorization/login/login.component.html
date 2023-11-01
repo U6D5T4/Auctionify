@@ -14,9 +14,12 @@
                 <input formControlName="email" matInput>
             </mat-form-field>
             <mat-form-field color="primary" appearance="outline">
-                <mat-label>Password</mat-label>
-                <input formControlName="password" matInput>
-                <mat-error>Password required</mat-error>
+              <mat-label>Password</mat-label>
+              <input formControlName="password" matInput [type]="passwordHidden ? 'password' : 'text'">
+              <button mat-icon-button matSuffix (click)="togglePasswordVisibility()">
+                <mat-icon>{{ passwordHidden ? 'visibility' : 'visibility_off' }}</mat-icon>
+              </button>
+              <mat-error>Password required</mat-error>
             </mat-form-field>
             <button disabled="{{isLoading}}" mat-raised-button color="primary">
                 <mat-spinner *ngIf="isLoading" diameter="25"></mat-spinner>
@@ -24,7 +27,7 @@
             </button>
             <a class="form__link" [routerLink]="['/auth/forgot-password']">Forgot password?</a>
 
-            <p class="form__paragraph">Don’t have an account? <a [routerLink]="['/auth/register']" class="form__link">Sign up</a></p>
+            <p class="form__paragraph">Don't have an account? <a [routerLink]="['/auth/register']" class="form__link">Sign up</a></p>
         </form>
         <div class="login__border"></div>
         <a href="" class="login__google-link">
