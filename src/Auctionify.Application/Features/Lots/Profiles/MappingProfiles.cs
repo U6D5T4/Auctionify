@@ -4,6 +4,7 @@ using Auctionify.Application.Features.Lots.Commands.Delete;
 using Auctionify.Application.Features.Lots.Commands.DeleteLotFile;
 using Auctionify.Application.Features.Lots.Commands.Update;
 using Auctionify.Application.Features.Lots.Commands.UpdateLotStatus;
+using Auctionify.Application.Features.Lots.Queries.FIlter;
 using Auctionify.Application.Features.Lots.Queries.GetAll;
 using Auctionify.Application.Features.Lots.Queries.GetAllByName;
 using Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer;
@@ -36,9 +37,10 @@ namespace Auctionify.Application.Features.Lots.Profiles
 				.ReverseMap();
 			
 			CreateMap<DeleteLotFileCommand, DeletedLotFileResponse>().ReverseMap();
-
 			CreateMap<IPaginate<Lot>, GetListResponseDto<GetAllLotsByNameResponse>>().ReverseMap();
 			CreateMap<IPaginate<Lot>, GetListResponseDto<GetAllLotsResponse>>().ReverseMap();
+			CreateMap<Lot, FilterLotsResponse>().ReverseMap();
+			CreateMap<IPaginate<Lot>, GetListResponseDto<FilterLotsResponse>>().ReverseMap();
 			CreateMap<IPaginate<Lot>, GetListResponseDto<GetAllLotsByLocationResponse>>().ReverseMap();
 		}
 	}

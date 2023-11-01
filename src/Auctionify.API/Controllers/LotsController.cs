@@ -12,6 +12,7 @@ using Auctionify.Core.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Auctionify.Application.Features.Lots.Queries.FIlter;
 
 namespace Auctionify.API.Controllers
 {
@@ -120,6 +121,14 @@ namespace Auctionify.API.Controllers
 			return Ok(result.WasDeleted
 				? $"Successfully deleted specified files of lot with id: {result.LotId}"
 				: $"Could not delete specified files of lot with id: {result.LotId}");
+		}
+
+		[HttpGet("[action]")]
+		[Authorize(Roles = "Buyer")]
+		public async Task<IActionResult> FilterLots([FromQuery] FilterLotsQuery query)
+		{
+			var result = await _mediator.Send(query);
+			return Ok(result);
 		}
 	}
 }
