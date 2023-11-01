@@ -9,6 +9,7 @@ using FluentAssertions;
 using FluentValidation.TestHelper;
 using Microsoft.AspNetCore.Identity;
 using Moq;
+using System.Collections;
 
 namespace Auctionify.UnitTests.CreateLotTests
 {
@@ -129,10 +130,37 @@ namespace Auctionify.UnitTests.CreateLotTests
         }
 
         [Theory]
-        [MemberData(nameof(DateTimeWrongData))]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        [InlineData(4)]
         public async Task CreateLotCommandHandler_WhenActiveCalledWithWrongDateProperties_ShouldHaveValidationErrors
-            (DateTime startDate, DateTime endDate)
+            (int testCondition)
         {
+            var startDate = DateTime.MinValue.AddDays(1);
+            var endDate = DateTime.MinValue;
+
+            // Cases for dynamic DateTime.Now changes (Doesnot work with ClassData/MemberData when passed as argument to test)
+            if (testCondition == 1 )
+            {
+                
+            }
+            else if (testCondition == 2)
+            {
+                startDate = DateTime.Now;
+                endDate = DateTime.Now;
+            }
+            else if (testCondition == 3)
+            {
+                startDate = DateTime.Now.AddDays(1).AddSeconds(2);
+                endDate = DateTime.Now;
+            }
+            else if (testCondition == 4)
+            {
+                startDate = DateTime.Now.AddDays(1).AddSeconds(2);
+                endDate = DateTime.Now.AddHours(2);
+            }
+
             var newLot = new CreateLotCommand
             {
                 StartDate = startDate,
@@ -150,13 +178,5 @@ namespace Auctionify.UnitTests.CreateLotTests
             result.ShouldHaveValidationErrorFor(lot => lot.EndDate)
                 .WithErrorCode("PredicateValidator");
         }
-
-        public static readonly object[][] DateTimeWrongData =
-        {
-            new object[] { DateTime.MinValue.AddDays(1), DateTime.MinValue },
-            new object[] { DateTime.Now, DateTime.Now },
-            new object[] { DateTime.Now.AddDays(1).AddSeconds(15), DateTime.Now },
-            new object[] { DateTime.Now.AddDays(1).AddSeconds(15), DateTime.Now.AddDays(1).AddHours(2) }
-        };
     }
 }
