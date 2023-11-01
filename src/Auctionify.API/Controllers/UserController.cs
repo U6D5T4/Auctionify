@@ -1,5 +1,6 @@
 ﻿using Auctionify.Application.Features.Users.Queries.GetById;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Auctionify.API.Controllers
