@@ -23,9 +23,9 @@ namespace Auctionify.UnitTests.CreateLotTests
 
         public CreateLotsTests() {
             var mockDbContext = DbContextMock.GetMock<Lot, ApplicationDbContext>(new List<Lot>(), ctx => ctx.Lots);
-            mockDbContext = DbContextMock.GetMock(GetLotStatuses(), ctx => ctx.LotStatuses, mockDbContext);
-            mockDbContext = DbContextMock.GetMock(GetCategories(), ctx => ctx.Categories, mockDbContext);
-            mockDbContext = DbContextMock.GetMock(GetCurrencies(), ctx => ctx.Currency, mockDbContext);
+            mockDbContext = DbContextMock.GetMock(EntitiesSeeding.GetLotStatuses(), ctx => ctx.LotStatuses, mockDbContext);
+            mockDbContext = DbContextMock.GetMock(EntitiesSeeding.GetCategories(), ctx => ctx.Categories, mockDbContext);
+            mockDbContext = DbContextMock.GetMock(EntitiesSeeding.GetCurrencies(), ctx => ctx.Currency, mockDbContext);
 
             _lotRepository = new LotRepository(mockDbContext.Object);
 
@@ -40,20 +40,14 @@ namespace Auctionify.UnitTests.CreateLotTests
             currentUserService.Setup(x => x.UserEmail).Returns(It.IsAny<string>());
             _currentUserService = currentUserService.Object;
 
-            var lotStatusRepository = new LotStatusRepository(mockDbContext.Object);
-            _lotStatusRepository = lotStatusRepository;
+            _lotStatusRepository = new LotStatusRepository(mockDbContext.Object);
 
-            var store = new Mock<IUserStore<User>>();
-            var userManager = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
-            userManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(GetUser());
-            userManager.Object.UserValidators.Add(new UserValidator<User>());
-            userManager.Object.PasswordValidators.Add(new PasswordValidator<User>());
-            _userManager = userManager.Object;
+            _userManager = EntitiesSeeding.GetUserManagerMock();
 
             var categoryRepository = new CategoryRepository(mockDbContext.Object);
             var currencyRepository = new CurrencyRepository(mockDbContext.Object);
 
-            _validator = new CreateLotCommandValidator(categoryRepository, lotStatusRepository, currencyRepository);
+            _validator = new CreateLotCommandValidator(categoryRepository, _lotStatusRepository, currencyRepository);
         }
 
         [Fact]
@@ -161,76 +155,8 @@ namespace Auctionify.UnitTests.CreateLotTests
         {
             new object[] { DateTime.MinValue.AddDays(1), DateTime.MinValue },
             new object[] { DateTime.Now, DateTime.Now },
-            new object[] { DateTime.Now.AddDays(1).AddSeconds(10), DateTime.Now },
-            new object[] { DateTime.Now.AddDays(1).AddSeconds(10), DateTime.Now.AddDays(1).AddHours(2) }
+            new object[] { DateTime.Now.AddDays(1).AddSeconds(15), DateTime.Now },
+            new object[] { DateTime.Now.AddDays(1).AddSeconds(15), DateTime.Now.AddDays(1).AddHours(2) }
         };
-
-        private List<LotStatus> GetLotStatuses()
-        {
-            return new List<LotStatus>
-            {
-                new LotStatus
-                {
-                    Id = 1,
-                    Name = "Active",
-                },
-                new LotStatus
-                {
-                    Id = 2,
-                    Name = "Draft"
-                },
-                new LotStatus
-                {
-                    Id = 2,
-                    Name = "Upcoming"
-                }
-            };
-        }
-
-        private List<Category> GetCategories()
-        {
-            return new List<Category>
-            {
-                new Category
-                {
-                    Id = 1,
-                },
-                new Category
-                {
-                    Id = 2,
-                },
-                new Category
-                {
-                    Id = 3,
-                }
-            };
-        }
-
-        private List<Currency> GetCurrencies()
-        {
-            return new List<Currency>
-            {
-                new Currency
-                {
-                    Id = 1,
-                },
-                new Currency
-                {
-                    Id = 2,
-                },
-                new Currency
-                {
-                    Id = 3,
-                },
-            };
-        }
-
-        private User GetUser()
-        {
-            return new User
-            {
-                Id = 1,
-            };
-        }
     }
 }
