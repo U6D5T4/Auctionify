@@ -12,113 +12,113 @@ namespace Auctionify.Application.Features.Lots.Commands.Delete
 	public class DeleteLotCommand : IRequest<DeletedLotResponse>
 	{
 		public int Id { get; set; }
+	}
 
-		public class DeleteLotCommandHandler : IRequestHandler<DeleteLotCommand, DeletedLotResponse>
+	public class DeleteLotCommandHandler : IRequestHandler<DeleteLotCommand, DeletedLotResponse>
+	{
+		private readonly IMapper _mapper;
+		private readonly ILotRepository _lotRepository;
+		private readonly ILotStatusRepository _lotStatusRepository;
+		private readonly IBidRepository _bidRepository;
+		private readonly IFileRepository _fileRepository;
+		private readonly IBlobService _blobService;
+		private readonly AzureBlobStorageOptions _azureBlobStorageOptions;
+
+		public DeleteLotCommandHandler(
+			IMapper mapper,
+			ILotRepository lotRepository,
+			ILotStatusRepository lotStatusRepository,
+			IBidRepository bidRepository,
+			IFileRepository fileRepository,
+			IBlobService blobService,
+			IOptions<AzureBlobStorageOptions> azureBlobStorageOptions
+		)
 		{
-			private readonly IMapper _mapper;
-			private readonly ILotRepository _lotRepository;
-			private readonly ILotStatusRepository _lotStatusRepository;
-			private readonly IBidRepository _bidRepository;
-			private readonly IFileRepository _fileRepository;
-			private readonly IBlobService _blobService;
-			private readonly AzureBlobStorageOptions _azureBlobStorageOptions;
+			_mapper = mapper;
+			_lotRepository = lotRepository;
+			_lotStatusRepository = lotStatusRepository;
+			_bidRepository = bidRepository;
+			_fileRepository = fileRepository;
+			_blobService = blobService;
+			_azureBlobStorageOptions = azureBlobStorageOptions.Value;
+		}
 
-			public DeleteLotCommandHandler(
-				IMapper mapper,
-				ILotRepository lotRepository,
-				ILotStatusRepository lotStatusRepository,
-				IBidRepository bidRepository,
-				IFileRepository fileRepository,
-				IBlobService blobService,
-				IOptions<AzureBlobStorageOptions> azureBlobStorageOptions
-			)
+		public async Task<DeletedLotResponse> Handle(
+			DeleteLotCommand request,
+			CancellationToken cancellationToken
+		)
+		{
+			var lot = await _lotRepository.GetAsync(
+				predicate: x => x.Id == request.Id,
+				cancellationToken: cancellationToken,
+				include: x => x.Include(x => x.LotStatus).Include(x => x.Bids)
+			);
+
+			var currentLotStatus = lot!.LotStatus.Name;
+
+			var newLotStatus = await _lotStatusRepository.GetAsync(
+				predicate: s => s.Name == AuctionStatus.Cancelled.ToString(),
+				cancellationToken: cancellationToken
+			);
+
+			if (currentLotStatus == AuctionStatus.Active.ToString())
 			{
-				_mapper = mapper;
-				_lotRepository = lotRepository;
-				_lotStatusRepository = lotStatusRepository;
-				_bidRepository = bidRepository;
-				_fileRepository = fileRepository;
-				_blobService = blobService;
-				_azureBlobStorageOptions = azureBlobStorageOptions.Value;
+				lot!.LotStatusId = newLotStatus!.Id;
+
+				if (lot!.Bids.Any())
+					await _bidRepository.DeleteRangeAsync(lot!.Bids.ToList());
+
+				await _lotRepository.UpdateAsync(lot!);
+
+				var updateStatusResponse = _mapper.Map<DeletedLotResponse>(lot);
+
+				updateStatusResponse.WasDeleted = false;
+
+				return updateStatusResponse;
 			}
 
-			public async Task<DeletedLotResponse> Handle(
-				DeleteLotCommand request,
-				CancellationToken cancellationToken
-			)
+			var photos = await _fileRepository.GetListAsync(
+				predicate: x =>
+					x.LotId == lot.Id
+					&& x.Path.Contains(_azureBlobStorageOptions.PhotosFolderName),
+				cancellationToken: cancellationToken
+			);
+
+			var additionalDocuments = await _fileRepository.GetListAsync(
+				predicate: x =>
+					x.LotId == lot.Id
+					&& x.Path.Contains(_azureBlobStorageOptions.AdditionalDocumentsFolderName),
+				cancellationToken: cancellationToken
+			);
+
+			if (photos.Count > 0)
 			{
-				var lot = await _lotRepository.GetAsync(
-					predicate: x => x.Id == request.Id,
-					cancellationToken: cancellationToken,
-					include: x => x.Include(x => x.LotStatus).Include(x => x.Bids)
-				);
-
-				var currentLotStatus = lot!.LotStatus.Name;
-
-				var newLotStatus = await _lotStatusRepository.GetAsync(
-					predicate: s => s.Name == AuctionStatus.Cancelled.ToString(),
-					cancellationToken: cancellationToken
-				);
-
-				if (currentLotStatus == AuctionStatus.Active.ToString())
+				foreach (var photo in photos.Items)
 				{
-					lot!.LotStatusId = newLotStatus!.Id;
-
-					if (lot!.Bids.Any())
-						await _bidRepository.DeleteRangeAsync(lot!.Bids.ToList());
-
-					await _lotRepository.UpdateAsync(lot!);
-
-					var updateStatusResponse = _mapper.Map<DeletedLotResponse>(lot);
-
-					updateStatusResponse.WasDeleted = false;
-
-					return updateStatusResponse;
+					await _blobService.DeleteFileBlobAsync(photo.Path, photo.FileName);
 				}
-
-				var photos = await _fileRepository.GetListAsync(
-					predicate: x =>
-						x.LotId == lot.Id
-						&& x.Path.Contains(_azureBlobStorageOptions.PhotosFolderName),
-					cancellationToken: cancellationToken
-				);
-
-				var additionalDocuments = await _fileRepository.GetListAsync(
-					predicate: x =>
-						x.LotId == lot.Id
-						&& x.Path.Contains(_azureBlobStorageOptions.AdditionalDocumentsFolderName),
-					cancellationToken: cancellationToken
-				);
-
-				if (photos.Count > 0)
-				{
-					foreach (var photo in photos.Items)
-					{
-						await _blobService.DeleteFileBlobAsync(photo.Path, photo.FileName);
-					}
-				}
-
-				if (additionalDocuments.Count > 0)
-				{
-					foreach (var additionalDocument in additionalDocuments.Items)
-					{
-						await _blobService.DeleteFileBlobAsync(
-							additionalDocument.Path,
-							additionalDocument.FileName
-						);
-					}
-				}
-
-				await _lotRepository.DeleteAsync(lot);
-
-				bool wasDeleted = true;
-
-				var response = _mapper.Map<DeletedLotResponse>(lot);
-
-				response.WasDeleted = wasDeleted;
-
-				return response;
 			}
+
+			if (additionalDocuments.Count > 0)
+			{
+				foreach (var additionalDocument in additionalDocuments.Items)
+				{
+					await _blobService.DeleteFileBlobAsync(
+						additionalDocument.Path,
+						additionalDocument.FileName
+					);
+				}
+			}
+
+			await _lotRepository.DeleteAsync(lot);
+
+			bool wasDeleted = true;
+
+			var response = _mapper.Map<DeletedLotResponse>(lot);
+
+			response.WasDeleted = wasDeleted;
+
+			return response;
 		}
 	}
 }
