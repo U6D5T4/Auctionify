@@ -21,6 +21,9 @@ namespace Auctionify.UnitTests
             dbSetMock.As<IQueryable<TData>>().Setup(s => s.ElementType).Returns(lstDataQueryable.ElementType);
             dbSetMock.As<IQueryable<TData>>().Setup(s => s.GetEnumerator()).Returns(lstDataQueryable.GetEnumerator());
             dbSetMock.Setup(x => x.Add(It.IsAny<TData>())).Callback<TData>(lstData.Add);
+            dbSetMock.Setup(x => x.AddAsync(It.IsAny<TData>(), default))
+                .Callback((TData data, CancellationToken token) => { lstData.Add(data); })
+                .ReturnsAsync((TData data, CancellationToken token) => null);
             dbSetMock.Setup(x => x.AddRange(It.IsAny<IEnumerable<TData>>())).Callback<IEnumerable<TData>>(lstData.AddRange);
             dbSetMock.Setup(x => x.Remove(It.IsAny<TData>())).Callback<TData>(t => lstData.Remove(t));
             dbSetMock.Setup(x => x.RemoveRange(It.IsAny<IEnumerable<TData>>())).Callback<IEnumerable<TData>>(ts =>
