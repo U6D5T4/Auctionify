@@ -1,0 +1,102 @@
+.main{
+    height: 500px;
+    display: flex;
+    margin: 0 auto;
+    justify-content: center;
+    border: 1px, 0px, 0px, 0px;
+    flex-direction: column;
+    width: 1520px;
+}
+
+.containertop{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 32px;
+}
+
+.left{
+}
+
+.left p{
+    padding-top: 32px;
+}
+
+.left ul{
+    list-style: none;
+    display: flex;
+    padding-top: 32px;
+}
+
+.right{
+}
+
+.mainul{
+    gap: 60px;
+    display: flex;
+    list-style: none;
+}
+
+.mainul ul{
+    padding-left: 40px;
+    font-weight: bold;
+    list-style: none;
+}
+
+.mainul ul li{
+    padding-top: 30px;
+    align-items: center;
+    display: flex;
+}
+
+.mainul ul p{
+    padding-bottom: 24px;
+}
+
+.mainul ul li a{
+    padding-left: 20px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.line{
+    width: 1520px;
+    height: 1px;
+    background-color: #e0e0e0;
+}
+
+.containerbott{
+    padding-top: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.left_b{
+
+}
+
+.left_b ul {
+    list-style: none;
+    display: flex;
+    gap: 40px;
+}
+
+.special{
+    padding-left: 10px;
+    list-style-type: disc;
+}
+
+.special::marker{
+    color: #e0e0e0;
+}
+
+.right_b{
+    font-weight: bold;
+    display: flex;
+}
+
+.orange{
+    padding-left: 5px;
+    color: orange;
+}

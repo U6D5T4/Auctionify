@@ -1,0 +1,41 @@
+.menu{
+    height: 80px;
+    border: 0px, 0px, 1px, 0px;
+    display: flex;
+    justify-content: center;
+    gap: 64px;
+}
+
+.menu img {
+    width: 160px;
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+}
+
+.navigation {
+    gap: 16px;
+    list-style: none;
+    display: flex;
+}
+
+.navigation li {
+    align-items: center;
+    display: flex;
+    font-size: 16;
+}
+
+.navigation li img{
+    width: 20px;
+    padding: 12px;
+}
+
+.navigation a {
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+}
+
+  
