@@ -1,4 +1,4 @@
-﻿namespace Auctionify.Application.Common.DTOs
+namespace Auctionify.Application.Common.DTOs
 {
 	public class LotDto
 	{
