@@ -35,7 +35,6 @@ namespace Auctionify.UnitTests
                 //    dbSetMock.Setup(x => x.Inc).Returns(dbSetMock.Object);
                 //}
             }
-
             dbContext.Setup(ctx => ctx.Set<TData>()).Returns(dbSetMock.Object);
             dbContext.Setup(dbSetSelectionExpression).Returns(dbSetMock.Object);
 
