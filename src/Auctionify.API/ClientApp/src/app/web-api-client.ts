@@ -107,6 +107,7 @@ export interface LoginViewModel {
 }
 
 export interface RegisterViewModel {
+    firstName: string;
     email: string;
     password: string;
     confirmPassword: string;

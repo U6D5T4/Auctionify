@@ -63,11 +63,13 @@ export class AuthorizeService {
   }
 
   register(
+    firstName: string,
     email: string,
     password: string,
     confirmPassword: string
   ) : Observable<RegisterResponse | undefined> {
     const registerData: RegisterViewModel = {
+      firstName,
       email,
       password,
       confirmPassword,
