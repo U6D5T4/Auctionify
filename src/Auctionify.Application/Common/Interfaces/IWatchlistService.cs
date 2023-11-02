@@ -2,6 +2,6 @@
 {
 	public interface IWatchlistService
 	{
-		public Task<bool> IsLotInUserWatchlist(int lotId, int userId, CancellationToken cancellationToken);
+		Task<bool> IsLotInUserWatchlist(int lotId, int userId, CancellationToken cancellationToken);
 	}
 }

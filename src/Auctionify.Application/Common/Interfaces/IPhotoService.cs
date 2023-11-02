@@ -2,6 +2,6 @@
 {
 	public interface IPhotoService
 	{
-		public Task<string?> GetMainPhotoUrlAsync(int lotId, CancellationToken cancellationToken);
+		Task<string?> GetMainPhotoUrlAsync(int lotId, CancellationToken cancellationToken);
 	}
 }
