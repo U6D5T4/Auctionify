@@ -6,6 +6,7 @@ import {
   LoginViewModel,
   RegisterResponse,
   RegisterViewModel,
+  ResetPasswordViewModel,
 } from '../web-api-client';
 import { HttpErrorResponse, HttpResponseBase } from '@angular/common/http';
 
@@ -78,6 +79,16 @@ export class AuthorizeService {
     return this.client.register(registerData).pipe(map((result) => {
       return result;
     }))
+  }
+
+  resetPassword(
+    password: string,
+    confirmPassword: string
+  ){
+    const resetPasswordData: ResetPasswordViewModel = {
+      password,
+      confirmPassword
+    };
   }
 
   logout(): boolean {
