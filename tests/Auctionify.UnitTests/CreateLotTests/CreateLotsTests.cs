@@ -138,7 +138,7 @@ namespace Auctionify.UnitTests.CreateLotTests
 			(DateTime startDate, DateTime endDate)
 		{
 			// Time: 2023-11-2T13:00:00
-			var dateToTestOver = new DateTime(2023, 11, 2, 13, 0, 0);
+			var dateToTestOver = CustomDateTimeNow;
 
 			var newLot = new CreateLotCommand
 			{
