@@ -7,13 +7,13 @@ import {
   RegisterResponse,
   RegisterViewModel,
 } from '../web-api-client';
-import { HttpErrorResponse, HttpResponseBase } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 
 export enum UserRole {
-  Administrator = 1,
-  Seller,
-  Buyer,
-  User,
+  Administrator = "Administrator",
+  Seller = "Seller",
+  Buyer = "Buyer",
+  User = "User",
 }
 
 export interface IUser {
@@ -28,12 +28,34 @@ export interface IUser {
 export class AuthorizeService {
   private tokenString: string = 'token';
   private expireString: string = 'expires_at';
+  private roleString: string = 'role'
   private user: BehaviorSubject<IUser | null> =
     new BehaviorSubject<IUser | null>(null);
 
-  constructor(private client: Client) {}
+  constructor(private client: Client) {
+    this.initializeAuthorizeService();
+  }
 
-  login(email: string, password: string) : Observable<string | boolean> {
+  private initializeAuthorizeService() {
+    const token = localStorage.getItem(this.tokenString);
+    const tokenExpireDate = localStorage.getItem(this.expireString);
+    const role = localStorage.getItem(this.roleString);
+    if (token === null &&
+      tokenExpireDate === null &&
+      role === null) return;
+
+    const roleEnum: UserRole = role as UserRole;
+
+    const user: IUser = {
+      userToken: token!,
+      expireDate: tokenExpireDate!,
+      role: roleEnum
+    }
+
+    this.user.next(user)
+  }
+
+  login(email: string, password: string) : Observable<LoginResponse | boolean> {
     const loginData: LoginViewModel = {
       email,
       password,
@@ -43,7 +65,6 @@ export class AuthorizeService {
       .login(loginData)
       .pipe(map((response): boolean => {
         if (response.result === undefined) throw new Error("user not found");
-
           let newUser: IUser = {
             userToken: response.result.accessToken,
             role: response.result.role,
@@ -52,12 +73,13 @@ export class AuthorizeService {
 
           localStorage.setItem(this.tokenString, response.result.accessToken);
           localStorage.setItem(this.expireString, newUser.expireDate);
+          localStorage.setItem(this.roleString, newUser.role)
 
           this.user.next(newUser);
 
           return true;
       }))
-      .pipe(catchError((err: HttpErrorResponse): Observable<string>  => {
+      .pipe(catchError((err: HttpErrorResponse): Observable<LoginResponse>  => {
         return throwError(() => err.error);
       }));
   }
@@ -91,5 +113,17 @@ export class AuthorizeService {
 
     if(localToken === null && localToken !== this.user.value?.userToken) return of(null);
     return of(localToken);
+  }
+
+  isUserBuyer(): boolean {
+    return this.user.value?.role == UserRole.Buyer;
+  }
+
+  isUserSeller(): boolean {
+    return this.user.value?.role === UserRole.Seller;
+  }
+
+  isUserLoggedIn(): boolean {
+    return this.user.value !== null && this.getAccessToken() !== null;
   }
 }
