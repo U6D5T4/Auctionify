@@ -1,5 +1,6 @@
 ﻿using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Interfaces.Repositories;
+using Auctionify.Application.Common.Options;
 using Auctionify.Application.Features.Lots.Commands.Create;
 using Auctionify.Core.Entities;
 using Auctionify.Infrastructure.Persistence;
@@ -8,6 +9,7 @@ using AutoMapper;
 using FluentAssertions;
 using FluentValidation.TestHelper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using Moq;
 using System.Collections;
 
@@ -17,9 +19,12 @@ namespace Auctionify.UnitTests.CreateLotTests
 	{
 		private readonly IMapper _mapper;
 		private readonly ILotRepository _lotRepository;
-		private readonly UserManager<User> _userManager;
+		private readonly IFileRepository _fileRepository;
 		private readonly ILotStatusRepository _lotStatusRepository;
-		private readonly ICurrentUserService _currentUserService;
+		private readonly Mock<IBlobService> _blobServiceMock;
+		private readonly Mock<IOptions<AzureBlobStorageOptions>> _blobStorageOptionsMock;
+		private readonly Mock<ICurrentUserService> _currentUserServiceMock;
+		private readonly UserManager<User> _userManager;
 		private readonly CreateLotCommandValidator _validator;
 		private static readonly DateTime CustomDateTimeNow = new DateTime(2023, 11, 2, 13, 0, 0);
 
@@ -31,8 +36,7 @@ namespace Auctionify.UnitTests.CreateLotTests
 			mockDbContext = DbContextMock.GetMock(EntitiesSeeding.GetCategories(), ctx => ctx.Categories, mockDbContext);
 			mockDbContext = DbContextMock.GetMock(EntitiesSeeding.GetCurrencies(), ctx => ctx.Currency, mockDbContext);
 
-			_lotRepository = new LotRepository(mockDbContext.Object);
-
+			var blobStorageOptionsMock = new Mock<IOptions<AzureBlobStorageOptions>>();
 			var configuration = new MapperConfiguration(cfg => cfg.AddProfiles(new List<Profile>
 			{
 				new Application.Common.Profiles.MappingProfiles(),
@@ -41,13 +45,21 @@ namespace Auctionify.UnitTests.CreateLotTests
 			_mapper = new Mapper(configuration);
 
 			var currentUserService = new Mock<ICurrentUserService>();
-			currentUserService.Setup(x => x.UserEmail).Returns(It.IsAny<string>());
-			_currentUserService = currentUserService.Object;
-
-			_lotStatusRepository = new LotStatusRepository(mockDbContext.Object);
-
+			_blobServiceMock = new Mock<IBlobService> { CallBase = true };
+			_currentUserServiceMock = currentUserService;
 			_userManager = EntitiesSeeding.GetUserManagerMock();
 
+			currentUserService.Setup(x => x.UserEmail).Returns(It.IsAny<string>());
+			blobStorageOptionsMock.Setup(x => x.Value).Returns(new AzureBlobStorageOptions
+			{
+				ContainerName = "auctionify-files",
+				PhotosFolderName = "photos",
+				AdditionalDocumentsFolderName = "additional-documents"
+			});
+
+			_blobStorageOptionsMock = blobStorageOptionsMock;
+			_lotRepository = new LotRepository(mockDbContext.Object);
+			_lotStatusRepository = new LotStatusRepository(mockDbContext.Object);
 			var categoryRepository = new CategoryRepository(mockDbContext.Object);
 			var currencyRepository = new CurrencyRepository(mockDbContext.Object);
 
@@ -67,7 +79,15 @@ namespace Auctionify.UnitTests.CreateLotTests
 				IsDraft = true,
 			};
 			await _validator.TestValidateAsync(newLot);
-			var command = new CreateLotCommandHandler(_lotRepository, _lotStatusRepository, _currentUserService, _userManager, _mapper);
+			var command = new CreateLotCommandHandler(
+				_lotRepository,
+				_lotStatusRepository,
+				_currentUserServiceMock.Object,
+				_userManager,
+				_mapper,
+				_blobServiceMock.Object,
+				_fileRepository,
+				_blobStorageOptionsMock.Object);
 
 			var result = await command.Handle(newLot, default);
 
@@ -165,7 +185,5 @@ namespace Auctionify.UnitTests.CreateLotTests
 			new object[] { CustomDateTimeNow.AddDays(1), CustomDateTimeNow },
 			new object[] { CustomDateTimeNow.AddDays(1), CustomDateTimeNow.AddHours(2) },
 		};
-
-
 	}
 }
