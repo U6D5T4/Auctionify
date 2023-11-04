@@ -31,6 +31,14 @@ namespace Auctionify.Infrastructure
 				configuration.GetSection(AzureBlobStorageOptions.AzureBlobStorageSettings)
 			);
 
+			services.Configure<AuthSettingsOptions>(
+				configuration.GetSection(AuthSettingsOptions.AuthSettings)
+				);
+
+			services.Configure<AppOptions>(
+				configuration.GetSection(AppOptions.App)
+				);
+
 			services.AddScoped<AuditableEntitySaveChangesInterceptor>();
 
 			// Add DbContext service

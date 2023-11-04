@@ -24,6 +24,10 @@ namespace Auctionify.Infrastructure.Persistence
             _mediator = mediator;
         }
 
+		public ApplicationDbContext(DbContextOptions options) : base(options)
+		{
+		}
+
 		public virtual DbSet<Category> Categories => Set<Category>();
 
 		public virtual DbSet<ChatMessage> ChatMessages => Set<ChatMessage>();
