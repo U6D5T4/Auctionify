@@ -11,6 +11,7 @@ import { UiElementsModule } from './ui-elements/ui-elements.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SellerModule } from './components/seller/seller.module';
 import { DashboardComponent } from './components/seller/dashboard/dashboard.component';
+import { LayoutModule } from './layout/layout.module';
 
 @NgModule({
   declarations: [AppComponent, HomeComponent, DashboardComponent],
@@ -22,7 +23,9 @@ import { DashboardComponent } from './components/seller/dashboard/dashboard.comp
     UiElementsModule,
     BrowserAnimationsModule,
     SellerModule,
+    LayoutModule,
   ],
+
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true },
   ],
