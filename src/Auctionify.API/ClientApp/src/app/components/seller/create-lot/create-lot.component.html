@@ -1,0 +1,120 @@
+<div class="lot-operation">
+    <div class="lot-operation__inner-container">
+        <h1 class="lot-operation__header">
+            Create a lot
+        </h1>
+        <div class="lot-operation__main">
+            <div class="main__form">
+                <form class="lot-form" action="">
+                    <div class="form__lot-info">
+                        <h2 class="lot-info__header">Describe an item</h2>
+                        <div class="lot-info__inputs">
+                            <div class="inputs__row-1">
+                                <mat-form-field color="primary" appearance="outline">
+                                    <mat-label>Lot name</mat-label>
+                                    <input matInput>
+                                </mat-form-field>
+                                <mat-form-field color="primary" appearance="outline">
+                                    <mat-label>Item category</mat-label>
+                                    <mat-icon matSuffix color="primary">expand_more</mat-icon>
+                                    <input matInput>
+                                </mat-form-field>
+                            </div>
+                            <div class="inputs__row-2">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Short description</mat-label>
+                                    <textarea matInput name="" id="" cols="30" rows="10"></textarea>
+                                </mat-form-field>
+                            </div>
+                            <div class="inputs__row-3">
+                                <mat-form-field color="primary" appearance="outline">
+                                    <mat-label>Start date & time</mat-label>
+                                    <mat-icon matSuffix color="primary">calendar_today</mat-icon>
+                                    <input matInput>
+                                </mat-form-field>
+                                <mat-form-field color="primary" appearance="outline">
+                                    <mat-label>End date & time</mat-label>
+                                    <mat-icon matSuffix color="primary">calendar_today</mat-icon>
+                                    <input matInput>
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="lot-info__selector-inputs">
+                            <button mat-flat-button>
+                                <mat-icon class="color-grey-3" matSuffix>location_on</mat-icon>
+                                Location
+                            </button>
+                            <button mat-flat-button>
+                                <mat-icon matSuffix class="color-grey-3">attach_money</mat-icon>
+                                Starting price
+                            </button>
+                            <button mat-flat-button>
+                                <mat-icon matSuffix class="color-grey-3">paid</mat-icon>
+                                Currency
+                            </button>
+                            <button mat-flat-button>
+                                <mat-icon matSuffix class="color-grey-3">attach_file</mat-icon>
+                                File
+                            </button>
+                        </div>
+                    </div>
+                    <hr class="color-grey-5">
+                    <div class="form__lot-photos">
+                        <h2>Add some photos</h2>
+                        <div class="photos__container">
+                            <input #fileInput (change)="fileUpdateEvent($event)" hidden="true" type="file"
+                                onclick="this.value=null" multiple />
+                            <div *ngFor="let item of inputButtons; index as i" class="input-buttons">
+                                <button class="photo-button" type="button" color="primary"
+                                    (click)="handleInputButtonClick(item)">
+                                    <mat-icon>add_circle_outline</mat-icon>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="color-grey-5">
+                    <div class="form__lot-buttons">
+                        <div class="submit-buttons">
+                            <button class="mat-mdc-outlined-button-custom" mat-stroked-button color="primary">Save as
+                                draft</button>
+                            <button mat-flat-button color="primary">Submit</button>
+                        </div>
+                        <p>By clicking “Submit” button I accept <br>
+                            Company’s Terms of Use and Privacy Policy</p>
+                    </div>
+                </form>
+            </div>
+            <div class="main__notes">
+                <div class="notes__inner">
+                    <div class="note__row note__row-1">
+                        <img src="../../../../assets/images/create-lot/Create.svg" alt="create lot image">
+                        <div class="note__text">
+                            <b>Create a new lot</b>
+                            <p>It’s absolutely free</p>
+                        </div>
+                    </div>
+                    <div class="note__row note__row-2">
+                        <img src="../../../../assets/images/create-lot/Chat.svg" alt="Chat image">
+                        <div class="note__text">
+                            <b>Chat with winner</b>
+                            <p>Discuss delivery & price</p>
+                        </div>
+                    </div>
+                    <div class="note__row note__row-3">
+                        <img src="../../../../assets/images/create-lot/Feedback.svg" alt="Feedback lot image">
+                        <div class="note__text">
+                            <b>Receive feedback</b>
+                            <p>Comments from customer</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="notes__questions">
+                    <b>Have questions?</b>
+                    <button class="mat-mdc-outlined-button-custom" mat-stroked-button color="primary">
+                        Contact us
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

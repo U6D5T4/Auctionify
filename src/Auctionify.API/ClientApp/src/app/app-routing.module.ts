@@ -5,6 +5,12 @@ import { HomeComponent } from './components/home/home.component';
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
+  {
+    path: 'seller',
+    loadChildren: () =>
+      import('./components/seller/seller.module').then((m) => m.SellerModule),
+    data: { breadcrumb: { skip: true } },
+  },
 ];
 
 @NgModule({
