@@ -194,6 +194,7 @@ namespace Auctionify.Infrastructure.Persistence
 					new LotStatus { Name = "Reopened" },
 					new LotStatus { Name = "Archive" }
 				);
+				await _context.SaveChangesAsync();
 			}
 
 			if (!_context.Currency.Any())
@@ -202,6 +203,7 @@ namespace Auctionify.Infrastructure.Persistence
 					new Currency { Code = "USD" },
 					new Currency { Code = "RUB" }
 				);
+				await _context.SaveChangesAsync();
 			}
 
 			if (!_context.Locations.Any())

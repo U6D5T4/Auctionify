@@ -735,7 +735,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
-				new Mock<IOptions<AuthSettingsOptions>>().Object,
+				_authSettingsOptionsMock.Object,
 				_appOptionsMock.Object
 			);
 
