@@ -1,3 +1,4 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, catchError, map, of, throwError } from 'rxjs';
 import {
@@ -25,13 +26,16 @@ export interface IUser {
 @Injectable({
   providedIn: 'root',
 })
+
 export class AuthorizeService {
   private tokenString: string = 'token';
   private expireString: string = 'expires_at';
   private user: BehaviorSubject<IUser | null> =
     new BehaviorSubject<IUser | null>(null);
 
-  constructor(private client: Client) {}
+    constructor(private client: Client, private httpClient: HttpClient) {
+      //this.initializeAuthorizeService();
+    }
 
   login(email: string, password: string) : Observable<string | boolean> {
     const loginData: LoginViewModel = {

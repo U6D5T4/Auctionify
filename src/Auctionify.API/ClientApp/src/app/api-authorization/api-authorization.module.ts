@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
@@ -13,9 +14,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '@angular/cdk/dialog';
+import { RegisterRoleComponent } from './register-role/register-role.component';
+import { MatButtonToggleModule } from '@angular/material/button-toggle'
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [LoginComponent, RegisterComponent],
+  declarations: [LoginComponent, RegisterComponent, RegisterRoleComponent,
+  RegisterRoleComponent],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -30,10 +35,13 @@ import { DialogModule } from '@angular/cdk/dialog';
     ReactiveFormsModule,
     DialogModule,
     MatButtonModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatButtonToggleModule,
+    FormsModule
   ],
   exports: [
-    RegisterComponent
+    RegisterComponent,
+    RegisterRoleComponent
   ]
 })
 export class ApiAuthorizationModule {}
