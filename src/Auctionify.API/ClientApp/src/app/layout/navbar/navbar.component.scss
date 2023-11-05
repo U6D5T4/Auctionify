@@ -1,9 +1,13 @@
-.menu{
+.menu {
     height: 80px;
-    border: 0px, 0px, 1px, 0px;
+    border-bottom: 1px solid var(--color-grey-5);
     display: flex;
     justify-content: center;
     gap: 64px;
+
+    &__search {
+        width: 20%;
+    }
 }
 
 .menu img {
@@ -27,7 +31,7 @@
     font-size: 16;
 }
 
-.navigation li img{
+.navigation li img {
     width: 20px;
     padding: 12px;
 }
@@ -37,5 +41,3 @@
     color: #000;
     font-weight: bold;
 }
-
-  

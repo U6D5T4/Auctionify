@@ -1,6 +1,9 @@
-<app-navbar></app-navbar>
+<app-navbar *ngIf="!isUserSeller"></app-navbar>
 <div class="container">
-    <router-outlet></router-outlet>
-
+    <app-navbar-seller *ngIf="isUserSeller">
+        <router-outlet></router-outlet>
+    </app-navbar-seller>
+    <router-outlet *ngIf="!isUserSeller"></router-outlet>
 </div>
+<hr class="color-grey-5">
 <app-footer></app-footer>

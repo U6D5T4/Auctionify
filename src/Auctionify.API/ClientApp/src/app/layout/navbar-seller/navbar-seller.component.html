@@ -1,0 +1,61 @@
+<div class="seller-navigation">
+    <div class="seller-navigation__container">
+        <div class="seller-navigation__navbar navbar">
+            <div class="navbar__top">
+                <div class="navbar__top-header">
+                    <a [routerLink]="['/home']">
+                        <img src="assets/icons/AuctionifyLogo.svg" title="AuctionifyLogo">
+                    </a>
+                    <div class="burger-menu">
+
+                    </div>
+                </div>
+                <div class="navbar__top-middle">
+                    <app-search></app-search>
+                </div>
+                <div class="navbar__top-footer">
+                    <button [routerLink]="['/seller/dashboard']" routerLinkActive="mat-primary" mat-flat-button
+                        color="white">
+                        <mat-icon>home</mat-icon>
+                        Dashboard
+                    </button>
+                    <button mat-flat-button [routerLink]="['/seller/create-lot']" routerLinkActive="mat-primary"
+                        color="white">
+                        <mat-icon>add_circle_outline</mat-icon>
+                        Create lot
+                    </button>
+                    <button mat-flat-button color="white">
+                        <mat-icon>local_mall</mat-icon>
+                        Active lots
+                    </button>
+                    <button mat-flat-button color="white">
+                        <mat-icon>account_circle</mat-icon>
+                        MyProfile</button>
+                </div>
+            </div>
+            <div class="navbar__bottom">
+                <div class="navbar__bottom-header">
+                    <div class="header__container">
+                        <button mat-flat-button color="white">
+                            <mat-icon>chat_bubble_outline</mat-icon>
+                            Notifications
+                        </button>
+                        <button mat-flat-button color="white">
+                            <mat-icon>live_help</mat-icon>
+                            Support
+                        </button>
+                        <button mat-flat-button color="white">
+                            <mat-icon>settings</mat-icon>
+                            Settings
+                        </button>
+                    </div>
+                </div>
+                <button mat-flat-button color="white">
+                    <mat-icon>logout</mat-icon>
+                    Log out
+                </button>
+            </div>
+        </div>
+    </div>
+    <ng-content></ng-content>
+</div>
