@@ -12,6 +12,7 @@ export class AppComponent {
 
   constructor(private authService: AuthorizeService) {
     this.isUserBuyer = authService.isUserBuyer();
+    this.isUserSeller = authService.isUserSeller();
   }
   title = 'ClientApp';
 }

@@ -16,8 +16,16 @@
                                 </mat-form-field>
                                 <mat-form-field color="primary" appearance="outline">
                                     <mat-label>Item category</mat-label>
-                                    <mat-icon matSuffix color="primary">expand_more</mat-icon>
-                                    <input matInput>
+                                    <mat-select>
+                                        <div class="sel" *ngFor="let item of categories">
+                                            <mat-option [value]="item.id">
+                                                {{item.name}}
+                                            </mat-option>
+                                            <mat-option *ngFor="let itemChild of item.children" [value]="itemChild.id">
+                                                -- {{itemChild.name}}
+                                            </mat-option>
+                                        </div>
+                                    </mat-select>
                                 </mat-form-field>
                             </div>
                             <div class="inputs__row-2">
@@ -29,40 +37,92 @@
                             <div class="inputs__row-3">
                                 <mat-form-field color="primary" appearance="outline">
                                     <mat-label>Start date & time</mat-label>
-                                    <mat-icon matSuffix color="primary">calendar_today</mat-icon>
-                                    <input matInput>
+                                    <input matInput type="datetime-local">
                                 </mat-form-field>
                                 <mat-form-field color="primary" appearance="outline">
                                     <mat-label>End date & time</mat-label>
-                                    <mat-icon matSuffix color="primary">calendar_today</mat-icon>
-                                    <input matInput>
+                                    <input matInput type="datetime-local">
                                 </mat-form-field>
                             </div>
                         </div>
                         <div class="lot-info__selector-inputs">
-                            <button mat-flat-button>
-                                <mat-icon class="color-grey-3" matSuffix>location_on</mat-icon>
-                                Location
-                            </button>
-                            <button mat-flat-button>
-                                <mat-icon matSuffix class="color-grey-3">attach_money</mat-icon>
-                                Starting price
-                            </button>
-                            <button mat-flat-button>
-                                <mat-icon matSuffix class="color-grey-3">paid</mat-icon>
-                                Currency
-                            </button>
-                            <button mat-flat-button>
-                                <mat-icon matSuffix class="color-grey-3">attach_file</mat-icon>
-                                File
-                            </button>
+                            <div class="buttons location-btn">
+                                <button type="button" mat-flat-button (click)="clickLocation()">
+                                    <mat-icon class="color-grey-3" matSuffix>location_on</mat-icon>
+                                    Location
+                                </button>
+                                <div id="button-select-parent-location" class="button-select location-select">
+                                    <div class="select-container location-container">
+                                        <mat-form-field color="primary" appearance="outline">
+                                            <mat-label>Country</mat-label>
+                                            <input matInput>
+                                        </mat-form-field>
+                                        <mat-form-field color="primary" appearance="outline">
+                                            <mat-label>City</mat-label>
+                                            <input matInput>
+                                        </mat-form-field>
+                                        <mat-form-field color="primary" appearance="outline">
+                                            <mat-label>Address</mat-label>
+                                            <input matInput>
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="buttons starting-price-btn">
+                                <button type="button" mat-flat-button (click)="clickStartingPrice()">
+                                    <mat-icon matSuffix class="color-grey-3">attach_money</mat-icon>
+                                    Starting price
+                                </button>
+                                <div id="button-select-parent-starting-price" class="button-select location-select">
+                                    <div class="select-container starting-price-container">
+                                        <div class="row">
+                                            <mat-form-field color="primary" appearance="outline">
+                                                <mat-label>Starting price</mat-label>
+                                                <input type="number" matInput>
+                                            </mat-form-field>
+                                            <mat-form-field color="primary" appearance="outline">
+                                                <mat-label>Currency</mat-label>
+                                                <mat-select>
+                                                    <mat-option>---</mat-option>
+                                                </mat-select>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="buttons currency-btn">
+                                <button type="button" mat-flat-button (click)="clickStartingPrice()">
+                                    <mat-icon matSuffix class="color-grey-3">paid</mat-icon>
+                                    Currency
+                                </button>
+                            </div>
+                            <div class="buttons file-btn">
+                                <button type="button" mat-flat-button (click)="clickFile()">
+                                    <mat-icon matSuffix class="color-grey-3">attach_file</mat-icon>
+                                    File
+                                </button>
+                                <div id="button-select-parent-file" class="button-select file-select">
+                                    <div class="select-container file-container">
+                                        <div *ngFor="let item of filesToUpload" class="files-list">
+                                            <p>{{item.file.name}}</p>
+                                            <button type="button" (click)="removeInputFile(item.id)">
+                                                <mat-icon>highlight_off</mat-icon>
+                                            </button>
+                                        </div>
+                                        <input #fileInput (change)="fileUpdateEvent($event)" hidden="true" type="file"
+                                            onclick="this.value=null" multiple />
+                                        <button type="button" class="mat-mdc-outlined-button-custom" mat-stroked-button
+                                            color="primary" (click)="handleFileInputButtonClick()">+ Add new</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <hr class="color-grey-5">
                     <div class="form__lot-photos">
                         <h2>Add some photos</h2>
                         <div class="photos__container">
-                            <input #fileInput (change)="fileUpdateEvent($event)" hidden="true" type="file"
+                            <input #imageInput (change)="imageUpdateEvent($event)" hidden="true" type="file"
                                 onclick="this.value=null" multiple />
                             <div *ngFor="let item of inputButtons; index as i" class="input-buttons">
                                 <button class="photo-button" type="button" color="primary"
