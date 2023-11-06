@@ -101,6 +101,10 @@ export interface RegisterResponse {
     errors?: string[] | undefined;
 }
 
+export interface ForgetPasswordResponse {
+    email: string;
+}
+
 export interface ResetPasswordResponse {
     message?: string | undefined;
     isSuccess?: boolean;
@@ -119,7 +123,11 @@ export interface RegisterViewModel {
     confirmPassword: string;
 }
 
-export interface ResetPasswordViewModel{
+export interface ForgetPasswordViewModel {
+    email: string;
+}
+
+export interface ResetPasswordViewModel {
     password: string;
     confirmPassword: string;
 }

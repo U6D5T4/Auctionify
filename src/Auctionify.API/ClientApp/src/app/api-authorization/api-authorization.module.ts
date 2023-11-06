@@ -35,7 +35,9 @@ import { ForgetPasswordComponent } from './forget-password/forget-password.compo
     MatProgressSpinnerModule
   ],
   exports: [
-    RegisterComponent
+    RegisterComponent,
+    ResetPasswordComponent,
+    ForgetPasswordComponent
   ]
 })
 export class ApiAuthorizationModule {}

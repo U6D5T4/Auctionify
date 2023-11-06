@@ -1,10 +1,10 @@
 import { Component, Injectable } from '@angular/core';
+
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { AuthorizeService } from '../authorize.service';
 import { Dialog } from '@angular/cdk/dialog';
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import { Router } from '@angular/router';
-import { ResetPasswordResponse } from 'src/app/web-api-client';
 
 @Injectable({
   providedIn: 'root'
@@ -34,17 +34,17 @@ export class ResetPasswordComponent {
       return;
     }
 
-    this.authService.resetPassword(
-      this.resetPasswordForm.controls.password.value!,
-      this.resetPasswordForm.controls.confirmPassword.value!)
-      .subscribe({
-        next: (result) => {
-          this.router.navigate(['/home'])
-        },
-        error: (error: ResetPasswordResponse) => {
-          this.openDialog(error.errors!, true);
-        }
-      })
+    // this.authService.resetPassword(
+    //   this.resetPasswordForm.controls.password.value!,
+    //   this.resetPasswordForm.controls.confirmPassword.value!)
+    //   .subscribe({
+    //     next: (result) => {
+    //       this.router.navigate(['/home'])
+    //     },
+    //     error: (error: ResetPasswordResponse) => {
+    //       this.openDialog(error.errors!, true);
+    //     }
+    //   })
   }
 
   openDialog(text: string[], error: boolean) {
