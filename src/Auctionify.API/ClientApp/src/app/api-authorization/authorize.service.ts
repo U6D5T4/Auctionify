@@ -66,12 +66,12 @@ export class AuthorizeService {
       }));
   }
 
-  register(
-    firstName: string,
-    email: string,
-    password: string,
-    confirmPassword: string
-  ) : Observable<RegisterResponse | undefined> {
+  assignRoleToUser( email: string, UserRole: string)
+  {
+    
+  }
+
+  register( firstName: string, email: string, password: string, confirmPassword: string ) : Observable<RegisterResponse | boolean > {
     const registerData: RegisterViewModel = {
       firstName,
       email,
