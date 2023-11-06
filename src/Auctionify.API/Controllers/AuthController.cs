@@ -91,5 +91,18 @@ namespace Auctionify.API.Controllers
 
 			return Ok(result);
 		}
-	}
+
+        [HttpPost("assign-role")]
+        public async Task<IActionResult> AssignRoleToUser([FromBody] AssignRoleToUserViewModel viewModel)
+        {
+            var result = await _identityService.AssignRoleToUserAsync(viewModel);
+
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result);
+            }
+
+            return Ok(result);
+        }
+    }
 }

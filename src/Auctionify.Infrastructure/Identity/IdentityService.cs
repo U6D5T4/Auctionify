@@ -274,5 +274,66 @@ namespace Auctionify.Infrastructure.Identity
                 Errors = result.Errors.Select(e => e.Description),
             };
         }
+
+        public async Task<AssignRoleToUserResponse> AssignRoleToUserAsync(AssignRoleToUserViewModel viewModel)
+        {
+            var user = await _userManager.FindByEmailAsync(viewModel.Email);
+
+            if (user == null)
+            {
+                return new AssignRoleToUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "User not found",
+                };
+            }
+
+            if (string.IsNullOrWhiteSpace(viewModel.Role.ToString()))
+            {
+                return new AssignRoleToUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "Role name is not provided",
+                };
+            }
+
+            var role = await _userManager.FindByNameAsync(viewModel.Role.ToString());
+
+            if (role == null)
+            {
+                return new AssignRoleToUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "Role not found",
+                };
+            }
+
+            if (await _userManager.IsInRoleAsync(user, viewModel.Role.ToString()))
+            {
+                return new AssignRoleToUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "User already has the specified role",
+                };
+            }
+
+            var result = await _userManager.AddToRoleAsync(user, viewModel.Role.ToString());
+
+            if (result.Succeeded)
+            {
+                return new AssignRoleToUserResponse
+                {
+                    IsSuccess = true,
+                    Message = $"Role '{viewModel.Role}' assigned to the user successfully",
+                };
+            }
+
+            return new AssignRoleToUserResponse
+            {
+                IsSuccess = false,
+                Message = "Failed to assign role",
+                Errors = result.Errors.Select(e => e.Description),
+            };
+        }
     }
 }
