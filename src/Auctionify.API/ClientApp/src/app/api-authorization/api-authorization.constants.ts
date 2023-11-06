@@ -5,6 +5,8 @@ export const LoginActions = {
   Profile: 'profile',
   Register: 'register',
   LoginFailed: 'login-failed',
+  ForgotPassword: 'forgot-password',
+  ResetPassword: 'reset-password'
 };
 
 let applicationPaths: ApplicationPathsType = {
@@ -12,9 +14,13 @@ let applicationPaths: ApplicationPathsType = {
   Register: `auth/${LoginActions.Register}`,
   Profile: `auth/${LoginActions.Profile}`,
   LoginFailed: `auth/${LoginActions.LoginFailed}`,
+  ForgotPassword: `auth/${LoginActions.ForgotPassword}`,
+  ResetPassword: `auth/${LoginActions.ResetPassword}`,
   LoginPathComponents: [],
   RegisterPathComponents: [],
   ProfilePathComponents: [],
+  ForgotPasswordComponents: [],
+  ResetPasswordComponents: []
 };
 
 applicationPaths = {
@@ -22,6 +28,8 @@ applicationPaths = {
   LoginPathComponents: applicationPaths.Login.split('/'),
   RegisterPathComponents: applicationPaths.Register.split('/'),
   ProfilePathComponents: applicationPaths.Profile.split('/'),
+  ForgotPasswordComponents: applicationPaths.ForgotPassword.split('/'),
+  ResetPasswordComponents: applicationPaths.ResetPassword.split('/'),
 };
 
 interface ApplicationPathsType {
@@ -29,9 +37,13 @@ interface ApplicationPathsType {
   readonly LoginFailed: string;
   readonly Register: string;
   readonly Profile: string;
+  readonly ForgotPassword: string;
+  readonly ResetPassword: string;
   readonly LoginPathComponents: string[];
   readonly RegisterPathComponents: string[];
   readonly ProfilePathComponents: string[];
+  readonly ForgotPasswordComponents: string[];
+  readonly ResetPasswordComponents: string[];
 }
 
 export const ApplicationPaths: ApplicationPathsType = applicationPaths;

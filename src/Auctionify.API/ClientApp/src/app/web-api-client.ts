@@ -80,6 +80,31 @@ export class Client {
             return of(data);
         }));
     }
+
+    forgetPassword(body: ForgetPasswordViewModel | undefined) : Observable<ForgetPasswordResponse> {
+        let url_ = this.baseUrl + "/api/auth/forget-password";
+
+        const content_ = JSON.stringify(body);
+        
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(mergeMap((response: any) : Observable<ForgetPasswordResponse> => {
+            let data: ForgetPasswordResponse = {};
+
+            if (response.body !== null) {
+                data = response.body
+            }
+
+            return of(data);
+        }));
+    }
 }
 
 export interface LoginResponse {
@@ -102,7 +127,9 @@ export interface RegisterResponse {
 }
 
 export interface ForgetPasswordResponse {
-    email: string;
+    message?: string | undefined;
+    isSuccess?: boolean;
+    errors?: string[] | undefined;
 }
 
 export interface ResetPasswordResponse {

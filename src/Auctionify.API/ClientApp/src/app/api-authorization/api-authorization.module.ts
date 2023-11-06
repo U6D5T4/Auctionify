@@ -23,7 +23,9 @@ import { ForgetPasswordComponent } from './forget-password/forget-password.compo
     HttpClientModule,
     RouterModule.forChild([
       { path: ApplicationPaths.Login, component: LoginComponent },
-      { path: ApplicationPaths.Register, component: RegisterComponent }
+      { path: ApplicationPaths.Register, component: RegisterComponent },
+      { path: ApplicationPaths.ResetPassword, component: ResetPasswordComponent},
+      { path: ApplicationPaths.ForgotPassword, component: ForgetPasswordComponent}
     ]),
     UiElementsModule,
     MatFormFieldModule,
@@ -33,11 +35,6 @@ import { ForgetPasswordComponent } from './forget-password/forget-password.compo
     DialogModule,
     MatButtonModule,
     MatProgressSpinnerModule
-  ],
-  exports: [
-    RegisterComponent,
-    ResetPasswordComponent,
-    ForgetPasswordComponent
   ]
 })
 export class ApiAuthorizationModule {}

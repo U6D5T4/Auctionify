@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, catchError, map, of, throwError } from 'rxjs';
 import {
   Client,
+  ForgetPasswordResponse,
+  ForgetPasswordViewModel,
   LoginResponse,
   LoginViewModel,
   RegisterResponse,
@@ -77,6 +79,16 @@ export class AuthorizeService {
     };
 
     return this.client.register(registerData).pipe(map((result) => {
+      return result;
+    }))
+  }
+
+  forgetPassword(email: string) : Observable<RegisterResponse | undefined> {
+    const forgetPasswordData: ForgetPasswordViewModel = {
+      email
+    };
+
+    return this.client.forgetPassword(forgetPasswordData).pipe(map((result) => {
       return result;
     }))
   }
