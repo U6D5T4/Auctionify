@@ -26,7 +26,7 @@ namespace Auctionify.UnitTests.FilterLotsTests
 
 		public FilterLotsTests()
         {
-            var mockDbContext = DbContextMock.GetMock<Lot, ApplicationDbContext>(GetAllLots(), ctx => ctx.Lots);
+            var mockDbContext = DbContextMock.GetMock<Lot, ApplicationDbContext>(EntitiesSeeding.GetLots(), ctx => ctx.Lots);
 
 			var configuration = new MapperConfiguration(cfg => cfg.AddProfiles(new List<Profile>
             {
@@ -55,8 +55,9 @@ namespace Auctionify.UnitTests.FilterLotsTests
             var handler = new FilterLotsQueryHandler(_lotRepository, _mapper, _photoServiceMock.Object, _currentUserServiceMock.Object, _userManager, _watchListServiceMock.Object);
 
             var result = await handler.Handle(query, default);
+			var countLots = EntitiesSeeding.GetLots().Where(l => l.LotStatus.Id != 2).Count();
 
-            Assert.Equal(result.Count, GetAllLots().Count);
+			Assert.Equal(result.Count, countLots);
         }
 
         [Theory]
@@ -80,7 +81,7 @@ namespace Auctionify.UnitTests.FilterLotsTests
 
 			var result = await handler.Handle(query, default);
 
-            result.Items.Should().HaveCount(PageSize);
+			result.Items.Should().HaveCount(PageSize);
         }
 
         private List<Lot> GetAllLots()

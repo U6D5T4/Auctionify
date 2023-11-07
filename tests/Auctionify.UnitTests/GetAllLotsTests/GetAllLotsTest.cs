@@ -44,7 +44,7 @@ namespace Auctionify.UnitTests.GetAllLotsTests
 		}
 
         [Fact]
-        public async Task GetAllLotsQueryHandler_WhenCalled_ReturnsAllLotsIfAnyExists()
+        public async Task GetAllLotsQueryHandler_WhenCalled_ReturnsAllLotsWithNotDraftStatusIfAnyExists()
         {
             var allLots = EntitiesSeeding.GetLots();
             var query = new GetAllLotsQuery
@@ -66,7 +66,9 @@ namespace Auctionify.UnitTests.GetAllLotsTests
             var result = await handler.Handle(query, default);
 
             result.Should().BeOfType<GetListResponseDto<GetAllLotsResponse>>();
-            result.Count.Should().Be(allLots.Count);
+            var countLots = allLots.Where(l => l.LotStatus.Id != 2).Count();
+
+			result.Count.Should().Be(countLots);
         }
 
         [Fact]
