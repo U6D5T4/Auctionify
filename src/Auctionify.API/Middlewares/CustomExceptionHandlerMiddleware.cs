@@ -58,7 +58,7 @@ namespace Auctionify.API.Middlewares
 				code = HttpStatusCode.BadRequest;
 			}
 
-			var result = JsonConvert.SerializeObject(new { error = exception.Message });
+			var result = JsonConvert.SerializeObject(new { errors = exception.Message });
 			context.Response.ContentType = "application/json";
 			context.Response.StatusCode = (int)code;
 			return context.Response.WriteAsync(result);
