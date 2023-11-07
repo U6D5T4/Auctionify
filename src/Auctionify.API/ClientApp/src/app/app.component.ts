@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, computed, effect } from '@angular/core';
 import { AuthorizeService } from './api-authorization/authorize.service';
 
 @Component({
@@ -8,11 +8,17 @@ import { AuthorizeService } from './api-authorization/authorize.service';
 })
 export class AppComponent {
   isUserBuyer: boolean = false;
-  isUserSeller: boolean = true;
+  isUserSeller: boolean = false;
 
-  constructor(private authService: AuthorizeService) {
-    this.isUserBuyer = authService.isUserBuyer();
-    this.isUserSeller = authService.isUserSeller();
-  }
+  private isBuyerEffect = effect(() => {
+    this.isUserBuyer = this.authService.isUserBuyer();
+  });
+
+  private isSellectEffect = effect(() => {
+    this.isUserSeller = this.authService.isUserSeller();
+  });
+
+  constructor(private authService: AuthorizeService) {}
+
   title = 'ClientApp';
 }

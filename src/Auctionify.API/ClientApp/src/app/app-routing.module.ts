@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+
 import { HomeComponent } from './components/home/home.component';
+import { isSellerGuard } from './guards/seller/is-seller.guard';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -10,6 +12,7 @@ const routes: Routes = [
     loadChildren: () =>
       import('./components/seller/seller.module').then((m) => m.SellerModule),
     data: { breadcrumb: { skip: true } },
+    canActivate: [isSellerGuard],
   },
 ];
 
