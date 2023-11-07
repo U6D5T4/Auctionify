@@ -1,11 +1,4 @@
-import {
-  Injectable,
-  Signal,
-  WritableSignal,
-  computed,
-  effect,
-  signal,
-} from '@angular/core';
+import { Injectable, WritableSignal, computed, signal } from '@angular/core';
 import { Observable, catchError, map, of, throwError } from 'rxjs';
 import {
   Client,
@@ -14,7 +7,7 @@ import {
   RegisterResponse,
   RegisterViewModel,
 } from '../web-api-client';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 export enum UserRole {
   Administrator = 'Administrator',
@@ -75,19 +68,7 @@ export class AuthorizeService {
       .login(loginData)
       .pipe(
         map((response): boolean => {
-          if (response.result === undefined) throw new Error('user not found');
-
-          localStorage.setItem(this.tokenString, response.result.accessToken);
-          localStorage.setItem(this.expireString, response.result.expireDate);
-          localStorage.setItem(this.roleString, response.result.role);
-
-          if (this.user == null) return false;
-
-          this.user.userToken = response.result.accessToken;
-          this.user.expireDate = response.result.expireDate;
-
-          this.user.role!.set(response.result?.role as UserRole);
-
+          this.processLoginResponse(response);
           return true;
         })
       )
@@ -96,17 +77,40 @@ export class AuthorizeService {
           return throwError(() => err.error);
         })
       );
-    }
+  }
 
-    loginWithGoogle(credentials: string): Observable<any> {
-        return this.client.loginWithGoogle(credentials)
-            .pipe(map((response): boolean => {
-                this.processLoginResponse(response);
-                return true;
-            }))
-            .pipe(catchError((err: HttpErrorResponse): Observable<LoginResponse> => {
-                return throwError(() => err.error);
-            }));
+  processLoginResponse(response: LoginResponse) {
+    if (response.result === undefined) throw new Error('user not found');
+
+    localStorage.setItem(this.tokenString, response.result.accessToken);
+    localStorage.setItem(this.expireString, response.result.expireDate);
+    localStorage.setItem(this.roleString, response.result.role);
+
+    if (this.user == null) return false;
+
+    this.user.userToken = response.result.accessToken;
+    this.user.expireDate = response.result.expireDate;
+
+    this.user.role!.set(response.result?.role as UserRole);
+
+    return true;
+  }
+
+  loginWithGoogle(credentials: string): Observable<any> {
+    return this.client
+      .loginWithGoogle(credentials)
+      .pipe(
+        map((response): boolean => {
+          this.processLoginResponse(response);
+          return true;
+        })
+      )
+      .pipe(
+        catchError((err: HttpErrorResponse): Observable<LoginResponse> => {
+          return throwError(() => err.error);
+        })
+      );
+  }
 
   register(
     email: string,
