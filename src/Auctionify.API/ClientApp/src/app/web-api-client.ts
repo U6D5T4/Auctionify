@@ -56,7 +56,7 @@ export class Client {
         }));
     }
 
-    LoginWithGoogle(credentials: string): Observable<any> {
+    loginWithGoogle(credentials: string): Observable<any> {
       const header = new HttpHeaders().set('Content-type', 'application/json');
       let url_ = this.baseUrl + "api/auth/login-with-google";
 

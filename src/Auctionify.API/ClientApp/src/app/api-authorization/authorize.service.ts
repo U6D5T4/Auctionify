@@ -88,8 +88,8 @@ export class AuthorizeService {
     this.user.next(newUser);
   }
 
-  LoginWithGoogle(credentials: string): Observable<any> {
-    return this.client.LoginWithGoogle(credentials)
+  loginWithGoogle(credentials: string): Observable<any> {
+    return this.client.loginWithGoogle(credentials)
     .pipe(map((response): boolean => {
       this.processLoginResponse(response);
       return true;

@@ -64,7 +64,7 @@ export class LoginComponent {
   }
 
   handleCredentialResponse(response: CredentialResponse) {
-    this.service.LoginWithGoogle(response.credential).subscribe(
+    this.service.loginWithGoogle(response.credential).subscribe(
      {
       next: (x: any) => {
         this._ngZone.run(() => {
