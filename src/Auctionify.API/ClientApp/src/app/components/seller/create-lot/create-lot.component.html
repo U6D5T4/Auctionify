@@ -134,7 +134,7 @@
                         <h2>Add some photos</h2>
                         <div class="photos__container">
                             <input #imageInput (change)="imageUpdateEvent($event)" hidden="true" type="file"
-                                onclick="this.value=null" multiple />
+                                accept="image/*" onclick="this.value=null" multiple />
                             <div #imageElements *ngFor="let item of inputButtons; index as i" class="input-buttons">
                                 <button type="button" [id]="'photo-button-remove-'+i" class="photo-button-remove"
                                     (click)="removeImageFromInput(i)">
