@@ -53,6 +53,10 @@ namespace Auctionify.API.Middlewares
 			{
 				code = HttpStatusCode.BadRequest;
 			}
+			else if (exception is InvalidOperationException)
+			{
+				code = HttpStatusCode.BadRequest;
+			}
 
 			var result = JsonConvert.SerializeObject(new { error = exception.Message });
 			context.Response.ContentType = "application/json";

@@ -2,7 +2,7 @@
 
 namespace Auctionify.Application.Features.Lots.Commands.Update
 {
-    public class UpdateLotResponse
+    public class UpdatedLotResponse
     {
         public int Id { get; set; }
 
@@ -25,5 +25,9 @@ namespace Auctionify.Application.Features.Lots.Commands.Update
         public CurrencyDto Currency { get; set; }
 
         public ICollection<BidDto> Bids { get; set; }
-    }
+
+		public ICollection<FileDto> Photos { get; set; }
+
+		public ICollection<FileDto> AdditionalDocuments { get; set; }
+	}
 }
