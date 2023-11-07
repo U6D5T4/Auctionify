@@ -44,7 +44,7 @@ namespace Auctionify.UnitTests
 					Title = "Test lot with size",
 					Description = "Test lot with description and some moreeeeee DECSRIPTIOn mock data with long description and some other else",
 					LotStatusId = 1,
-					LotStatus = lotStatuses.Find(x => x.Id == 2)!,
+					LotStatus = lotStatuses.Find(x => x.Id == 3)!,
 					StartDate = DateTime.Now,
 					EndDate = DateTime.Now.AddDays(1),
 					Location = new Location

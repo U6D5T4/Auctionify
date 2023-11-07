@@ -83,42 +83,5 @@ namespace Auctionify.UnitTests.FilterLotsTests
 
 			result.Items.Should().HaveCount(PageSize);
         }
-
-        private List<Lot> GetAllLots()
-        {
-            return new List<Lot>
-            {
-                new Lot
-                {
-                    Id = 1,
-                    Title = "asdasd",
-                    CategoryId = 1,
-                },
-                new Lot
-                {
-                    Id = 2,
-                    Title = "asdasdsa",
-                    CategoryId = 1,
-                },
-                new Lot
-                {
-                    Id = 3,
-                    Title = "asdasdsa",
-                    CategoryId = 2,
-                },
-                new Lot
-                {
-                    Id = 4,
-                    Title = "asdasdsa",
-                    CategoryId = 3,
-                },
-                new Lot
-                {
-                    Id = 5,
-                    Title = "asdasdsa",
-                    CategoryId = 2,
-                }
-            };
-        }
     }
 }
