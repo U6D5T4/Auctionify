@@ -1,7 +1,6 @@
 .lot {
     &-operation {
-        width: 1660px;
-        padding: 40px 280px 120px 40px;
+        padding: 40px 0 120px 40px;
     }
 
     &-operation__inner-container {
@@ -36,7 +35,6 @@
 
         & button {
             position: relative;
-            background-color: #F2F5F7;
 
             & mat-icon {
                 color: var(--color-grey-3);
@@ -51,7 +49,7 @@
 
 .main {
     &__form {
-        width: 880px;
+        width: 90%;
 
         & .lot-form {
             display: flex;
@@ -67,7 +65,6 @@
         display: flex;
         flex-direction: column;
         gap: 16px;
-        width: 384px;
     }
 
 
@@ -153,6 +150,7 @@
 
 .photo {
     &-button {
+        position: relative;
         width: 188px;
         height: 160px;
         outline: none;
@@ -161,6 +159,7 @@
         background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='37' ry='37' stroke='%23BDBDBDFF' stroke-width='5' stroke-dasharray='9' stroke-dashoffset='38' stroke-linecap='square'/%3e%3c/svg%3e");
         border-radius: 37px;
         transition: all .2s ease;
+        overflow: hidden;
 
         & mat-icon {
             color: var(--color-grey-3);
@@ -176,6 +175,35 @@
 
         &:hover mat-icon {
             color: var(--color-main);
+        }
+
+        &-image {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 130%;
+        }
+
+        &-remove {
+            display: none;
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba($color: #fff, $alpha: .20);
+            z-index: 2;
+
+            font-size: 64px;
+            border: none;
+        }
+
+        .image-added &-remove {
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
     }
 }
@@ -229,6 +257,8 @@
     -webkit-box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.1);
     -moz-box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.1);
     box-shadow: 0px 0px 12px 0px rgba(0, 0, 0, 0.1);
+
+    z-index: 999;
 }
 
 .show {
@@ -277,4 +307,8 @@
 
         border: none;
     }
+}
+
+.input-buttons {
+    position: relative;
 }

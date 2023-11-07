@@ -40,6 +40,30 @@ $main-palette: (
     )
 );
 
+$main-accent: (
+    50: #F2F5F7,
+    100: #F2F5F7,
+    200: #F2F5F7,
+    300: #F2F5F7,
+    400: #F2F5F7,
+    500: #F2F5F7,
+    600: #F2F5F7,
+    700: #F2F5F7,
+    800: #F2F5F7,
+    900: #F2F5F7,
+    contrast: (50: #F2F5F7,
+        100: #F2F5F7,
+        200: #F2F5F7,
+        300: #F2F5F7,
+        400: #F2F5F7,
+        500: #F2F5F7,
+        600: #F2F5F7,
+        700: #F2F5F7,
+        800: #F2F5F7,
+        900: #F2F5F7,
+    )
+);
+
 $main-error: (
     50: #AB2D25,
     100: #AB2D25,
@@ -70,7 +94,7 @@ $main-error: (
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
 $ClientApp-primary: mat.define-palette($main-palette);
-$ClientApp-accent: mat.define-palette(mat.$pink-palette);
+$ClientApp-accent: mat.define-palette($main-accent);
 
 // The warn palette is optional (defaults to red).
 $ClientApp-warn: mat.define-palette($main-error);
