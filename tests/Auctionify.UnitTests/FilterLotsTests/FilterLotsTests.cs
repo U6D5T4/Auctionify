@@ -1,39 +1,58 @@
-﻿using Auctionify.Application.Common.Interfaces.Repositories;
+﻿using Auctionify.Application.Common.Interfaces;
+using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Common.Models.Requests;
 using Auctionify.Application.Features.Lots.Queries.FIlter;
 using Auctionify.Core.Entities;
 using Auctionify.Infrastructure.Persistence;
 using Auctionify.Infrastructure.Repositories;
+using Auctionify.Infrastructure.Services;
 using AutoMapper;
 using FluentAssertions;
+using Microsoft.AspNetCore.Identity;
 using Moq;
 
 namespace Auctionify.UnitTests.FilterLotsTests
 {
     public class FilterLotsTests
     {
-        private ILotRepository _repository;
-        private IMapper _mapper;
+		#region Initialization
 
-        public FilterLotsTests()
+		private readonly IMapper _mapper;
+		private readonly ILotRepository _lotRepository;
+		private readonly Mock<IWatchlistService> _watchListServiceMock;
+		private readonly Mock<ICurrentUserService> _currentUserServiceMock;
+		private readonly Mock<IPhotoService> _photoServiceMock;
+		private readonly UserManager<User> _userManager;
+
+		public FilterLotsTests()
         {
             var mockDbContext = DbContextMock.GetMock<Lot, ApplicationDbContext>(GetAllLots(), ctx => ctx.Lots);
 
-            _repository = new LotRepository(mockDbContext.Object);
-
-            var configuration = new MapperConfiguration(cfg => cfg.AddProfiles(new List<Profile>
+			var configuration = new MapperConfiguration(cfg => cfg.AddProfiles(new List<Profile>
             {
                 new Application.Common.Profiles.MappingProfiles(),
                 new Application.Features.Lots.Profiles.MappingProfiles(),
             }));
+
+			_lotRepository = new LotRepository(mockDbContext.Object);
+			_watchListServiceMock = new Mock<IWatchlistService>();
+			_currentUserServiceMock = new Mock<ICurrentUserService>();
+			_photoServiceMock = new Mock<IPhotoService>();
+			_userManager = EntitiesSeeding.GetUserManagerMock();
+			_currentUserServiceMock.Setup(x => x.UserEmail).Returns(It.IsAny<string>());
             _mapper = new Mapper(configuration);
-        }
+		}
+
+        #endregion
 
         [Fact]
         public async Task FilterLotsQueryHandler_WhenCalledWithoutParams_ReturnsAllLots()
         {
-            var query = new FilterLotsQuery();
-            var handler = new FilterLotsQueryHandler(_repository, _mapper);
+			_watchListServiceMock.Setup(x => x.IsLotInUserWatchlist(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
+			_photoServiceMock.Setup(x => x.GetMainPhotoUrlAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync("TestMainPhotoUrl");
+
+			var query = new FilterLotsQuery();
+            var handler = new FilterLotsQueryHandler(_lotRepository, _mapper, _photoServiceMock.Object, _currentUserServiceMock.Object, _userManager, _watchListServiceMock.Object);
 
             var result = await handler.Handle(query, default);
 
@@ -57,9 +76,9 @@ namespace Auctionify.UnitTests.FilterLotsTests
                 PageRequest = pageRequest,
             };
 
-            var handler = new FilterLotsQueryHandler(_repository, _mapper);
+			var handler = new FilterLotsQueryHandler(_lotRepository, _mapper, _photoServiceMock.Object, _currentUserServiceMock.Object, _userManager, _watchListServiceMock.Object);
 
-            var result = await handler.Handle(query, default);
+			var result = await handler.Handle(query, default);
 
             result.Items.Should().HaveCount(PageSize);
         }

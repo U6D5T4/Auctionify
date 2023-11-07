@@ -19,10 +19,7 @@ namespace Auctionify.UnitTests.GetAllLotsTests
     {
 		private readonly IMapper _mapper;
 		private readonly ILotRepository _lotRepository;
-		private readonly IFileRepository _fileRepository;
 		private readonly Mock<IWatchlistService> _watchListServiceMock;
-		private readonly Mock<IBlobService> _blobServiceMock;
-		private readonly Mock<IOptions<AzureBlobStorageOptions>> _blobStorageOptionsMock;
 		private readonly Mock<ICurrentUserService> _currentUserServiceMock;
         private readonly Mock<IPhotoService> _photoServiceMock;
 		private readonly UserManager<User> _userManager;
@@ -31,7 +28,6 @@ namespace Auctionify.UnitTests.GetAllLotsTests
         {
 			var mockDbContext = DbContextMock.GetMock<Lot, ApplicationDbContext>(EntitiesSeeding.GetLots(), ctx => ctx.Lots);
 			mockDbContext = DbContextMock.GetMock(EntitiesSeeding.GetFiles(), ctx => ctx.Files, mockDbContext);
-			var blobStorageOptionsMock = new Mock<IOptions<AzureBlobStorageOptions>>();
 			var configuration = new MapperConfiguration(cfg => cfg.AddProfiles(new List<Profile>
 			{
 				new Application.Common.Profiles.MappingProfiles(),
@@ -39,22 +35,11 @@ namespace Auctionify.UnitTests.GetAllLotsTests
 			}));
 
 			_lotRepository = new LotRepository(mockDbContext.Object);
-			_fileRepository = new FileRepository(mockDbContext.Object);
 			_watchListServiceMock = new Mock<IWatchlistService>();
-			_blobServiceMock = new Mock<IBlobService>();
 			_currentUserServiceMock = new Mock<ICurrentUserService>();
             _photoServiceMock = new Mock<IPhotoService>();
 			_userManager = EntitiesSeeding.GetUserManagerMock();
-
 			_currentUserServiceMock.Setup(x => x.UserEmail).Returns(It.IsAny<string>());
-			blobStorageOptionsMock.Setup(x => x.Value).Returns(new AzureBlobStorageOptions
-			{
-				ContainerName = "auctionify-files",
-				PhotosFolderName = "photos",
-				AdditionalDocumentsFolderName = "additional-documents"
-			});
-
-			_blobStorageOptionsMock = blobStorageOptionsMock;
 			_mapper = new Mapper(configuration);
 		}
 
