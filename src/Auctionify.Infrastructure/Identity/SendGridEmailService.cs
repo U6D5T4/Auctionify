@@ -16,7 +16,7 @@ namespace Auctionify.Infrastructure.Identity
 
 		public async Task SendEmailAsync(string toEmail, string subject, string content)
 		{
-      var apiKey = _configuration["EmailSender"];
+			var apiKey = _configuration["EmailSender"];
 			var client = new SendGridClient(apiKey);
 			var from = new EmailAddress(_configuration["EmailSenderSendGrid"], "Auctionify");
 			var to = new EmailAddress(toEmail);

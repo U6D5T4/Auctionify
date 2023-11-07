@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using static Google.Apis.Auth.GoogleJsonWebSignature;
 
 namespace Auctionify.Infrastructure.Identity
 {
@@ -276,5 +277,46 @@ namespace Auctionify.Infrastructure.Identity
                 Errors = result.Errors.Select(e => e.Description),
             };
         }
+
+        public async Task<LoginResponse> LoginUserWithGoogleAsync(Payload payload)
+        {
+			var user = await _userManager.FindByEmailAsync(payload.Email);
+			if (user == null)
+            {
+				user = new User
+                {
+					Email = payload.Email,
+					UserName = payload.Email,
+					FirstName = payload.GivenName,
+					LastName = payload.FamilyName,
+					EmailConfirmed = true
+				};
+
+				var createdResult = await _userManager.CreateAsync(user);
+				if (!createdResult.Succeeded)
+                {
+					return new LoginResponse
+                    {
+						IsSuccess = false,
+						Errors = createdResult.Errors.Select(e => e.Description)
+					};
+				}
+			}
+
+			var token = await GenerateJWTTokenWithUserClaimsAsync(user);
+
+            var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+
+            if (role == null)
+            {
+                token.Role = string.Empty;
+            }
+            
+			return new LoginResponse
+            {
+				IsSuccess = true,
+				Result = token
+			};
+		}
     }
 }
