@@ -5,39 +5,56 @@ import {
   HttpEvent,
   HttpInterceptor,
   HttpErrorResponse,
-  HttpStatusCode
+  HttpStatusCode,
 } from '@angular/common/http';
-import { Observable, ObservableInput, catchError, mergeMap, throwError } from 'rxjs';
+import {
+  Observable,
+  ObservableInput,
+  catchError,
+  mergeMap,
+  throwError,
+} from 'rxjs';
 import { AuthorizeService } from './authorize.service';
 import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthorizeInterceptor implements HttpInterceptor {
-
   constructor(private authService: AuthorizeService, private router: Router) {}
 
-  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    return this.authService.getAccessToken().pipe(mergeMap(token => this.processRequestWithToken(token, request, next)));
+  intercept(
+    request: HttpRequest<unknown>,
+    next: HttpHandler
+  ): Observable<HttpEvent<unknown>> {
+    return this.authService
+      .getAccessToken()
+      .pipe(
+        mergeMap((token) => this.processRequestWithToken(token, request, next))
+      );
   }
 
-  private processRequestWithToken(token: string | null, req: HttpRequest<any>, next: HttpHandler) {
+  private processRequestWithToken(
+    token: string | null,
+    req: HttpRequest<any>,
+    next: HttpHandler
+  ) {
     if (!!token && this.isSameOriginUrl(req)) {
       req = req.clone({
         setHeaders: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
     }
 
     return next.handle(req).pipe(
-      catchError((err) : ObservableInput<any> => {
+      catchError((err): ObservableInput<any> => {
         if (err instanceof HttpErrorResponse) {
           if (err.status === HttpStatusCode.Unauthorized) {
-            this.router.navigate(['home'])
+            this.authService.logout();
+            this.router.navigate(['home']);
           }
         }
 
-        return throwError(() => err)
+        return throwError(() => err);
       })
     );
   }
