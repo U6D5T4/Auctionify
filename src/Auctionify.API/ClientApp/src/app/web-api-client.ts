@@ -19,6 +19,7 @@ import {
   HttpResponseBase,
 } from '@angular/common/http';
 import { UserRole } from './api-authorization/authorize.service';
+import { CreateLotModel } from './components/seller/create-lot/create-lot.component';
 
 export const API_BASE_URL = new InjectionToken('API_BASE_URL');
 
@@ -123,6 +124,91 @@ export class Client {
       })
     );
   }
+
+  getAllCurrencies(): Observable<Currency[]> {
+    let url_ = this.baseUrl + '/api/currencies';
+
+    let options_: any = {
+      observe: 'response',
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Accept: 'text/json',
+      }),
+    };
+
+    return this.http.request('get', url_, options_).pipe(
+      mergeMap((response: any): Observable<Currency[]> => {
+        let data: Currency[] = [];
+
+        if (response.body !== null) {
+          data = response.body;
+        }
+
+        return of(data);
+      })
+    );
+  }
+
+  createLot(body: CreateLotModel): Observable<any> {
+    let url_ = this.baseUrl + '/api/lots';
+
+    let formData = new FormData();
+
+    formData.append('title', body.title);
+    formData.append('description', body.description);
+    formData.append('city', body.city);
+    formData.append('address', body.address);
+    formData.append('country', body.country);
+    formData.append('startDate', new Date(body.startDate!).toISOString());
+    formData.append('endDate', new Date(body.endDate!).toISOString());
+    formData.append('startingPrice', body.startingPrice?.toString() ?? '');
+    formData.append('categoryId', body.categoryId?.toString() ?? '');
+    formData.append('currencyId', body.currencyId?.toString() ?? '');
+    formData.append('isDraft', body.isDraft?.toString()!);
+
+    if (body.photos !== null) {
+      for (const photo of body.photos) {
+        formData.append('photos', photo);
+      }
+    }
+
+    if (body.additionalDocuments !== null) {
+      for (const file of body.additionalDocuments) {
+        formData.append('photos', file);
+      }
+    }
+
+    let options_: any = {
+      body: formData,
+    };
+
+    return this.http.request('post', url_, options_).pipe(
+      catchError((error) => {
+        return throwError(() => error.error);
+      })
+    );
+  }
+}
+
+export interface CreateLotResponse {
+  title: string;
+  description: string;
+  startingPrice: number | null;
+  startDate: Date | null;
+  endDate: Date | null;
+  categoryId: number | null;
+  city: string;
+  state: string | null;
+  country: string | null;
+  address: string | null;
+  currencyId: number | null;
+  photos: File[] | null;
+  additionalDocuments: File[] | null;
+}
+
+export interface Currency {
+  id: number;
+  code: string;
 }
 
 export interface Category {
