@@ -74,8 +74,15 @@ export class Client {
       );
   }
 
-  register(body: RegisterViewModel | undefined): Observable<RegisterResponse> {
-    let url_ = this.baseUrl + '/api/auth/register';
+    loginWithGoogle(credentials: string): Observable<any> {
+      const header = new HttpHeaders().set('Content-type', 'application/json');
+      let url_ = this.baseUrl + "api/auth/login-with-google";
+
+      return this.http.post(url_, JSON.stringify(credentials), { headers: header, withCredentials: true });
+    }
+
+    register(body: RegisterViewModel | undefined) : Observable<RegisterResponse> {
+        let url_ = this.baseUrl + "/api/auth/register";
 
     const content_ = JSON.stringify(body);
 

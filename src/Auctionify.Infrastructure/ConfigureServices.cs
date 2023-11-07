@@ -18,7 +18,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 namespace Auctionify.Infrastructure
-{
+{    
 	public static class ConfigureServices
 	{
 		public static IServiceCollection AddInfrastructureServices(
@@ -31,7 +31,11 @@ namespace Auctionify.Infrastructure
 				configuration.GetSection(AzureBlobStorageOptions.AzureBlobStorageSettings)
 			);
 
-			services.AddScoped<AuditableEntitySaveChangesInterceptor>();
+			// Register Google sign-in options
+            services.Configure<SignInWithGoogleOptions>(
+                configuration.GetSection(SignInWithGoogleOptions.Google));
+
+            services.AddScoped<AuditableEntitySaveChangesInterceptor>();
 
 			// Add DbContext service
 			services.AddDbContext<ApplicationDbContext>(

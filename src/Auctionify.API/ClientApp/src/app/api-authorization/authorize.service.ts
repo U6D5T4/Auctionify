@@ -38,7 +38,7 @@ export class AuthorizeService {
   private roleString: string = 'role';
   private user: IUser | null = null;
 
-  constructor(private client: Client) {
+  constructor(private client: Client, private httpClient: HttpClient) {
     this.initializeAuthorizeService();
   }
 
@@ -96,7 +96,17 @@ export class AuthorizeService {
           return throwError(() => err.error);
         })
       );
-  }
+    }
+
+    loginWithGoogle(credentials: string): Observable<any> {
+        return this.client.loginWithGoogle(credentials)
+            .pipe(map((response): boolean => {
+                this.processLoginResponse(response);
+                return true;
+            }))
+            .pipe(catchError((err: HttpErrorResponse): Observable<LoginResponse> => {
+                return throwError(() => err.error);
+            }));
 
   register(
     email: string,
