@@ -88,9 +88,9 @@ namespace Auctionify.Application.Features.Lots.BaseValidators.Lots
 
         private void ConfigureValidationWhenConcreteCreating()
         {
-            //RuleFor(l => l.Photos)
-            //    .NotEmpty()
-            //    .When(l => !l.IsDraft);
+            RuleFor(l => l.Photos)
+                .NotEmpty()
+                .When(l => !l.IsDraft);
 
             RuleFor(l => l.StartDate)
                 .NotEmpty()

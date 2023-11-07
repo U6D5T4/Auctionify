@@ -19,103 +19,106 @@ using System.Text;
 
 namespace Auctionify.Infrastructure
 {
-	public static class ConfigureServices
-	{
-		public static IServiceCollection AddInfrastructureServices(
-			this IServiceCollection services,
-			IConfiguration configuration
-		)
-		{
-			// Registering Options
-			services.Configure<AzureBlobStorageOptions>(
-				configuration.GetSection(AzureBlobStorageOptions.AzureBlobStorageSettings)
-			);
+    public static class ConfigureServices
+    {
+        public static IServiceCollection AddInfrastructureServices(
+            this IServiceCollection services,
+            IConfiguration configuration
+        )
+        {
+            // Registering Options
+            services.Configure<AzureBlobStorageOptions>(
+                configuration.GetSection(AzureBlobStorageOptions.AzureBlobStorageSettings)
+            );
 
-			services.Configure<AuthSettingsOptions>(
-				configuration.GetSection(AuthSettingsOptions.AuthSettings)
-				);
+            services.Configure<AuthSettingsOptions>(
+                configuration.GetSection(AuthSettingsOptions.AuthSettings)
+            );
 
-			services.Configure<AppOptions>(
-				configuration.GetSection(AppOptions.App)
-				);
+            services.Configure<AppOptions>(configuration.GetSection(AppOptions.App));
 
-			services.AddScoped<AuditableEntitySaveChangesInterceptor>();
+            // Register Google sign-in options
+            services.Configure<SignInWithGoogleOptions>(
+                configuration.GetSection(SignInWithGoogleOptions.Google)
+            );
 
-			// Add DbContext service
-			services.AddDbContext<ApplicationDbContext>(
-				options =>
-					options.UseSqlServer(
-						configuration.GetConnectionString("DefaultConnection"),
-						builder =>
-							builder
-								.EnableRetryOnFailure(maxRetryCount: 5)
-								.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)
-					)
-			);
+            services.AddScoped<AuditableEntitySaveChangesInterceptor>();
 
-			// Add Azure Blob Storage service
-			services.AddSingleton(
-				x =>
-					new BlobServiceClient(
-						configuration.GetValue<string>("AzureBlobStorageSettings:ConnectionString")
-					)
-			);
+            // Add DbContext service
+            services.AddDbContext<ApplicationDbContext>(
+                options =>
+                    options.UseSqlServer(
+                        configuration.GetConnectionString("DefaultConnection"),
+                        builder =>
+                            builder
+                                .EnableRetryOnFailure(maxRetryCount: 5)
+                                .MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)
+                    )
+            );
 
-			// Add Identity service
-			services
-				.AddIdentity<User, Role>(options =>
-				{
-					options.Password.RequiredLength = 8;
-					options.Password.RequireDigit = true;
-					options.Password.RequireLowercase = true;
-					options.Password.RequireUppercase = true;
-					options.Password.RequireNonAlphanumeric = true;
-				})
-				.AddEntityFrameworkStores<ApplicationDbContext>()
-				.AddDefaultTokenProviders();
+            // Add Azure Blob Storage service
+            services.AddSingleton(
+                x =>
+                    new BlobServiceClient(
+                        configuration.GetValue<string>("AzureBlobStorageSettings:ConnectionString")
+                    )
+            );
 
-			services
-				.AddAuthentication(options =>
-				{
-					options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-					options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-				})
-				.AddJwtBearer(options =>
-				{
-					options.TokenValidationParameters = new TokenValidationParameters
-					{
-						ValidateIssuer = true,
-						ValidateAudience = true,
-						ValidAudience = configuration["AuthSettings:Audience"],
-						ValidIssuer = configuration["AuthSettings:Issuer"],
-						RequireExpirationTime = true,
-						IssuerSigningKey = new SymmetricSecurityKey(
-							Encoding.UTF8.GetBytes(configuration["AuthSettings:Key"]!)
-						),
-						ValidateIssuerSigningKey = true
-					};
-				});
+            // Add Identity service
+            services
+                .AddIdentity<User, Role>(options =>
+                {
+                    options.Password.RequiredLength = 8;
+                    options.Password.RequireDigit = true;
+                    options.Password.RequireLowercase = true;
+                    options.Password.RequireUppercase = true;
+                    options.Password.RequireNonAlphanumeric = true;
+                })
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
-			var usersSeedingData = configuration.GetSection("UsersSeedingData");
-			services.Configure<UsersSeedingData>(usersSeedingData);
+            services
+                .AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidAudience = configuration["AuthSettings:Audience"],
+                        ValidIssuer = configuration["AuthSettings:Issuer"],
+                        RequireExpirationTime = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(configuration["AuthSettings:Key"]!)
+                        ),
+                        ValidateIssuerSigningKey = true
+                    };
+                });
 
-			services.AddScoped<ApplicationDbContextInitializer>();
+            var usersSeedingData = configuration.GetSection("UsersSeedingData");
+            services.Configure<UsersSeedingData>(usersSeedingData);
 
-			services.AddScoped<IIdentityService, IdentityService>();
-			services.AddScoped<ICategoryRepository, CategoryRepository>();
-			services.AddScoped<ILotRepository, LotRepository>();
-			services.AddScoped<ILotStatusRepository, LotStatusRepository>();
-			services.AddScoped<ICurrencyRepository, CurrencyRepository>();
-			services.AddScoped<IBidRepository, BidRepository>();
-			services.AddScoped<IFileRepository, FileRepository>();
-			services.AddScoped<IWatchlistRepository, WatchlistRepository>();
+            services.AddScoped<ApplicationDbContextInitializer>();
 
-			services.AddTransient<IEmailService, SendGridEmailService>();
-			services.AddSingleton<IBlobService, BlobService>();
-			services.AddScoped<IPhotoService, PhotoService>();
-			services.AddScoped<IWatchlistService, WatchlistService>();
+            services.AddScoped<IIdentityService, IdentityService>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<ILotRepository, LotRepository>();
+            services.AddScoped<ILotStatusRepository, LotStatusRepository>();
+            services.AddScoped<ICurrencyRepository, CurrencyRepository>();
+            services.AddScoped<IBidRepository, BidRepository>();
+            services.AddScoped<IFileRepository, FileRepository>();
+            services.AddScoped<IWatchlistRepository, WatchlistRepository>();
 
-			return services;
-		}
-	}
+            services.AddTransient<IEmailService, SendGridEmailService>();
+            services.AddSingleton<IBlobService, BlobService>();
+            services.AddScoped<IPhotoService, PhotoService>();
+            services.AddScoped<IWatchlistService, WatchlistService>();
+
+            return services;
+        }
+    }
 }
