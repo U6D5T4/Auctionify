@@ -8,11 +8,18 @@
     padding: 80px 40px;
 }
 
-.container-top {
+.container {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.container-top {
     padding-bottom: 32px;
+}
+
+.container-bott {
+    padding-top: 32px;
 }
 
 .left-side_top-footer p {
@@ -25,7 +32,7 @@
     padding-top: 32px;
 }
 
-.main-ul{
+.main-ul {
     gap: 60px;
     display: flex;
     list-style: none;
@@ -53,8 +60,7 @@
     color: inherit;
 }
 
-.line {
-    width: 1520px;
+hr {
     height: 1px;
     background-color: #e0e0e0;
 }

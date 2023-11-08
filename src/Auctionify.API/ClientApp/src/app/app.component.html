@@ -1,4 +1,4 @@
-<app-navbar *ngIf="!isUserSeller"></app-navbar>
+<app-header *ngIf="!isUserSeller"></app-header>
 <div class="container">
     <app-navbar-seller *ngIf="isUserSeller">
         <router-outlet></router-outlet>

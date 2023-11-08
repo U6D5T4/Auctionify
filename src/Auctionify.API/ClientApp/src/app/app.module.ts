@@ -7,7 +7,6 @@ import { HomeComponent } from './components/home/home.component';
 import { ApiAuthorizationModule } from './api-authorization/api-authorization.module';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthorizeInterceptor } from './api-authorization/authorize.interceptor';
-import { UiElementsModule } from './ui-elements/ui-elements.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SellerModule } from './components/seller/seller.module';
 import { DashboardComponent } from './components/seller/dashboard/dashboard.component';
@@ -31,4 +30,5 @@ import { LayoutModule } from './layout/layout.module';
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+
+export class AppModule { }
