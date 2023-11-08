@@ -1,4 +1,4 @@
-.menu {
+.header {
     height: 80px;
     border-bottom: 1px solid var(--color-grey-5);
     display: flex;
@@ -10,11 +10,11 @@
     }
 }
 
-.menu img {
+.header img {
     width: 160px;
 }
 
-.menu {
+.header {
     display: flex;
     align-items: center;
 }

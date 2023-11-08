@@ -165,18 +165,12 @@ export class CreateLotComponent {
         if (files === null) return;
 
         if (files.length > 1) {
-            if (files.length > this.inputButtons.length - 1) {
-                for (
-                    let i = this.inputButtons.length - 1;
-                    i < files.length;
-                    i++
-                ) {
-                    this.inputButtons.push(i);
-                }
-                this.imageElements.changes.subscribe(() =>
-                    this.multipleImageUpdate(files)
-                );
-            } else this.multipleImageUpdate(files);
+            for (let i = 0; i < files.length; i++) {
+                this.inputButtons.push(i);
+            }
+            this.imageElements.changes.subscribe(() =>
+                this.multipleImageUpdate(files)
+            );
         } else {
             const file: FileModel = {
                 id: this.imageInputSelectId,
@@ -193,12 +187,13 @@ export class CreateLotComponent {
             const element: File = files.item(index)!;
 
             const file: FileModel = {
-                id: index,
+                id: this.imageInputSelectId,
                 file: element,
             };
             this.imageRendering(file);
             this.imagesToUpload.push(file);
-            this.addRemoveBtnToImage(index);
+            this.addRemoveBtnToImage(this.imageInputSelectId);
+            this.imageInputSelectId++;
         }
     }
 

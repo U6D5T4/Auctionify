@@ -183,7 +183,7 @@ export class Client {
 
         if (body.additionalDocuments !== null) {
             for (const file of body.additionalDocuments) {
-                formData.append('photos', file);
+                formData.append('additionalDocuments', file);
             }
         }
 

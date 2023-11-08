@@ -5,7 +5,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSelectModule } from '@angular/material/select';
 
-import { NavbarComponent } from './navbar/navbar.component';
+import { HeaderComponent } from './header/header.component';
 import { SearchComponent } from './search/search.component';
 import { FooterComponent } from './footer/footer.component';
 import { RouterModule } from '@angular/router';
@@ -26,12 +26,16 @@ import { MatInputModule } from '@angular/material/input';
   ],
 
   declarations: [
-    NavbarComponent,
+    HeaderComponent,
     SearchComponent,
     FooterComponent,
     NavbarSellerComponent,
   ],
-
-  exports: [NavbarComponent, FooterComponent, NavbarSellerComponent],
+  
+  exports: [
+    HeaderComponent,
+    FooterComponent,
+    NavbarSellerComponent,
+  ]
 })
 export class LayoutModule {}
