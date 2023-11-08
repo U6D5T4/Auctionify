@@ -110,7 +110,7 @@ export class Client {
         );
     }
 
-    getAllCategories(): Observable<Category[]> {
+    getAllCategories(): Observable<CategoryResponse[]> {
         let url_ = this.baseUrl + '/api/categories';
 
         let options_: any = {
@@ -122,8 +122,8 @@ export class Client {
         };
 
         return this.http.request('get', url_, options_).pipe(
-            mergeMap((response: any): Observable<Category[]> => {
-                let data: Category[] = [];
+            mergeMap((response: any): Observable<CategoryResponse[]> => {
+                let data: CategoryResponse[] = [];
 
                 if (response.body !== null) {
                     data = response.body;
@@ -134,7 +134,7 @@ export class Client {
         );
     }
 
-    getAllCurrencies(): Observable<Currency[]> {
+    getAllCurrencies(): Observable<CurrencyResponse[]> {
         let url_ = this.baseUrl + '/api/currencies';
 
         let options_: any = {
@@ -146,8 +146,8 @@ export class Client {
         };
 
         return this.http.request('get', url_, options_).pipe(
-            mergeMap((response: any): Observable<Currency[]> => {
-                let data: Currency[] = [];
+            mergeMap((response: any): Observable<CurrencyResponse[]> => {
+                let data: CurrencyResponse[] = [];
 
                 if (response.body !== null) {
                     data = response.body;
@@ -197,6 +197,84 @@ export class Client {
             })
         );
     }
+
+    getOneLotForSeller(id: number): Observable<SellerGetLotResponse> {
+        let url_ = this.baseUrl + `/api/lots/${id}/sellers`;
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<SellerGetLotResponse> => {
+                if (response.body !== null) {
+                    let data: SellerGetLotResponse = response.body;
+
+                    return of(data);
+                } else return throwError(() => new Error('data is empty!'));
+            })
+        );
+    }
+}
+
+export interface CategoryDto {
+    id: number;
+    name: string;
+    parentCategoryId: number | null;
+}
+
+export interface LotStatusDto {
+    id: number;
+    name: string;
+}
+
+export interface LocationDto {
+    id: number;
+    city: string;
+    country: string;
+    address: string;
+    state: string | null;
+}
+
+export interface CurrencyDto {
+    id: number;
+    code: string;
+}
+
+export interface BidDto {
+    id: number;
+    buyerId: number;
+    newPrice: number;
+    timeStamp: Date;
+    buyer: UserDto;
+}
+
+export interface UserDto {
+    id: number;
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    email: string;
+}
+
+export interface SellerGetLotResponse {
+    id: number;
+    title: string;
+    description: string;
+    startingPrice: number | null;
+    startDate: Date | null;
+    endDate: Date | null;
+    photos: File[] | null;
+    additionalDocuments: File[] | null;
+    category: CategoryDto;
+    lotStatus: LotStatusDto;
+    location: LocationDto;
+    currency: CurrencyDto;
+    bids: BidDto[];
 }
 
 export interface CreateLotResponse {
@@ -215,15 +293,15 @@ export interface CreateLotResponse {
     additionalDocuments: File[] | null;
 }
 
-export interface Currency {
+export interface CurrencyResponse {
     id: number;
     code: string;
 }
 
-export interface Category {
+export interface CategoryResponse {
     id: number;
     name: string;
-    children: Category[];
+    children: CategoryResponse[];
     parentCategoryId: number | null;
 }
 

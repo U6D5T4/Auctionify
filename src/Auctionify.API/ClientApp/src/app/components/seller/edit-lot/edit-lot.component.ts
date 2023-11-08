@@ -3,16 +3,21 @@ import {
     Component,
     ElementRef,
     Injectable,
+    OnInit,
     QueryList,
     ViewChild,
     ViewChildren,
 } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { FileModel } from 'src/app/models/fileModel';
 import { CreateLotModel } from 'src/app/models/lots/lot-models';
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
-import { Category, Currency, Client } from 'src/app/web-api-client';
+import {
+    CategoryResponse,
+    CurrencyResponse,
+    Client,
+} from 'src/app/web-api-client';
 
 @Injectable({
     providedIn: 'root',
@@ -22,7 +27,7 @@ import { Category, Currency, Client } from 'src/app/web-api-client';
     templateUrl: './edit-lot.component.html',
     styleUrls: ['./edit-lot.component.scss'],
 })
-export class EditLotComponent {
+export class EditLotComponent implements OnInit {
     private imageInputSelectId: number = 0;
     private imageInputsButtonSize: number = 4;
     inputButtons: number[] = [...Array(this.imageInputsButtonSize).keys()];
@@ -42,8 +47,8 @@ export class EditLotComponent {
     imagesToUpload: FileModel[] = [];
     filesToUpload: FileModel[] = [];
 
-    categories: Category[] = [];
-    currencies: Currency[] = [];
+    categories: CategoryResponse[] = [];
+    currencies: CurrencyResponse[] = [];
 
     lotForm = new FormGroup({
         title: new FormControl<string>('', Validators.required),
@@ -63,10 +68,54 @@ export class EditLotComponent {
     constructor(
         private client: Client,
         private dialog: Dialog,
-        private router: Router
+        private router: Router,
+        private route: ActivatedRoute
     ) {
         this.populateCategorySelector();
         this.populateCurrencySelector();
+    }
+
+    ngOnInit(): void {
+        this.route.paramMap.subscribe((params: ParamMap) => {
+            const lotIdString = params.get('id');
+            if (lotIdString === null) return;
+
+            const lotId: number = parseInt(lotIdString);
+            this.client.getOneLotForSeller(lotId).subscribe((result) => {
+                const lotFormData = this.lotForm.controls;
+
+                console.log(result);
+
+                lotFormData.title.setValue(result.title);
+                lotFormData.description.setValue(result.description);
+                lotFormData.categoryId.setValue(
+                    result.category ? result.category.id : null
+                );
+                lotFormData.currencyId.setValue(
+                    result.currency ? result.currency.id : null
+                );
+                lotFormData.startDate.setValue(result.startDate);
+                lotFormData.endDate.setValue(result.endDate);
+                lotFormData.country.setValue(result.location.country);
+                lotFormData.address.setValue(result.location.address);
+                lotFormData.city.setValue(result.location.city);
+                lotFormData.startingPrice.setValue(result.startingPrice);
+
+                var files: FileModel[] = [];
+                if (result.additionalDocuments !== null) {
+                    for (const [
+                        i,
+                        file,
+                    ] of result.additionalDocuments.entries()) {
+                        const fileModel: FileModel = {
+                            id: i,
+                            file,
+                        };
+                        files.push(fileModel);
+                    }
+                }
+            });
+        });
     }
 
     submitLot(isDraft: boolean) {
@@ -283,7 +332,7 @@ export class EditLotComponent {
 
     populateCategorySelector() {
         this.client.getAllCategories().subscribe({
-            next: (result: Category[]) => {
+            next: (result: CategoryResponse[]) => {
                 this.categories = result;
             },
         });
@@ -291,7 +340,7 @@ export class EditLotComponent {
 
     populateCurrencySelector() {
         this.client.getAllCurrencies().subscribe({
-            next: (result: Currency[]) => {
+            next: (result: CurrencyResponse[]) => {
                 this.currencies = result;
             },
         });

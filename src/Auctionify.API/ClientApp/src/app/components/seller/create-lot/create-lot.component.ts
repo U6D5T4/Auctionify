@@ -13,7 +13,11 @@ import { Router } from '@angular/router';
 import { FileModel } from 'src/app/models/fileModel';
 import { CreateLotModel } from 'src/app/models/lots/lot-models';
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
-import { Category, Client, Currency } from 'src/app/web-api-client';
+import {
+    CategoryResponse,
+    Client,
+    CurrencyResponse,
+} from 'src/app/web-api-client';
 
 @Injectable({
     providedIn: 'root',
@@ -43,8 +47,8 @@ export class CreateLotComponent {
     imagesToUpload: FileModel[] = [];
     filesToUpload: FileModel[] = [];
 
-    categories: Category[] = [];
-    currencies: Currency[] = [];
+    categories: CategoryResponse[] = [];
+    currencies: CurrencyResponse[] = [];
 
     lotForm = new FormGroup({
         title: new FormControl<string>('', Validators.required),
@@ -284,7 +288,7 @@ export class CreateLotComponent {
 
     populateCategorySelector() {
         this.client.getAllCategories().subscribe({
-            next: (result: Category[]) => {
+            next: (result: CategoryResponse[]) => {
                 this.categories = result;
             },
         });
@@ -292,7 +296,7 @@ export class CreateLotComponent {
 
     populateCurrencySelector() {
         this.client.getAllCurrencies().subscribe({
-            next: (result: Currency[]) => {
+            next: (result: CurrencyResponse[]) => {
                 this.currencies = result;
             },
         });
