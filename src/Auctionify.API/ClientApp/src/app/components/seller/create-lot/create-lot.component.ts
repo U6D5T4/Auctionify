@@ -109,13 +109,13 @@ export class CreateLotComponent {
 
         if (this.imagesToUpload) {
             for (const image of this.imagesToUpload) {
-                lotToCreate.photos?.push(image.file);
+                lotToCreate.photos?.push(image.file!);
             }
         }
 
         if (this.filesToUpload) {
             for (const file of this.filesToUpload) {
-                lotToCreate.additionalDocuments?.push(file.file);
+                lotToCreate.additionalDocuments?.push(file.file!);
             }
         }
 
@@ -219,7 +219,7 @@ export class CreateLotComponent {
             this.addRemoveBtnToImage(file.id);
         };
 
-        reader.readAsDataURL(file.file);
+        reader.readAsDataURL(file.file!);
     }
 
     removeImageFromInput(index: number) {
