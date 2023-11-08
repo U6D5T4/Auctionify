@@ -33,7 +33,7 @@ export class Client {
         let url_ = this.baseUrl + "/api/auth/login";
 
         const content_ = JSON.stringify(body);
-        
+
         let options_ : Object = {
             body: content_,
             observe: "response",
@@ -56,11 +56,18 @@ export class Client {
         }));
     }
 
+    loginWithGoogle(credentials: string): Observable<any> {
+      const header = new HttpHeaders().set('Content-type', 'application/json');
+      let url_ = this.baseUrl + "api/auth/login-with-google";
+
+      return this.http.post(url_, JSON.stringify(credentials), { headers: header, withCredentials: true });
+    }
+
     register(body: RegisterViewModel | undefined) : Observable<RegisterResponse> {
         let url_ = this.baseUrl + "/api/auth/register";
 
         const content_ = JSON.stringify(body);
-        
+
         let options_ : any = {
             body: content_,
             observe: "response",

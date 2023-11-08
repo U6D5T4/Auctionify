@@ -1,5 +1,4 @@
 ﻿using Auctionify.Application.Common.DTOs;
-using Auctionify.Core.Entities;
 
 namespace Auctionify.Application.Features.Lots.Commands.Create
 {
@@ -26,6 +25,10 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
         public CurrencyDto Currency { get; set; }
 
         public ICollection<BidDto> Bids { get; set; }
+
+        public ICollection<FileDto> Photos { get; set; }
+
+        public ICollection<FileDto> AdditionalDocuments { get; set; }
     }
 
 }

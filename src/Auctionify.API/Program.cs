@@ -48,29 +48,29 @@ namespace Auctionify.API
                         Description = "API for Auctionify to manage auctions and bids for sellers and buyers.",
                     });
 
-                    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-                    {
-                        Name = "Authorization",
-                        Type = SecuritySchemeType.ApiKey,
-                        Scheme = "Bearer",
-                        BearerFormat = "JWT",
-                        In = ParameterLocation.Header,
-                        Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
-                    });
+					c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+					{
+						Name = "Authorization",
+						Type = SecuritySchemeType.ApiKey,
+						Scheme = "Bearer",
+						BearerFormat = "JWT",
+						In = ParameterLocation.Header,
+						Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 1safsfsdfdfd\"",
+					});
 
-                    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                    {
-                        {
-                            new OpenApiSecurityScheme {
-                                Reference = new OpenApiReference {
-                                    Type = ReferenceType.SecurityScheme,
-                                        Id = "Bearer"
-                                }
-                            },
-                            new string[] {}
-                        }
-                    });
-                });
+					c.AddSecurityRequirement(new OpenApiSecurityRequirement
+					{
+						{
+							new OpenApiSecurityScheme {
+								Reference = new OpenApiReference {
+									Type = ReferenceType.SecurityScheme,
+										Id = "Bearer"
+								}
+							},
+							new string[] {}
+						}
+					});
+				});
 
                 // To display enum values as strings in the response
                 builder.Services
@@ -83,6 +83,17 @@ namespace Auctionify.API
                 builder.Logging.ClearProviders();
                 builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
                 builder.Host.UseNLog();
+
+                builder.Services.AddCors(options =>
+                {
+					options.AddPolicy(name: "CorsPolicy", builder =>
+                    {
+                        builder.WithOrigins("https://localhost:44452")
+								.AllowAnyMethod()
+                                .AllowAnyHeader()
+                                .AllowCredentials();
+					});
+				});
 
                 var app = builder.Build();
 
@@ -110,6 +121,7 @@ namespace Auctionify.API
                     });
                 }
 
+                app.UseCors("CorsPolicy");
 				app.UseRouting();
                 app.UseHttpsRedirection();
                 app.UseAuthentication();

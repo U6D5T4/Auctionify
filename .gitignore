@@ -401,3 +401,6 @@ FodyWeavers.xsd
 # VS Code
 .vscode/
 .config/
+
+# env for angular
+.env
