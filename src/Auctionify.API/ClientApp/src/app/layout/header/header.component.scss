@@ -1,4 +1,4 @@
-.menu{
+.header {
     height: 80px;
     border: 0px, 0px, 1px, 0px;
     display: flex;
@@ -6,11 +6,11 @@
     gap: 64px;
 }
 
-.menu img {
+.header img {
     width: 160px;
 }
 
-.menu {
+.header {
     display: flex;
     align-items: center;
 }
@@ -27,7 +27,7 @@
     font-size: 16;
 }
 
-.navigation li img{
+.navigation li img {
     width: 20px;
     padding: 12px;
 }
@@ -38,4 +38,3 @@
     font-weight: bold;
 }
 
-  
