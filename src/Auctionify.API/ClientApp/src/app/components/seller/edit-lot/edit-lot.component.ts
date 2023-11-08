@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { FileModel, FileModelString } from 'src/app/models/fileModel';
+import { FileModel } from 'src/app/models/fileModel';
 import { CreateLotModel } from 'src/app/models/lots/lot-models';
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import {
@@ -46,9 +46,6 @@ export class EditLotComponent implements OnInit {
 
     imagesToUpload: FileModel[] = [];
     filesToUpload: FileModel[] = [];
-
-    existingImages: FileModelString[] = [];
-    existingFiles: FileModelString[] = [];
 
     categories: CategoryResponse[] = [];
     currencies: CurrencyResponse[] = [];
@@ -104,29 +101,30 @@ export class EditLotComponent implements OnInit {
                 lotFormData.city.setValue(result.location.city);
                 lotFormData.startingPrice.setValue(result.startingPrice);
 
-                var files: FileModelString[] = [];
-                var photos: FileModelString[] = [];
-
                 if (result.additionalDocumentsUrl !== null) {
                     for (const [
                         i,
                         fileUrl,
                     ] of result.additionalDocumentsUrl.entries()) {
-                        const fileModel: FileModelString = {
+                        const fileModel: FileModel = {
                             id: i,
                             fileUrl,
                         };
-                        files.push(fileModel);
+                        this.filesToUpload.push(fileModel);
                     }
                 }
 
                 if (result.photosUrl !== null) {
                     for (const [i, fileUrl] of result.photosUrl.entries()) {
-                        const fileModel: FileModelString = {
+                        const fileModel: FileModel = {
                             id: i,
                             fileUrl,
                         };
-                        photos.push(fileModel);
+                        this.imagesToUpload.push(fileModel);
+                        this.inputButtons.push(this.inputButtons.length);
+                        this.imageElements.changes.subscribe(() => {
+                            this.imageRendering(fileModel);
+                        });
                     }
                 }
             });
@@ -168,13 +166,13 @@ export class EditLotComponent implements OnInit {
 
         if (this.imagesToUpload) {
             for (const image of this.imagesToUpload) {
-                lotToCreate.photos?.push(image.file);
+                lotToCreate.photos?.push(image.file!);
             }
         }
 
         if (this.filesToUpload) {
             for (const file of this.filesToUpload) {
-                lotToCreate.additionalDocuments?.push(file.file);
+                lotToCreate.additionalDocuments?.push(file.file!);
             }
         }
 
@@ -224,18 +222,12 @@ export class EditLotComponent implements OnInit {
         if (files === null) return;
 
         if (files.length > 1) {
-            if (files.length > this.inputButtons.length - 1) {
-                for (
-                    let i = this.inputButtons.length - 1;
-                    i < files.length;
-                    i++
-                ) {
-                    this.inputButtons.push(i);
-                }
-                this.imageElements.changes.subscribe(() =>
-                    this.multipleImageUpdate(files)
-                );
-            } else this.multipleImageUpdate(files);
+            for (let i = 0; i < files.length; i++) {
+                this.inputButtons.push(i);
+            }
+            this.imageElements.changes.subscribe(() =>
+                this.multipleImageUpdate(files)
+            );
         } else {
             const file: FileModel = {
                 id: this.imageInputSelectId,
@@ -252,36 +244,55 @@ export class EditLotComponent implements OnInit {
             const element: File = files.item(index)!;
 
             const file: FileModel = {
-                id: index,
+                id: this.imageInputSelectId!,
                 file: element,
             };
             this.imageRendering(file);
             this.imagesToUpload.push(file);
-            this.addRemoveBtnToImage(index);
+            this.addRemoveBtnToImage(this.imageInputSelectId!);
+            this.imageInputSelectId!++;
         }
     }
 
     imageRendering(file: FileModel) {
-        const reader = new FileReader();
-
-        reader.onload = (e) => {
+        if (file.fileUrl) {
             const item = document.getElementById(
                 `photo-button-${file.id}`
             ) as HTMLImageElement;
 
-            if (item.getAttribute('src') !== '') {
-                this.removeImageFromInput(file.id);
-                this.imagesToUpload.push(file);
+            if (item.getAttribute('src') === '') {
+                item.src = file.fileUrl;
+                this.addRemoveBtnToImage(file.id);
             }
+        } else {
+            const reader = new FileReader();
 
-            item.src = reader.result as string;
-            this.addRemoveBtnToImage(file.id);
-        };
+            reader.onload = (e) => {
+                const item = document.getElementById(
+                    `photo-button-${file.id}`
+                ) as HTMLImageElement;
 
-        reader.readAsDataURL(file.file);
+                if (item.getAttribute('src') !== '') {
+                    this.removeImageFromInput(file.id);
+                    this.imagesToUpload.push(file);
+                }
+
+                item.src = reader.result as string;
+                this.addRemoveBtnToImage(file.id);
+            };
+
+            reader.readAsDataURL(file.file!);
+        }
     }
 
     removeImageFromInput(index: number) {
+        const imageToDelete = this.imagesToUpload.filter(
+            (value) => value.id === index
+        )[0];
+
+        if (imageToDelete.fileUrl) {
+        }
+
         const item = document.getElementById(
             `photo-button-${index}`
         ) as HTMLImageElement;
@@ -330,8 +341,8 @@ export class EditLotComponent implements OnInit {
     handleImageInputButtonClick(buttonId: any, index: number) {
         if (this.imageInput) {
             this.currentFileButtonId = buttonId;
-            this.imageInput.nativeElement.click();
             this.imageInputSelectId = index;
+            this.imageInput.nativeElement.click();
         }
     }
 

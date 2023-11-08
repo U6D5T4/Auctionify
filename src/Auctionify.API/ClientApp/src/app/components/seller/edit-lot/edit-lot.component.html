@@ -115,7 +115,7 @@
                                 <div id="button-select-parent-file" class="button-select file-select">
                                     <div class="select-container file-container">
                                         <div *ngFor="let item of filesToUpload" class="files-list">
-                                            <p>{{item.file.name}}</p>
+                                            <p>{{item.file ? item.file.name : item.fileUrl}}</p>
                                             <button type="button" (click)="removeInputFile(item.id)">
                                                 <mat-icon>highlight_off</mat-icon>
                                             </button>
