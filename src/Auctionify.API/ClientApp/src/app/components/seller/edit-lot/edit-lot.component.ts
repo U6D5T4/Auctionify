@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { FileModel } from 'src/app/models/fileModel';
+import { FileModel, FileModelString } from 'src/app/models/fileModel';
 import { CreateLotModel } from 'src/app/models/lots/lot-models';
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import {
@@ -46,6 +46,9 @@ export class EditLotComponent implements OnInit {
 
     imagesToUpload: FileModel[] = [];
     filesToUpload: FileModel[] = [];
+
+    existingImages: FileModelString[] = [];
+    existingFiles: FileModelString[] = [];
 
     categories: CategoryResponse[] = [];
     currencies: CurrencyResponse[] = [];
@@ -101,17 +104,29 @@ export class EditLotComponent implements OnInit {
                 lotFormData.city.setValue(result.location.city);
                 lotFormData.startingPrice.setValue(result.startingPrice);
 
-                var files: FileModel[] = [];
-                if (result.additionalDocuments !== null) {
+                var files: FileModelString[] = [];
+                var photos: FileModelString[] = [];
+
+                if (result.additionalDocumentsUrl !== null) {
                     for (const [
                         i,
-                        file,
-                    ] of result.additionalDocuments.entries()) {
-                        const fileModel: FileModel = {
+                        fileUrl,
+                    ] of result.additionalDocumentsUrl.entries()) {
+                        const fileModel: FileModelString = {
                             id: i,
-                            file,
+                            fileUrl,
                         };
                         files.push(fileModel);
+                    }
+                }
+
+                if (result.photosUrl !== null) {
+                    for (const [i, fileUrl] of result.photosUrl.entries()) {
+                        const fileModel: FileModelString = {
+                            id: i,
+                            fileUrl,
+                        };
+                        photos.push(fileModel);
                     }
                 }
             });

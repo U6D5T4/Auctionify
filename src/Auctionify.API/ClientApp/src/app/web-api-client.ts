@@ -268,8 +268,8 @@ export interface SellerGetLotResponse {
     startingPrice: number | null;
     startDate: Date | null;
     endDate: Date | null;
-    photos: File[] | null;
-    additionalDocuments: File[] | null;
+    photosUrl: string[] | null;
+    additionalDocumentsUrl: string[] | null;
     category: CategoryDto;
     lotStatus: LotStatusDto;
     location: LocationDto;
