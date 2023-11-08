@@ -13,22 +13,24 @@ import { DashboardComponent } from './components/seller/dashboard/dashboard.comp
 import { LayoutModule } from './layout/layout.module';
 
 @NgModule({
-  declarations: [AppComponent, HomeComponent, DashboardComponent],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    ApiAuthorizationModule,
-    HttpClientModule,
-    UiElementsModule,
-    BrowserAnimationsModule,
-    SellerModule,
-    LayoutModule,
-  ],
+    declarations: [AppComponent, HomeComponent, DashboardComponent],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        ApiAuthorizationModule,
+        HttpClientModule,
+        BrowserAnimationsModule,
+        SellerModule,
+        LayoutModule,
+    ],
 
-  providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true },
-  ],
-  bootstrap: [AppComponent],
+    providers: [
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthorizeInterceptor,
+            multi: true,
+        },
+    ],
+    bootstrap: [AppComponent],
 })
-
-export class AppModule { }
+export class AppModule {}
