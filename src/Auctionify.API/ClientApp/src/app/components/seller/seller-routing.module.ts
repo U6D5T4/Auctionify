@@ -2,26 +2,31 @@ import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { CreateLotComponent } from './create-lot/create-lot.component';
 import { NgModule } from '@angular/core';
+import { EditLotComponent } from './edit-lot/edit-lot.component';
 
 const sellerRoutes: Routes = [
-  {
-    path: '',
-    redirectTo: 'dashboard',
-    pathMatch: 'full',
-  },
-  {
-    path: 'dashboard',
-    component: DashboardComponent,
-  },
-  {
-    path: 'create-lot',
-    component: CreateLotComponent,
-    pathMatch: 'full',
-  },
+    {
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full',
+    },
+    {
+        path: 'dashboard',
+        component: DashboardComponent,
+    },
+    {
+        path: 'create-lot',
+        component: CreateLotComponent,
+        pathMatch: 'full',
+    },
+    {
+        path: 'update-lot/:id',
+        component: EditLotComponent,
+    },
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(sellerRoutes)],
-  exports: [RouterModule],
+    imports: [RouterModule.forChild(sellerRoutes)],
+    exports: [RouterModule],
 })
 export class sellerRoutingModule {}

@@ -7,23 +7,22 @@ import {
     ViewChild,
     ViewChildren,
 } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-
 import { FileModel } from 'src/app/models/fileModel';
 import { CreateLotModel } from 'src/app/models/lots/lot-models';
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
-import { Category, Client, Currency } from 'src/app/web-api-client';
+import { Category, Currency, Client } from 'src/app/web-api-client';
 
 @Injectable({
     providedIn: 'root',
 })
 @Component({
-    selector: 'app-create-lot',
-    templateUrl: './create-lot.component.html',
-    styleUrls: ['./create-lot.component.scss'],
+    selector: 'app-edit-lot',
+    templateUrl: './edit-lot.component.html',
+    styleUrls: ['./edit-lot.component.scss'],
 })
-export class CreateLotComponent {
+export class EditLotComponent {
     private imageInputSelectId: number = 0;
     private imageInputsButtonSize: number = 4;
     inputButtons: number[] = [...Array(this.imageInputsButtonSize).keys()];
