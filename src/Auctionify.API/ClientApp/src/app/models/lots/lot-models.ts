@@ -16,6 +16,7 @@ export interface CreateLotModel {
 }
 
 export interface UpdateLotModel {
+    id: number;
     title: string;
     description: string;
     startingPrice: number | null;
