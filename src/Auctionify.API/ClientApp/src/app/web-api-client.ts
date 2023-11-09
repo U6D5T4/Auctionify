@@ -56,6 +56,33 @@ export class Client {
         }));
     }
 
+    assignRoleToUser(body: AssignRoleViewModel): Observable<AssignRoleResponse> {
+        let url_ = this.baseUrl + "/api/auth/assign-role";
+
+        const content_ = JSON.stringify(body);
+        
+        let options_ : Object = {
+            body: content_,
+            observe: "response",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(mergeMap((response: any) : Observable<AssignRoleResponse> => {
+            let data: AssignRoleResponse = {};
+
+            if (response.body !== null) {
+                data = response.body
+            }
+
+            return of(data);
+        })).pipe(catchError((error) => {
+            return throwError(() => error);
+        }));
+      }
+
     register(body: RegisterViewModel | undefined) : Observable<RegisterResponse> {
         let url_ = this.baseUrl + "/api/auth/register";
 
@@ -89,6 +116,17 @@ export interface LoginResponse {
     result?: TokenModel;
 }
 
+export interface AssignRoleViewModel {
+    token: string;
+    role: UserRole;
+}
+
+export interface AssignRoleResponse{
+    message?: string | undefined;
+    isSuccess?: boolean;
+    errors?: string[] | undefined;
+}
+
 export interface TokenModel {
     accessToken: string;
     expireDate: string;
@@ -107,7 +145,6 @@ export interface LoginViewModel {
 }
 
 export interface RegisterViewModel {
-    firstName: string;
     email: string;
     password: string;
     confirmPassword: string;

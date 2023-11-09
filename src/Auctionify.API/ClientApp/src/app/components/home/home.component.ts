@@ -15,7 +15,7 @@ export class HomeComponent implements OnInit {
       next: (res) => {
         console.log(res);
 
-        this.authorize.register('asdasfasd','asdasdasd', 'adasdasdasd', 'asdasdasd').subscribe({
+        this.authorize.register('asdasfasd','asdasdasd', 'adasdasdasd').subscribe({
           next: (res) => console.log(res)
         });
       },

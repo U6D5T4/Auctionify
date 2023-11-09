@@ -6,34 +6,22 @@
                 <p>Please choose your role</p>
             </div>
 
-            <form action="submit" class="register-role__form form">
+            <form [formGroup]="assignRoleForm" (ngSubmit)="onSubmit()" class="register-role__form form">
                 <div class="form__options">
 
-                    <div class="form__single-option">
-                        <input type="radio" id="buyer" name="radio" value= 1 [(ngModel)]="selectedType" required />
+                    <div class="form__single-option" *ngFor="let role of roles">
+                        <input formControlName="role" type="radio" [id]="role.name" name="radio" [value]='role.name' required />
                         <div class="form__user-type-option">
                             <div class="radio">
-                                <label for="buyer">Buyer</label>
+                                <label [for]="role.name">{{role.name}}</label>
                             </div>
-                        <p>I want to buy <br> items on auction</p>
+                        <p>{{role.desc}}</p>
                         </div>
                     </div>
-                    
-                    
-                    <div class="form__single-option">
-                        <input type="radio" id="seller" name="radio" value= 2 [(ngModel)]="selectedType" required />
-                        <div class="form__user-type-option">
-                            <div class="radio">
-                                <label for="seller">Seller</label>
-                            </div>
-                        <p>I want to sell my <br>unique items</p>
-                        </div>
-                    </div>
-                    
 
                 </div>
 
-                <button disabled="{{isLoading}}" mat-raised-button color="primary">
+                <button type="submit" disabled="{{isLoading}}" mat-raised-button color="primary">
                     <mat-spinner *ngIf="isLoading" diameter="25"></mat-spinner>
                     <div *ngIf="!isLoading">Continue</div>
                 </button>

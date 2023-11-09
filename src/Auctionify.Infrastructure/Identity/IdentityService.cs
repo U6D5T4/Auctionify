@@ -1,12 +1,15 @@
 using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Models.Account;
 using Auctionify.Core.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq.Dynamic.Core.Tokenizer;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text;
 
@@ -22,18 +25,21 @@ namespace Auctionify.Infrastructure.Identity
         private readonly ILogger<IdentityService> _logger;
         private readonly IConfiguration _configuration;
         private readonly IEmailService _emailService;
+        private readonly RoleManager<Role> _roleManager;
 
         public IdentityService(SignInManager<User> signInManager,
             UserManager<User> userManager,
             ILogger<IdentityService> logger,
             IConfiguration configuration,
-            IEmailService emailService)
+            IEmailService emailService,
+            RoleManager<Role> roleManager)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
             _configuration = configuration;
             _emailService = emailService;
+            _roleManager = roleManager;
         }
 
         public async Task<LoginResponse> LoginUserAsync(LoginViewModel userModel)
@@ -275,65 +281,111 @@ namespace Auctionify.Infrastructure.Identity
             };
         }
 
-        public async Task<AssignRoleToUserResponse> AssignRoleToUserAsync(AssignRoleToUserViewModel viewModel)
+        public async Task<AssignRoleToUserResponse> AssignRoleToUserAsync(AssignRoleToUserViewModel model)
         {
-            var user = await _userManager.FindByEmailAsync(viewModel.Email);
+            var userEmail = await DecodeTokenAndGetUser(model.Token);
+
+            if (string.IsNullOrWhiteSpace(userEmail.ToString()))
+            {
+                return new AssignRoleToUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "Invalid or expired token"
+                };
+            }
+
+            if (string.IsNullOrWhiteSpace(model.Role))
+            {
+                return new AssignRoleToUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "Role name is not provided"
+                };
+            }
+
+            var roleExists = await _roleManager.RoleExistsAsync(model.Role);
+
+            if (!roleExists)
+            {
+                return new AssignRoleToUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "Role not found"
+                };
+            }
+
+            var user = await _userManager.FindByEmailAsync(userEmail.ToString());
 
             if (user == null)
             {
                 return new AssignRoleToUserResponse
                 {
                     IsSuccess = false,
-                    Message = "User not found",
+                    Message = "User not found"
                 };
             }
 
-            if (string.IsNullOrWhiteSpace(viewModel.Role.ToString()))
+            var userHasRole = await _userManager.IsInRoleAsync(user, model.Role);
+
+            if (userHasRole)
             {
                 return new AssignRoleToUserResponse
                 {
                     IsSuccess = false,
-                    Message = "Role name is not provided",
+                    Message = "User already has the specified role"
                 };
             }
 
-            var role = await _userManager.FindByNameAsync(viewModel.Role.ToString());
-
-            if (role == null)
-            {
-                return new AssignRoleToUserResponse
-                {
-                    IsSuccess = false,
-                    Message = "Role not found",
-                };
-            }
-
-            if (await _userManager.IsInRoleAsync(user, viewModel.Role.ToString()))
-            {
-                return new AssignRoleToUserResponse
-                {
-                    IsSuccess = false,
-                    Message = "User already has the specified role",
-                };
-            }
-
-            var result = await _userManager.AddToRoleAsync(user, viewModel.Role.ToString());
+            var result = await _userManager.AddToRoleAsync(user, model.Role);
 
             if (result.Succeeded)
             {
                 return new AssignRoleToUserResponse
                 {
                     IsSuccess = true,
-                    Message = $"Role '{viewModel.Role}' assigned to the user successfully",
+                    Message = $"Role '{model.Role}' assigned to the user successfully"
                 };
             }
-
-            return new AssignRoleToUserResponse
+            else
             {
-                IsSuccess = false,
-                Message = "Failed to assign role",
-                Errors = result.Errors.Select(e => e.Description),
+                return new AssignRoleToUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "Failed to assign role",
+                    Errors = result.Errors.Select(e => e.Description)
+                };
+            }
+        }
+
+        private async Task<User> DecodeTokenAndGetUser(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSettings:Key"]));
+            var validationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = key,
+                ValidateIssuer = true,
+                ValidIssuer = _configuration["AuthSettings:Issuer"],
+                ValidateAudience = true,
+                ValidAudience = _configuration["AuthSettings:Audience"],
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
             };
+
+            var principal = tokenHandler.ValidateToken(token, validationParameters, out _);
+
+            var userId = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+
+            if (userId != null)
+            {
+                var user = await _userManager.FindByEmailAsync(userId);
+                return user;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

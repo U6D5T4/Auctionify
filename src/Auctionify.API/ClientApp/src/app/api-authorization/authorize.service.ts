@@ -2,6 +2,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, catchError, map, of, throwError } from 'rxjs';
 import {
+  AssignRoleResponse,
+  AssignRoleViewModel,
   Client,
   LoginResponse,
   LoginViewModel,
@@ -11,10 +13,10 @@ import {
 import { HttpErrorResponse, HttpResponseBase } from '@angular/common/http';
 
 export enum UserRole {
-  Administrator = 1,
-  Seller,
-  Buyer,
-  User,
+  Administrator = 'Administrator',
+  Seller = 'Seller',
+  Buyer = 'Buyer',
+  User = 'User',
 }
 
 export interface IUser {
@@ -66,14 +68,21 @@ export class AuthorizeService {
       }));
   }
 
-  assignRoleToUser( email: string, UserRole: string)
-  {
-    
+  assignRoleToUser(role: UserRole): Observable<AssignRoleResponse | boolean> {
+    const userToken = localStorage.getItem(this.tokenString);
+
+    const roleAssignmentData: AssignRoleViewModel = {
+      token: userToken ?? '',
+      role
+    };
+  
+    return this.client.assignRoleToUser(roleAssignmentData).pipe(map((result) => {
+      return result;
+    }))
   }
 
-  register( firstName: string, email: string, password: string, confirmPassword: string ) : Observable<RegisterResponse | boolean > {
+  register(email: string, password: string, confirmPassword: string ) : Observable<RegisterResponse | boolean > {
     const registerData: RegisterViewModel = {
-      firstName,
       email,
       password,
       confirmPassword,
