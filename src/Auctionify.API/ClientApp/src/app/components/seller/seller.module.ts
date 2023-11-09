@@ -11,23 +11,25 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { EditLotComponent } from './edit-lot/edit-lot.component';
 
 @NgModule({
-  declarations: [CreateLotComponent, EditLotComponent],
-  imports: [
-    CommonModule,
-    sellerRoutingModule,
-    MatFormFieldModule,
-    ReactiveFormsModule,
-    MatButtonModule,
-    MatIconModule,
-    MatInputModule,
-    MatSelectModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatProgressSpinnerModule,
-  ],
-  exports: [CreateLotComponent],
+    declarations: [CreateLotComponent, EditLotComponent],
+    imports: [
+        CommonModule,
+        sellerRoutingModule,
+        MatFormFieldModule,
+        ReactiveFormsModule,
+        MatButtonModule,
+        MatIconModule,
+        MatInputModule,
+        MatSelectModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatProgressSpinnerModule,
+        MatSnackBarModule,
+    ],
+    exports: [CreateLotComponent],
 })
 export class SellerModule {}

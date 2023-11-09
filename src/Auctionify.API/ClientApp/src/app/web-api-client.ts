@@ -281,6 +281,32 @@ export class Client {
             })
         );
     }
+
+    deleteLot(id: number): Observable<string> {
+        let url_ = this.baseUrl + `/api/lots/${id}`;
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.delete(url_, options_).pipe(
+            mergeMap((response: any): Observable<string> => {
+                if (response.body !== null) {
+                    return of(response.body as string);
+                } else
+                    return throwError(
+                        () => new Error('Unexpected error occured')
+                    );
+            }),
+            catchError((err: any): Observable<any> => {
+                return throwError(() => new Error(err));
+            })
+        );
+    }
 }
 
 export interface CategoryDto {

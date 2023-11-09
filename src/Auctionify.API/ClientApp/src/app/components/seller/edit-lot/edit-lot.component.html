@@ -150,20 +150,27 @@
                     </div>
                     <hr class="color-grey-5">
                     <div class="form__lot-buttons">
-                        <div class="submit-buttons">
-                            <button class="mat-mdc-outlined-button-custom" mat-stroked-button disabled="{{isLoading}}"
-                                color="primary" type="submit" (click)="submitLot(true)">
-                                <mat-spinner *ngIf="isLoading" diameter="25"></mat-spinner>
-                                <div *ngIf="!isLoading">Save as draft</div>
-                            </button>
-                            <button mat-flat-button disabled="{{isLoading}}" color="primary" type="submit"
-                                (click)="submitLot(false)">
-                                <mat-spinner *ngIf="isLoading" diameter="25"></mat-spinner>
-                                <div *ngIf="!isLoading">Submit</div>
-                            </button>
+                        <button type="button" class="delete-button mat-mdc-outlined-button-custom" mat-stroked-button
+                            color="warn" (click)="deleteLot()" disabled="{{isLoading}}">
+                            <mat-spinner *ngIf="isDeleteLoading" diameter="25" color="warn"></mat-spinner>
+                            <div *ngIf="!isDeleteLoading">Delete lot</div>
+                        </button>
+                        <div class="submit-buttons-container">
+                            <div class="submit-buttons">
+                                <button class="mat-mdc-outlined-button-custom" mat-stroked-button
+                                    disabled="{{isLoading}}" color="primary" type="submit" (click)="submitLot(true)">
+                                    <mat-spinner *ngIf="isLoading" diameter="25"></mat-spinner>
+                                    <div *ngIf="!isLoading">Save as draft</div>
+                                </button>
+                                <button mat-flat-button disabled="{{isLoading}}" color="primary" type="submit"
+                                    (click)="submitLot(false)">
+                                    <mat-spinner *ngIf="isLoading" diameter="25"></mat-spinner>
+                                    <div *ngIf="!isLoading">Submit</div>
+                                </button>
+                            </div>
+                            <p>By clicking “Submit” button I accept <br>
+                                Company’s Terms of Use and Privacy Policy</p>
                         </div>
-                        <p>By clicking “Submit” button I accept <br>
-                            Company’s Terms of Use and Privacy Policy</p>
                     </div>
                 </form>
             </div>
