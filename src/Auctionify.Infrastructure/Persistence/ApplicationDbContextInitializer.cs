@@ -194,7 +194,6 @@ namespace Auctionify.Infrastructure.Persistence
 					new LotStatus { Name = "Reopened" },
 					new LotStatus { Name = "Archive" }
 				);
-				await _context.SaveChangesAsync();
 			}
 
 			if (!_context.Currency.Any())
