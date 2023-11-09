@@ -86,66 +86,75 @@ export class EditLotComponent implements OnInit {
     ngOnInit(): void {
         this.route.paramMap.subscribe((params: ParamMap) => {
             const lotIdString = params.get('id');
-            if (lotIdString === null) return;
+            if (lotIdString === null) {
+                this.router.navigate(['/home']);
+                return;
+            }
 
             const lotId: number = parseInt(lotIdString);
             this.lotId = lotId;
 
-            this.client.getOneLotForSeller(lotId).subscribe((result) => {
-                const lotFormData = this.lotForm.controls;
+            this.client.getOneLotForSeller(lotId).subscribe({
+                next: (result) => {
+                    const lotFormData = this.lotForm.controls;
 
-                console.log(result);
+                    console.log(result);
 
-                lotFormData.title.setValue(result.title);
-                lotFormData.description.setValue(result.description);
-                lotFormData.categoryId.setValue(
-                    result.category ? result.category.id : null
-                );
-                lotFormData.currencyId.setValue(
-                    result.currency ? result.currency.id : null
-                );
-                lotFormData.startDate.setValue(result.startDate);
-                lotFormData.endDate.setValue(result.endDate);
-                lotFormData.country.setValue(result.location.country);
-                lotFormData.address.setValue(result.location.address);
-                lotFormData.city.setValue(result.location.city);
-                lotFormData.startingPrice.setValue(result.startingPrice);
+                    lotFormData.title.setValue(result.title);
+                    lotFormData.description.setValue(result.description);
+                    lotFormData.categoryId.setValue(
+                        result.category ? result.category.id : null
+                    );
+                    lotFormData.currencyId.setValue(
+                        result.currency ? result.currency.id : null
+                    );
+                    lotFormData.startDate.setValue(result.startDate);
+                    lotFormData.endDate.setValue(result.endDate);
+                    lotFormData.country.setValue(result.location.country);
+                    lotFormData.address.setValue(result.location.address);
+                    lotFormData.city.setValue(result.location.city);
+                    lotFormData.startingPrice.setValue(result.startingPrice);
 
-                if (result.additionalDocumentsUrl !== null) {
-                    for (const [
-                        i,
-                        fileUrl,
-                    ] of result.additionalDocumentsUrl.entries()) {
-                        const fileName = this.getFileNameFromUrl(fileUrl);
-
-                        console.log(fileName);
-                        const fileModel: FileModel = {
-                            id: i,
+                    if (result.additionalDocumentsUrl !== null) {
+                        for (const [
+                            i,
                             fileUrl,
-                            fileName: fileName,
-                        };
-                        this.filesToUpload.push(fileModel);
-                    }
-                }
+                        ] of result.additionalDocumentsUrl.entries()) {
+                            const fileName = this.getFileNameFromUrl(fileUrl);
 
-                if (result.photosUrl !== null) {
-                    for (const [i, fileUrl] of result.photosUrl.entries()) {
-                        const fileName = this.getFileNameFromUrl(fileUrl);
-                        const fileModel: FileModel = {
-                            id: i,
-                            fileUrl,
-                            fileName: fileName,
-                        };
-                        this.imagesToUpload.push(fileModel);
-                        this.inputButtons.push(this.inputButtons.length);
-                        const subscription =
-                            this.imageElements.changes.subscribe(() => {
-                                this.imageRendering(fileModel);
-                                this.imageElements;
-                                subscription.unsubscribe();
-                            });
+                            console.log(fileName);
+                            const fileModel: FileModel = {
+                                id: i,
+                                fileUrl,
+                                fileName: fileName,
+                            };
+                            this.filesToUpload.push(fileModel);
+                        }
                     }
-                }
+
+                    if (result.photosUrl !== null) {
+                        for (const [i, fileUrl] of result.photosUrl.entries()) {
+                            const fileName = this.getFileNameFromUrl(fileUrl);
+                            const fileModel: FileModel = {
+                                id: i,
+                                fileUrl,
+                                fileName: fileName,
+                            };
+                            this.imagesToUpload.push(fileModel);
+                            this.inputButtons.push(this.inputButtons.length);
+                            const subscription =
+                                this.imageElements.changes.subscribe(() => {
+                                    this.imageRendering(fileModel);
+                                    this.imageElements;
+                                    subscription.unsubscribe();
+                                });
+                        }
+                    }
+                },
+
+                error: (err) => {
+                    this.router.navigate(['/home']);
+                },
             });
         });
     }
