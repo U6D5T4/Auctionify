@@ -11,7 +11,11 @@ import {
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { FileModel } from 'src/app/models/fileModel';
-import { CreateLotModel } from 'src/app/models/lots/lot-models';
+import { CreateLotModel, UpdateLotModel } from 'src/app/models/lots/lot-models';
+import {
+    ChoicePopupComponent,
+    ChoicePopupData,
+} from 'src/app/ui-elements/choice-popup/choice-popup.component';
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import {
     CategoryResponse,
@@ -28,6 +32,9 @@ import {
     styleUrls: ['./edit-lot.component.scss'],
 })
 export class EditLotComponent implements OnInit {
+    private regExValue: RegExp = /\/([^\/]+)(?=\/?$)/g;
+    private lotId: number = 0;
+
     private imageInputSelectId: number = 0;
     private imageInputsButtonSize: number = 4;
     inputButtons: number[] = [...Array(this.imageInputsButtonSize).keys()];
@@ -68,6 +75,7 @@ export class EditLotComponent implements OnInit {
     constructor(
         private client: Client,
         private dialog: Dialog,
+        private choiceDialog: Dialog,
         private router: Router,
         private route: ActivatedRoute
     ) {
@@ -81,6 +89,8 @@ export class EditLotComponent implements OnInit {
             if (lotIdString === null) return;
 
             const lotId: number = parseInt(lotIdString);
+            this.lotId = lotId;
+
             this.client.getOneLotForSeller(lotId).subscribe((result) => {
                 const lotFormData = this.lotForm.controls;
 
@@ -106,9 +116,13 @@ export class EditLotComponent implements OnInit {
                         i,
                         fileUrl,
                     ] of result.additionalDocumentsUrl.entries()) {
+                        const fileName = this.getFileNameFromUrl(fileUrl);
+
+                        console.log(fileName);
                         const fileModel: FileModel = {
                             id: i,
                             fileUrl,
+                            fileName: fileName,
                         };
                         this.filesToUpload.push(fileModel);
                     }
@@ -116,19 +130,31 @@ export class EditLotComponent implements OnInit {
 
                 if (result.photosUrl !== null) {
                     for (const [i, fileUrl] of result.photosUrl.entries()) {
+                        const fileName = this.getFileNameFromUrl(fileUrl);
                         const fileModel: FileModel = {
                             id: i,
                             fileUrl,
+                            fileName: fileName,
                         };
                         this.imagesToUpload.push(fileModel);
                         this.inputButtons.push(this.inputButtons.length);
-                        this.imageElements.changes.subscribe(() => {
-                            this.imageRendering(fileModel);
-                        });
+                        const subscription =
+                            this.imageElements.changes.subscribe(() => {
+                                this.imageRendering(fileModel);
+                                this.imageElements;
+                                subscription.unsubscribe();
+                            });
                     }
                 }
             });
         });
+    }
+
+    private getFileNameFromUrl(fileUrl: string): string {
+        const fileName = fileUrl.match(this.regExValue);
+        if (fileName === null) return '';
+
+        return decodeURI(fileName[0].split('/')[1]);
     }
 
     submitLot(isDraft: boolean) {
@@ -147,7 +173,8 @@ export class EditLotComponent implements OnInit {
         this.isLoading = true;
         this.isLocationValid = true;
 
-        const lotToCreate: CreateLotModel = {
+        const lotToCreate: UpdateLotModel = {
+            id: this.lotId,
             title: this.lotForm.value.title!,
             description: this.lotForm.value.description!,
             startingPrice: this.lotForm.value.startingPrice!,
@@ -166,20 +193,25 @@ export class EditLotComponent implements OnInit {
 
         if (this.imagesToUpload) {
             for (const image of this.imagesToUpload) {
+                if (image.fileUrl) continue;
                 lotToCreate.photos?.push(image.file!);
             }
         }
 
         if (this.filesToUpload) {
             for (const file of this.filesToUpload) {
+                if (file.fileUrl) continue;
                 lotToCreate.additionalDocuments?.push(file.file!);
             }
         }
 
-        this.client.createLot(lotToCreate).subscribe({
+        console.log(lotToCreate);
+
+        this.client.updateLot(lotToCreate).subscribe({
             next: (res) => {
+                console.log(res);
                 const dialog = this.openDialog(
-                    ['Successfully created the lot!'],
+                    ['Successfully updated the lot!'],
                     false
                 );
 
@@ -188,6 +220,7 @@ export class EditLotComponent implements OnInit {
                 );
             },
             error: (err) => {
+                console.log(err);
                 const errors = err.errors;
                 let errorsToShow = [];
 
@@ -222,26 +255,54 @@ export class EditLotComponent implements OnInit {
         if (files === null) return;
 
         if (files.length > 1) {
+            const filesToProceed: File[] = [];
             for (let i = 0; i < files.length; i++) {
+                const element: File = files.item(i)!;
+                if (
+                    this.imagesToUpload.find((x) => x.fileName === element.name)
+                )
+                    continue;
+
+                if (
+                    this.imagesToUpload
+                        .filter((x) => x.file)
+                        .find((y) => y.file?.name == element.name)
+                )
+                    continue;
+
+                filesToProceed.push(element);
                 this.inputButtons.push(i);
             }
-            this.imageElements.changes.subscribe(() =>
-                this.multipleImageUpdate(files)
-            );
+            const subscriber = this.imageElements.changes.subscribe(() => {
+                this.multipleImageUpdate(filesToProceed);
+                subscriber.unsubscribe();
+                console.log(this.imagesToUpload);
+            });
         } else {
             const file: FileModel = {
                 id: this.imageInputSelectId,
                 file: files.item(0)!,
             };
+            if (this.imagesToUpload.find((x) => x.fileName === file.file?.name))
+                return;
+
+            if (
+                this.imagesToUpload
+                    .filter((x) => x.file)
+                    .find((y) => y.file?.name == file.file?.name)
+            )
+                return;
+
             this.imageRendering(file);
             this.imagesToUpload.push(file);
             this.addRemoveBtnToImage(this.imageInputSelectId);
+            console.log(this.imagesToUpload);
         }
     }
 
-    multipleImageUpdate(files: FileList) {
+    multipleImageUpdate(files: File[]) {
         for (let index = 0; index < files.length; index++) {
-            const element: File = files.item(index)!;
+            const element: File = files[index]!;
 
             const file: FileModel = {
                 id: this.imageInputSelectId!,
@@ -286,13 +347,46 @@ export class EditLotComponent implements OnInit {
     }
 
     removeImageFromInput(index: number) {
-        const imageToDelete = this.imagesToUpload.filter(
+        const imageToDelete = this.imagesToUpload.find(
             (value) => value.id === index
-        )[0];
+        );
+
+        if (imageToDelete === null || imageToDelete === undefined) return;
 
         if (imageToDelete.fileUrl) {
-        }
+            const msg = ['This action will totally delete image.'];
+            const dialogData: ChoicePopupData = {
+                isError: true,
+                continueBtnText: 'Delete',
+                breakBtnText: 'Cancel',
+                text: msg,
+                additionalText: 'Continue?',
+                continueBtnColor: 'warn',
+                breakBtnColor: 'primary',
+            };
+            const openedChoiceDialog = this.openChoiceDialog(dialogData);
+            const dialogSubscriber = openedChoiceDialog.closed.subscribe(
+                (result) => {
+                    const isResult = result === 'true';
+                    if (isResult) {
+                        const deleteLotSubscriber = this.client
+                            .deleteLotFile(this.lotId, imageToDelete.fileUrl!)
+                            .subscribe((res) => {
+                                console.log(res);
+                                this.proceedRemoveImage(index);
+                                deleteLotSubscriber.unsubscribe();
+                            });
+                    }
 
+                    dialogSubscriber.unsubscribe();
+                }
+            );
+        } else {
+            this.proceedRemoveImage(index);
+        }
+    }
+
+    proceedRemoveImage(index: number) {
         const item = document.getElementById(
             `photo-button-${index}`
         ) as HTMLImageElement;
@@ -353,7 +447,47 @@ export class EditLotComponent implements OnInit {
     }
 
     removeInputFile(id: number) {
-        this.filesToUpload = this.filesToUpload.filter((val) => val.id !== id);
+        const fileToDelete = this.filesToUpload.find(
+            (value) => value.id === id
+        );
+
+        if (fileToDelete === null || fileToDelete === undefined) return;
+
+        if (fileToDelete.fileUrl) {
+            const msg = ['This action will totally delete file.'];
+            const dialogData: ChoicePopupData = {
+                isError: true,
+                continueBtnText: 'Delete',
+                breakBtnText: 'Cancel',
+                text: msg,
+                additionalText: 'Continue?',
+                continueBtnColor: 'warn',
+                breakBtnColor: 'primary',
+            };
+            const openedChoiceDialog = this.openChoiceDialog(dialogData);
+            const dialogSubscriber = openedChoiceDialog.closed.subscribe(
+                (result) => {
+                    const isResult = result === 'true';
+                    if (isResult) {
+                        const deleteLotSubscriber = this.client
+                            .deleteLotFile(this.lotId, fileToDelete.fileUrl!)
+                            .subscribe((res) => {
+                                this.filesToUpload = this.filesToUpload.filter(
+                                    (val) => val.id !== id
+                                );
+
+                                deleteLotSubscriber.unsubscribe();
+                            });
+                    }
+
+                    dialogSubscriber.unsubscribe();
+                }
+            );
+        } else {
+            this.filesToUpload = this.filesToUpload.filter(
+                (val) => val.id !== id
+            );
+        }
     }
 
     populateCategorySelector() {
@@ -402,6 +536,12 @@ export class EditLotComponent implements OnInit {
                 text,
                 isError: error,
             },
+        });
+    }
+
+    openChoiceDialog(data: ChoicePopupData): DialogRef<string, unknown> {
+        return this.choiceDialog.open<string>(ChoicePopupComponent, {
+            data,
         });
     }
 }

@@ -13,7 +13,7 @@ import { Observable, throwError, of } from 'rxjs';
 import { Injectable, Inject, Optional, InjectionToken } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { UserRole } from './api-authorization/authorize.service';
-import { CreateLotModel } from './models/lots/lot-models';
+import { CreateLotModel, UpdateLotModel } from './models/lots/lot-models';
 
 export const API_BASE_URL = new InjectionToken('API_BASE_URL');
 
@@ -198,6 +198,47 @@ export class Client {
         );
     }
 
+    updateLot(body: UpdateLotModel): Observable<any> {
+        let url_ = this.baseUrl + '/api/lots';
+
+        let formData = new FormData();
+
+        formData.append('id', body.id.toString());
+        formData.append('title', body.title);
+        formData.append('description', body.description);
+        formData.append('city', body.city);
+        formData.append('address', body.address);
+        formData.append('country', body.country);
+        formData.append('startDate', new Date(body.startDate!).toISOString());
+        formData.append('endDate', new Date(body.endDate!).toISOString());
+        formData.append('startingPrice', body.startingPrice?.toString() ?? '');
+        formData.append('categoryId', body.categoryId?.toString() ?? '');
+        formData.append('currencyId', body.currencyId?.toString() ?? '');
+        formData.append('isDraft', body.isDraft?.toString()!);
+
+        if (body.photos !== null) {
+            for (const photo of body.photos) {
+                formData.append('photos', photo);
+            }
+        }
+
+        if (body.additionalDocuments !== null) {
+            for (const file of body.additionalDocuments) {
+                formData.append('additionalDocuments', file);
+            }
+        }
+
+        let options_: any = {
+            body: formData,
+        };
+
+        return this.http.request('put', url_, options_).pipe(
+            catchError((error) => {
+                return throwError(() => error.error);
+            })
+        );
+    }
+
     getOneLotForSeller(id: number): Observable<SellerGetLotResponse> {
         let url_ = this.baseUrl + `/api/lots/${id}/sellers`;
 
@@ -216,6 +257,27 @@ export class Client {
 
                     return of(data);
                 } else return throwError(() => new Error('data is empty!'));
+            })
+        );
+    }
+
+    deleteLotFile(id: number, url: string): Observable<any> {
+        let url_ = this.baseUrl + `/api/lots/${id}/files`;
+
+        let options_: any = {
+            body: [url],
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.delete(url_, options_).pipe(
+            mergeMap((response: any): Observable<any> => {
+                if (response.body !== null) {
+                    return of(response.body);
+                } else return throwError(() => new Error('Error'));
             })
         );
     }
