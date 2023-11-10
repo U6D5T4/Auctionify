@@ -3,7 +3,9 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { AuthorizeService } from '../authorize.service';
 import { Dialog } from '@angular/cdk/dialog';
+import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import { Router } from '@angular/router';
+import { ForgetPasswordResponse } from 'src/app/web-api-client';
 
 @Component({
   selector: 'app-forget-password',
@@ -13,7 +15,10 @@ import { Router } from '@angular/router';
 export class ForgetPasswordComponent {
   isLoading = false;
 
-  constructor(private authService: AuthorizeService, public dialog: Dialog, private router: Router) {
+  constructor(
+    private authService: AuthorizeService, 
+    public dialog: Dialog, 
+    private router: Router) {
 
   }
   forgetPasswordForm = new FormGroup({
@@ -21,7 +26,40 @@ export class ForgetPasswordComponent {
   })
 
   onSubmit(){
+    this.isLoading = true;
+    if (this.forgetPasswordForm.invalid) {
+      this.isLoading = false;
+      return;
+    }
 
+    this.authService.forgetPassword(
+      this.forgetPasswordForm.controls.email.value!)
+      .subscribe({
+        next: (result) => {
+          this.router.navigate(['/home'])
+        },
+        error: (error: ForgetPasswordResponse) => {
+          this.openDialog(error.errors!, true);
+        }
+      })
+  }
+
+  goToLoginPage() {
+    this.router.navigate(['auth/login']);
+  }
+
+  openDialog(text: string[], error: boolean) {
+    const dialogRef = this.dialog.open<string>(DialogPopupComponent, {
+      data: {
+        text,
+        isError: error
+      },
+    });
+
+    dialogRef.closed.subscribe((res) => {
+      this.isLoading = false;
+      this.forgetPasswordForm.controls.email.reset();
+    })
   }
 }
 

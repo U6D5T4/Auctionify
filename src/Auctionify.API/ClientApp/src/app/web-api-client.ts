@@ -81,6 +81,31 @@ export class Client {
         }));
     }
 
+    resetPassword(body: ResetPasswordViewModel | undefined) : Observable<ResetPasswordResponse> {
+        let url_ = this.baseUrl + "/api/auth/reset-password";
+
+        const content_ = JSON.stringify(body);
+        
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(mergeMap((response: any) : Observable<ResetPasswordResponse> => {
+            let data: ResetPasswordResponse = {};
+
+            if (response.body !== null) {
+                data = response.body
+            }
+
+            return of(data);
+        }));
+    }
+
     forgetPassword(body: ForgetPasswordViewModel | undefined) : Observable<ForgetPasswordResponse> {
         let url_ = this.baseUrl + "/api/auth/forget-password";
 
@@ -135,7 +160,7 @@ export interface ForgetPasswordResponse {
 export interface ResetPasswordResponse {
     message?: string | undefined;
     isSuccess?: boolean;
-    error?:  string[] | undefined;
+    errors?:  string[] | undefined;
 }
 
 export interface LoginViewModel {
@@ -155,6 +180,8 @@ export interface ForgetPasswordViewModel {
 }
 
 export interface ResetPasswordViewModel {
+    email: string,
+    token: string,
     password: string;
     confirmPassword: string;
 }

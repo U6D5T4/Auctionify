@@ -25,7 +25,7 @@ import { ForgetPasswordComponent } from './forget-password/forget-password.compo
       { path: ApplicationPaths.Login, component: LoginComponent },
       { path: ApplicationPaths.Register, component: RegisterComponent },
       { path: ApplicationPaths.ResetPassword, component: ResetPasswordComponent},
-      { path: ApplicationPaths.ForgotPassword, component: ForgetPasswordComponent}
+      { path: ApplicationPaths.ForgetPassword, component: ForgetPasswordComponent}
     ]),
     UiElementsModule,
     MatFormFieldModule,

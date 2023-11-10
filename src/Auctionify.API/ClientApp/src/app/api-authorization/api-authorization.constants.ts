@@ -5,7 +5,7 @@ export const LoginActions = {
   Profile: 'profile',
   Register: 'register',
   LoginFailed: 'login-failed',
-  ForgotPassword: 'forgot-password',
+  ForgetPassword: 'forget-password',
   ResetPassword: 'reset-password'
 };
 
@@ -14,12 +14,12 @@ let applicationPaths: ApplicationPathsType = {
   Register: `auth/${LoginActions.Register}`,
   Profile: `auth/${LoginActions.Profile}`,
   LoginFailed: `auth/${LoginActions.LoginFailed}`,
-  ForgotPassword: `auth/${LoginActions.ForgotPassword}`,
+  ForgetPassword: `auth/${LoginActions.ForgetPassword}`,
   ResetPassword: `auth/${LoginActions.ResetPassword}`,
   LoginPathComponents: [],
   RegisterPathComponents: [],
   ProfilePathComponents: [],
-  ForgotPasswordComponents: [],
+  ForgetPasswordComponents: [],
   ResetPasswordComponents: []
 };
 
@@ -28,7 +28,7 @@ applicationPaths = {
   LoginPathComponents: applicationPaths.Login.split('/'),
   RegisterPathComponents: applicationPaths.Register.split('/'),
   ProfilePathComponents: applicationPaths.Profile.split('/'),
-  ForgotPasswordComponents: applicationPaths.ForgotPassword.split('/'),
+  ForgetPasswordComponents: applicationPaths.ForgetPassword.split('/'),
   ResetPasswordComponents: applicationPaths.ResetPassword.split('/'),
 };
 
@@ -37,12 +37,12 @@ interface ApplicationPathsType {
   readonly LoginFailed: string;
   readonly Register: string;
   readonly Profile: string;
-  readonly ForgotPassword: string;
+  readonly ForgetPassword: string;
   readonly ResetPassword: string;
   readonly LoginPathComponents: string[];
   readonly RegisterPathComponents: string[];
   readonly ProfilePathComponents: string[];
-  readonly ForgotPasswordComponents: string[];
+  readonly ForgetPasswordComponents: string[];
   readonly ResetPasswordComponents: string[];
 }
 

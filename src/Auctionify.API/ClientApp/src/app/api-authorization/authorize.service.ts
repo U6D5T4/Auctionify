@@ -94,13 +94,21 @@ export class AuthorizeService {
   }
 
   resetPassword(
+    email: string,
+    token: string,
     password: string,
     confirmPassword: string
   ){
     const resetPasswordData: ResetPasswordViewModel = {
+      email,
+      token,
       password,
       confirmPassword
     };
+
+    return this.client.resetPassword(resetPasswordData).pipe(map((result) => {
+      return result;
+    }))
   }
 
   logout(): boolean {
