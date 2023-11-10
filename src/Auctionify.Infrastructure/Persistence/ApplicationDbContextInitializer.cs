@@ -202,7 +202,6 @@ namespace Auctionify.Infrastructure.Persistence
 					new Currency { Code = "USD" },
 					new Currency { Code = "RUB" }
 				);
-				await _context.SaveChangesAsync();
 			}
 
 			if (!_context.Locations.Any())
