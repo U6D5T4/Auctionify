@@ -110,6 +110,8 @@ export class Client {
         let url_ = this.baseUrl + "/api/auth/forget-password";
 
         const content_ = JSON.stringify(body);
+
+        console.log(body?.email);
         
         let options_ : any = {
             body: content_,
