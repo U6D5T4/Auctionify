@@ -16,17 +16,19 @@ import { AssignRoleResponse } from 'src/app/web-api-client';
   styleUrls: ['./register-role.component.scss']
 })
 export class RegisterRoleComponent {
+  isLoading = false;
   public roles = [
     {
-      name: UserRole.Seller,
-      desc: ""
+      name: UserRole.Buyer,
+      line1: "I want to buy",
+      line2: "items on auction"
     },
     {
-      name: UserRole.Buyer,
-      desc: "bla bla"
+      name: UserRole.Seller,
+      line1: "I want to sell my",
+      line2: "unique items"
     },
   ];
-  isLoading = false;
 
   constructor(private authService: AuthorizeService, 
               public dialog: Dialog, 
@@ -34,7 +36,7 @@ export class RegisterRoleComponent {
   }
 
   assignRoleForm = new FormGroup({
-    role: new FormControl<UserRole>(UserRole.Seller)
+    role: new FormControl<UserRole>(UserRole.Buyer)
   })
 
   onSubmit() {

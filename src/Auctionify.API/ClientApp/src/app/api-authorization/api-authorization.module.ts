@@ -26,7 +26,8 @@ import { FormsModule } from '@angular/forms';
     HttpClientModule,
     RouterModule.forChild([
       { path: ApplicationPaths.Login, component: LoginComponent },
-      { path: ApplicationPaths.Register, component: RegisterComponent }
+      { path: ApplicationPaths.Register, component: RegisterComponent },
+      { path: ApplicationPaths.RegisterRole, component: RegisterRoleComponent }
     ]),
     UiElementsModule,
     MatFormFieldModule,
@@ -39,9 +40,6 @@ import { FormsModule } from '@angular/forms';
     MatButtonToggleModule,
     FormsModule
   ],
-  exports: [
-    RegisterComponent,
-    RegisterRoleComponent
-  ]
+  exports: []
 })
 export class ApiAuthorizationModule {}

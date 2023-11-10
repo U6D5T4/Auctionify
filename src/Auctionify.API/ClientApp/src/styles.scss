@@ -19,16 +19,25 @@ $main-palette: (
     700: #2B5293,
     800: #2B5293,
     900: #2B5293,
-    contrast: (50: rgba(43, 82, 147, 0.85),
-        100: rgba(43, 82, 147, 0.85),
-        200: rgba(43, 82, 147, 0.85),
-        300: rgba(43, 82, 147, 0.85),
-        400: rgba(43, 82, 147, 0.85),
-        500: rgba(43, 82, 147, 0.85),
-        600: rgba(43, 82, 147, 0.85),
-        700: rgba(43, 82, 147, 0.85),
-        800: rgba(43, 82, 147, 0.85),
-        900: rgba(43, 82, 147, 0.85),
+    A100: #2B5293,
+    A200: #2B5293,
+    A400: #2B5293,
+    A700: #2B5293,
+    contrast: (
+        50: #2B5293,
+        100: #2B5293,
+        200: #2B5293,
+        300: #2B5293,
+        400: #2B5293,
+        500: #2B5293,
+        600: #2B5293,
+        700: #2B5293,
+        800: #2B5293,
+        900: #2B5293,
+        A100: #2B5293,
+        A200: #2B5293,
+        A400: #2B5293,
+        A700: #2B5293,
     )
 );
 
@@ -62,10 +71,10 @@ $main-error: (
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
 $ClientApp-primary: mat.define-palette($main-palette);
-$ClientApp-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+$ClientApp-accent: mat.define-palette(mat.$pink-palette);
 
 // The warn palette is optional (defaults to red).
-$ClientApp-warn: mat.define-palette(mat.$red-palette);
+$ClientApp-warn: mat.define-palette($main-error);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
@@ -106,7 +115,11 @@ body {
 
 body {
     margin: 0;
-    font-family: 'Onest', sans-serif;
+    font-family: 'Onest', sans-serif !important;
+}
+
+ul {
+    padding: 0;
 }
 
 a,
@@ -122,4 +135,16 @@ button {
 .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__notch,
 .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing {
     border-color: var(--color-grey-4);
+}
+
+mat-error {
+    font-size: 14px;
+}
+
+.mdc-button {
+    height: 48px !important;
+    font-size: 16px !important;
+    font-family: 'Onest', sans-serif !important;
+    border-radius: 8px !important;
+    width: 100%;
 }

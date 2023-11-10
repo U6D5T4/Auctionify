@@ -1,10 +1,13 @@
-import { Component, Injectable } from '@angular/core';
+import { Component, Injectable, NgZone } from '@angular/core';
+
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { AuthorizeService } from '../authorize.service';
 import { Dialog } from '@angular/cdk/dialog';
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import { RegisterResponse } from 'src/app/web-api-client';
+import { CredentialResponse, PromptMomentNotification } from 'google-one-tap';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -17,10 +20,23 @@ import { Router } from '@angular/router';
 })
 export class RegisterComponent {
   isLoading = false;
+  passwordHidden: boolean = true;
+  
 
-  constructor(private authService: AuthorizeService, public dialog: Dialog, private router: Router) {
+  constructor(
+    private authService: AuthorizeService, 
+    public dialog: Dialog, 
+    private router: Router,
+    private _ngZone: NgZone) {
 
   }
+
+  private clientId = environment.clientId;
+
+  togglePasswordVisibility() {
+    this.passwordHidden = !this.passwordHidden;
+  }
+
   registerForm = new FormGroup({
     email:  new FormControl<string>('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required]),
