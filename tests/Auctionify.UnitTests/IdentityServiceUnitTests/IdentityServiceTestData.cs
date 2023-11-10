@@ -1,6 +1,7 @@
 ﻿using Auctionify.Application.Common.Models.Account;
 using Auctionify.Core.Entities;
 using Auctionify.Infrastructure.Common.Options;
+using static Google.Apis.Auth.GoogleJsonWebSignature;
 
 namespace Auctionify.UnitTests.IdentityServiceUnitTests
 {
@@ -111,6 +112,36 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 			var token = "simpletesttoken";
 
 			yield return new object[] { userId, token };
+		}
+
+		public static IEnumerable<object[]> GetLoginUserWithGoogleAsyncTestData()
+		{
+			var payload = new Payload
+			{
+				Email = "test@gmail.com",
+				GivenName = "testFirstName",
+				FamilyName = "testLastName"
+			};
+
+			var user = new User
+			{
+				Email = "test@gmail.com",
+				UserName = "test@gmail.com",
+				FirstName = "testFirstName",
+				LastName = "testLastName",
+				EmailConfirmed = true
+			};
+
+			var authSettingsOptions = new AuthSettingsOptions
+			{
+				Key = "This is a sample test key",
+				Issuer = "https://testlocalhost:1234",
+				Audience = "https://testlocalhost:1234",
+				AccessTokenExpirationInMinutes = 10,
+				RefreshTokenExpirationInDays = 60
+			};
+
+			yield return new object[] { payload, user, authSettingsOptions };
 		}
 	}
 }

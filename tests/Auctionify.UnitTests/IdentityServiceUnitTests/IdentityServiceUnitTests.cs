@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using System.Text;
+using static Google.Apis.Auth.GoogleJsonWebSignature;
 
 namespace Auctionify.UnitTests.IdentityServiceUnitTests
 {
@@ -745,6 +746,112 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 			// Assert
 			result.IsSuccess.Should().BeFalse();
 			result.Message.Should().Be("Email did not confirm");
+			result.Errors.FirstOrDefault().Should().Be("testerror");
+		}
+
+		[Theory]
+		[MemberData(
+			nameof(IdentityServiceTestData.GetLoginUserWithGoogleAsyncTestData),
+			MemberType = typeof(IdentityServiceTestData)
+		)]
+		public async Task LoginUserWithGoogleAsync_WhenUserAndRoleAreNotNull_ReturnsTokenWithRole(
+			Payload payload,
+			User user,
+			AuthSettingsOptions authSettingsOptions
+		)
+		{
+			// Arrange
+			_userManagerMock.Setup(m => m.FindByEmailAsync(user.Email!)).ReturnsAsync(user);
+			_userManagerMock
+				.Setup(m => m.GetRolesAsync(user))
+				.ReturnsAsync(new List<string> { "User" });
+			_authSettingsOptionsMock.Setup(options => options.Value).Returns(authSettingsOptions);
+
+			var sut = new IdentityService(
+				_userManagerMock.Object,
+				_signInManagerMock.Object,
+				_loggerMock.Object,
+				_emailServiceMock.Object,
+				_authSettingsOptionsMock.Object,
+				_appOptionsMock.Object
+			);
+
+			// Act
+			var result = await sut.LoginUserWithGoogleAsync(payload);
+
+			// Assert
+			result.Result.Should().NotBeNull();
+			result.IsSuccess.Should().BeTrue();
+		}
+
+		[Theory]
+		[MemberData(
+			nameof(IdentityServiceTestData.GetLoginUserWithGoogleAsyncTestData),
+			MemberType = typeof(IdentityServiceTestData)
+		)]
+		public async Task LoginUserWithGoogleAsync_WhenUserIsNotNullAndRoleIsNull_ReturnsTokenWithEmptyRole(
+			Payload payload,
+			User user,
+			AuthSettingsOptions authSettingsOptions
+		)
+		{
+			// Arrange
+			_userManagerMock.Setup(m => m.FindByEmailAsync(user.Email!)).ReturnsAsync(user);
+			_userManagerMock.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(new List<string>());
+			_authSettingsOptionsMock.Setup(options => options.Value).Returns(authSettingsOptions);
+
+			var sut = new IdentityService(
+				_userManagerMock.Object,
+				_signInManagerMock.Object,
+				_loggerMock.Object,
+				_emailServiceMock.Object,
+				_authSettingsOptionsMock.Object,
+				_appOptionsMock.Object
+			);
+
+			// Act
+			var result = await sut.LoginUserWithGoogleAsync(payload);
+
+			// Assert
+			result.Result.Should().NotBeNull();
+			result.IsSuccess.Should().BeTrue();
+		}
+
+		[Theory]
+		[MemberData(
+			nameof(IdentityServiceTestData.GetLoginUserWithGoogleAsyncTestData),
+			MemberType = typeof(IdentityServiceTestData)
+		)]
+		public async Task LoginUserWithGoogleAsync_WhenUserIsNullAndResultIsNotSucceeded_ReturnsFalseLoginResponse(
+			Payload payload,
+			User user, // not used in this test
+			AuthSettingsOptions authSettingsOptions // not used in this test
+		)
+		{
+			// Arrange
+			_userManagerMock
+				.Setup(m => m.FindByEmailAsync(It.IsAny<string>()))
+				.ReturnsAsync((User?)null);
+			_userManagerMock
+				.Setup(m => m.CreateAsync(It.IsAny<User>()))
+				.ReturnsAsync(
+					IdentityResult.Failed(new IdentityError { Description = "testerror" })
+				);
+
+			var sut = new IdentityService(
+				_userManagerMock.Object,
+				_signInManagerMock.Object,
+				_loggerMock.Object,
+				_emailServiceMock.Object,
+				_authSettingsOptionsMock.Object,
+				_appOptionsMock.Object
+			);
+
+			// Act
+			var result = await sut.LoginUserWithGoogleAsync(payload);
+
+			// Assert
+			result.IsSuccess.Should().BeFalse();
 			result.Errors.FirstOrDefault().Should().Be("testerror");
 		}
 
