@@ -40,9 +40,6 @@ export interface CreateLotModel {
     styleUrls: ['./create-lot.component.scss'],
 })
 export class CreateLotComponent {
-    private imageInputSelectId: number = 0;
-    private imageInputsButtonSize: number = 4;
-    inputButtons: number[] = [...Array(this.imageInputsButtonSize).keys()];
     currentFileButtonId: number | undefined;
 
     isLocationValid: boolean = true;
@@ -56,18 +53,26 @@ export class CreateLotComponent {
     @ViewChildren('imageElements')
     imageElements!: QueryList<ElementRef>;
 
-    imagesToUpload: FileModel[] = [];
+    imagesToUpload: File[] = [];
     filesToUpload: FileModel[] = [];
 
     categories: Category[] = [];
     currencies: Currency[] = [];
 
     lotForm = new FormGroup({
-        title: new FormControl<string>('', Validators.required),
-        description: new FormControl<string>('', Validators.required),
-        startingPrice: new FormControl<number | null>(0),
-        startDate: new FormControl<Date>(new Date()),
-        endDate: new FormControl<Date>(new Date()),
+        title: new FormControl<string>('', [
+            Validators.required,
+            Validators.minLength(6),
+            Validators.maxLength(64),
+        ]),
+        description: new FormControl<string>('', [
+            Validators.required,
+            Validators.minLength(30),
+            Validators.maxLength(500),
+        ]),
+        startingPrice: new FormControl<number | null>(null),
+        startDate: new FormControl<Date | null>(null),
+        endDate: new FormControl<Date | null>(null),
         categoryId: new FormControl<number | null>(null),
         city: new FormControl<string>('', Validators.required),
         country: new FormControl<string>('', Validators.required),
@@ -76,6 +81,7 @@ export class CreateLotComponent {
     });
 
     isLoading = false;
+    isLoadingDraft = false;
 
     constructor(
         private client: Client,
@@ -87,8 +93,14 @@ export class CreateLotComponent {
     }
 
     submitLot(isDraft: boolean) {
+        this.configureLotFormValidators(isDraft);
+        const controls = this.lotForm.controls;
+
+        console.log(controls);
+
+        this.lotForm.markAllAsTouched();
+
         if (!this.lotForm.valid) {
-            const controls = this.lotForm.controls;
             if (
                 !controls.country.valid ||
                 !controls.city.valid ||
@@ -99,7 +111,9 @@ export class CreateLotComponent {
 
             return;
         }
-        this.isLoading = true;
+
+        isDraft ? (this.isLoadingDraft = true) : (this.isLoading = true);
+
         this.isLocationValid = true;
 
         const lotToCreate: CreateLotModel = {
@@ -121,7 +135,7 @@ export class CreateLotComponent {
 
         if (this.imagesToUpload) {
             for (const image of this.imagesToUpload) {
-                lotToCreate.photos?.push(image.file);
+                lotToCreate.photos?.push(image);
             }
         }
 
@@ -135,6 +149,7 @@ export class CreateLotComponent {
             next: (res) => {
                 const dialog = this.openDialog(
                     ['Successfully created the lot!'],
+                    false,
                     false
                 );
 
@@ -163,96 +178,166 @@ export class CreateLotComponent {
                     }
                 }
 
-                const dialog = this.openDialog(errorsToShow, true);
+                const dialog = this.openDialog(errorsToShow, true, true);
 
-                dialog.closed.subscribe(() => (this.isLoading = false));
+                dialog.closed.subscribe(() =>
+                    isDraft
+                        ? (this.isLoadingDraft = false)
+                        : (this.isLoading = false)
+                );
             },
         });
     }
 
+    private configureLotFormValidators(isDraft: boolean) {
+        if (!isDraft) {
+            this.lotForm.controls.categoryId.addValidators(Validators.required);
+            this.lotForm.controls.startDate.addValidators(Validators.required);
+            this.lotForm.controls.endDate.addValidators(Validators.required);
+            this.lotForm.controls.currencyId.addValidators(Validators.required);
+            this.lotForm.controls.startingPrice.addValidators([
+                Validators.required,
+                Validators.min(1),
+                Validators.max(10000),
+            ]);
+        } else {
+            this.lotForm.controls.categoryId.removeValidators(
+                Validators.required
+            );
+            this.lotForm.controls.startDate.removeValidators(
+                Validators.required
+            );
+            this.lotForm.controls.endDate.removeValidators(Validators.required);
+            this.lotForm.controls.currencyId.removeValidators(
+                Validators.required
+            );
+            this.lotForm.controls.startingPrice.removeValidators(
+                Validators.required
+            );
+        }
+        this.lotForm.controls.categoryId.updateValueAndValidity();
+        this.lotForm.controls.startDate.updateValueAndValidity();
+        this.lotForm.controls.endDate.updateValueAndValidity();
+        this.lotForm.controls.currencyId.updateValueAndValidity();
+    }
+
     imageUpdateEvent(event: Event) {
         if (event.target === null) return;
-        const files = (event.target as HTMLInputElement).files;
+        const filesList = (event.target as HTMLInputElement).files;
 
-        if (files === null) return;
+        if (filesList === null) return;
 
-        if (files.length > 1) {
-            for (let i = 0; i < files.length; i++) {
-                this.inputButtons.push(i);
+        let filesArray = [...filesList];
+
+        if (!this.imagesAmountCondition()) return;
+
+        if (filesList.length > 1) {
+            let addedInputButtons = 0;
+            for (let i = 0; i < filesList.length; i++) {
+                if (
+                    this.imagesToUpload.find((x) => x.name == filesList[i].name)
+                ) {
+                    filesArray = filesArray.filter(
+                        (x) => x.name !== filesList[i].name
+                    );
+                    continue;
+                }
+
+                addedInputButtons++;
             }
-            this.imageElements.changes.subscribe(() =>
-                this.multipleImageUpdate(files)
-            );
+
+            const iterations = 20 - this.imagesToUpload.length;
+
+            filesArray = filesArray.slice(0, iterations);
+
+            this.multipleImageUpdate(filesArray);
         } else {
-            const file: FileModel = {
-                id: this.imageInputSelectId,
-                file: files.item(0)!,
-            };
-            this.imageRendering(file);
+            const file = filesList[0];
             this.imagesToUpload.push(file);
-            this.addRemoveBtnToImage(this.imageInputSelectId);
+            const imageAddedSubscriber = this.imageElements.changes.subscribe(
+                () => {
+                    this.imageRendering(file);
+                    this.imagesToUpload.push(file);
+                    this.addRemoveBtnToImage(file.name);
+                    imageAddedSubscriber.unsubscribe();
+                }
+            );
         }
     }
 
-    multipleImageUpdate(files: FileList) {
+    imagesAmountCondition(): boolean {
+        if (this.imagesToUpload.length >= 20) {
+            let errorMessages = [];
+            errorMessages.push('You can add only 20 images to your lot!');
+            const dialog = this.openDialog(errorMessages, true, false);
+            return false;
+        }
+
+        return true;
+    }
+
+    multipleImageUpdate(files: File[]) {
         for (let index = 0; index < files.length; index++) {
-            const element: File = files.item(index)!;
+            const element: File = files[index]!;
 
-            const file: FileModel = {
-                id: this.imageInputSelectId,
-                file: element,
-            };
-            this.imageRendering(file);
-            this.imagesToUpload.push(file);
-            this.addRemoveBtnToImage(this.imageInputSelectId);
-            this.imageInputSelectId++;
+            this.imagesToUpload.push(element);
+
+            const imagesChangeSubscriber = this.imageElements.changes.subscribe(
+                () => {
+                    this.imageRendering(element);
+                    this.addRemoveBtnToImage(element.name);
+
+                    imagesChangeSubscriber.unsubscribe();
+                }
+            );
         }
     }
 
-    imageRendering(file: FileModel) {
+    imageRendering(file: File) {
         const reader = new FileReader();
 
         reader.onload = (e) => {
             const item = document.getElementById(
-                `photo-button-${file.id}`
+                `photo-button-${file.name}`
             ) as HTMLImageElement;
 
             if (item.getAttribute('src') !== '') {
-                this.removeImageFromInput(file.id);
+                this.removeImageFromInput(file.name);
                 this.imagesToUpload.push(file);
             }
 
             item.src = reader.result as string;
-            this.addRemoveBtnToImage(file.id);
+            this.addRemoveBtnToImage(file.name);
         };
 
-        reader.readAsDataURL(file.file);
+        reader.readAsDataURL(file);
     }
 
-    removeImageFromInput(index: number) {
+    removeImageFromInput(name: string) {
         const item = document.getElementById(
-            `photo-button-${index}`
+            `photo-button-${name}`
         ) as HTMLImageElement;
 
         item.src = '';
 
         this.imagesToUpload = this.imagesToUpload.filter(
-            (value) => value.id !== index
+            (value) => value.name !== name
         );
-        this.removeRemoveBtnFromImage(index);
+
+        this.removeRemoveBtnFromImage(name);
     }
 
-    removeRemoveBtnFromImage(index: number) {
+    removeRemoveBtnFromImage(name: string) {
         const removeBtn = document.getElementById(
-            `photo-button-remove-${index}`
+            `photo-button-remove-${name}`
         );
 
         (removeBtn?.parentNode as HTMLElement).classList.remove('image-added');
     }
 
-    addRemoveBtnToImage(index: number) {
+    addRemoveBtnToImage(name: string) {
         const removeBtn = document.getElementById(
-            `photo-button-remove-${index}`
+            `photo-button-remove-${name}`
         );
 
         (removeBtn?.parentNode as HTMLElement).classList.add('image-added');
@@ -267,7 +352,7 @@ export class CreateLotComponent {
             const element = files.item(i);
 
             const file: FileModel = {
-                id: this.filesToUpload.length + 1,
+                id: element?.name!,
                 file: element!,
             };
 
@@ -275,11 +360,9 @@ export class CreateLotComponent {
         }
     }
 
-    handleImageInputButtonClick(buttonId: any, index: number) {
+    handleImageInputButtonClick() {
         if (this.imageInput) {
-            this.currentFileButtonId = buttonId;
             this.imageInput.nativeElement.click();
-            this.imageInputSelectId = index;
         }
     }
 
@@ -289,8 +372,10 @@ export class CreateLotComponent {
         }
     }
 
-    removeInputFile(id: number) {
-        this.filesToUpload = this.filesToUpload.filter((val) => val.id !== id);
+    removeInputFile(name: string) {
+        this.filesToUpload = this.filesToUpload.filter(
+            (val) => val.id !== name
+        );
     }
 
     populateCategorySelector() {
@@ -333,11 +418,16 @@ export class CreateLotComponent {
         locationElement?.classList.toggle('show');
     }
 
-    openDialog(text: string[], error: boolean): DialogRef<string, unknown> {
+    openDialog(
+        text: string[],
+        error: boolean,
+        isErrorShown: boolean
+    ): DialogRef<string, unknown> {
         return this.dialog.open<string>(DialogPopupComponent, {
             data: {
                 text,
                 isError: error,
+                isErrorShown,
             },
         });
     }

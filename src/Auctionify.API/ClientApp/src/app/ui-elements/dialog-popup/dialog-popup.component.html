@@ -4,7 +4,7 @@
             <img src="{{iconPath}}" alt="info_icon">
             <h3 *ngFor="let message of messages">{{message}}</h3>
         </div>
-        <p *ngIf="isError">
+        <p *ngIf="isError && isErrorShown">
             Oops, something went wrong <br>
             Try to refresh this page or come back later
         </p>

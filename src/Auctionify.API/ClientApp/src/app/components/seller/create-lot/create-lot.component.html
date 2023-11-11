@@ -13,6 +13,16 @@
                                 <mat-form-field color="primary" appearance="outline">
                                     <mat-label>Lot name</mat-label>
                                     <input formControlName="title" matInput>
+                                    <mat-error *ngIf="lotForm.controls.title.hasError('required')">
+                                        Title is
+                                        <strong>required</strong>
+                                    </mat-error>
+                                    <mat-error *ngIf="lotForm.controls.title.hasError('minlength')">
+                                        Minimun length is 6 symbols
+                                    </mat-error>
+                                    <mat-error *ngIf="lotForm.controls.title.hasError('maxlength')">
+                                        Maximum length is 30 symbols
+                                    </mat-error>
                                 </mat-form-field>
                                 <mat-form-field color="primary" appearance="outline">
                                     <mat-label>Item category</mat-label>
@@ -29,6 +39,10 @@
                                             </mat-option>
                                         </div>
                                     </mat-select>
+                                    <mat-error *ngIf="lotForm.controls.categoryId.hasError('required')">
+                                        Category is
+                                        <strong>required</strong>
+                                    </mat-error>
                                 </mat-form-field>
                             </div>
                             <div class="inputs__row-2">
@@ -36,16 +50,34 @@
                                     <mat-label>Short description</mat-label>
                                     <textarea formControlName="description" matInput name="" id="" cols="30"
                                         rows="10"></textarea>
+                                    <mat-error *ngIf="lotForm.controls.description.hasError('required')">
+                                        Description is
+                                        <strong>required</strong>
+                                    </mat-error>
+                                    <mat-error *ngIf="lotForm.controls.description.hasError('minlength')">
+                                        Minimun length is 30 symbols
+                                    </mat-error>
+                                    <mat-error *ngIf="lotForm.controls.description.hasError('maxlength')">
+                                        Maximum length is 500 symbols
+                                    </mat-error>
                                 </mat-form-field>
                             </div>
                             <div class="inputs__row-3">
                                 <mat-form-field color="primary" appearance="outline">
                                     <mat-label>Start date & time</mat-label>
                                     <input formControlName="startDate" matInput type="datetime-local">
+                                    <mat-error *ngIf="lotForm.controls.startDate.hasError('required')">
+                                        Start date is
+                                        <strong>required</strong>
+                                    </mat-error>
                                 </mat-form-field>
                                 <mat-form-field color="primary" appearance="outline">
                                     <mat-label>End date & time</mat-label>
                                     <input formControlName="endDate" matInput type="datetime-local">
+                                    <mat-error *ngIf="lotForm.controls.endDate.hasError('required')">
+                                        End date is
+                                        <strong>required</strong>
+                                    </mat-error>
                                 </mat-form-field>
                             </div>
                         </div>
@@ -61,14 +93,26 @@
                                         <mat-form-field color="primary" appearance="outline">
                                             <mat-label>Country</mat-label>
                                             <input formControlName="country" matInput>
+                                            <mat-error *ngIf="lotForm.controls.country.hasError('required')">
+                                                Country is
+                                                <strong>required</strong>
+                                            </mat-error>
                                         </mat-form-field>
                                         <mat-form-field color="primary" appearance="outline">
                                             <mat-label>City</mat-label>
                                             <input formControlName="city" matInput>
+                                            <mat-error *ngIf="lotForm.controls.city.hasError('required')">
+                                                City is
+                                                <strong>required</strong>
+                                            </mat-error>
                                         </mat-form-field>
                                         <mat-form-field color="primary" appearance="outline">
                                             <mat-label>Address</mat-label>
                                             <input formControlName="address" matInput>
+                                            <mat-error *ngIf="lotForm.controls.address.hasError('required')">
+                                                address is
+                                                <strong>required</strong>
+                                            </mat-error>
                                         </mat-form-field>
                                     </div>
                                 </div>
@@ -84,6 +128,10 @@
                                             <mat-form-field color="primary" appearance="outline">
                                                 <mat-label>Starting price</mat-label>
                                                 <input formControlName="startingPrice" type="number" matInput>
+                                                <mat-error *ngIf="lotForm.controls.startingPrice.hasError('required')">
+                                                    Starting price is
+                                                    <strong>required</strong>
+                                                </mat-error>
                                             </mat-form-field>
                                             <mat-form-field color="primary" appearance="outline">
                                                 <mat-label>Currency</mat-label>
@@ -96,6 +144,10 @@
                                                         {{currency.code}}
                                                     </mat-option>
                                                 </mat-select>
+                                                <mat-error *ngIf="lotForm.controls.currencyId.hasError('required')">
+                                                    Currency is
+                                                    <strong>required</strong>
+                                                </mat-error>
                                             </mat-form-field>
                                         </div>
                                     </div>
@@ -135,29 +187,38 @@
                         <div class="photos__container">
                             <input #imageInput (change)="imageUpdateEvent($event)" hidden="true" type="file"
                                 accept="image/*" onclick="this.value=null" multiple />
-                            <div #imageElements *ngFor="let item of inputButtons; index as i" class="input-buttons">
-                                <button type="button" [id]="'photo-button-remove-'+i" class="photo-button-remove"
-                                    (click)="removeImageFromInput(i)">
+                            <div #imageElements *ngFor="let item of imagesToUpload;" class="input-buttons">
+                                <button type="button" [id]="'photo-button-remove-'+item.name"
+                                    class="photo-button-remove" (click)="removeImageFromInput(item.name)">
                                     <mat-icon>highlight_off</mat-icon>
                                 </button>
-                                <button class="photo-button" type="button" color="primary"
-                                    (click)="handleImageInputButtonClick(item, i)">
-                                    <img [id]="'photo-button-'+i" class="photo-button-image" src="" alt="">
+                                <button class="photo-button" type="button" color="primary">
+                                    <img [id]="'photo-button-'+item.name" class="photo-button-image" src="" alt="">
                                     <mat-icon>add_circle_outline</mat-icon>
                                 </button>
                             </div>
+                            <button class="photo-button" type="button" color="primary"
+                                [disabled]="imagesToUpload.length >= 20" (click)="handleImageInputButtonClick()">
+                                <img class="photo-button-image" src="" alt="">
+                                <div class="photo-button-add">
+                                    <mat-icon>photo_camera</mat-icon>
+                                    <p>Add photo</p>
+                                </div>
+
+                            </button>
                         </div>
                     </div>
                     <hr class="color-grey-5">
                     <div class="form__lot-buttons">
                         <div class="submit-buttons">
-                            <button class="mat-mdc-outlined-button-custom" mat-stroked-button disabled="{{isLoading}}"
-                                color="primary" type="submit" (click)="submitLot(true)">
-                                <mat-spinner *ngIf="isLoading" diameter="25"></mat-spinner>
-                                <div *ngIf="!isLoading">Save as draft</div>
+                            <button class="mat-mdc-outlined-button-custom" mat-stroked-button
+                                disabled="{{isLoading || isLoadingDraft}}" color="primary" type="button"
+                                (click)="submitLot(true)">
+                                <mat-spinner *ngIf="isLoadingDraft" diameter="25"></mat-spinner>
+                                <div *ngIf="!isLoadingDraft">Save as draft</div>
                             </button>
-                            <button mat-flat-button disabled="{{isLoading}}" color="primary" type="submit"
-                                (click)="submitLot(false)">
+                            <button mat-flat-button disabled="{{isLoading || isLoadingDraft}}" color="primary"
+                                type="submit" (click)="submitLot(false)">
                                 <mat-spinner *ngIf="isLoading" diameter="25"></mat-spinner>
                                 <div *ngIf="!isLoading">Submit</div>
                             </button>

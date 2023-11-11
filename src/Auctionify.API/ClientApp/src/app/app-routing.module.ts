@@ -5,19 +5,21 @@ import { HomeComponent } from './components/home/home.component';
 import { isSellerGuard } from './guards/seller/is-seller.guard';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
-  { path: 'home', component: HomeComponent },
-  {
-    path: 'seller',
-    loadChildren: () =>
-      import('./components/seller/seller.module').then((m) => m.SellerModule),
-    data: { breadcrumb: { skip: true } },
-    canActivate: [isSellerGuard],
-  },
+    { path: '', redirectTo: 'home', pathMatch: 'full' },
+    { path: 'home', component: HomeComponent },
+    {
+        path: 'seller',
+        loadChildren: () =>
+            import('./components/seller/seller.module').then(
+                (m) => m.SellerModule
+            ),
+        data: { breadcrumb: { skip: true } },
+        canActivate: [],
+    },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule],
+    imports: [RouterModule.forRoot(routes)],
+    exports: [RouterModule],
 })
 export class AppRoutingModule {}
