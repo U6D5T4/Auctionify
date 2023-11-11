@@ -70,13 +70,11 @@ export class AuthorizeService {
   }
 
   register(
-    firstName: string,
     email: string,
     password: string,
     confirmPassword: string
   ) : Observable<RegisterResponse | undefined> {
     const registerData: RegisterViewModel = {
-      firstName,
       email,
       password,
       confirmPassword,
@@ -91,26 +89,22 @@ export class AuthorizeService {
     email: string
     ) : Observable<ForgetPasswordResponse | undefined> 
     {
-    const forgetPasswordData: ForgetPasswordViewModel = {
-      email
-    };
-
-    return this.client.forgetPassword(forgetPasswordData).pipe(map((result) => {
+    return this.client.forgetPassword(email).pipe(map((result) => {
       return result;
     }))
   }
 
   resetPassword(
-    email: string,
     token: string,
-    password: string,
+    email: string,
+    newPassword: string,
     confirmPassword: string
   ): Observable<ResetPasswordResponse | undefined> 
   {
     const resetPasswordData: ResetPasswordViewModel = {
-      email,
       token,
-      password,
+      email,
+      newPassword,
       confirmPassword
     };
 

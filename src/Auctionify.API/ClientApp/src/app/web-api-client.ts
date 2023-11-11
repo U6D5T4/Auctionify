@@ -106,32 +106,30 @@ export class Client {
         }));
     }
 
-    forgetPassword(body: ForgetPasswordViewModel | undefined) : Observable<ForgetPasswordResponse> {
-        let url_ = this.baseUrl + "/api/auth/forget-password";
-
-        const content_ = JSON.stringify(body);
-
-        console.log(body?.email);
+    forgetPassword(email: string) : Observable<ForgetPasswordResponse> {
+        let url_ = `${this.baseUrl}/api/auth/forget-password?email=${encodeURIComponent(email)}`;
+    
+        console.log(email);
         
         let options_ : any = {
-            body: content_,
             observe: "response",
             headers: new HttpHeaders({
                 "Content-Type": "application/json",
                 "Accept": "text/json"
             })
         };
-
+    
         return this.http.request("post", url_, options_).pipe(mergeMap((response: any) : Observable<ForgetPasswordResponse> => {
             let data: ForgetPasswordResponse = {};
-
+    
             if (response.body !== null) {
                 data = response.body
             }
-
+    
             return of(data);
         }));
     }
+    
 }
 
 export interface LoginResponse {
@@ -171,7 +169,6 @@ export interface LoginViewModel {
 }
 
 export interface RegisterViewModel {
-    firstName: string;
     email: string;
     password: string;
     confirmPassword: string;
@@ -182,9 +179,9 @@ export interface ForgetPasswordViewModel {
 }
 
 export interface ResetPasswordViewModel {
-    email: string;
     token: string;
-    password: string;
+    email: string;
+    newPassword: string;
     confirmPassword: string;
 }
 

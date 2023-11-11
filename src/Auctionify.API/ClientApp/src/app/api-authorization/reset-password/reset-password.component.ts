@@ -1,4 +1,4 @@
-import { Component, Injectable } from '@angular/core';
+import { Component, Injectable, OnInit } from '@angular/core';
 
 import { ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup, Validators } from "@angular/forms";
@@ -18,8 +18,17 @@ import { ResetPasswordResponse } from 'src/app/web-api-client';
   styleUrls: ['./reset-password.component.scss']
 })
 
-export class ResetPasswordComponent {
+export class ResetPasswordComponent implements OnInit {
   isLoading = false;
+  passwordHidden: boolean = true;
+
+  ngOnInit(): void {
+    this.getUserIdAndTokenFromUrl();
+  }
+
+  togglePasswordVisibility() {
+    this.passwordHidden = !this.passwordHidden;
+  }
 
   constructor(
     private authService: AuthorizeService, 
@@ -29,25 +38,23 @@ export class ResetPasswordComponent {
 
   }
   resetPasswordForm = new FormGroup({
-    email: new FormControl(''),
     token: new FormControl(''),
-    password: new FormControl('', [Validators.required]),
+    email: new FormControl(''),
+    newPassword: new FormControl('', [Validators.required]),
     confirmPassword: new FormControl('', [Validators.required])
   })
 
   getUserIdAndTokenFromUrl(): void {
     this.activatedRoute.queryParams.subscribe(params => {
-      const email = params['email'];
       const token = params['token'];
-      
-      this.resetPasswordForm.get('email')?.setValue(email);
+      const email = params['email'];
+
       this.resetPasswordForm.get('token')?.setValue(token);
+      this.resetPasswordForm.get('email')?.setValue(email);
     });
   }
 
   onSubmit() {
-    this.getUserIdAndTokenFromUrl();
-
     this.isLoading = true;
     if (this.resetPasswordForm.invalid) {
       this.isLoading = false;
@@ -55,18 +62,18 @@ export class ResetPasswordComponent {
     }
 
     this.authService.resetPassword(
-      this.resetPasswordForm.controls.email.value!,
       this.resetPasswordForm.controls.token.value!,
-      this.resetPasswordForm.controls.password.value!,
+      this.resetPasswordForm.controls.email.value!,
+      this.resetPasswordForm.controls.newPassword.value!,
       this.resetPasswordForm.controls.confirmPassword.value!)
       .subscribe({
         next: (result) => {
-          this.router.navigate(['/home'])
+          this.router.navigate(['/home']);
         },
         error: (error: ResetPasswordResponse) => {
-          this.openDialog(error.errors!, true);
+          this.openDialog(error.errors || ['An error occurred. Please try again.'], true);
         }
-      })
+    })
   }
 
   openDialog(text: string[], error: boolean) {
@@ -79,7 +86,7 @@ export class ResetPasswordComponent {
 
     dialogRef.closed.subscribe((res) => {
       this.isLoading = false;
-      this.resetPasswordForm.controls.password.reset();
+      this.resetPasswordForm.controls.newPassword.reset();
       this.resetPasswordForm.controls.confirmPassword.reset();
     })
   }
