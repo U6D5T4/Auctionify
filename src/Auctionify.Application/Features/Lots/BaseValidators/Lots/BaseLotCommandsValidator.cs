@@ -50,7 +50,7 @@ namespace Auctionify.Application.Features.Lots.BaseValidators.Lots
                 .WithMessage("Starting price has to be greater than 0")
                 .LessThan(10000)
                 .WithMessage("Starting price has to be less than 10000")
-                .Unless(l => l.StartingPrice == null && l.IsDraft == false);
+                .Unless(l => l.StartingPrice == null && l.IsDraft != false);
 
             RuleFor(l => l.CategoryId)
                 .MustAsync(async (categoryId, cancellationToken) =>
