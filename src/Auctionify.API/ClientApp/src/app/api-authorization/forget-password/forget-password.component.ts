@@ -6,6 +6,8 @@ import { Dialog } from '@angular/cdk/dialog';
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import { Router } from '@angular/router';
 import { ForgetPasswordResponse } from 'src/app/web-api-client';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-forget-password',
@@ -22,7 +24,7 @@ export class ForgetPasswordComponent {
 
   }
   forgetPasswordForm = new FormGroup({
-    email: new FormControl('', [Validators.required])
+    email: new FormControl<string>('', [Validators.required, Validators.email])
   })
 
   onSubmit(){
@@ -32,16 +34,24 @@ export class ForgetPasswordComponent {
       return;
     }
 
-    this.authService.forgetPassword(
-      this.forgetPasswordForm.controls.email.value!)
+    this.authService.forgetPassword(this.forgetPasswordForm.controls.email.value!)
+      .pipe(
+        catchError((error: ForgetPasswordResponse) => {
+          this.openDialog(error.errors || ['An error occurred. Please try again.'], true);
+          return of(null);
+        })
+      )
       .subscribe({
         next: (result) => {
-          this.router.navigate(['/home'])
+          if (result) {
+            this.router.navigate(['/home'])
+          }
         },
-        error: (error: ForgetPasswordResponse) => {
-          this.openDialog(error.errors!, true);
+        complete: () => {
+          this.isLoading = false;
+          this.forgetPasswordForm.controls.email.reset();
         }
-      })
+      });
   }
 
   goToLoginPage() {

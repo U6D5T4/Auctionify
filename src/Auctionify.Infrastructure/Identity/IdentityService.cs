@@ -146,8 +146,7 @@ namespace Auctionify.Infrastructure.Identity
             string url = $"{_configuration["AppUrl"]}/api/auth/reset-password?email={email}&token={validToken}";
 
             await _emailService.SendEmailAsync(email, "Reset Password", "<h1>Follow the instructions to reset your password</h1>" +
-                $"<p>To reset your password <a href='{url}'>Click here</p> <br>" +
-                $"<p> Token: {token}</p>" );
+                $"<p>To reset your password <a href='{url}'>Click here</p>");
 
             return new ResetPasswordResponse
             {
