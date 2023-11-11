@@ -1,3 +1,4 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, catchError, map, of, throwError } from 'rxjs';
 import {
@@ -9,6 +10,7 @@ import {
   RegisterResponse,
   RegisterViewModel,
   ResetPasswordViewModel,
+  ResetPasswordResponse
 } from '../web-api-client';
 import { HttpErrorResponse, HttpResponseBase } from '@angular/common/http';
 
@@ -34,7 +36,9 @@ export class AuthorizeService {
   private user: BehaviorSubject<IUser | null> =
     new BehaviorSubject<IUser | null>(null);
 
-  constructor(private client: Client) {}
+    constructor(private client: Client, private httpClient: HttpClient) {
+      //this.initializeAuthorizeService();
+    }
 
   login(email: string, password: string) : Observable<string | boolean> {
     const loginData: LoginViewModel = {
@@ -83,7 +87,10 @@ export class AuthorizeService {
     }))
   }
 
-  forgetPassword(email: string) : Observable<RegisterResponse | undefined> {
+  forgetPassword(
+    email: string
+    ) : Observable<ForgetPasswordResponse | undefined> 
+    {
     const forgetPasswordData: ForgetPasswordViewModel = {
       email
     };
@@ -98,7 +105,8 @@ export class AuthorizeService {
     token: string,
     password: string,
     confirmPassword: string
-  ){
+  ): Observable<ResetPasswordResponse | undefined> 
+  {
     const resetPasswordData: ResetPasswordViewModel = {
       email,
       token,
