@@ -22,6 +22,7 @@ import {
     ChoicePopupComponent,
     ChoicePopupData,
 } from 'src/app/ui-elements/choice-popup/choice-popup.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 export interface LotFormModel {
     title: FormControl<string | null>;
@@ -89,6 +90,7 @@ export class CreateLotComponent implements OnInit {
 
     isLoading = false;
     isLoadingDraft = false;
+    isDeleteLoading = false;
 
     private createStateEndpoint: string = 'create-lot';
     private updateStateEndpoint: string = 'update-lot';
@@ -100,7 +102,8 @@ export class CreateLotComponent implements OnInit {
         private client: Client,
         private dialog: Dialog,
         private router: Router,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private snackBar: MatSnackBar
     ) {
         this.populateCategorySelector();
         this.populateCurrencySelector();
@@ -611,6 +614,45 @@ export class CreateLotComponent implements OnInit {
         filesDialogPopup.closed.subscribe((res) => {
             console.log(res);
         });
+    }
+
+    deleteLot() {
+        this.isDeleteLoading = true;
+        const msg = ['This action will delete lot or cancel it.'];
+        const dialogData: ChoicePopupData = {
+            isError: true,
+            isErrorShown: true,
+            continueBtnText: 'Delete',
+            breakBtnText: 'Cancel',
+            text: msg,
+            additionalText: 'Continue?',
+            continueBtnColor: 'warn',
+            breakBtnColor: 'primary',
+        };
+        const openedChoiceDialog = this.openChoiceDialog(dialogData);
+        const dialogSubscriber = openedChoiceDialog.closed.subscribe(
+            (result) => {
+                const isResult = result === 'true';
+                if (isResult) {
+                    const deleteLotSubscriber = this.client
+                        .deleteLot(this.lotId)
+                        .subscribe({
+                            next: (res) => {
+                                this.snackBar.open(res);
+                                this.router.navigate(['/home']);
+                                deleteLotSubscriber.unsubscribe();
+                            },
+                            error: (error) => {},
+                            complete: () => {
+                                this.isDeleteLoading = false;
+                            },
+                        });
+                }
+
+                this.isDeleteLoading = false;
+                dialogSubscriber.unsubscribe();
+            }
+        );
     }
 
     openDialog(

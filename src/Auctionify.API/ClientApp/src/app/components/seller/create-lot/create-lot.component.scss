@@ -89,9 +89,8 @@
 
     &__lot-buttons {
         display: flex;
-        flex-direction: column;
-        width: 328px;
-        align-self: flex-end;
+        width: 100%;
+        justify-content: space-between;
         gap: 16px;
 
         & .submit-buttons {
@@ -110,6 +109,10 @@
             line-height: 22px;
             text-align: right;
             color: var(--color-grey-5);
+        }
+
+        & .delete-button {
+            max-width: 160px;
         }
 
     }
@@ -335,4 +338,10 @@
 
 .input-buttons {
     position: relative;
+}
+
+.submit-buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
