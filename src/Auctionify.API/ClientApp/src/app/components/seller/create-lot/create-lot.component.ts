@@ -3,39 +3,25 @@ import {
     Component,
     ElementRef,
     Injectable,
+    OnInit,
     QueryList,
     ViewChild,
     ViewChildren,
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 
 import { FileModel } from 'src/app/models/fileModel';
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import { Category, Client, Currency } from 'src/app/web-api-client';
-import {
-    LocationDialogData,
-    LocationPopUpComponent,
-} from './pop-ups/location/location.component';
+import { LocationPopUpComponent } from './pop-ups/location/location.component';
 import { CurrencyPopUpComponent } from './pop-ups/currency/currency.component';
 import { FilesPopUpComponent } from './pop-ups/files/files.component';
-
-export interface CreateLotModel {
-    title: string;
-    description: string;
-    startingPrice: number | null;
-    startDate: Date | null;
-    endDate: Date | null;
-    categoryId: number | null;
-    city: string;
-    state: string | null;
-    country: string;
-    address: string;
-    currencyId: number | null;
-    photos: File[] | null;
-    additionalDocuments: File[] | null;
-    isDraft: boolean;
-}
+import { CreateLotModel, UpdateLotModel } from 'src/app/models/lots/lot-models';
+import {
+    ChoicePopupComponent,
+    ChoicePopupData,
+} from 'src/app/ui-elements/choice-popup/choice-popup.component';
 
 export interface LotFormModel {
     title: FormControl<string | null>;
@@ -60,7 +46,7 @@ export interface LotFormModel {
     templateUrl: './create-lot.component.html',
     styleUrls: ['./create-lot.component.scss'],
 })
-export class CreateLotComponent {
+export class CreateLotComponent implements OnInit {
     currentFileButtonId: number | undefined;
 
     isLocationValid: boolean = true;
@@ -104,18 +90,118 @@ export class CreateLotComponent {
     isLoading = false;
     isLoadingDraft = false;
 
+    private createStateEndpoint: string = 'create-lot';
+    private updateStateEndpoint: string = 'update-lot';
+
+    lotId: number = 0;
+    private regExValue: RegExp = /\/([^\/]+)(?=\/?$)/g;
+
     constructor(
         private client: Client,
         private dialog: Dialog,
-        private router: Router
+        private router: Router,
+        private route: ActivatedRoute
     ) {
         this.populateCategorySelector();
         this.populateCurrencySelector();
     }
 
+    ngOnInit(): void {
+        this.route.url.subscribe((params) => {
+            const path = params[0].path;
+
+            switch (path) {
+                case this.createStateEndpoint:
+                    break;
+                case this.updateStateEndpoint:
+                    this.updateStateInitialization();
+                    break;
+            }
+        });
+    }
+
+    updateStateInitialization() {
+        this.route.paramMap.subscribe((params: ParamMap) => {
+            const lotIdString = params.get('id');
+            if (lotIdString === null) {
+                this.router.navigate(['/home']);
+                return;
+            }
+
+            const lotId: number = parseInt(lotIdString);
+            this.lotId = lotId;
+
+            this.client.getOneLotForSeller(lotId).subscribe({
+                next: (result) => {
+                    const lotFormData = this.lotForm.controls;
+
+                    console.log(result);
+
+                    lotFormData.title.setValue(result.title);
+                    lotFormData.description.setValue(result.description);
+                    lotFormData.categoryId.setValue(
+                        result.category ? result.category.id : null
+                    );
+                    lotFormData.currencyId.setValue(
+                        result.currency ? result.currency.id : null
+                    );
+                    lotFormData.startDate.setValue(result.startDate);
+                    lotFormData.endDate.setValue(result.endDate);
+                    lotFormData.country.setValue(result.location.country);
+                    lotFormData.address.setValue(result.location.address);
+                    lotFormData.city.setValue(result.location.city);
+                    lotFormData.startingPrice.setValue(result.startingPrice);
+
+                    if (result.additionalDocumentsUrl !== null) {
+                        for (const [
+                            i,
+                            fileUrl,
+                        ] of result.additionalDocumentsUrl.entries()) {
+                            const fileName = this.getFileNameFromUrl(fileUrl);
+
+                            const fileModel: FileModel = {
+                                name: fileName,
+                                file: null,
+                                fileUrl,
+                            };
+                            this.lotForm.controls.files.value?.push(fileModel);
+                        }
+                    }
+
+                    if (result.photosUrl !== null) {
+                        for (const [i, fileUrl] of result.photosUrl.entries()) {
+                            const fileName = this.getFileNameFromUrl(fileUrl);
+                            const fileModel: FileModel = {
+                                name: fileName,
+                                file: null,
+                                fileUrl,
+                            };
+                            this.imagesToUpload.push(fileModel);
+                            const subscription =
+                                this.imageElements.changes.subscribe(() => {
+                                    this.imageRendering(fileModel);
+                                    this.imageElements;
+                                    subscription.unsubscribe();
+                                });
+                        }
+                    }
+                },
+
+                error: (err) => {
+                    this.router.navigate(['/home']);
+                },
+            });
+        });
+    }
+
+    private getFileNameFromUrl(fileUrl: string): string {
+        const fileName = fileUrl.match(this.regExValue);
+        if (fileName === null) return '';
+
+        return decodeURI(fileName[0].split('/')[1]);
+    }
+
     submitLot(isDraft: boolean) {
-        console.log(this.lotForm);
-        console.log(this.imagesToUpload);
         this.configureLotFormValidators(isDraft);
         this.isLocationValid = true;
         this.isStartingPriceValid = true;
@@ -163,55 +249,79 @@ export class CreateLotComponent {
             isDraft,
         };
 
-        if (this.imagesToUpload) {
+        if (this.imagesToUpload.length > 0) {
             for (const image of this.imagesToUpload) {
-                lotToCreate.photos?.push(image.file);
+                lotToCreate.photos?.push(image.file!);
             }
         }
 
-        if (this.filesToUpload) {
+        if (this.lotForm.value.files?.length! > 0) {
             for (const file of this.lotForm.controls.files.value!) {
-                lotToCreate.additionalDocuments?.push(file.file);
+                lotToCreate.additionalDocuments?.push(file.file!);
             }
         }
 
-        this.client.createLot(lotToCreate).subscribe({
-            next: (res) => {
-                const dialog = this.openDialog(
-                    ['Successfully created the lot!'],
-                    false,
-                    false
-                );
+        if (this.lotId > 0) {
+            const lotToUpdate: UpdateLotModel = {
+                id: this.lotId,
+                ...lotToCreate,
+            };
+            this.client.updateLot(lotToUpdate).subscribe({
+                next: (res) => {
+                    console.log(res);
+                    const dialog = this.openDialog(
+                        ['Successfully updated the lot!'],
+                        false,
+                        false
+                    );
 
-                dialog.closed.subscribe(() =>
-                    this.router.navigate(['/seller'])
-                );
-            },
-            error: (err) => {
-                const errors = err.errors;
-                let errorsToShow = [];
+                    dialog.closed.subscribe(() =>
+                        this.router.navigate(['/seller'])
+                    );
+                },
+                error: (err) => {
+                    this.handleErrorResponse(err, isDraft);
+                },
+            });
+        } else {
+            this.client.createLot(lotToCreate).subscribe({
+                next: (res) => {
+                    const dialog = this.openDialog(
+                        ['Successfully created the lot!'],
+                        false,
+                        false
+                    );
 
-                if (typeof errors == 'string') {
-                    errorsToShow.push(errors.toString());
-                } else {
-                    for (let key of errors) {
-                        console.log(key);
-                        let msg = `${key.PropertyName}: ${key.ErrorMessage}\n`;
-                        errorsToShow.push(msg);
-                    }
-                }
+                    dialog.closed.subscribe(() =>
+                        this.router.navigate(['/seller'])
+                    );
+                },
+                error: (err) => {
+                    this.handleErrorResponse(err, isDraft);
+                },
+            });
+        }
+    }
 
-                console.log(err);
+    private handleErrorResponse(err: any, isDraft: boolean) {
+        const errors = err.errors;
+        let errorsToShow = [];
 
-                const dialog = this.openDialog(errorsToShow, true, true);
+        if (typeof errors == 'string') {
+            errorsToShow.push(errors.toString());
+        } else {
+            for (let key of errors) {
+                console.log(key);
+                let msg = `${key.PropertyName}: ${key.ErrorMessage}\n`;
+                errorsToShow.push(msg);
+            }
+        }
 
-                dialog.closed.subscribe(() =>
-                    isDraft
-                        ? (this.isLoadingDraft = false)
-                        : (this.isLoading = false)
-                );
-            },
-        });
+        const dialog = this.openDialog(errorsToShow, true, true);
+
+        dialog.closed.subscribe(() =>
+            isDraft ? (this.isLoadingDraft = false) : (this.isLoading = false)
+        );
     }
 
     private configureLotFormValidators(isDraft: boolean) {
@@ -288,6 +398,7 @@ export class CreateLotComponent {
             const element: FileModel = {
                 file,
                 name: file.name,
+                fileUrl: null,
             };
             if (this.imagesToUpload.find((x) => x.name == element.name)) {
                 return;
@@ -326,6 +437,7 @@ export class CreateLotComponent {
             const element: FileModel = {
                 file: files[index]!,
                 name: files[index].name,
+                fileUrl: null,
             };
 
             this.imagesToUpload.push(element);
@@ -342,26 +454,78 @@ export class CreateLotComponent {
     }
 
     imageRendering(file: FileModel) {
-        const reader = new FileReader();
-
-        reader.onload = (e) => {
+        if (!file.file) {
             const item = document.getElementById(
                 `photo-button-${file.name}`
             ) as HTMLImageElement;
 
-            if (item.getAttribute('src') !== '') {
-                this.removeImageFromInput(file.name!);
-                this.imagesToUpload.push(file);
+            if (item.getAttribute('src') === '') {
+                item.src = file.fileUrl!;
+                this.addRemoveBtnToImage(file.name!);
             }
+        } else {
+            const reader = new FileReader();
 
-            item.src = reader.result as string;
-            this.addRemoveBtnToImage(file.name!);
-        };
+            reader.onload = (e) => {
+                const item = document.getElementById(
+                    `photo-button-${file.name}`
+                ) as HTMLImageElement;
 
-        reader.readAsDataURL(file.file);
+                if (item.getAttribute('src') !== '') {
+                    this.removeImageFromInput(file.name!);
+                    this.imagesToUpload.push(file);
+                }
+
+                item.src = reader.result as string;
+                this.addRemoveBtnToImage(file.name!);
+            };
+
+            reader.readAsDataURL(file.file!);
+        }
     }
 
     removeImageFromInput(name: string) {
+        const imageToDelete = this.imagesToUpload.find(
+            (value) => value.name === name
+        );
+
+        if (imageToDelete === null || imageToDelete === undefined) return;
+
+        if (imageToDelete.fileUrl) {
+            const msg = ['This action will totally delete image from system.'];
+            const dialogData: ChoicePopupData = {
+                isError: true,
+                isErrorShown: true,
+                continueBtnText: 'Delete',
+                breakBtnText: 'Cancel',
+                text: msg,
+                additionalText: 'Continue?',
+                continueBtnColor: 'warn',
+                breakBtnColor: 'primary',
+            };
+            const openedChoiceDialog = this.openChoiceDialog(dialogData);
+            const dialogSubscriber = openedChoiceDialog.closed.subscribe(
+                (result) => {
+                    const isResult = result === 'true';
+                    if (isResult) {
+                        const deleteLotSubscriber = this.client
+                            .deleteLotFile(this.lotId, imageToDelete.fileUrl!)
+                            .subscribe((res) => {
+                                console.log(res);
+                                this.proceedRemoveImage(name);
+                                deleteLotSubscriber.unsubscribe();
+                            });
+                    }
+
+                    dialogSubscriber.unsubscribe();
+                }
+            );
+        } else {
+            this.proceedRemoveImage(name);
+        }
+    }
+
+    proceedRemoveImage(name: string) {
         const item = document.getElementById(
             `photo-button-${name}`
         ) as HTMLImageElement;
@@ -438,7 +602,10 @@ export class CreateLotComponent {
 
     clickFile() {
         const filesDialogPopup = this.dialog.open(FilesPopUpComponent, {
-            data: this.lotForm,
+            data: {
+                lotId: this.lotId,
+                formGroup: this.lotForm,
+            },
         });
 
         filesDialogPopup.closed.subscribe((res) => {
@@ -457,6 +624,12 @@ export class CreateLotComponent {
                 isError: error,
                 isErrorShown,
             },
+        });
+    }
+
+    openChoiceDialog(data: ChoicePopupData): DialogRef<string, unknown> {
+        return this.dialog.open<string>(ChoicePopupComponent, {
+            data,
         });
     }
 }

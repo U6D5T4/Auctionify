@@ -1,4 +1,5 @@
 export interface FileModel {
     name: string | null;
-    file: File;
+    file: File | null;
+    fileUrl: string | null;
 }

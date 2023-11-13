@@ -4,6 +4,16 @@ import { FormGroup } from '@angular/forms';
 import { LotFormModel } from '../../create-lot.component';
 import { FileModel } from 'src/app/models/fileModel';
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
+import { Client } from 'src/app/web-api-client';
+import {
+    ChoicePopupComponent,
+    ChoicePopupData,
+} from 'src/app/ui-elements/choice-popup/choice-popup.component';
+
+export interface FilesDialogData {
+    formGroup: FormGroup<LotFormModel>;
+    lotId: number;
+}
 
 @Component({
     selector: 'app-files',
@@ -16,20 +26,62 @@ export class FilesPopUpComponent {
     @ViewChild('fileInput')
     fileInput!: ElementRef;
 
+    private lotId: number;
+
     constructor(
         public dialogRef: DialogRef<string>,
-        @Inject(DIALOG_DATA) public data: FormGroup<LotFormModel>,
-        private dialog: Dialog
+        @Inject(DIALOG_DATA) public data: FilesDialogData,
+        private dialog: Dialog,
+        private client: Client
     ) {
-        this.filesFormGroup = data;
+        this.filesFormGroup = data.formGroup;
+        this.lotId = data.lotId;
     }
 
     removeInputFile(name: string) {
-        this.filesFormGroup.controls.files.setValue(
-            this.filesFormGroup.controls.files.value?.filter(
-                (val) => val.name !== name
-            )!
+        const file = this.filesFormGroup.value.files?.find(
+            (x) => x.name === name
         );
+
+        if (file?.fileUrl) {
+            const msg = ['This action will totally delete file from system.'];
+            const dialogData: ChoicePopupData = {
+                isError: true,
+                isErrorShown: true,
+                continueBtnText: 'Delete',
+                breakBtnText: 'Cancel',
+                text: msg,
+                additionalText: 'Continue?',
+                continueBtnColor: 'warn',
+                breakBtnColor: 'primary',
+            };
+            const openedChoiceDialog = this.openChoiceDialog(dialogData);
+            const dialogSubscriber = openedChoiceDialog.closed.subscribe(
+                (result) => {
+                    const isResult = result === 'true';
+                    if (isResult) {
+                        const deleteLotSubscriber = this.client
+                            .deleteLotFile(this.lotId, file.fileUrl!)
+                            .subscribe((res) => {
+                                this.filesFormGroup.controls.files.setValue(
+                                    this.filesFormGroup.value.files?.filter(
+                                        (x) => x.name !== file.name
+                                    )!
+                                );
+                                deleteLotSubscriber.unsubscribe();
+                            });
+                    }
+
+                    dialogSubscriber.unsubscribe();
+                }
+            );
+        } else {
+            this.filesFormGroup.controls.files.setValue(
+                this.filesFormGroup.controls.files.value?.filter(
+                    (val) => val.name !== name
+                )!
+            );
+        }
     }
 
     fileUpdateEvent(event: Event) {
@@ -52,11 +104,10 @@ export class FilesPopUpComponent {
             const file: FileModel = {
                 name: element.name!,
                 file: element,
+                fileUrl: null,
             };
 
             this.filesFormGroup.controls.files.value?.push(file);
-
-            console.log(this.filesFormGroup.controls);
         }
     }
 
@@ -88,6 +139,12 @@ export class FilesPopUpComponent {
                 isError: error,
                 isErrorShown,
             },
+        });
+    }
+
+    openChoiceDialog(data: ChoicePopupData): DialogRef<string, unknown> {
+        return this.dialog.open<string>(ChoicePopupComponent, {
+            data,
         });
     }
 }

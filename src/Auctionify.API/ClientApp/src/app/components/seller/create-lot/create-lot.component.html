@@ -113,7 +113,7 @@
                             <div #imageElements *ngFor="let item of imagesToUpload;" class="input-buttons">
                                 <button type="button" [id]="'photo-button-remove-'+item.name"
                                     class="photo-button-remove"
-                                    (click)="removeImageFromInput(item.name ?? item.file.name)">
+                                    (click)="removeImageFromInput(item.name ?? item.file!.name)">
                                     <mat-icon>highlight_off</mat-icon>
                                 </button>
                                 <button class="photo-button" type="button" color="primary">
