@@ -16,17 +16,9 @@ export class DialogPopupComponent {
   message: string = "";
   constructor(public dialogRef: DialogRef<string>, @Inject(DIALOG_DATA) public data: DialogData) {
     this.message = data.text[0];
-    
-    switch (data.text[0]) {
-      case "success":
-        this.iconPath = "../../../assets/icons/success-icon.svg";
-        break;
-      case "Link sent to your email":
-        this.iconPath = "../../../assets/icons/email-icon.svg";
-        break;
-      default:
-        this.iconPath = "../../../assets/icons/warning_triangle.svg";
-    }
+    this.iconPath = data.isError ?
+    "../../../assets/icons/alert-hexagon.svg" :
+    "../../../assets/icons/warning_triangle.svg";
   }
 
   closeDialog() {

@@ -7,14 +7,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Auctionify.Application.Features.Lots.Commands.UpdateLotStatus
 {
-	public class UpdateLotStatusCommand: IRequest<UpdateLotStatusResponse>
+	public class UpdateLotStatusCommand: IRequest<UpdatedLotStatusResponse>
 	{
 		public int Id { get; set; }
 
 		public string? Name { get; set; }
 	}
 
-	public class UpdateLotStatusCommandHandler : IRequestHandler<UpdateLotStatusCommand, UpdateLotStatusResponse>
+	public class UpdateLotStatusCommandHandler : IRequestHandler<UpdateLotStatusCommand, UpdatedLotStatusResponse>
 	{
 		private readonly ILotRepository _lotRepository;
 		private readonly ILotStatusRepository _lotStatusRepository;
@@ -28,7 +28,7 @@ namespace Auctionify.Application.Features.Lots.Commands.UpdateLotStatus
 			_mapper = mapper;
 		}
 
-		public async Task<UpdateLotStatusResponse> Handle(UpdateLotStatusCommand request, CancellationToken cancellationToken)
+		public async Task<UpdatedLotStatusResponse> Handle(UpdateLotStatusCommand request, CancellationToken cancellationToken)
 		{
 			var lot = await _lotRepository.GetAsync(predicate: x => x.Id == request.Id, 
 													  include: x => x.Include(x => x.LotStatus), 
@@ -78,7 +78,7 @@ namespace Auctionify.Application.Features.Lots.Commands.UpdateLotStatus
 
 			await _lotRepository.UpdateAsync(lot);
 			
-			var result = _mapper.Map<UpdateLotStatusResponse>(lot);
+			var result = _mapper.Map<UpdatedLotStatusResponse>(lot);
 
 			return result;
 		}

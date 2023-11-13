@@ -14,20 +14,23 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '@angular/cdk/dialog';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { isLoggedInGuard } from '../guards/is-logged-in.guard';
+import { isBuyerGuard } from '../guards/buyer/is-buyer.guard';
+import { isSellerGuard } from '../guards/seller/is-seller.guard';
 import { RegisterRoleComponent } from './register-role/register-role.component';
 import { MatButtonToggleModule } from '@angular/material/button-toggle'
 import { FormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [LoginComponent, RegisterComponent, RegisterRoleComponent,
-  RegisterRoleComponent],
+    declarations: [LoginComponent, RegisterComponent, ForgotPasswordComponent, RegisterRoleComponent],
   imports: [
     CommonModule,
     HttpClientModule,
     RouterModule.forChild([
-      { path: ApplicationPaths.Login, component: LoginComponent },
-      { path: ApplicationPaths.Register, component: RegisterComponent },
-      { path: ApplicationPaths.RegisterRole, component: RegisterRoleComponent }
+      { path: ApplicationPaths.Login, component: LoginComponent, canActivate: [isLoggedInGuard] },
+      { path: ApplicationPaths.Register, component: RegisterComponent, canActivate: [isLoggedInGuard] },
+        { path: ApplicationPaths.RegisterRole, component: RegisterRoleComponent }
     ]),
     UiElementsModule,
     MatFormFieldModule,

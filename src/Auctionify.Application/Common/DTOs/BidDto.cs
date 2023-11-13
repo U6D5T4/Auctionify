@@ -1,6 +1,4 @@
-﻿using Auctionify.Core.Entities;
-
-namespace Auctionify.Application.Common.DTOs
+﻿namespace Auctionify.Application.Common.DTOs
 {
     public class BidDto
     {
@@ -12,6 +10,6 @@ namespace Auctionify.Application.Common.DTOs
 
         public decimal NewPrice { get; set; }
 
-        public virtual DateTime TimeStamp { get; set; }
+        public DateTime TimeStamp { get; set; }
     }
 }

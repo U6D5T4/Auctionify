@@ -89,6 +89,8 @@ namespace Auctionify.Infrastructure.Identity
 
             var token = await GenerateJWTTokenWithUserClaimsAsync(user);
 
+            token.Role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+
             return new LoginResponse
             {
                 IsSuccess = true,
