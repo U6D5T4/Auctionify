@@ -1,6 +1,7 @@
 ﻿using Auctionify.Application.Common.Models.Requests;
 using Auctionify.Application.Features.Users.Commands.AddLotToWatchlist;
 using Auctionify.Application.Features.Users.Commands.RemoveLotFromWatchlist;
+using Auctionify.Application.Features.Users.Queries.GetById;
 using Auctionify.Application.Features.Users.Queries.GetByUserWatchlist;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -17,6 +18,15 @@ namespace Auctionify.API.Controllers
 		public UsersController(IMediator mediator)
 		{
 			_mediator = mediator;
+		}
+
+		[HttpGet("{id}")]
+		[Authorize(Roles = "Buyer")]
+		public async Task<IActionResult> GetById([FromRoute] string id)
+		{
+			var result = await _mediator.Send(new GetByIdUserQuery { Id = id });
+
+			return Ok(result);
 		}
 
 		[HttpPost("watchlists/lots")]

@@ -1,4 +1,5 @@
 using Auctionify.Application.Common.Models.Account;
+using static Google.Apis.Auth.GoogleJsonWebSignature;
 
 namespace Auctionify.Application.Common.Interfaces
 {
@@ -19,5 +20,7 @@ namespace Auctionify.Application.Common.Interfaces
         Task<LoginResponse> LoginUserAsync(LoginViewModel userModel);
 
         Task<AssignRoleToUserResponse> AssignRoleToUserAsync(AssignRoleToUserViewModel model);
-    }
+		
+        Task<LoginResponse> LoginUserWithGoogleAsync(Payload payload);
+	}
 }

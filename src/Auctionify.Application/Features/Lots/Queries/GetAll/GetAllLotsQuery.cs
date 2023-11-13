@@ -3,6 +3,7 @@ using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Common.Models.Requests;
 using Auctionify.Core.Entities;
+using Auctionify.Core.Enums;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -24,6 +25,13 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAll
 		private readonly ICurrentUserService _currentUserService;
 		private readonly UserManager<User> _userManager;
 		private readonly IWatchlistService _watchlistService;
+		private readonly List<string> validStatuses =
+			new()
+			{
+				AuctionStatus.Active.ToString(),
+				AuctionStatus.Upcoming.ToString(),
+				AuctionStatus.Archive.ToString()
+			};
 
 		public GetAllLotsQueryHandler(
 			ILotRepository lotRepository,
@@ -50,6 +58,7 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAll
 			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
 
 			var lots = await _lotRepository.GetListAsync(
+				predicate: x => validStatuses.Contains(x.LotStatus.Name),
 				include: x =>
 					x.Include(l => l.Seller)
 						.Include(l => l.Location)

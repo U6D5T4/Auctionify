@@ -33,7 +33,7 @@ export class Client {
         let url_ = this.baseUrl + "/api/auth/login";
 
         const content_ = JSON.stringify(body);
-        
+
         let options_ : Object = {
             body: content_,
             observe: "response",
@@ -101,7 +101,7 @@ export class Client {
         let url_ = this.baseUrl + "/api/auth/register";
 
         const content_ = JSON.stringify(body);
-        
+
         let options_ : any = {
             body: content_,
             observe: "response",

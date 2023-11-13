@@ -84,6 +84,17 @@ namespace Auctionify.API
                 builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
                 builder.Host.UseNLog();
 
+                builder.Services.AddCors(options =>
+                {
+					options.AddPolicy(name: "CorsPolicy", builder =>
+                    {
+                        builder.WithOrigins("https://localhost:44452")
+								.AllowAnyMethod()
+                                .AllowAnyHeader()
+                                .AllowCredentials();
+					});
+				});
+
                 var app = builder.Build();
 
                 // Configure the HTTP request pipeline.
@@ -110,6 +121,7 @@ namespace Auctionify.API
                     });
                 }
 
+                app.UseCors("CorsPolicy");
 				app.UseRouting();
                 app.UseHttpsRedirection();
                 app.UseAuthentication();
