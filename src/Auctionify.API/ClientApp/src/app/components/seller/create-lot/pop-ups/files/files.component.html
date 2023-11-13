@@ -1,0 +1,14 @@
+<div id="button-select-parent-file" class="button-select file-select">
+    <div class="select-container file-container">
+        <div *ngFor="let item of filesFormGroup.controls.files.value" class="files-list">
+            <p>{{item.name ?? item.file!.name}}</p>
+            <button type="button" (click)="removeInputFile(item.name ?? item.file!.name)">
+                <mat-icon>highlight_off</mat-icon>
+            </button>
+        </div>
+        <input #fileInput (change)="fileUpdateEvent($event)" hidden="true" type="file" onclick="this.value=null"
+            multiple />
+        <button type="button" class="mat-mdc-outlined-button-custom" mat-stroked-button color="primary"
+            (click)="handleFileInputButtonClick()">+ Add new</button>
+    </div>
+</div>
