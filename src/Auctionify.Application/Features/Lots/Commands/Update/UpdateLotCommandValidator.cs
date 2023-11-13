@@ -67,7 +67,7 @@ namespace Auctionify.Application.Features.Lots.Commands.Update
 					{
 						var result = pattern.Match(item.Path);
 
-						if (result.Success || photos.Count > 0)
+						if (result.Success || photos != null && photos.Count > 0)
 						{
 							return true;
 						}
@@ -75,7 +75,8 @@ namespace Auctionify.Application.Features.Lots.Commands.Update
 
 					return false;
 				})
-				.When(l => !l.IsDraft);
+				.When(l => !l.IsDraft)
+				.WithMessage("At least 1 photo must be provided for lot creation");
 		}
 	}
 }
