@@ -1,4 +1,5 @@
 ﻿using Auctionify.Application.Common.Models.Requests;
+using Auctionify.Application.Features.Users.Commands.AddBidForLot;
 using Auctionify.Application.Features.Users.Commands.AddLotToWatchlist;
 using Auctionify.Application.Features.Users.Commands.RemoveLotFromWatchlist;
 using Auctionify.Application.Features.Users.Queries.GetById;
@@ -55,6 +56,15 @@ namespace Auctionify.API.Controllers
 			var result = await _mediator.Send(new RemoveLotFromWatchlistCommand { LotId = lotId });
 
 			return Ok($"Successfully removed the lot with id: {lotId} from user's watchlist (id: {result.Id})");
+		}
+
+		[HttpPost("bids")]
+		[Authorize(Roles = "Buyer")]
+		public async Task<IActionResult> AddBidForLot([FromForm] AddBidForLotCommand addBidForLotCommand)
+		{
+			var result = await _mediator.Send(addBidForLotCommand);
+
+			return Ok($"Successfully added the bid for lot (id: {result.Id})");
 		}
 	}
 }

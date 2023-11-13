@@ -2,6 +2,7 @@ using Auctionify.API.Middlewares;
 using Auctionify.API.Services;
 using Auctionify.Application;
 using Auctionify.Application.Common.Interfaces;
+using Auctionify.Application.Hubs;
 using Auctionify.Infrastructure;
 using Auctionify.Infrastructure.Persistence;
 using Microsoft.OpenApi.Models;
@@ -24,6 +25,10 @@ namespace Auctionify.API
 			{
 				logger.Debug("init main");
 				var builder = WebApplication.CreateBuilder(args);
+
+				// SignalR
+				builder.Services.AddSignalR();
+				builder.Services.AddSingleton<TimerControl>();
 
 				builder.Services.AddApplicationServices();
 				builder.Services.AddInfrastructureServices(builder.Configuration);
@@ -139,6 +144,8 @@ namespace Auctionify.API
 						c.RoutePrefix = "swagger";
 					});
 				}
+
+				app.MapHub<AuctionHub>("/auctionHub");
 
 				app.UseCors("CorsPolicy");
 				app.UseRouting();
