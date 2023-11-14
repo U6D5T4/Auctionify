@@ -629,27 +629,11 @@ export class CreateLotComponent implements OnInit {
                 controls.currencyId.value! !== null
             ) {
                 this.isStartingPriceValid = true;
-                if (controls.startingPrice.value! > 0) {
-                    this.startingPriceText = `from ${this.lotForm.value.startingPrice}, `;
-                }
-
-                const currencyId = this.lotForm.value.currencyId;
-                if (currencyId) {
-                    const currency = this.currencies.find(
-                        (x) => x.id == currencyId
-                    );
-
-                    if (this.startingPriceText == null) {
-                        this.startingPriceText = `${currency?.code}`;
-                    } else {
-                        this.startingPriceText = this.startingPriceText.concat(
-                            `${currency?.code}`
-                        );
-                    }
-                }
             } else {
                 this.startingPriceText = null;
             }
+
+            this.startingPriceTextSetter();
         });
     }
 
@@ -672,13 +656,23 @@ export class CreateLotComponent implements OnInit {
     }
 
     startingPriceTextSetter() {
-        this.startingPriceText = `from ${this.lotForm.value.startingPrice}`;
+        const controls = this.lotForm.controls;
+
+        if (controls.startingPrice.value! > 0) {
+            this.startingPriceText = `from ${this.lotForm.value.startingPrice}, `;
+        }
+
         const currencyId = this.lotForm.value.currencyId;
         if (currencyId) {
             const currency = this.currencies.find((x) => x.id == currencyId);
-            this.startingPriceText = this.startingPriceText.concat(
-                `, ${currency?.code}`
-            );
+
+            if (this.startingPriceText == null) {
+                this.startingPriceText = `${currency?.code}`;
+            } else {
+                this.startingPriceText = this.startingPriceText.concat(
+                    `${currency?.code}`
+                );
+            }
         }
     }
 
