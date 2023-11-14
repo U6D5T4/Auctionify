@@ -142,8 +142,6 @@ export class CreateLotComponent implements OnInit {
                 next: (result) => {
                     const lotFormData = this.lotForm.controls;
 
-                    console.log(result);
-
                     lotFormData.title.setValue(result.title);
                     lotFormData.description.setValue(result.description);
                     lotFormData.categoryId.setValue(
@@ -283,7 +281,6 @@ export class CreateLotComponent implements OnInit {
             };
             this.client.updateLot(lotToUpdate).subscribe({
                 next: (res) => {
-                    console.log(res);
                     const dialog = this.openDialog(
                         ['Successfully updated the lot!'],
                         false,
@@ -525,7 +522,6 @@ export class CreateLotComponent implements OnInit {
                         const deleteLotSubscriber = this.client
                             .deleteLotFile(this.lotId, imageToDelete.fileUrl!)
                             .subscribe((res) => {
-                                console.log(res);
                                 this.proceedRemoveImage(name);
                                 deleteLotSubscriber.unsubscribe();
                             });
