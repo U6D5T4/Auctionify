@@ -22,6 +22,8 @@
 
   <ItemGroup>
     <Folder Include="Common\Extensions\" />
+    <Folder Include="Features\Locations\Profiles\" />
+    <Folder Include="Features\Locations\Queries\GetAll\" />
     <Folder Include="Features\Lots\Constants\" />
     <Folder Include="Features\Lots\Rules\" />
   </ItemGroup>

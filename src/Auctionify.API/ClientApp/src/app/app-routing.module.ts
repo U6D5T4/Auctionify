@@ -16,6 +16,13 @@ const routes: Routes = [
         data: { breadcrumb: { skip: true } },
         canActivate: [],
     },
+    {
+        path: 'buyer',
+        loadChildren: () =>
+            import('./components/buyer/buyer.module').then(
+                (m) => m.BuyerModule
+            ),
+    },
 ];
 
 @NgModule({
