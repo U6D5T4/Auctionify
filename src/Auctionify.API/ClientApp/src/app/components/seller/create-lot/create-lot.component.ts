@@ -173,6 +173,8 @@ export class CreateLotComponent implements OnInit {
                             };
                             this.lotForm.controls.files.value?.push(fileModel);
                         }
+
+                        this.filesText = this.lotForm.value.files?.at(0)?.name!;
                     }
 
                     if (result.photosUrl !== null) {
@@ -191,6 +193,14 @@ export class CreateLotComponent implements OnInit {
                                     subscription.unsubscribe();
                                 });
                         }
+                    }
+
+                    if (this.lotForm.value.city) {
+                        this.locationText = this.lotForm.value.city!;
+                    }
+
+                    if (this.lotForm.value.startingPrice) {
+                        this.startingPriceTextSetter();
                     }
                 },
 
@@ -312,16 +322,16 @@ export class CreateLotComponent implements OnInit {
         const errors = err.errors;
         let errorsToShow = [];
 
-                if (typeof errors == 'string') {
-                    errorsToShow.push(errors.toString());
-                } else {
-                    for (let key of errors) {
-                        let msg = `${key.PropertyName}: ${key.ErrorMessage}\n`;
-                        errorsToShow.push(msg);
-                    }
-                }
+        if (typeof errors == 'string') {
+            errorsToShow.push(errors.toString());
+        } else {
+            for (let key of errors) {
+                let msg = `${key.PropertyName}: ${key.ErrorMessage}\n`;
+                errorsToShow.push(msg);
+            }
+        }
 
-                const dialog = this.openDialog(errorsToShow, true, true);
+        const dialog = this.openDialog(errorsToShow, true, true);
 
         dialog.closed.subscribe(() =>
             isDraft ? (this.isLoadingDraft = false) : (this.isLoading = false)
@@ -613,16 +623,7 @@ export class CreateLotComponent implements OnInit {
             if (res === 'true') {
                 this.isStartingPriceValid = true;
 
-                this.startingPriceText = `from ${this.lotForm.value.startingPrice}`;
-                const currencyId = this.lotForm.value.currencyId;
-                if (currencyId) {
-                    const currency = this.currencies.find(
-                        (x) => x.id == currencyId
-                    );
-                    this.startingPriceText = this.startingPriceText.concat(
-                        `, ${currency?.code}`
-                    );
-                }
+                this.startingPriceTextSetter();
             } else {
                 this.startingPriceText = null;
 
@@ -650,6 +651,17 @@ export class CreateLotComponent implements OnInit {
                 this.filesText = null;
             }
         });
+    }
+
+    startingPriceTextSetter() {
+        this.startingPriceText = `from ${this.lotForm.value.startingPrice}`;
+        const currencyId = this.lotForm.value.currencyId;
+        if (currencyId) {
+            const currency = this.currencies.find((x) => x.id == currencyId);
+            this.startingPriceText = this.startingPriceText.concat(
+                `, ${currency?.code}`
+            );
+        }
     }
 
     deleteLot() {
