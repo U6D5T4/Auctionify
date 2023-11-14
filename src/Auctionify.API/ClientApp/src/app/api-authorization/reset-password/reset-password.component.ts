@@ -46,7 +46,7 @@ export class ResetPasswordComponent implements OnInit {
 
   getUserIdAndTokenFromUrl(): void {
     this.activatedRoute.queryParams.subscribe(params => {
-      const token = params['token'];
+      let token = params['token'];
       const email = params['email'];
 
       this.resetPasswordForm.get('token')?.setValue(token);

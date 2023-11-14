@@ -37,7 +37,7 @@ export class ForgetPasswordComponent {
     this.authService.forgetPassword(this.forgetPasswordForm.controls.email.value!)
       .pipe(
         catchError((error: ForgetPasswordResponse) => {
-          this.openDialog(error.errors || ['An error occurred. Please try again.'], true);
+          this.openDialog(error.errors || ['Email is not correct'], true);
           return of(null);
         })
       )
@@ -49,7 +49,6 @@ export class ForgetPasswordComponent {
         },
         complete: () => {
           this.isLoading = false;
-          this.forgetPasswordForm.controls.email.reset();
         }
       });
   }

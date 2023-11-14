@@ -183,7 +183,7 @@ namespace Auctionify.Infrastructure.Identity
                 return new ResetPasswordResponse
                 {
                     Message = "Password has been reset successfully!",
-                    IsSuccess = false
+                    IsSuccess = true
 
                 };
 
