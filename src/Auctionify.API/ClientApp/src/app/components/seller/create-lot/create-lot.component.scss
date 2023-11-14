@@ -332,3 +332,10 @@
 .input-buttons {
     position: relative;
 }
+
+.file-btn {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 340px;
+}

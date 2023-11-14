@@ -416,16 +416,16 @@ export class CreateLotComponent {
         });
 
         locationDialogPopup.closed.subscribe((res: any) => {
-            if (res === 'true') {
+            const controls = this.lotForm.controls;
+            if (
+                controls.address.valid &&
+                controls.city.valid &&
+                controls.country.valid
+            ) {
                 this.isLocationValid = true;
                 this.locationText = this.lotForm.value.city!;
             } else {
                 this.locationText = null;
-
-                const controls = this.lotForm.controls;
-                controls.address.setValue(null);
-                controls.city.setValue(null);
-                controls.country.setValue(null);
             }
         });
     }
@@ -439,26 +439,35 @@ export class CreateLotComponent {
         });
 
         locationDialogPopup.closed.subscribe((res) => {
-            if (res === 'true') {
-                this.isStartingPriceValid = true;
+            const controls = this.lotForm.controls;
 
-                this.startingPriceText = `from ${this.lotForm.value.startingPrice}`;
+            this.startingPriceText = null;
+            if (
+                ((controls.startingPrice.valid || controls.currencyId.valid) &&
+                    controls.startingPrice.value! > 0) ||
+                controls.currencyId.value! !== null
+            ) {
+                this.isStartingPriceValid = true;
+                if (controls.startingPrice.value! > 0) {
+                    this.startingPriceText = `from ${this.lotForm.value.startingPrice}, `;
+                }
+
                 const currencyId = this.lotForm.value.currencyId;
                 if (currencyId) {
                     const currency = this.currencies.find(
                         (x) => x.id == currencyId
                     );
-                    this.startingPriceText = this.startingPriceText.concat(
-                        `, ${currency?.code}`
-                    );
+
+                    if (this.startingPriceText == null) {
+                        this.startingPriceText = `${currency?.code}`;
+                    } else {
+                        this.startingPriceText = this.startingPriceText.concat(
+                            `${currency?.code}`
+                        );
+                    }
                 }
             } else {
                 this.startingPriceText = null;
-
-                const controls = this.lotForm.controls;
-
-                controls.startingPrice.setValue(null);
-                controls.currencyId.setValue(null);
             }
         });
     }
@@ -470,11 +479,7 @@ export class CreateLotComponent {
 
         filesDialogPopup.closed.subscribe((res) => {
             const firstFile = this.lotForm.value.files?.at(0);
-            if (firstFile) {
-                this.filesText = firstFile?.name!;
-            } else {
-                this.filesText = null;
-            }
+            this.filesText = firstFile?.name!;
         });
     }
 
