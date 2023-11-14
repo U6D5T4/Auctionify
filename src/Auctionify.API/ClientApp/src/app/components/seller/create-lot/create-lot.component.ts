@@ -641,14 +641,7 @@ export class CreateLotComponent implements OnInit {
             },
         });
 
-        filesDialogPopup.closed.subscribe((res) => {
-            const firstFile = this.lotForm.value.files?.at(0);
-            if (firstFile) {
-                this.filesText = firstFile?.name!;
-            } else {
-                this.filesText = null;
-            }
-        });
+        filesDialogPopup.closed.subscribe((res) => {});
     }
 
     startingPriceTextSetter() {
