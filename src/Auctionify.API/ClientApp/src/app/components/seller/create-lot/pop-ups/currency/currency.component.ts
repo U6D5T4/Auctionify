@@ -33,7 +33,7 @@ export class CurrencyPopUpComponent {
         controls.currencyId.markAsTouched();
         this.configureValidators();
         if (controls.startingPrice.valid && controls.currencyId.valid) {
-            this.dialogRef.close();
+            this.dialogRef.close('true');
         }
     }
 

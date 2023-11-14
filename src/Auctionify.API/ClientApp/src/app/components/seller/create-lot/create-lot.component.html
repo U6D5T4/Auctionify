@@ -82,24 +82,24 @@
                             </div>
                         </div>
                         <div class="lot-info__selector-inputs">
-                            <div class="buttons location-btn">
+                            <div class="buttons">
                                 <button type="button" mat-flat-button [color]="isLocationValid ? 'accent' : 'warn'"
                                     (click)="clickLocation()">
                                     <mat-icon class="color-grey-3" matSuffix>location_on</mat-icon>
-                                    Location
+                                    {{ locationText ?? 'Location'}}
                                 </button>
                             </div>
-                            <div class="buttons starting-price-btn">
+                            <div class="buttons">
                                 <button type="button" mat-flat-button [color]="isStartingPriceValid ? 'accent' : 'warn'"
                                     (click)="clickStartingPrice()">
                                     <mat-icon matSuffix class="color-grey-3">attach_money</mat-icon>
-                                    Starting price and currency
+                                    {{ startingPriceText ?? 'Starting price and currency'}}
                                 </button>
                             </div>
-                            <div class="buttons file-btn">
+                            <div class="buttons">
                                 <button type="button" mat-flat-button color="accent" (click)="clickFile()">
                                     <mat-icon matSuffix class="color-grey-3">attach_file</mat-icon>
-                                    File
+                                    {{filesText ?? "Files"}}
                                 </button>
                             </div>
                         </div>

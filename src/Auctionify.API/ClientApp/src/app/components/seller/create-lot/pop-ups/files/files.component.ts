@@ -55,8 +55,6 @@ export class FilesPopUpComponent {
             };
 
             this.filesFormGroup.controls.files.value?.push(file);
-
-            console.log(this.filesFormGroup.controls);
         }
     }
 

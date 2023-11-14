@@ -104,6 +104,10 @@ export class CreateLotComponent {
     isLoading = false;
     isLoadingDraft = false;
 
+    filesText: string | null = null;
+    locationText: string | null = null;
+    startingPriceText: string | null = null;
+
     constructor(
         private client: Client,
         private dialog: Dialog,
@@ -114,14 +118,10 @@ export class CreateLotComponent {
     }
 
     submitLot(isDraft: boolean) {
-        console.log(this.lotForm);
-        console.log(this.imagesToUpload);
         this.configureLotFormValidators(isDraft);
         this.isLocationValid = true;
         this.isStartingPriceValid = true;
         const controls = this.lotForm.controls;
-
-        console.log(controls);
 
         this.lotForm.markAllAsTouched();
 
@@ -195,13 +195,10 @@ export class CreateLotComponent {
                     errorsToShow.push(errors.toString());
                 } else {
                     for (let key of errors) {
-                        console.log(key);
                         let msg = `${key.PropertyName}: ${key.ErrorMessage}\n`;
                         errorsToShow.push(msg);
                     }
                 }
-
-                console.log(err);
 
                 const dialog = this.openDialog(errorsToShow, true, true);
 
@@ -419,7 +416,17 @@ export class CreateLotComponent {
         });
 
         locationDialogPopup.closed.subscribe((res: any) => {
-            console.log(res);
+            if (res === 'true') {
+                this.isLocationValid = true;
+                this.locationText = this.lotForm.value.city!;
+            } else {
+                this.locationText = null;
+
+                const controls = this.lotForm.controls;
+                controls.address.setValue(null);
+                controls.city.setValue(null);
+                controls.country.setValue(null);
+            }
         });
     }
 
@@ -432,7 +439,27 @@ export class CreateLotComponent {
         });
 
         locationDialogPopup.closed.subscribe((res) => {
-            console.log(res);
+            if (res === 'true') {
+                this.isStartingPriceValid = true;
+
+                this.startingPriceText = `from ${this.lotForm.value.startingPrice}`;
+                const currencyId = this.lotForm.value.currencyId;
+                if (currencyId) {
+                    const currency = this.currencies.find(
+                        (x) => x.id == currencyId
+                    );
+                    this.startingPriceText = this.startingPriceText.concat(
+                        `, ${currency?.code}`
+                    );
+                }
+            } else {
+                this.startingPriceText = null;
+
+                const controls = this.lotForm.controls;
+
+                controls.startingPrice.setValue(null);
+                controls.currencyId.setValue(null);
+            }
         });
     }
 
@@ -442,7 +469,12 @@ export class CreateLotComponent {
         });
 
         filesDialogPopup.closed.subscribe((res) => {
-            console.log(res);
+            const firstFile = this.lotForm.value.files?.at(0);
+            if (firstFile) {
+                this.filesText = firstFile?.name!;
+            } else {
+                this.filesText = null;
+            }
         });
     }
 
