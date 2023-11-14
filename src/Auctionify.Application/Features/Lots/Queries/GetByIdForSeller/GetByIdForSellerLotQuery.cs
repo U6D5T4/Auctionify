@@ -3,6 +3,7 @@ using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Common.Options;
 using Auctionify.Core.Entities;
 using AutoMapper;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -65,7 +66,7 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForSeller
 
 			var result = _mapper.Map<GetByIdForSellerLotResponse>(lot);
 
-			if (lot != null)
+			if (lot is not null)
 			{
 				var photos = await _fileRepository.GetListAsync(
 					predicate: x =>
@@ -102,6 +103,10 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForSeller
 
 				result.PhotosUrl = photoLinks;
 				result.AdditionalDocumentsUrl = additionalDocumentLinks;
+			}
+			else
+			{
+				throw new ValidationException("Lot not found");
 			}
 
 			return result;

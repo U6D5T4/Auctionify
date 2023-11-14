@@ -7,7 +7,7 @@
             </button>
         </div>
         <input #fileInput (change)="fileUpdateEvent($event)" hidden="true" type="file" onclick="this.value=null"
-            multiple />
+            multiple accept=".xlsx, .xls, .doc, .docx, .pdf" />
         <button type="button" class="mat-mdc-outlined-button-custom" mat-stroked-button color="primary"
             (click)="handleFileInputButtonClick()">+ Add new</button>
     </div>

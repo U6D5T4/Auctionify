@@ -8,6 +8,7 @@ using Auctionify.Infrastructure.Persistence;
 using Auctionify.Infrastructure.Repositories;
 using AutoMapper;
 using FluentAssertions;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -143,7 +144,7 @@ namespace Auctionify.UnitTests.GetLotByIdTests
 		}
 
 		[Fact]
-		public async Task GetByIdLotForBuyerQueryHandler_WhenCalledWithWrongId_ReturnsNull()
+		public async Task GetByIdLotForBuyerQueryHandler_WhenCalledWithWrongId_ThrowsValidationException()
 		{
 			//Lot is not in buyer's watchlist
 			_watchListServiceMock.Setup(x => x.IsLotInUserWatchlist(It.IsAny<int>(), It.IsAny<int>(), default)).ReturnsAsync(true);
@@ -164,9 +165,7 @@ namespace Auctionify.UnitTests.GetLotByIdTests
 				_userManager,
 				_watchListServiceMock.Object);
 
-			var result = await handler.Handle(query, default);
-
-			result.Should().BeNull();
+			await Assert.ThrowsAsync<ValidationException>(async () => await handler.Handle(query, default));
 		}
 
 		[Fact]
@@ -193,7 +192,7 @@ namespace Auctionify.UnitTests.GetLotByIdTests
 		}
 
 		[Fact]
-		public async Task GetByIdLotForSellerQueryHandler_WhenCalledWithCorrectIdAndNotCreatedBySeller_ReturnsNull()
+		public async Task GetByIdLotForSellerQueryHandler_WhenCalledWithCorrectIdAndNotCreatedBySeller_ThrowsValidationException()
 		{
 			// Lot created by other user id
 			var query = new GetByIdForSellerLotQuery
@@ -210,9 +209,8 @@ namespace Auctionify.UnitTests.GetLotByIdTests
 				_currentUserServiceMock.Object,
 				_userManager);
 
-			var result = await handler.Handle(query, default);
+			await Assert.ThrowsAsync<ValidationException>(async () => await handler.Handle(query, default));
 
-			result.Should().BeNull();
 		}
 	}
 }

@@ -98,6 +98,10 @@ export class CreateLotComponent implements OnInit {
     lotId: number = 0;
     private regExValue: RegExp = /\/([^\/]+)(?=\/?$)/g;
 
+    filesText: string | null = null;
+    locationText: string | null = null;
+    startingPriceText: string | null = null;
+
     constructor(
         private client: Client,
         private dialog: Dialog,
@@ -210,8 +214,6 @@ export class CreateLotComponent implements OnInit {
         this.isStartingPriceValid = true;
         const controls = this.lotForm.controls;
 
-        console.log(controls);
-
         this.lotForm.markAllAsTouched();
 
         if (!this.lotForm.valid) {
@@ -310,17 +312,16 @@ export class CreateLotComponent implements OnInit {
         const errors = err.errors;
         let errorsToShow = [];
 
-        if (typeof errors == 'string') {
-            errorsToShow.push(errors.toString());
-        } else {
-            for (let key of errors) {
-                console.log(key);
-                let msg = `${key.PropertyName}: ${key.ErrorMessage}\n`;
-                errorsToShow.push(msg);
-            }
-        }
+                if (typeof errors == 'string') {
+                    errorsToShow.push(errors.toString());
+                } else {
+                    for (let key of errors) {
+                        let msg = `${key.PropertyName}: ${key.ErrorMessage}\n`;
+                        errorsToShow.push(msg);
+                    }
+                }
 
-        const dialog = this.openDialog(errorsToShow, true, true);
+                const dialog = this.openDialog(errorsToShow, true, true);
 
         dialog.closed.subscribe(() =>
             isDraft ? (this.isLoadingDraft = false) : (this.isLoading = false)
@@ -586,7 +587,17 @@ export class CreateLotComponent implements OnInit {
         });
 
         locationDialogPopup.closed.subscribe((res: any) => {
-            console.log(res);
+            if (res === 'true') {
+                this.isLocationValid = true;
+                this.locationText = this.lotForm.value.city!;
+            } else {
+                this.locationText = null;
+
+                const controls = this.lotForm.controls;
+                controls.address.setValue(null);
+                controls.city.setValue(null);
+                controls.country.setValue(null);
+            }
         });
     }
 
@@ -599,7 +610,27 @@ export class CreateLotComponent implements OnInit {
         });
 
         locationDialogPopup.closed.subscribe((res) => {
-            console.log(res);
+            if (res === 'true') {
+                this.isStartingPriceValid = true;
+
+                this.startingPriceText = `from ${this.lotForm.value.startingPrice}`;
+                const currencyId = this.lotForm.value.currencyId;
+                if (currencyId) {
+                    const currency = this.currencies.find(
+                        (x) => x.id == currencyId
+                    );
+                    this.startingPriceText = this.startingPriceText.concat(
+                        `, ${currency?.code}`
+                    );
+                }
+            } else {
+                this.startingPriceText = null;
+
+                const controls = this.lotForm.controls;
+
+                controls.startingPrice.setValue(null);
+                controls.currencyId.setValue(null);
+            }
         });
     }
 
@@ -612,7 +643,12 @@ export class CreateLotComponent implements OnInit {
         });
 
         filesDialogPopup.closed.subscribe((res) => {
-            console.log(res);
+            const firstFile = this.lotForm.value.files?.at(0);
+            if (firstFile) {
+                this.filesText = firstFile?.name!;
+            } else {
+                this.filesText = null;
+            }
         });
     }
 

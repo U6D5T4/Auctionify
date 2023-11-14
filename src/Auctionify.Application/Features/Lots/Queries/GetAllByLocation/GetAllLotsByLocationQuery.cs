@@ -3,6 +3,7 @@ using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Common.Models.Requests;
 using Auctionify.Core.Entities;
+using Auctionify.Core.Enums;
 using Auctionify.Core.Persistence.Dynamic;
 using AutoMapper;
 using MediatR;
@@ -32,6 +33,13 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAllByName
 		private readonly IMapper _mapper;
 		private readonly string namePropertyField = "Location.City";
 		private readonly string operatorPropertyField = "contains";
+		private readonly List<string> validStatuses =
+			new()
+			{
+				AuctionStatus.Active.ToString(),
+				AuctionStatus.Upcoming.ToString(),
+				AuctionStatus.Archive.ToString()
+			};
 
 		public GetAllLotsByLocationQueryHandler(
 			ILotRepository lotRepository,
@@ -69,6 +77,7 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAllByName
 
 			var lots = await _lotRepository.GetListByDynamicAsync(
 				dynamicQuery,
+				predicate: x => validStatuses.Contains(x.LotStatus.Name),
 				include: x =>
 					x.Include(l => l.Seller)
 						.Include(l => l.Location)

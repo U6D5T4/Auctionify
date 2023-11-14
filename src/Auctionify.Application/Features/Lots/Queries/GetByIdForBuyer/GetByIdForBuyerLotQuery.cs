@@ -3,6 +3,7 @@ using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Common.Options;
 using Auctionify.Core.Entities;
 using AutoMapper;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -66,7 +67,7 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer
 
 			var result = _mapper.Map<GetByIdForBuyerLotResponse>(lot);
 
-			if (lot != null)
+			if (lot is not null)
 			{
 				var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
 
@@ -111,6 +112,10 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer
 
 				result.PhotosUrl = photoLinks;
 				result.AdditionalDocumentsUrl = additionalDocumentLinks;
+			}
+			else
+			{
+				throw new ValidationException("Lot not found");
 			}
 
 			return result;
