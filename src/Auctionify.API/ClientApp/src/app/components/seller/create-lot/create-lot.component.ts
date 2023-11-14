@@ -13,10 +13,7 @@ import { Router } from '@angular/router';
 import { FileModel } from 'src/app/models/fileModel';
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import { Category, Client, Currency } from 'src/app/web-api-client';
-import {
-    LocationDialogData,
-    LocationPopUpComponent,
-} from './pop-ups/location/location.component';
+import { LocationPopUpComponent } from './pop-ups/location/location.component';
 import { CurrencyPopUpComponent } from './pop-ups/currency/currency.component';
 import { FilesPopUpComponent } from './pop-ups/files/files.component';
 
@@ -477,10 +474,7 @@ export class CreateLotComponent {
             data: this.lotForm,
         });
 
-        filesDialogPopup.closed.subscribe((res) => {
-            const firstFile = this.lotForm.value.files?.at(0);
-            this.filesText = firstFile?.name!;
-        });
+        filesDialogPopup.closed.subscribe((res) => {});
     }
 
     openDialog(
