@@ -123,7 +123,7 @@ namespace Auctionify.API.Controllers
 				: $"Could not delete specified files of lot with id: {result.LotId}");
 		}
 
-		[HttpGet("[action]")]
+		[HttpGet("filtered-lots")]
 		[Authorize(Roles = "Buyer")]
 		public async Task<IActionResult> FilterLots([FromQuery] FilterLotsQuery query)
 		{
