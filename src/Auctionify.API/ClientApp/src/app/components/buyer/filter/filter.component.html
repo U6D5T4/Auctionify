@@ -1,5 +1,5 @@
 <div class="filter-component">
-    <div class="filter__container">
+    <form class="filter__container" [formGroup]="filterForm">
         <div class="filter__row-1">
             <div class="filter__row-1-container row-container">
                 <h2>Filters</h2>
@@ -16,7 +16,7 @@
                     <h3>Location</h3>
                     <mat-form-field appearance="outline">
                         <mat-label>Choose a location</mat-label>
-                        <mat-select>
+                        <mat-select formControlName="location">
                             <mat-option [value]="null">none</mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -28,16 +28,20 @@
                         <div class="price-inputs">
                             <mat-form-field appearance="outline">
                                 <mat-label>from 1</mat-label>
-                                <input matInput>
+                                <input type="number" [value]="filterForm.value.minimumPrice"
+                                    formControlName="minimumPrice" matInput>
                             </mat-form-field>
                             <mat-form-field appearance="outline">
                                 <mat-label>to 9999.99</mat-label>
-                                <input matInput>
+                                <input type="number" [value]="filterForm.value.maximumPrice"
+                                    formControlName="maximumPrice" matInput>
                             </mat-form-field>
                         </div>
-                        <mat-slider min="1" max="999.99">
-                            <input value="300" matSliderStartThumb>
-                            <input value="400" matSliderEndThumb>
+                        <mat-slider min="1" max="9999.99">
+                            <input [value]="filterForm.value.minimumPrice" formControlName="minimumPrice" value="300"
+                                matSliderStartThumb>
+                            <input [value]="filterForm.value.maximumPrice" formControlName="maximumPrice" value="400"
+                                matSliderEndThumb>
                         </mat-slider>
                     </div>
                 </div>
@@ -48,6 +52,14 @@
                         <mat-label>Item category</mat-label>
                         <mat-select>
                             <mat-option [value]="null">none</mat-option>
+                            <div class="sel" *ngFor="let item of categories">
+                                <mat-option [value]="item.id">
+                                    {{item.name}}
+                                </mat-option>
+                                <mat-option *ngFor="let itemChild of item.children" [value]="itemChild.id">
+                                    -- {{itemChild.name}}
+                                </mat-option>
+                            </div>
                         </mat-select>
                     </mat-form-field>
                     <div class="status-checkboxes">
@@ -61,8 +73,9 @@
         <div class="filter__row-3">
             <div class="filter__row-3-container row-container">
                 <button class="clear-button" mat-button type="button">Clear all</button>
-                <button class="show-button" mat-flat-button color="primary" type="button">Show results</button>
+                <button class="show-button" mat-flat-button color="primary" type="button" (click)="filterClick()">Show
+                    results</button>
             </div>
         </div>
-    </div>
+    </form>
 </div>

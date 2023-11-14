@@ -9,6 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
     declarations: [FilterComponent],
@@ -22,6 +23,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
         MatInputModule,
         MatSliderModule,
         MatCheckboxModule,
+        ReactiveFormsModule,
     ],
     exports: [FilterComponent],
 })
