@@ -53,7 +53,7 @@
                     <h3>Category & Status</h3>
                     <mat-form-field appearance="outline">
                         <mat-label>Item category</mat-label>
-                        <mat-select>
+                        <mat-select formControlName="categoryId">
                             <mat-option [value]="null">none</mat-option>
                             <div class="sel" *ngFor="let item of categories">
                                 <mat-option [value]="item.id">
@@ -65,7 +65,7 @@
                             </div>
                         </mat-select>
                     </mat-form-field>
-                    <section class="status-checkboxes" [formGroup]="chekboxValues">
+                    <section class="status-checkboxes" [formGroup]="checkboxValues">
                         <mat-checkbox formControlName="Closed" color="primary">Closed</mat-checkbox>
                         <mat-checkbox formControlName="Active" color="primary">Active</mat-checkbox>
                         <mat-checkbox formControlName="Upcoming" color="primary">Upcoming</mat-checkbox>

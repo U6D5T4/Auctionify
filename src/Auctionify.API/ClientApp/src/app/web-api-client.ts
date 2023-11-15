@@ -15,11 +15,13 @@ import {
     HttpClient,
     HttpEvent,
     HttpHeaders,
+    HttpParams,
     HttpResponse,
     HttpResponseBase,
 } from '@angular/common/http';
 import { UserRole } from './api-authorization/authorize.service';
 import { CreateLotModel, UpdateLotModel } from './models/lots/lot-models';
+import { FilterLot } from './models/lots/filter';
 
 export const API_BASE_URL = new InjectionToken('API_BASE_URL');
 
@@ -361,6 +363,60 @@ export class Client {
             })
         );
     }
+
+    filterLots(params: FilterLot): Observable<FilteredLotModel[]> {
+        let url_ = this.baseUrl + `/api/lots/filtered-lots`;
+
+        let queryParams = new HttpParams();
+
+        for (const [key, value] of Object.entries(params)) {
+            if (key == 'lotStatuses') {
+                if (value !== null) {
+                    for (const lotId of value as number[]) {
+                        queryParams = queryParams.append(
+                            key.charAt(0).toUpperCase() + key.slice(1),
+                            lotId.toString()
+                        );
+                    }
+                }
+            } else {
+                if (value !== null) {
+                    queryParams = queryParams.set(
+                        key.charAt(0).toUpperCase() + key.slice(1),
+                        value
+                    );
+                }
+            }
+        }
+
+        return this.http.get(url_, { params: queryParams }).pipe(
+            mergeMap((response: any): Observable<FilteredLotModel[]> => {
+                let data: FilteredLotModel[] = [];
+
+                if (response.body !== null) {
+                    data = response.body;
+                }
+
+                return of(data);
+            })
+        );
+    }
+}
+
+export interface FilteredLotModel {
+    id: number;
+    title: string;
+    description: string;
+    startingPrice: number | null;
+    startDate: Date | null;
+    endDate: Date | null;
+    category: CategoryDto;
+    lotStatus: LotStatusDto;
+    location: LocationDto;
+    currency: CurrencyDto;
+    bids: BidDto[];
+    mainPhotoUrl: string | null;
+    isInWatchList: boolean;
 }
 
 export interface CategoryDto {
