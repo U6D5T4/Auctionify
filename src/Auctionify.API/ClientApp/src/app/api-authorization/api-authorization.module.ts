@@ -14,7 +14,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '@angular/cdk/dialog';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
-import { ForgetPasswordComponent } from './forget-password/forget-password.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { isLoggedInGuard } from '../guards/is-logged-in.guard';
+import { isBuyerGuard } from '../guards/buyer/is-buyer.guard';
+import { isSellerGuard } from '../guards/seller/is-seller.guard';
 
 @NgModule({
   declarations: [LoginComponent, RegisterComponent, ResetPasswordComponent, ForgetPasswordComponent],

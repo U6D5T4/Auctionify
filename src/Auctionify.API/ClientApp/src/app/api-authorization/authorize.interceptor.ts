@@ -3,15 +3,18 @@ import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
-  HttpInterceptor
+  HttpInterceptor,
+  HttpErrorResponse,
+  HttpStatusCode
 } from '@angular/common/http';
-import { Observable, mergeMap } from 'rxjs';
+import { Observable, ObservableInput, catchError, mergeMap, throwError } from 'rxjs';
 import { AuthorizeService } from './authorize.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthorizeInterceptor implements HttpInterceptor {
 
-  constructor(private authService: AuthorizeService) {}
+  constructor(private authService: AuthorizeService, private router: Router) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return this.authService.getAccessToken().pipe(mergeMap(token => this.processRequestWithToken(token, request, next)));
@@ -26,7 +29,17 @@ export class AuthorizeInterceptor implements HttpInterceptor {
       });
     }
 
-    return next.handle(req);
+    return next.handle(req).pipe(
+      catchError((err) : ObservableInput<any> => {
+        if (err instanceof HttpErrorResponse) {
+          if (err.status === HttpStatusCode.Unauthorized) {
+            this.router.navigate(['home'])
+          }
+        }
+
+        return throwError(() => err)
+      })
+    );
   }
 
   private isSameOriginUrl(req: any) {

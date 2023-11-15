@@ -25,5 +25,7 @@ namespace Auctionify.Application.Features.Lots.Queries.BaseQueryModels
         public CurrencyDto Currency { get; set; }
 
         public ICollection<BidDto> Bids { get; set; }
+
+        public string? MainPhotoUrl { get; set; }
     }
 }
