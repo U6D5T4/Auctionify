@@ -1,8 +1,11 @@
 <div class="header">
+    <a [routerLink]="['/home']">
+        <img src="assets/icons/AuctionifyLogo.svg" title="AuctionifyLogo">
+    </a>
 
-  <img src="assets/icons/AuctionifyLogo.svg" routerLink="/home" title="Auctionify Logo" alt="Auctionify Logo">
-
-  <app-search></app-search>
+    <div class="header__search">
+        <app-search></app-search>
+    </div>
 
     <ul class="navigation">
         <li>
