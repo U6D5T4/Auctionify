@@ -31,17 +31,19 @@ export class HomeComponent {
                 const dialogSubscriber = this.dialog.open(FilterComponent);
 
                 dialogSubscriber.closed.subscribe((res: any) => {
-                    const data = JSON.parse(res) as FilterResult;
+                    if (res) {
+                        const data = JSON.parse(res) as FilterResult;
 
-                    const filterData: FilterLot = {
-                        ...data,
-                        sortDir: null,
-                        sortField: null,
-                    };
+                        const filterData: FilterLot = {
+                            ...data,
+                            sortDir: null,
+                            sortField: null,
+                        };
 
-                    this.client.filterLots(filterData).subscribe((res) => {
-                        console.log(res);
-                    });
+                        this.client
+                            .filterLots(filterData)
+                            .subscribe((res) => {});
+                    }
                 });
             }
         });

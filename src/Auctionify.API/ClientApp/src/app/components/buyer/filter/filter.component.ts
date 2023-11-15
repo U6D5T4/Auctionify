@@ -110,4 +110,13 @@ export class FilterComponent {
             },
         });
     }
+
+    clickClose() {
+        this.dialogRef.close();
+    }
+
+    clickReset() {
+        this.filterForm.reset();
+        this.checkboxValues.reset();
+    }
 }

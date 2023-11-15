@@ -3,7 +3,7 @@
         <div class="filter__row-1">
             <div class="filter__row-1-container row-container">
                 <h2>Filters</h2>
-                <button mat-mini-fab type="button" color="primary">
+                <button mat-mini-fab type="button" color="primary" (click)="clickClose()">
                     <mat-icon>
                         clear
                     </mat-icon>
@@ -75,7 +75,9 @@
         </div>
         <div class="filter__row-3">
             <div class="filter__row-3-container row-container">
-                <button class="clear-button" mat-button type="button">Clear all</button>
+                <button class="clear-button" mat-button type="button" (click)="clickReset()">
+                    <u>Clear all</u>
+                </button>
                 <button class="show-button" mat-flat-button color="primary" type="button" (click)="filterClick()">Show
                     results</button>
             </div>
