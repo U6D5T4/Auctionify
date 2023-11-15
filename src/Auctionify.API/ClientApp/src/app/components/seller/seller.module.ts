@@ -14,6 +14,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { LocationPopUpComponent } from './create-lot/pop-ups/location/location.component';
 import { CurrencyPopUpComponent } from './create-lot/pop-ups/currency/currency.component';
 import { FilesPopUpComponent } from './create-lot/pop-ups/files/files.component';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
     declarations: [
@@ -34,6 +35,7 @@ import { FilesPopUpComponent } from './create-lot/pop-ups/files/files.component'
         MatDatepickerModule,
         MatNativeDateModule,
         MatProgressSpinnerModule,
+        MatSnackBarModule,
     ],
     exports: [CreateLotComponent],
 })

@@ -114,7 +114,7 @@
                             <div #imageElements *ngFor="let item of imagesToUpload;" class="input-buttons">
                                 <button type="button" [id]="'photo-button-remove-'+item.name"
                                     class="photo-button-remove"
-                                    (click)="removeImageFromInput(item.name ?? item.file.name)">
+                                    (click)="removeImageFromInput(item.name ?? item.file!.name)">
                                     <mat-icon>highlight_off</mat-icon>
                                 </button>
                                 <button class="photo-button" type="button" color="primary">
@@ -135,21 +135,29 @@
                     </div>
                     <hr class="color-grey-5">
                     <div class="form__lot-buttons">
-                        <div class="submit-buttons">
-                            <button class="mat-mdc-outlined-button-custom" mat-stroked-button
-                                disabled="{{isLoading || isLoadingDraft}}" color="primary" type="button"
-                                (click)="submitLot(true)">
-                                <mat-spinner *ngIf="isLoadingDraft" diameter="25"></mat-spinner>
-                                <div *ngIf="!isLoadingDraft">Save as draft</div>
-                            </button>
-                            <button mat-flat-button disabled="{{isLoading || isLoadingDraft}}" color="primary"
-                                type="submit" (click)="submitLot(false)">
-                                <mat-spinner *ngIf="isLoading" diameter="25"></mat-spinner>
-                                <div *ngIf="!isLoading">Submit</div>
-                            </button>
+                        <button *ngIf="lotId > 0" type="button" class="delete-button mat-mdc-outlined-button-custom"
+                            mat-stroked-button color="warn" (click)="deleteLot()"
+                            disabled="{{isLoading || isLoadingDraft}}">
+                            <mat-spinner *ngIf="isDeleteLoading" diameter="25" color="warn"></mat-spinner>
+                            <div *ngIf="!isDeleteLoading">Delete lot</div>
+                        </button>
+                        <div class="submit-buttons-container">
+                            <div class="submit-buttons">
+                                <button class="mat-mdc-outlined-button-custom" mat-stroked-button
+                                    disabled="{{isLoading || isLoadingDraft}}" color="primary" type="button"
+                                    (click)="submitLot(true)">
+                                    <mat-spinner *ngIf="isLoadingDraft" diameter="25"></mat-spinner>
+                                    <div *ngIf="!isLoadingDraft">Save as draft</div>
+                                </button>
+                                <button mat-flat-button disabled="{{isLoading || isLoadingDraft}}" color="primary"
+                                    type="submit" (click)="submitLot(false)">
+                                    <mat-spinner *ngIf="isLoading" diameter="25"></mat-spinner>
+                                    <div *ngIf="!isLoading">Submit</div>
+                                </button>
+                            </div>
+                            <p>By clicking “Submit” button I accept <br>
+                                Company’s Terms of Use and Privacy Policy</p>
                         </div>
-                        <p>By clicking “Submit” button I accept <br>
-                            Company’s Terms of Use and Privacy Policy</p>
                     </div>
                 </form>
             </div>
