@@ -14,7 +14,7 @@ const routes: Routes = [
                 (m) => m.SellerModule
             ),
         data: { breadcrumb: { skip: true } },
-        canActivate: [],
+        canActivate: [isSellerGuard],
     },
     {
         path: 'buyer',

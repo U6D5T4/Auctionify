@@ -34,7 +34,7 @@ export class LocationPopUpComponent {
             controls.country.valid &&
             controls.city.valid
         ) {
-            this.dialogRef.close();
+            this.dialogRef.close('true');
         }
     }
 }

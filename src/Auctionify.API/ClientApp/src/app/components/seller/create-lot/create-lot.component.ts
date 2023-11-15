@@ -98,6 +98,10 @@ export class CreateLotComponent implements OnInit {
     lotId: number = 0;
     private regExValue: RegExp = /\/([^\/]+)(?=\/?$)/g;
 
+    filesText: string | null = null;
+    locationText: string | null = null;
+    startingPriceText: string | null = null;
+
     constructor(
         private client: Client,
         private dialog: Dialog,
@@ -113,12 +117,8 @@ export class CreateLotComponent implements OnInit {
         this.route.url.subscribe((params) => {
             const path = params[0].path;
 
-            switch (path) {
-                case this.createStateEndpoint:
-                    break;
-                case this.updateStateEndpoint:
-                    this.updateStateInitialization();
-                    break;
+            if (path == this.updateStateEndpoint) {
+                this.updateStateInitialization();
             }
         });
     }
@@ -137,8 +137,6 @@ export class CreateLotComponent implements OnInit {
             this.client.getOneLotForSeller(lotId).subscribe({
                 next: (result) => {
                     const lotFormData = this.lotForm.controls;
-
-                    console.log(result);
 
                     lotFormData.title.setValue(result.title);
                     lotFormData.description.setValue(result.description);
@@ -169,6 +167,8 @@ export class CreateLotComponent implements OnInit {
                             };
                             this.lotForm.controls.files.value?.push(fileModel);
                         }
+
+                        this.filesText = this.lotForm.value.files?.at(0)?.name!;
                     }
 
                     if (result.photosUrl !== null) {
@@ -187,6 +187,14 @@ export class CreateLotComponent implements OnInit {
                                     subscription.unsubscribe();
                                 });
                         }
+                    }
+
+                    if (this.lotForm.value.city) {
+                        this.locationText = this.lotForm.value.city!;
+                    }
+
+                    if (this.lotForm.value.startingPrice) {
+                        this.startingPriceTextSetter();
                     }
                 },
 
@@ -209,8 +217,6 @@ export class CreateLotComponent implements OnInit {
         this.isLocationValid = true;
         this.isStartingPriceValid = true;
         const controls = this.lotForm.controls;
-
-        console.log(controls);
 
         this.lotForm.markAllAsTouched();
 
@@ -271,7 +277,6 @@ export class CreateLotComponent implements OnInit {
             };
             this.client.updateLot(lotToUpdate).subscribe({
                 next: (res) => {
-                    console.log(res);
                     const dialog = this.openDialog(
                         ['Successfully updated the lot!'],
                         false,
@@ -314,7 +319,6 @@ export class CreateLotComponent implements OnInit {
             errorsToShow.push(errors.toString());
         } else {
             for (let key of errors) {
-                console.log(key);
                 let msg = `${key.PropertyName}: ${key.ErrorMessage}\n`;
                 errorsToShow.push(msg);
             }
@@ -514,7 +518,6 @@ export class CreateLotComponent implements OnInit {
                         const deleteLotSubscriber = this.client
                             .deleteLotFile(this.lotId, imageToDelete.fileUrl!)
                             .subscribe((res) => {
-                                console.log(res);
                                 this.proceedRemoveImage(name);
                                 deleteLotSubscriber.unsubscribe();
                             });
@@ -586,7 +589,17 @@ export class CreateLotComponent implements OnInit {
         });
 
         locationDialogPopup.closed.subscribe((res: any) => {
-            console.log(res);
+            const controls = this.lotForm.controls;
+            if (
+                controls.address.valid &&
+                controls.city.valid &&
+                controls.country.valid
+            ) {
+                this.isLocationValid = true;
+                this.locationText = this.lotForm.value.city!;
+            } else {
+                this.locationText = null;
+            }
         });
     }
 
@@ -599,7 +612,20 @@ export class CreateLotComponent implements OnInit {
         });
 
         locationDialogPopup.closed.subscribe((res) => {
-            console.log(res);
+            const controls = this.lotForm.controls;
+
+            this.startingPriceText = null;
+            if (
+                ((controls.startingPrice.valid || controls.currencyId.valid) &&
+                    controls.startingPrice.value! > 0) ||
+                controls.currencyId.value! !== null
+            ) {
+                this.isStartingPriceValid = true;
+            } else {
+                this.startingPriceText = null;
+            }
+
+            this.startingPriceTextSetter();
         });
     }
 
@@ -611,9 +637,28 @@ export class CreateLotComponent implements OnInit {
             },
         });
 
-        filesDialogPopup.closed.subscribe((res) => {
-            console.log(res);
-        });
+        filesDialogPopup.closed.subscribe((res) => {});
+    }
+
+    startingPriceTextSetter() {
+        const controls = this.lotForm.controls;
+
+        if (controls.startingPrice.value! > 0) {
+            this.startingPriceText = `from ${this.lotForm.value.startingPrice}, `;
+        }
+
+        const currencyId = this.lotForm.value.currencyId;
+        if (currencyId) {
+            const currency = this.currencies.find((x) => x.id == currencyId);
+
+            if (this.startingPriceText == null) {
+                this.startingPriceText = `${currency?.code}`;
+            } else {
+                this.startingPriceText = this.startingPriceText.concat(
+                    `${currency?.code}`
+                );
+            }
+        }
     }
 
     deleteLot() {
@@ -638,7 +683,9 @@ export class CreateLotComponent implements OnInit {
                         .deleteLot(this.lotId)
                         .subscribe({
                             next: (res) => {
-                                this.snackBar.open(res);
+                                this.snackBar.open(res, 'Ok', {
+                                    duration: 10000,
+                                });
                                 this.router.navigate(['/home']);
                                 deleteLotSubscriber.unsubscribe();
                             },
