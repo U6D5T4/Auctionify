@@ -36,9 +36,7 @@ export class AuthorizeService {
   private user: BehaviorSubject<IUser | null> =
     new BehaviorSubject<IUser | null>(null);
 
-    constructor(private client: Client, private httpClient: HttpClient) {
-      //this.initializeAuthorizeService();
-    }
+    constructor(private client: Client, private httpClient: HttpClient) { }
 
   login(email: string, password: string) : Observable<string | boolean> {
     const loginData: LoginViewModel = {

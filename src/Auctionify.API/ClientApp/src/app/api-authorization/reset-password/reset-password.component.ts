@@ -68,7 +68,7 @@ export class ResetPasswordComponent implements OnInit {
       this.resetPasswordForm.controls.confirmPassword.value!)
       .subscribe({
         next: (result) => {
-          this.router.navigate(['/home']);
+          this.router.navigate(['/auth/login']);
         },
         error: (error: ResetPasswordResponse) => {
           this.openDialog(error.errors || ['An error occurred. Please try again.'], true);
