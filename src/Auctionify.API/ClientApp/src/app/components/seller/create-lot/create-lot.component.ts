@@ -117,12 +117,8 @@ export class CreateLotComponent implements OnInit {
         this.route.url.subscribe((params) => {
             const path = params[0].path;
 
-            switch (path) {
-                case this.createStateEndpoint:
-                    break;
-                case this.updateStateEndpoint:
-                    this.updateStateInitialization();
-                    break;
+            if (path == this.updateStateEndpoint) {
+                this.updateStateInitialization();
             }
         });
     }
@@ -687,7 +683,9 @@ export class CreateLotComponent implements OnInit {
                         .deleteLot(this.lotId)
                         .subscribe({
                             next: (res) => {
-                                this.snackBar.open(res);
+                                this.snackBar.open(res, 'Ok', {
+                                    duration: 10000,
+                                });
                                 this.router.navigate(['/home']);
                                 deleteLotSubscriber.unsubscribe();
                             },
