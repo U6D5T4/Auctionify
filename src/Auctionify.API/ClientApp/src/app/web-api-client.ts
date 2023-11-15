@@ -140,6 +140,54 @@ export class Client {
         );
     }
 
+    getAllLotStatuses(): Observable<Status[]> {
+        let url_ = this.baseUrl + '/api/lotstatuses';
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<Status[]> => {
+                let data: Status[] = [];
+
+                if (response.body !== null) {
+                    data = response.body;
+                }
+
+                return of(data);
+            })
+        );
+    }
+
+    getAllLocations(): Observable<AppLocation[]> {
+        let url_ = this.baseUrl + '/api/locations';
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<AppLocation[]> => {
+                let data: AppLocation[] = [];
+
+                if (response.body !== null) {
+                    data = response.body;
+                }
+
+                return of(data);
+            })
+        );
+    }
+
     getAllCurrencies(): Observable<Currency[]> {
         let url_ = this.baseUrl + '/api/currencies';
 
@@ -387,9 +435,18 @@ export interface CreateLotResponse {
     additionalDocuments: File[] | null;
 }
 
+export interface AppLocation {
+    city: string;
+}
+
 export interface Currency {
     id: number;
     code: string;
+}
+
+export interface Status {
+    id: number;
+    name: string;
 }
 
 export interface Category {

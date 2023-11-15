@@ -1,7 +1,7 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Component, EventEmitter, Inject, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { Category, Client } from 'src/app/web-api-client';
+import { AppLocation, Category, Client, Status } from 'src/app/web-api-client';
 
 export interface FilterParameters {
     minimumPrice: FormControl<number | null>;
@@ -21,7 +21,15 @@ export interface FilterParameters {
 export class FilterComponent {
     @Output() filterUpdatedEvent = new EventEmitter<FilterParameters>();
 
+    chekboxValues = new FormGroup({
+        Closed: new FormControl<boolean>(false),
+        Active: new FormControl<boolean>(false),
+        Upcoming: new FormControl<boolean>(false),
+    });
+
     categories: Category[] = [];
+    lotStatuses: Status[] = [];
+    locations: AppLocation[] = [];
 
     filterForm = new FormGroup<FilterParameters>({
         minimumPrice: new FormControl<number | null>(null),
@@ -39,16 +47,32 @@ export class FilterComponent {
         private client: Client
     ) {
         this.populateCategorySelector();
+        this.populateLocations();
+        this.populateLotStatuses();
     }
 
-    filterClick() {
-        console.log(this.filterForm.value);
-    }
+    filterClick() {}
 
     populateCategorySelector() {
         this.client.getAllCategories().subscribe({
             next: (result: Category[]) => {
                 this.categories = result;
+            },
+        });
+    }
+
+    populateLotStatuses() {
+        this.client.getAllLotStatuses().subscribe({
+            next: (result: Status[]) => {
+                this.lotStatuses = result;
+            },
+        });
+    }
+
+    populateLocations() {
+        this.client.getAllLocations().subscribe({
+            next: (result: AppLocation[]) => {
+                this.locations = result;
             },
         });
     }

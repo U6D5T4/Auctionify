@@ -18,6 +18,9 @@
                         <mat-label>Choose a location</mat-label>
                         <mat-select formControlName="location">
                             <mat-option [value]="null">none</mat-option>
+                            <mat-option [value]="item.city" *ngFor="let item of locations">
+                                {{item.city}}
+                            </mat-option>
                         </mat-select>
                     </mat-form-field>
                 </div>
@@ -62,11 +65,11 @@
                             </div>
                         </mat-select>
                     </mat-form-field>
-                    <div class="status-checkboxes">
-                        <mat-checkbox color="primary">Closed</mat-checkbox>
-                        <mat-checkbox color="primary">Active</mat-checkbox>
-                        <mat-checkbox color="primary">Upcoming</mat-checkbox>
-                    </div>
+                    <section class="status-checkboxes" [formGroup]="chekboxValues">
+                        <mat-checkbox formControlName="Closed" color="primary">Closed</mat-checkbox>
+                        <mat-checkbox formControlName="Active" color="primary">Active</mat-checkbox>
+                        <mat-checkbox formControlName="Upcoming" color="primary">Upcoming</mat-checkbox>
+                    </section>
                 </div>
             </div>
         </div>
