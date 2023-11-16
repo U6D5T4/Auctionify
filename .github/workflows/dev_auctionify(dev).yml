@@ -36,6 +36,12 @@ jobs:
         env:
             ASPNETCORE_ENVIRONMENT: dev
 
+      - name: Build Angular App
+        run: |
+          cd src/Auctionify.API/ClientApp
+          npm install
+          ng build --configuration=production
+
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
@@ -44,6 +50,12 @@ jobs:
         with:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
+
+      - name: Upload Angular Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: angular-app
+          path: src/Auctionify.API/ClientApp/dist
   #test:
   #  runs-on: ubuntu-latest
 
@@ -72,6 +84,11 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: .net-app
+
+      - name: Download Angular Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: angular-app
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
