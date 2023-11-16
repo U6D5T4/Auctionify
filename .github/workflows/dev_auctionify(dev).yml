@@ -42,7 +42,7 @@ jobs:
           npm install -g @angular/cli
           npm install
           ng build --configuration=production
-          mv ClientApp/dist/* ${{env.DOTNET_ROOT}}/myapp/wwwroot/
+          mv ClientApp/dist ${{env.DOTNET_ROOT}}/myapp/wwwroot/
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
