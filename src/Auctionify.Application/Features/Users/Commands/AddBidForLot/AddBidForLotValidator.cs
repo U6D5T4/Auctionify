@@ -38,6 +38,32 @@ namespace Auctionify.Application.Features.Users.Commands.AddBidForLot
 					}
 				)
 				.WithMessage("Lot with this Id does not exist");
+
+			RuleFor(x => x.Bid).GreaterThan(0).WithMessage("Bid must be greater than 0");
+
+			RuleFor(x => x)
+				.MustAsync(
+					async (request, cancellationToken) =>
+					{
+						var user = await _userManager.FindByEmailAsync(
+							_currentUserService.UserEmail!
+						);
+						var allUserBidsForLot = await _bidRepository.GetListAsync(
+							predicate: x => x.LotId == request.LotId && x.BuyerId == user!.Id,
+							orderBy: x => x.OrderByDescending(x => x.TimeStamp),
+							cancellationToken: cancellationToken
+						);
+
+						if (allUserBidsForLot != null && allUserBidsForLot.Items.Count > 0)
+						{
+							var recentBid = allUserBidsForLot.Items[0];
+							return request.Bid > recentBid.NewPrice;
+						}
+
+						return true;
+					}
+				)
+				.WithMessage("Bid must be greater than the recent bid");
 		}
 	}
 }
