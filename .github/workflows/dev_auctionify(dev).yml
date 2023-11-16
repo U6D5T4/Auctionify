@@ -42,6 +42,7 @@ jobs:
           npm install -g @angular/cli
           npm install
           ng build --configuration=production
+          mv ClientApp/dist/* ${{env.DOTNET_ROOT}}/myapp/wwwroot/
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
@@ -50,7 +51,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: .net-app
-          path: mv ClientApp/dist/*  ${{env.DOTNET_ROOT}}/myapp
+          path: ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload Angular Artifact
         uses: actions/upload-artifact@v3
