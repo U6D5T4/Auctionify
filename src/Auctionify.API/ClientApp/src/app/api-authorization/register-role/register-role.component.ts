@@ -1,9 +1,10 @@
 import { Component, Injectable } from '@angular/core';
-import { AuthorizeService, UserRole } from '../authorize.service';
-import { Dialog } from '@angular/cdk/dialog';
-import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import { Router } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Dialog } from '@angular/cdk/dialog';
+
+import { AuthorizeService, UserRole } from '../authorize.service';
+import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import { AssignRoleResponse } from 'src/app/web-api-client';
 
 @Injectable({

@@ -27,7 +27,8 @@ namespace Auctionify.Infrastructure.Identity
         private readonly IEmailService _emailService;
         private readonly RoleManager<Role> _roleManager;
 
-        public IdentityService(SignInManager<User> signInManager,
+        public IdentityService(
+            SignInManager<User> signInManager,
             UserManager<User> userManager,
             ILogger<IdentityService> logger,
             IConfiguration configuration,
@@ -386,7 +387,7 @@ namespace Auctionify.Infrastructure.Identity
             }
             else
             {
-                return null;
+                return new User();
             }
         }
     }
