@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -27,7 +26,6 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 		private readonly Mock<IOptions<AuthSettingsOptions>> _authSettingsOptionsMock;
 		private readonly Mock<IOptions<AppOptions>> _appOptionsMock;
 		private readonly Mock<IEmailService> _emailServiceMock;
-		private readonly Mock<IConfiguration> _configurationMock;
 		private readonly Mock<RoleManager<Role>> _roleManagerMock;
 
 		public IdentityServiceUnitTests()
@@ -56,7 +54,13 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 			_authSettingsOptionsMock = new Mock<IOptions<AuthSettingsOptions>>();
 			_appOptionsMock = new Mock<IOptions<AppOptions>>();
 			_emailServiceMock = new Mock<IEmailService>();
-			_roleManagerMock = new Mock<RoleManager<Role>>();
+			_roleManagerMock = new Mock<RoleManager<Role>>(
+				Mock.Of<IRoleStore<Role>>(),
+				null,
+				null,
+				null,
+				null
+				);
 		}
 
 		#endregion
@@ -93,7 +97,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_userManagerMock.Object,
 				_signInManagerMock.Object,
 				_loggerMock.Object,
-                _emailServiceMock.Object,
+				_emailServiceMock.Object,
 				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
 				_appOptionsMock.Object
@@ -134,18 +138,18 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 
 			_authSettingsOptionsMock.Setup(options => options.Value).Returns(authSettingsOptions);
 
-            var sut = new IdentityService(
-                _userManagerMock.Object,
-                _signInManagerMock.Object,
-                _loggerMock.Object,
-                _emailServiceMock.Object,
-                _roleManagerMock.Object,
-                _authSettingsOptionsMock.Object,
-                _appOptionsMock.Object
-            );
+			var sut = new IdentityService(
+				_userManagerMock.Object,
+				_signInManagerMock.Object,
+				_loggerMock.Object,
+				_emailServiceMock.Object,
+				_roleManagerMock.Object,
+				_authSettingsOptionsMock.Object,
+				_appOptionsMock.Object
+			);
 
-            // Act
-            var result = await sut.LoginUserAsync(userModel);
+			// Act
+			var result = await sut.LoginUserAsync(userModel);
 
 			// Assert
 			result.Errors.FirstOrDefault().Should().Be("User is not active");
@@ -180,18 +184,18 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 
 			_authSettingsOptionsMock.Setup(options => options.Value).Returns(authSettingsOptions);
 
-            var sut = new IdentityService(
-                _userManagerMock.Object,
-                _signInManagerMock.Object,
-                _loggerMock.Object,
-                _emailServiceMock.Object,
-                _roleManagerMock.Object,
-                _authSettingsOptionsMock.Object,
-                _appOptionsMock.Object
-            );
+			var sut = new IdentityService(
+				_userManagerMock.Object,
+				_signInManagerMock.Object,
+				_loggerMock.Object,
+				_emailServiceMock.Object,
+				_roleManagerMock.Object,
+				_authSettingsOptionsMock.Object,
+				_appOptionsMock.Object
+			);
 
-            // Act
-            var result = await sut.LoginUserAsync(userModel);
+			// Act
+			var result = await sut.LoginUserAsync(userModel);
 
 			// Assert
 			result.Errors.FirstOrDefault().Should().Be("User is not found");
@@ -226,18 +230,18 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 
 			_authSettingsOptionsMock.Setup(options => options.Value).Returns(authSettingsOptions);
 
-            var sut = new IdentityService(
-                _userManagerMock.Object,
-                _signInManagerMock.Object,
-                _loggerMock.Object,
-                _emailServiceMock.Object,
-                _roleManagerMock.Object,
-                _authSettingsOptionsMock.Object,
-                _appOptionsMock.Object
-            );
+			var sut = new IdentityService(
+				_userManagerMock.Object,
+				_signInManagerMock.Object,
+				_loggerMock.Object,
+				_emailServiceMock.Object,
+				_roleManagerMock.Object,
+				_authSettingsOptionsMock.Object,
+				_appOptionsMock.Object
+			);
 
-            // Act
-            var result = await sut.LoginUserAsync(userModel);
+			// Act
+			var result = await sut.LoginUserAsync(userModel);
 
 			// Assert
 			result.Errors.FirstOrDefault().Should().Be("Wrong password or email");
@@ -252,18 +256,18 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 			// Arrange
 			LoginViewModel? userModel = null;
 
-            var sut = new IdentityService(
-                _userManagerMock.Object,
-                _signInManagerMock.Object,
-                _loggerMock.Object,
-                _emailServiceMock.Object,
-                _roleManagerMock.Object,
-                _authSettingsOptionsMock.Object,
-                _appOptionsMock.Object
-            );
+			var sut = new IdentityService(
+				_userManagerMock.Object,
+				_signInManagerMock.Object,
+				_loggerMock.Object,
+				_emailServiceMock.Object,
+				_roleManagerMock.Object,
+				_authSettingsOptionsMock.Object,
+				_appOptionsMock.Object
+			);
 
-            // Act
-            var result = await sut.LoginUserAsync(userModel!);
+			// Act
+			var result = await sut.LoginUserAsync(userModel!);
 
 			// Assert
 			result.Errors.FirstOrDefault().Should().Be("User data is emtpy");
@@ -280,18 +284,18 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				.Setup(m => m.FindByEmailAsync(It.IsAny<string>()))
 				.ReturnsAsync((User?)null);
 
-            var sut = new IdentityService(
-                _userManagerMock.Object,
-                _signInManagerMock.Object,
-                _loggerMock.Object,
-                _emailServiceMock.Object,
-                _roleManagerMock.Object,
-                _authSettingsOptionsMock.Object,
-                _appOptionsMock.Object
-            );
+			var sut = new IdentityService(
+				_userManagerMock.Object,
+				_signInManagerMock.Object,
+				_loggerMock.Object,
+				_emailServiceMock.Object,
+				_roleManagerMock.Object,
+				_authSettingsOptionsMock.Object,
+				_appOptionsMock.Object
+			);
 
-            // Act
-            var result = await sut.ForgetPasswordAsync(It.IsAny<string>());
+			// Act
+			var result = await sut.ForgetPasswordAsync(It.IsAny<string>());
 
 			// Assert
 			result.IsSuccess.Should().BeFalse();
@@ -325,18 +329,18 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				.Setup(options => options.Value)
 				.Returns(new AppOptions { Url = "https://testlocalhost:1234" });
 
-            var sut = new IdentityService(
-                _userManagerMock.Object,
-                _signInManagerMock.Object,
-                _loggerMock.Object,
-                _emailServiceMock.Object,
-                _roleManagerMock.Object,
-                _authSettingsOptionsMock.Object,
-                _appOptionsMock.Object
-            );
+			var sut = new IdentityService(
+				_userManagerMock.Object,
+				_signInManagerMock.Object,
+				_loggerMock.Object,
+				_emailServiceMock.Object,
+				_roleManagerMock.Object,
+				_authSettingsOptionsMock.Object,
+				_appOptionsMock.Object
+			);
 
-            // Act
-            var result = await sut.ForgetPasswordAsync(email);
+			// Act
+			var result = await sut.ForgetPasswordAsync(email);
 
 			// Assert
 			result.IsSuccess.Should().BeTrue();
@@ -374,18 +378,18 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				.Setup(m => m.FindByEmailAsync(resetPasswordViewModels[0].Email))
 				.ReturnsAsync((User?)null);
 
-            var sut = new IdentityService(
-                _userManagerMock.Object,
-                _signInManagerMock.Object,
-                _loggerMock.Object,
-                _emailServiceMock.Object,
-                _roleManagerMock.Object,
-                _authSettingsOptionsMock.Object,
-                _appOptionsMock.Object
-            );
+			var sut = new IdentityService(
+				_userManagerMock.Object,
+				_signInManagerMock.Object,
+				_loggerMock.Object,
+				_emailServiceMock.Object,
+				_roleManagerMock.Object,
+				_authSettingsOptionsMock.Object,
+				_appOptionsMock.Object
+			);
 
-            // Act
-            var result = await sut.ResetPasswordAsync(resetPasswordViewModels[0]);
+			// Act
+			var result = await sut.ResetPasswordAsync(resetPasswordViewModels[0]);
 
 			// Assert
 			result.IsSuccess.Should().BeFalse();
@@ -406,18 +410,18 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				.Setup(m => m.FindByEmailAsync(resetPasswordViewModels[1].Email))
 				.ReturnsAsync(new User());
 
-            var sut = new IdentityService(
-                _userManagerMock.Object,
-                _signInManagerMock.Object,
-                _loggerMock.Object,
-                _emailServiceMock.Object,
-                _roleManagerMock.Object,
-                _authSettingsOptionsMock.Object,
-                _appOptionsMock.Object
-            );
+			var sut = new IdentityService(
+				_userManagerMock.Object,
+				_signInManagerMock.Object,
+				_loggerMock.Object,
+				_emailServiceMock.Object,
+				_roleManagerMock.Object,
+				_authSettingsOptionsMock.Object,
+				_appOptionsMock.Object
+			);
 
-            // Act
-            var result = await sut.ResetPasswordAsync(resetPasswordViewModels[1]);
+			// Act
+			var result = await sut.ResetPasswordAsync(resetPasswordViewModels[1]);
 
 			// Assert
 			result.IsSuccess.Should().BeFalse();
@@ -448,18 +452,18 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				)
 				.ReturnsAsync(IdentityResult.Success);
 
-            var sut = new IdentityService(
-                _userManagerMock.Object,
-                _signInManagerMock.Object,
-                _loggerMock.Object,
-                _emailServiceMock.Object,
-                _roleManagerMock.Object,
-                _authSettingsOptionsMock.Object,
-                _appOptionsMock.Object
-            );
+			var sut = new IdentityService(
+				_userManagerMock.Object,
+				_signInManagerMock.Object,
+				_loggerMock.Object,
+				_emailServiceMock.Object,
+				_roleManagerMock.Object,
+				_authSettingsOptionsMock.Object,
+				_appOptionsMock.Object
+			);
 
-            // Act
-            var result = await sut.ResetPasswordAsync(resetPasswordViewModels[0]);
+			// Act
+			var result = await sut.ResetPasswordAsync(resetPasswordViewModels[0]);
 
 			// Assert
 			result.IsSuccess.Should().BeTrue();
@@ -493,18 +497,18 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 					IdentityResult.Failed(new IdentityError { Description = "testerror" })
 				);
 
-            var sut = new IdentityService(
-                _userManagerMock.Object,
-                _signInManagerMock.Object,
-                _loggerMock.Object,
-                _emailServiceMock.Object,
-                _roleManagerMock.Object,
-                _authSettingsOptionsMock.Object,
-                _appOptionsMock.Object
-            );
+			var sut = new IdentityService(
+				_userManagerMock.Object,
+				_signInManagerMock.Object,
+				_loggerMock.Object,
+				_emailServiceMock.Object,
+				_roleManagerMock.Object,
+				_authSettingsOptionsMock.Object,
+				_appOptionsMock.Object
+			);
 
-            // Act
-            var result = await sut.ResetPasswordAsync(resetPasswordViewModels[0]);
+			// Act
+			var result = await sut.ResetPasswordAsync(resetPasswordViewModels[0]);
 
 			// Assert
 			result.IsSuccess.Should().BeFalse();
@@ -518,18 +522,18 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 			// Arrange
 			RegisterViewModel? registerModel = null;
 
-            var sut = new IdentityService(
-                _userManagerMock.Object,
-                _signInManagerMock.Object,
-                _loggerMock.Object,
-                _emailServiceMock.Object,
-                _roleManagerMock.Object,
-                _authSettingsOptionsMock.Object,
-                _appOptionsMock.Object
-            );
+			var sut = new IdentityService(
+				_userManagerMock.Object,
+				_signInManagerMock.Object,
+				_loggerMock.Object,
+				_emailServiceMock.Object,
+				_roleManagerMock.Object,
+				_authSettingsOptionsMock.Object,
+				_appOptionsMock.Object
+			);
 
-            // Act
-            Func<Task> act = async () => await sut.RegisterUserAsync(registerModel!);
+			// Act
+			Func<Task> act = async () => await sut.RegisterUserAsync(registerModel!);
 
 			// Assert
 			await act.Should()
@@ -550,18 +554,18 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 			// Arrange
 			var registerModel = registerViewModels[1];
 
-            var sut = new IdentityService(
-                _userManagerMock.Object,
-                _signInManagerMock.Object,
-                _loggerMock.Object,
-                _emailServiceMock.Object,
-                _roleManagerMock.Object,
-                _authSettingsOptionsMock.Object,
-                _appOptionsMock.Object
-            );
+			var sut = new IdentityService(
+				_userManagerMock.Object,
+				_signInManagerMock.Object,
+				_loggerMock.Object,
+				_emailServiceMock.Object,
+				_roleManagerMock.Object,
+				_authSettingsOptionsMock.Object,
+				_appOptionsMock.Object
+			);
 
-            // Act
-            var result = await sut.RegisterUserAsync(registerModel);
+			// Act
+			var result = await sut.RegisterUserAsync(registerModel);
 
 			// Assert
 			result.IsSuccess.Should().BeFalse();
@@ -602,18 +606,18 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				)
 				.Returns(Task.CompletedTask);
 
-            var sut = new IdentityService(
-                _userManagerMock.Object,
-                _signInManagerMock.Object,
-                _loggerMock.Object,
-                _emailServiceMock.Object,
-                _roleManagerMock.Object,
-                _authSettingsOptionsMock.Object,
-                _appOptionsMock.Object
-            );
+			var sut = new IdentityService(
+				_userManagerMock.Object,
+				_signInManagerMock.Object,
+				_loggerMock.Object,
+				_emailServiceMock.Object,
+				_roleManagerMock.Object,
+				_authSettingsOptionsMock.Object,
+				_appOptionsMock.Object
+			);
 
-            // Act
-            var result = await sut.RegisterUserAsync(registerModel);
+			// Act
+			var result = await sut.RegisterUserAsync(registerModel);
 
 			// Assert
 			result.IsSuccess.Should().BeTrue();
@@ -650,18 +654,18 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 					IdentityResult.Failed(new IdentityError { Description = "testerror" })
 				);
 
-            var sut = new IdentityService(
-                _userManagerMock.Object,
-                _signInManagerMock.Object,
-                _loggerMock.Object,
-                _emailServiceMock.Object,
-                _roleManagerMock.Object,
-                _authSettingsOptionsMock.Object,
-                _appOptionsMock.Object
-            );
+			var sut = new IdentityService(
+				_userManagerMock.Object,
+				_signInManagerMock.Object,
+				_loggerMock.Object,
+				_emailServiceMock.Object,
+				_roleManagerMock.Object,
+				_authSettingsOptionsMock.Object,
+				_appOptionsMock.Object
+			);
 
-            // Act
-            var result = await sut.RegisterUserAsync(registerModel);
+			// Act
+			var result = await sut.RegisterUserAsync(registerModel);
 
 			// Assert
 			result.IsSuccess.Should().BeFalse();
@@ -682,18 +686,18 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 			// Arrange
 			_userManagerMock.Setup(m => m.FindByIdAsync(userId)).ReturnsAsync((User?)null);
 
-            var sut = new IdentityService(
-                _userManagerMock.Object,
-                _signInManagerMock.Object,
-                _loggerMock.Object,
-                _emailServiceMock.Object,
-                _roleManagerMock.Object,
-                _authSettingsOptionsMock.Object,
-                _appOptionsMock.Object
-            );
+			var sut = new IdentityService(
+				_userManagerMock.Object,
+				_signInManagerMock.Object,
+				_loggerMock.Object,
+				_emailServiceMock.Object,
+				_roleManagerMock.Object,
+				_authSettingsOptionsMock.Object,
+				_appOptionsMock.Object
+			);
 
-            // Act
-            var result = await sut.ConfirmUserEmailAsync(userId, token);
+			// Act
+			var result = await sut.ConfirmUserEmailAsync(userId, token);
 
 			// Assert
 			result.IsSuccess.Should().BeFalse();
@@ -716,18 +720,18 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				.Setup(m => m.ConfirmEmailAsync(It.IsAny<User>(), It.IsAny<string>()))
 				.ReturnsAsync(IdentityResult.Success);
 
-            var sut = new IdentityService(
-                _userManagerMock.Object,
-                _signInManagerMock.Object,
-                _loggerMock.Object,
-                _emailServiceMock.Object,
-                _roleManagerMock.Object,
-                _authSettingsOptionsMock.Object,
-                _appOptionsMock.Object
-            );
+			var sut = new IdentityService(
+				_userManagerMock.Object,
+				_signInManagerMock.Object,
+				_loggerMock.Object,
+				_emailServiceMock.Object,
+				_roleManagerMock.Object,
+				_authSettingsOptionsMock.Object,
+				_appOptionsMock.Object
+			);
 
-            // Act
-            var result = await sut.ConfirmUserEmailAsync(userId, token);
+			// Act
+			var result = await sut.ConfirmUserEmailAsync(userId, token);
 
 			// Assert
 			result.IsSuccess.Should().BeTrue();
@@ -752,18 +756,18 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 					IdentityResult.Failed(new IdentityError { Description = "testerror" })
 				);
 
-            var sut = new IdentityService(
-                _userManagerMock.Object,
-                _signInManagerMock.Object,
-                _loggerMock.Object,
-                _emailServiceMock.Object,
-                _roleManagerMock.Object,
-                _authSettingsOptionsMock.Object,
-                _appOptionsMock.Object
-            );
+			var sut = new IdentityService(
+				_userManagerMock.Object,
+				_signInManagerMock.Object,
+				_loggerMock.Object,
+				_emailServiceMock.Object,
+				_roleManagerMock.Object,
+				_authSettingsOptionsMock.Object,
+				_appOptionsMock.Object
+			);
 
-            // Act
-            var result = await sut.ConfirmUserEmailAsync(userId, token);
+			// Act
+			var result = await sut.ConfirmUserEmailAsync(userId, token);
 
 			// Assert
 			result.IsSuccess.Should().BeFalse();
@@ -789,18 +793,18 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				.ReturnsAsync(new List<string> { "User" });
 			_authSettingsOptionsMock.Setup(options => options.Value).Returns(authSettingsOptions);
 
-            var sut = new IdentityService(
-                _userManagerMock.Object,
-                _signInManagerMock.Object,
-                _loggerMock.Object,
-                _emailServiceMock.Object,
-                _roleManagerMock.Object,
-                _authSettingsOptionsMock.Object,
-                _appOptionsMock.Object
-            );
+			var sut = new IdentityService(
+				_userManagerMock.Object,
+				_signInManagerMock.Object,
+				_loggerMock.Object,
+				_emailServiceMock.Object,
+				_roleManagerMock.Object,
+				_authSettingsOptionsMock.Object,
+				_appOptionsMock.Object
+			);
 
-            // Act
-            var result = await sut.LoginUserWithGoogleAsync(payload);
+			// Act
+			var result = await sut.LoginUserWithGoogleAsync(payload);
 
 			// Assert
 			result.Result.Should().NotBeNull();
@@ -823,18 +827,18 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 			_userManagerMock.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(new List<string>());
 			_authSettingsOptionsMock.Setup(options => options.Value).Returns(authSettingsOptions);
 
-            var sut = new IdentityService(
-                _userManagerMock.Object,
-                _signInManagerMock.Object,
-                _loggerMock.Object,
-                _emailServiceMock.Object,
-                _roleManagerMock.Object,
-                _authSettingsOptionsMock.Object,
-                _appOptionsMock.Object
-            );
+			var sut = new IdentityService(
+				_userManagerMock.Object,
+				_signInManagerMock.Object,
+				_loggerMock.Object,
+				_emailServiceMock.Object,
+				_roleManagerMock.Object,
+				_authSettingsOptionsMock.Object,
+				_appOptionsMock.Object
+			);
 
-            // Act
-            var result = await sut.LoginUserWithGoogleAsync(payload);
+			// Act
+			var result = await sut.LoginUserWithGoogleAsync(payload);
 
 			// Assert
 			result.Result.Should().NotBeNull();
@@ -862,18 +866,18 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 					IdentityResult.Failed(new IdentityError { Description = "testerror" })
 				);
 
-            var sut = new IdentityService(
-                _userManagerMock.Object,
-                _signInManagerMock.Object,
-                _loggerMock.Object,
-                _emailServiceMock.Object,
-                _roleManagerMock.Object,
-                _authSettingsOptionsMock.Object,
-                _appOptionsMock.Object
-            );
+			var sut = new IdentityService(
+				_userManagerMock.Object,
+				_signInManagerMock.Object,
+				_loggerMock.Object,
+				_emailServiceMock.Object,
+				_roleManagerMock.Object,
+				_authSettingsOptionsMock.Object,
+				_appOptionsMock.Object
+			);
 
-            // Act
-            var result = await sut.LoginUserWithGoogleAsync(payload);
+			// Act
+			var result = await sut.LoginUserWithGoogleAsync(payload);
 
 			// Assert
 			result.IsSuccess.Should().BeFalse();
