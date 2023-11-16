@@ -33,8 +33,8 @@ namespace Auctionify.Infrastructure.Identity
         private readonly IConfiguration _configuration;
 
         public IdentityService(
-            SignInManager<User> signInManager,
             UserManager<User> userManager,
+            SignInManager<User> signInManager,
             ILogger<IdentityService> logger,
             IConfiguration configuration,
             IEmailService emailService,
@@ -45,6 +45,7 @@ namespace Auctionify.Infrastructure.Identity
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _configuration = configuration;
             _logger = logger;
             _emailService = emailService;
             _roleManager = roleManager;
