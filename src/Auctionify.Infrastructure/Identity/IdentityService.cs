@@ -36,7 +36,6 @@ namespace Auctionify.Infrastructure.Identity
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             ILogger<IdentityService> logger,
-            IConfiguration configuration,
             IEmailService emailService,
             RoleManager<Role> roleManager,
             IOptions<AuthSettingsOptions> authSettingsOptions,
@@ -45,7 +44,6 @@ namespace Auctionify.Infrastructure.Identity
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _configuration = configuration;
             _logger = logger;
             _emailService = emailService;
             _roleManager = roleManager;
@@ -375,15 +373,15 @@ namespace Auctionify.Infrastructure.Identity
         private async Task<User> DecodeTokenAndGetUser(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSettings:Key"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authSettingsOptions.Key));
             var validationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = key,
                 ValidateIssuer = true,
-                ValidIssuer = _configuration["AuthSettings:Issuer"],
+                ValidIssuer = _authSettingsOptions.Issuer,
                 ValidateAudience = true,
-                ValidAudience = _configuration["AuthSettings:Audience"],
+                ValidAudience = _authSettingsOptions.Audience,
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.Zero
             };
