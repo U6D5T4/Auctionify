@@ -50,13 +50,13 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: mv ClientApp/dist/*  ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload Angular Artifact
         uses: actions/upload-artifact@v3
         with:
           name: angular-app
-          path: src/Auctionify.API/ClientApp/dist
+          path: ${{env.DOTNET_ROOT}}/myapp/wwwroot/
 
   test:
     runs-on: ubuntu-latest
