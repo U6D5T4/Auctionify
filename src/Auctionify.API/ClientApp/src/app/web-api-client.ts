@@ -15,6 +15,7 @@ import {
     HttpClient,
     HttpEvent,
     HttpHeaders,
+    HttpParams,
     HttpResponse,
     HttpResponseBase,
 } from '@angular/common/http';
@@ -313,6 +314,36 @@ export class Client {
             })
         );
     }
+
+    searchLotsByName(name: string): Observable<SearchLotResponse[]> {
+        let url_ = this.baseUrl + `/api/lots/names/${name}`;
+
+        let params = new HttpParams().set('pageIndex', 0).set('pageSize', 5);
+
+        return this.http.get(url_, { params }).pipe(
+            mergeMap((response: any): Observable<SearchLotResponse[]> => {
+                if (response !== null) {
+                    let data = response.items as SearchLotResponse[];
+                    return of(data);
+                } else return throwError(() => new Error('data is empty!'));
+            })
+        );
+    }
+
+    searchLotsByLocation(locatonName: string): Observable<SearchLotResponse[]> {
+        let url_ = this.baseUrl + `/api/lots/locations/${locatonName}`;
+
+        let params = new HttpParams().set('pageIndex', 0).set('pageSize', 5);
+
+        return this.http.get(url_, { params }).pipe(
+            mergeMap((response: any): Observable<SearchLotResponse[]> => {
+                if (response !== null) {
+                    let data = response.items as SearchLotResponse[];
+                    return of(data);
+                } else return throwError(() => new Error('data is empty!'));
+            })
+        );
+    }
 }
 
 export interface CategoryDto {
@@ -353,6 +384,25 @@ export interface UserDto {
     lastName: string;
     phoneNumber: string;
     email: string;
+}
+
+export interface SearchLotResponse {
+    id: number;
+    title: string;
+    description: string;
+    startingPrice: number | null;
+    startDate: Date | null;
+    endDate: Date | null;
+    photosUrl: string[] | null;
+    additionalDocumentsUrl: string[] | null;
+    category: CategoryDto;
+    lotStatus: LotStatusDto;
+    location: LocationDto;
+    currency: CurrencyDto;
+    bids: BidDto[];
+    mainPhotoUrl: string;
+    seller: UserDto;
+    isInWatchList: boolean;
 }
 
 export interface SellerGetLotResponse {
