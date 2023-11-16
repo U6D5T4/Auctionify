@@ -42,6 +42,7 @@ jobs:
           npm install -g @angular/cli
           npm install
           ng build --configuration=production
+          mv ClientApp/dist/* ${{env.DOTNET_ROOT}}/myapp/wwwroot/
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
@@ -56,7 +57,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: angular-app
-          path: src/Auctionify.API/ClientApp/dist
+          path: ${{env.DOTNET_ROOT}}/myapp/wwwroot/
 
   test:
     runs-on: ubuntu-latest
