@@ -109,7 +109,6 @@ namespace Auctionify.API.Controllers
 
             return Ok(result);
         }
-    }
 
 		[HttpPost("login-with-google")]
 		public async Task<IActionResult> LoginWithGoogle([FromBody] string credential)
