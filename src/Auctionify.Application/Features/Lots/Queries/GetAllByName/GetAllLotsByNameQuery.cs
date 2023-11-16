@@ -30,7 +30,12 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAllByName
 		private readonly string namePropertyField = "Title";
 		private readonly string operatorPropertyField = "contains";
 		private readonly List<string> validStatuses =
-			new() { AuctionStatus.Active.ToString(), AuctionStatus.Upcoming.ToString(), };
+			new()
+			{
+				AuctionStatus.Active.ToString(),
+				AuctionStatus.Upcoming.ToString(),
+				AuctionStatus.Archive.ToString()
+			};
 
 		public GetAllLotsByNameQueryHandler(
 			ILotRepository lotRepository,

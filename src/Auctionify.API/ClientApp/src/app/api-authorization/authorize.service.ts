@@ -36,7 +36,7 @@ export class AuthorizeService {
   private user: BehaviorSubject<IUser | null> =
     new BehaviorSubject<IUser | null>(null);
 
-  constructor(private client: Client) {
+  constructor(private client: Client, private httpClient: HttpClient) {
     this.initializeAuthorizeService();
   }
 
@@ -68,20 +68,8 @@ export class AuthorizeService {
     return this.client
       .login(loginData)
       .pipe(map((response): boolean => {
-        if (response.result === undefined) throw new Error("user not found");
-          let newUser: IUser = {
-            userToken: response.result.accessToken,
-            role: response.result.role,
-            expireDate: response.result.expireDate,
-          }
-
-          localStorage.setItem(this.tokenString, response.result.accessToken);
-          localStorage.setItem(this.expireString, newUser.expireDate);
-          localStorage.setItem(this.roleString, newUser.role)
-
-          this.user.next(newUser);
-
-          return true;
+        this.processLoginResponse(response);
+        return true;
       }))
       .pipe(catchError((err: HttpErrorResponse): Observable<LoginResponse>  => {
         return throwError(() => err.error);
@@ -101,7 +89,37 @@ export class AuthorizeService {
     }))
   }
 
-  register(email: string, password: string, confirmPassword: string ) : Observable<RegisterResponse | boolean > {
+  private processLoginResponse(response: LoginResponse) {
+    if (response.result === undefined) throw new Error("user not found");
+    let newUser: IUser = {
+      userToken: response.result.accessToken,
+      role: response.result.role,
+      expireDate: response.result.expireDate,
+    }
+
+    localStorage.setItem(this.tokenString, response.result.accessToken);
+    localStorage.setItem(this.expireString, newUser.expireDate);
+    localStorage.setItem(this.roleString, newUser.role);
+
+    this.user.next(newUser);
+  }
+
+  loginWithGoogle(credentials: string): Observable<any> {
+    return this.client.loginWithGoogle(credentials)
+    .pipe(map((response): boolean => {
+      this.processLoginResponse(response);
+      return true;
+    }))
+    .pipe(catchError((err: HttpErrorResponse): Observable<LoginResponse>  => {
+      return throwError(() => err.error);
+    }));
+  }
+
+  register(
+    email: string,
+    password: string,
+    confirmPassword: string
+  ) : Observable<RegisterResponse | undefined> {
     const registerData: RegisterViewModel = {
       email,
       password,
