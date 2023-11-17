@@ -1,0 +1,86 @@
+<div class="filter-component">
+    <form class="filter__container" [formGroup]="filterForm">
+        <div class="filter__row-1">
+            <div class="filter__row-1-container row-container">
+                <h2>Filters</h2>
+                <button mat-mini-fab type="button" color="primary" (click)="clickClose()">
+                    <mat-icon>
+                        clear
+                    </mat-icon>
+                </button>
+            </div>
+        </div>
+        <div class="filter__row-2">
+            <div class="row-container filter__row-2-container">
+                <div class="filters-location">
+                    <h3>Location</h3>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Choose a location</mat-label>
+                        <mat-select formControlName="location">
+                            <mat-option [value]="null">none</mat-option>
+                            <mat-option [value]="item.city" *ngFor="let item of locations">
+                                {{item.city}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <hr class="color-grey-5">
+                <div class="filters-price-range">
+                    <h3>Price range</h3>
+                    <div class="price-inputs-container">
+                        <div class="price-inputs">
+                            <mat-form-field appearance="outline">
+                                <mat-label>from 1</mat-label>
+                                <input type="number" [value]="filterForm.value.minimumPrice"
+                                    formControlName="minimumPrice" matInput>
+                            </mat-form-field>
+                            <mat-form-field appearance="outline">
+                                <mat-label>to 9999.99</mat-label>
+                                <input type="number" [value]="filterForm.value.maximumPrice"
+                                    formControlName="maximumPrice" matInput>
+                            </mat-form-field>
+                        </div>
+                        <mat-slider min="1" max="9999.99">
+                            <input [value]="filterForm.value.minimumPrice" formControlName="minimumPrice" value="300"
+                                matSliderStartThumb>
+                            <input [value]="filterForm.value.maximumPrice" formControlName="maximumPrice" value="400"
+                                matSliderEndThumb>
+                        </mat-slider>
+                    </div>
+                </div>
+                <hr class="color-grey-5">
+                <div class="filters-category-status">
+                    <h3>Category & Status</h3>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Item category</mat-label>
+                        <mat-select formControlName="categoryId">
+                            <mat-option [value]="null">none</mat-option>
+                            <div class="sel" *ngFor="let item of categories">
+                                <mat-option [value]="item.id">
+                                    {{item.name}}
+                                </mat-option>
+                                <mat-option *ngFor="let itemChild of item.children" [value]="itemChild.id">
+                                    -- {{itemChild.name}}
+                                </mat-option>
+                            </div>
+                        </mat-select>
+                    </mat-form-field>
+                    <section class="status-checkboxes" [formGroup]="checkboxValues">
+                        <mat-checkbox formControlName="Closed" color="primary">Closed</mat-checkbox>
+                        <mat-checkbox formControlName="Active" color="primary">Active</mat-checkbox>
+                        <mat-checkbox formControlName="Upcoming" color="primary">Upcoming</mat-checkbox>
+                    </section>
+                </div>
+            </div>
+        </div>
+        <div class="filter__row-3">
+            <div class="filter__row-3-container row-container">
+                <button class="clear-button" mat-button type="button" (click)="clickReset()">
+                    <u>Clear all</u>
+                </button>
+                <button class="show-button" mat-flat-button color="primary" type="button" (click)="filterClick()">Show
+                    results</button>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,11 +1,11 @@
 .main {
-    height: 500px;
     display: flex;
     margin: 0 auto;
     justify-content: center;
     border: 1px, 0px, 0px, 0px;
     flex-direction: column;
     width: 1520px;
+    padding: 80px 40px;
 }
 
 .container {
@@ -63,7 +63,13 @@
 hr {
     height: 1px;
     background-color: #e0e0e0;
-    border: none;
+}
+
+.container-bott {
+    padding-top: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .left-bott ul {

@@ -8,85 +8,508 @@
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 
-import { mergeMap, catchError  } from 'rxjs/operators';
+import { mergeMap, catchError } from 'rxjs/operators';
 import { Observable, throwError, of } from 'rxjs';
 import { Injectable, Inject, Optional, InjectionToken } from '@angular/core';
-import { HttpClient, HttpEvent, HttpHeaders, HttpResponse, HttpResponseBase } from '@angular/common/http';
+import {
+    HttpClient,
+    HttpEvent,
+    HttpHeaders,
+    HttpParams,
+    HttpResponse,
+    HttpResponseBase,
+} from '@angular/common/http';
 import { UserRole } from './api-authorization/authorize.service';
+import { CreateLotModel, UpdateLotModel } from './models/lots/lot-models';
+import { FilterLot } from './models/lots/filter';
 
 export const API_BASE_URL = new InjectionToken('API_BASE_URL');
 
 @Injectable({
-    providedIn: 'root'
+    providedIn: 'root',
 })
 export class Client {
     private http: HttpClient;
     private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined =
+        undefined;
 
-    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+    constructor(
+        @Inject(HttpClient) http: HttpClient,
+        @Optional() @Inject(API_BASE_URL) baseUrl?: string
+    ) {
         this.http = http;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : '';
     }
 
-    login(body: LoginViewModel | undefined) : Observable<LoginResponse> {
-        let url_ = this.baseUrl + "/api/auth/login";
+    login(body: LoginViewModel | undefined): Observable<LoginResponse> {
+        let url_ = this.baseUrl + '/api/auth/login';
 
         const content_ = JSON.stringify(body);
 
-        let options_ : Object = {
+        let options_: Object = {
             body: content_,
-            observe: "response",
+            observe: 'response',
             headers: new HttpHeaders({
-                "Content-Type": "application/json",
-                "Accept": "text/json"
-            })
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
         };
 
-        return this.http.request("post", url_, options_).pipe(mergeMap((response: any) : Observable<LoginResponse> => {
-            let data: LoginResponse = {};
+        return this.http
+            .request('post', url_, options_)
+            .pipe(
+                mergeMap((response: any): Observable<LoginResponse> => {
+                    let data: LoginResponse = {};
 
-            if (response.body !== null) {
-                data = response.body
-            }
+                    if (response.body !== null) {
+                        data = response.body;
+                    }
 
-            return of(data);
-        })).pipe(catchError((error) => {
-            return throwError(() => error);
-        }));
+                    return of(data);
+                })
+            )
+            .pipe(
+                catchError((error) => {
+                    return throwError(() => error);
+                })
+            );
     }
 
     loginWithGoogle(credentials: string): Observable<any> {
-      const header = new HttpHeaders().set('Content-type', 'application/json');
-      let url_ = this.baseUrl + "api/auth/login-with-google";
+        const header = new HttpHeaders().set(
+            'Content-type',
+            'application/json'
+        );
+        let url_ = this.baseUrl + 'api/auth/login-with-google';
 
-      return this.http.post(url_, JSON.stringify(credentials), { headers: header, withCredentials: true });
+        return this.http.post(url_, JSON.stringify(credentials), {
+            headers: header,
+            withCredentials: true,
+        });
     }
 
-    register(body: RegisterViewModel | undefined) : Observable<RegisterResponse> {
-        let url_ = this.baseUrl + "/api/auth/register";
+    register(
+        body: RegisterViewModel | undefined
+    ): Observable<RegisterResponse> {
+        let url_ = this.baseUrl + '/api/auth/register';
 
         const content_ = JSON.stringify(body);
 
-        let options_ : any = {
+        let options_: any = {
             body: content_,
-            observe: "response",
+            observe: 'response',
             headers: new HttpHeaders({
-                "Content-Type": "application/json",
-                "Accept": "text/json"
-            })
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
         };
 
-        return this.http.request("post", url_, options_).pipe(mergeMap((response: any) : Observable<RegisterResponse> => {
-            let data: RegisterResponse = {};
+        return this.http.request('post', url_, options_).pipe(
+            mergeMap((response: any): Observable<RegisterResponse> => {
+                let data: RegisterResponse = {};
 
-            if (response.body !== null) {
-                data = response.body
-            }
+                if (response.body !== null) {
+                    data = response.body;
+                }
 
-            return of(data);
-        }));
+                return of(data);
+            })
+        );
     }
+
+    getAllCategories(): Observable<Category[]> {
+        let url_ = this.baseUrl + '/api/categories';
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<Category[]> => {
+                let data: Category[] = [];
+
+                if (response.body !== null) {
+                    data = response.body;
+                }
+
+                return of(data);
+            })
+        );
+    }
+
+    getAllLotStatuses(): Observable<Status[]> {
+        let url_ = this.baseUrl + '/api/lotstatuses';
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<Status[]> => {
+                let data: Status[] = [];
+
+                if (response.body !== null) {
+                    data = response.body;
+                }
+
+                return of(data);
+            })
+        );
+    }
+
+    getAllLocations(): Observable<AppLocation[]> {
+        let url_ = this.baseUrl + '/api/locations';
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<AppLocation[]> => {
+                let data: AppLocation[] = [];
+
+                if (response.body !== null) {
+                    data = response.body;
+                }
+
+                return of(data);
+            })
+        );
+    }
+
+    getAllCurrencies(): Observable<Currency[]> {
+        let url_ = this.baseUrl + '/api/currencies';
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<Currency[]> => {
+                let data: Currency[] = [];
+
+                if (response.body !== null) {
+                    data = response.body;
+                }
+
+                return of(data);
+            })
+        );
+    }
+
+    createLot(body: CreateLotModel): Observable<any> {
+        let url_ = this.baseUrl + '/api/lots';
+
+        let formData = new FormData();
+
+        formData.append('title', body.title);
+        formData.append('description', body.description);
+        formData.append('city', body.city);
+        formData.append('address', body.address);
+        formData.append('country', body.country);
+        formData.append('startDate', new Date(body.startDate!).toISOString());
+        formData.append('endDate', new Date(body.endDate!).toISOString());
+        formData.append('startingPrice', body.startingPrice?.toString() ?? '');
+        formData.append('categoryId', body.categoryId?.toString() ?? '');
+        formData.append('currencyId', body.currencyId?.toString() ?? '');
+        formData.append('isDraft', body.isDraft?.toString()!);
+
+        if (body.photos !== null) {
+            for (const photo of body.photos) {
+                formData.append('photos', photo);
+            }
+        }
+
+        if (body.additionalDocuments !== null) {
+            for (const file of body.additionalDocuments) {
+                formData.append('additionalDocuments', file);
+            }
+        }
+
+        let options_: any = {
+            body: formData,
+        };
+
+        return this.http.request('post', url_, options_).pipe(
+            catchError((error) => {
+                return throwError(() => error.error);
+            })
+        );
+    }
+
+    updateLot(body: UpdateLotModel): Observable<any> {
+        let url_ = this.baseUrl + '/api/lots';
+
+        let formData = new FormData();
+
+        formData.append('id', body.id.toString());
+        formData.append('title', body.title);
+        formData.append('description', body.description);
+        formData.append('city', body.city);
+        formData.append('address', body.address);
+        formData.append('country', body.country);
+        formData.append('startDate', new Date(body.startDate!).toISOString());
+        formData.append('endDate', new Date(body.endDate!).toISOString());
+        formData.append('startingPrice', body.startingPrice?.toString() ?? '');
+        formData.append('categoryId', body.categoryId?.toString() ?? '');
+        formData.append('currencyId', body.currencyId?.toString() ?? '');
+        formData.append('isDraft', body.isDraft?.toString()!);
+
+        if (body.photos !== null) {
+            for (const photo of body.photos) {
+                formData.append('photos', photo);
+            }
+        }
+
+        if (body.additionalDocuments !== null) {
+            for (const file of body.additionalDocuments) {
+                formData.append('additionalDocuments', file);
+            }
+        }
+
+        let options_: any = {
+            body: formData,
+        };
+
+        return this.http.request('put', url_, options_).pipe(
+            catchError((error) => {
+                return throwError(() => error.error);
+            })
+        );
+    }
+
+    getOneLotForSeller(id: number): Observable<SellerGetLotResponse> {
+        let url_ = this.baseUrl + `/api/lots/${id}/sellers`;
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<SellerGetLotResponse> => {
+                if (response.body !== null) {
+                    let data: SellerGetLotResponse = response.body;
+
+                    return of(data);
+                } else return throwError(() => new Error('data is empty!'));
+            })
+        );
+    }
+
+    deleteLotFile(id: number, url: string): Observable<any> {
+        let url_ = this.baseUrl + `/api/lots/${id}/files`;
+
+        let options_: any = {
+            body: [url],
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.delete(url_, options_).pipe(
+            mergeMap((response: any): Observable<any> => {
+                if (response.body !== null) {
+                    return of(response.body);
+                } else return throwError(() => new Error('Error'));
+            })
+        );
+    }
+
+    deleteLot(id: number): Observable<string> {
+        let url_ = this.baseUrl + `/api/lots/${id}`;
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.delete(url_, options_).pipe(
+            mergeMap((response: any): Observable<string> => {
+                if (response.body !== null) {
+                    return of(response.body as string);
+                } else
+                    return throwError(
+                        () => new Error('Unexpected error occured')
+                    );
+            }),
+            catchError((err: any): Observable<any> => {
+                return throwError(() => new Error(err));
+            })
+        );
+    }
+
+    filterLots(params: FilterLot): Observable<FilteredLotModel[]> {
+        let url_ = this.baseUrl + `/api/lots/filtered-lots`;
+
+        let queryParams = new HttpParams();
+
+        for (const [key, value] of Object.entries(params)) {
+            if (key == 'lotStatuses') {
+                if (value !== null) {
+                    for (const lotId of value as number[]) {
+                        queryParams = queryParams.append(
+                            key.charAt(0).toUpperCase() + key.slice(1),
+                            lotId.toString()
+                        );
+                    }
+                }
+            } else {
+                if (value !== null) {
+                    queryParams = queryParams.set(
+                        key.charAt(0).toUpperCase() + key.slice(1),
+                        value
+                    );
+                }
+            }
+        }
+
+        return this.http.get(url_, { params: queryParams }).pipe(
+            mergeMap((response: any): Observable<FilteredLotModel[]> => {
+                let data: FilteredLotModel[] = [];
+
+                if (response.body !== null) {
+                    data = response.body;
+                }
+
+                return of(data);
+            })
+        );
+    }
+}
+
+export interface FilteredLotModel {
+    id: number;
+    title: string;
+    description: string;
+    startingPrice: number | null;
+    startDate: Date | null;
+    endDate: Date | null;
+    category: CategoryDto;
+    lotStatus: LotStatusDto;
+    location: LocationDto;
+    currency: CurrencyDto;
+    bids: BidDto[];
+    mainPhotoUrl: string | null;
+    isInWatchList: boolean;
+}
+
+export interface CategoryDto {
+    id: number;
+    name: string;
+    parentCategoryId: number | null;
+}
+
+export interface LotStatusDto {
+    id: number;
+    name: string;
+}
+
+export interface LocationDto {
+    id: number;
+    city: string;
+    country: string;
+    address: string;
+    state: string | null;
+}
+
+export interface CurrencyDto {
+    id: number;
+    code: string;
+}
+
+export interface BidDto {
+    id: number;
+    buyerId: number;
+    newPrice: number;
+    timeStamp: Date;
+    buyer: UserDto;
+}
+
+export interface UserDto {
+    id: number;
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+    email: string;
+}
+
+export interface SellerGetLotResponse {
+    id: number;
+    title: string;
+    description: string;
+    startingPrice: number | null;
+    startDate: Date | null;
+    endDate: Date | null;
+    photosUrl: string[] | null;
+    additionalDocumentsUrl: string[] | null;
+    category: CategoryDto;
+    lotStatus: LotStatusDto;
+    location: LocationDto;
+    currency: CurrencyDto;
+    bids: BidDto[];
+}
+
+export interface CreateLotResponse {
+    title: string;
+    description: string;
+    startingPrice: number | null;
+    startDate: Date | null;
+    endDate: Date | null;
+    categoryId: number | null;
+    city: string;
+    state: string | null;
+    country: string | null;
+    address: string | null;
+    currencyId: number | null;
+    photos: File[] | null;
+    additionalDocuments: File[] | null;
+}
+
+export interface AppLocation {
+    city: string;
+}
+
+export interface Currency {
+    id: number;
+    code: string;
+}
+
+export interface Status {
+    id: number;
+    name: string;
+}
+
+export interface Category {
+    id: number;
+    name: string;
+    children: Category[];
+    parentCategoryId: number | null;
 }
 
 export interface LoginResponse {
@@ -128,10 +551,16 @@ export class ApiException extends Error {
     override message: string;
     status: number;
     response: string;
-    headers: { [key: string]: any; };
+    headers: { [key: string]: any };
     result: any;
 
-    constructor(message: string, status: number, response: string, headers: { [key: string]: any; }, result: any) {
+    constructor(
+        message: string,
+        status: number,
+        response: string,
+        headers: { [key: string]: any },
+        result: any
+    ) {
         super();
 
         this.message = message;
@@ -148,21 +577,29 @@ export class ApiException extends Error {
     }
 }
 
-function throwException(message: string, status: number, response: string, headers: { [key: string]: any; }, result?: any): Observable<any> {
+function throwException(
+    message: string,
+    status: number,
+    response: string,
+    headers: { [key: string]: any },
+    result?: any
+): Observable<any> {
     if (result !== null && result !== undefined)
         return throwError(() => result);
     else
-        return throwError(() => new ApiException(message, status, response, headers, null));
+        return throwError(
+            () => new ApiException(message, status, response, headers, null)
+        );
 }
 
 function blobToText(blob: any): Observable<string> {
     return new Observable<string>((observer: any) => {
         if (!blob) {
-            observer.next("");
+            observer.next('');
             observer.complete();
         } else {
             let reader = new FileReader();
-            reader.onload = event => {
+            reader.onload = (event) => {
                 observer.next((event.target as any).result);
                 observer.complete();
             };

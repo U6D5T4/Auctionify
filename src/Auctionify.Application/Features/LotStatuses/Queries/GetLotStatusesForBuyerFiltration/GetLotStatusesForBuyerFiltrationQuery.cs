@@ -16,7 +16,10 @@ namespace Auctionify.Application.Features.LotStatuses.Queries.GetLotStatusesForB
         {
             "Closed",
             "Active",
-            "Upcoming"
+            "Upcoming",
+            "Sold",
+            "NotSold",
+            "Cancelled"
         };
 
         public GetLotStatusesForBuyerFiltrationQueryHandler(ILotStatusRepository lotStatusRepository,
