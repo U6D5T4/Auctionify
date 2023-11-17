@@ -14,15 +14,20 @@
 }
 
 .search {
-    &-autocomplete {
-        margin-top: 24px;
-    }
-
     &-button {
         background-color: transparent;
         outline: none;
         border: none;
     }
+}
+
+::ng-deep .search-autocomplete {
+    margin-top: 24px !important;
+    border-radius: 12px !important;
+}
+
+::ng-deep .mdc-list-item__primary-text {
+    width: 100%;
 }
 
 .search-icon {
@@ -58,17 +63,30 @@ input::content {
 }
 
 .body {
+
+    &-spinner {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
     &-image {
         width: 80px;
+        height: 80px;
+        overflow: hidden;
         border-radius: 8px;
+
+        & img {
+            object-fit: cover;
+        }
     }
 
     &-title {
-        max-width: 180px;
+        width: 180px;
 
         & div {
             overflow: hidden;
-            max-width: 180px;
+            width: 180px;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
@@ -87,4 +105,9 @@ span.mat-mdc-option .mdc-list-item__primary-text {
 
 .mat-mdc-option.mdc-list-item {
     margin-bottom: 8px;
+}
+
+.hr-element {
+    margin-top: 8px;
+    margin-bottom: 16px;
 }

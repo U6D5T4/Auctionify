@@ -14,6 +14,7 @@ import { SearchComponent } from './search/search.component';
 import { FooterComponent } from './footer/footer.component';
 import { NavbarSellerComponent } from './navbar-seller/navbar-seller.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
     imports: [
@@ -27,6 +28,7 @@ import { ReactiveFormsModule } from '@angular/forms';
         MatInputModule,
         MatAutocompleteModule,
         ReactiveFormsModule,
+        MatProgressSpinnerModule,
     ],
 
     declarations: [
