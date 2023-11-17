@@ -27,26 +27,26 @@ namespace Auctionify.Infrastructure.Identity
 		private readonly AuthSettingsOptions _authSettingsOptions;
 		private readonly AppOptions _appOptions;
 
-		public IdentityService(
+        public IdentityService(
 			UserManager<User> userManager,
-			SignInManager<User> signInManager,
-			ILogger<IdentityService> logger,
-			IEmailService emailService,
-			RoleManager<Role> roleManager,
-			IOptions<AuthSettingsOptions> authSettingsOptions,
-			IOptions<AppOptions> appOptions
-		)
-		{
-			_userManager = userManager;
-			_signInManager = signInManager;
-			_logger = logger;
-			_emailService = emailService;
-			_roleManager = roleManager;
-			_authSettingsOptions = authSettingsOptions.Value;
-			_appOptions = appOptions.Value;
-		}
+            SignInManager<User> signInManager,
+            ILogger<IdentityService> logger,
+            IEmailService emailService,
+            RoleManager<Role> roleManager,
+            IOptions<AuthSettingsOptions> authSettingsOptions,
+            IOptions<AppOptions> appOptions
+        )
+        {
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _logger = logger;
+            _emailService = emailService;
+            _roleManager = roleManager;
+            _authSettingsOptions = authSettingsOptions.Value;
+            _appOptions = appOptions.Value;
+        }
 
-		public async Task<LoginResponse> LoginUserAsync(LoginViewModel userModel)
+        public async Task<LoginResponse> LoginUserAsync(LoginViewModel userModel)
 		{
 			if (
 				userModel is null
@@ -160,8 +160,7 @@ namespace Auctionify.Infrastructure.Identity
 				email,
 				"Reset Password",
 				"<h1>Follow the instructions to reset your password</h1>"
-					+ $"<p>To reset your password <a href='{url}'>Click here</p> <br>"
-					+ $"<p> Token: {token}</p>"
+					+ $"<p>To reset your password <a href='{url}'>Click here</p>"
 			);
 
 			return new ResetPasswordResponse
@@ -290,111 +289,78 @@ namespace Auctionify.Infrastructure.Identity
 		}
 
 		public async Task<AssignRoleToUserResponse> AssignRoleToUserAsync(AssignRoleToUserViewModel model)
-		{
-			var userEmail = await DecodeTokenAndGetUser(model.Token);
+        {
+            if (string.IsNullOrWhiteSpace(model.Email))
+            {
+                return new AssignRoleToUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "Email is not defined"
+                };
+            }
 
-			if (string.IsNullOrWhiteSpace(userEmail.ToString()))
-			{
-				return new AssignRoleToUserResponse
-				{
-					IsSuccess = false,
-					Message = "Invalid or expired token"
-				};
-			}
+            if (string.IsNullOrWhiteSpace(model.Role))
+            {
+                return new AssignRoleToUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "Role name is not provided"
+                };
+            }
 
-			if (string.IsNullOrWhiteSpace(model.Role))
-			{
-				return new AssignRoleToUserResponse
-				{
-					IsSuccess = false,
-					Message = "Role name is not provided"
-				};
-			}
+            var roleExists = await _roleManager.RoleExistsAsync(model.Role);
 
-			var roleExists = await _roleManager.RoleExistsAsync(model.Role);
+            if (!roleExists)
+            {
+                return new AssignRoleToUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "Role not found"
+                };
+            }
 
-			if (!roleExists)
-			{
-				return new AssignRoleToUserResponse
-				{
-					IsSuccess = false,
-					Message = "Role not found"
-				};
-			}
+            var user = await _userManager.FindByEmailAsync(model.Email);
 
-			var user = await _userManager.FindByEmailAsync(userEmail.ToString());
+            if (user == null)
+            {
+                return new AssignRoleToUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "User not found"
+                };
+            }
 
-			if (user == null)
-			{
-				return new AssignRoleToUserResponse
-				{
-					IsSuccess = false,
-					Message = "User not found"
-				};
-			}
+            var userHasRole = await _userManager.IsInRoleAsync(user, model.Role);
 
-			var userHasRole = await _userManager.IsInRoleAsync(user, model.Role);
+            if (userHasRole)
+            {
+                return new AssignRoleToUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "User already has the specified role"
+                };
+            }
 
-			if (userHasRole)
-			{
-				return new AssignRoleToUserResponse
-				{
-					IsSuccess = false,
-					Message = "User already has the specified role"
-				};
-			}
+            var result = await _userManager.AddToRoleAsync(user, model.Role);
 
-			var result = await _userManager.AddToRoleAsync(user, model.Role);
-
-			if (result.Succeeded)
-			{
-				return new AssignRoleToUserResponse
-				{
-					IsSuccess = true,
-					Message = $"Role '{model.Role}' assigned to the user successfully"
-				};
-			}
-			else
-			{
-				return new AssignRoleToUserResponse
-				{
-					IsSuccess = false,
-					Message = "Failed to assign role",
-					Errors = result.Errors.Select(e => e.Description)
-				};
-			}
-		}
-
-		private async Task<User> DecodeTokenAndGetUser(string token)
-		{
-			var tokenHandler = new JwtSecurityTokenHandler();
-			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authSettingsOptions.Key));
-			var validationParameters = new TokenValidationParameters
-			{
-				ValidateIssuerSigningKey = true,
-				IssuerSigningKey = key,
-				ValidateIssuer = true,
-				ValidIssuer = _authSettingsOptions.Issuer,
-				ValidateAudience = true,
-				ValidAudience = _authSettingsOptions.Audience,
-				ValidateLifetime = true,
-				ClockSkew = TimeSpan.Zero
-			};
-
-			var principal = tokenHandler.ValidateToken(token, validationParameters, out _);
-
-			var userId = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-
-			if (userId != null)
-			{
-				var user = await _userManager.FindByEmailAsync(userId);
-				return user;
-			}
-			else
-			{
-				return new User();
-			}
-		}
+            if (result.Succeeded)
+            {
+                return new AssignRoleToUserResponse
+                {
+                    IsSuccess = true,
+                    Message = $"Role '{model.Role}' assigned to the user successfully"
+                };
+            }
+            else
+            {
+                return new AssignRoleToUserResponse
+                {
+                    IsSuccess = false,
+                    Message = "Failed to assign role",
+                    Errors = result.Errors.Select(e => e.Description)
+                };
+            }
+        }
 
 		public async Task<LoginResponse> LoginUserWithGoogleAsync(Payload payload)
 		{

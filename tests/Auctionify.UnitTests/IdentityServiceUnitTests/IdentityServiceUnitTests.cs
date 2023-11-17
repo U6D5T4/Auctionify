@@ -356,9 +356,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 						"<h1>Follow the instructions to reset your password</h1>"
 							+ "<p>To reset your password "
 							+ $"<a href='https://testlocalhost:1234/reset-password?email={email}&token={validToken}'>"
-							+ "Click here</p> "
-							+ "<br>"
-							+ $"<p> Token: {token}</p>"
+							+ "Click here</p>"
 					),
 				Times.Once
 			);

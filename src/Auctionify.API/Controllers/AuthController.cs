@@ -13,11 +13,13 @@ namespace Auctionify.API.Controllers
 	{
 		private readonly IIdentityService _identityService;
 		private readonly SignInWithGoogleOptions _signInWithGoogleOptions;
+		private readonly ICurrentUserService _currentUserService;
 
-		public AuthController(IIdentityService identityService, IOptions<SignInWithGoogleOptions> signInWithGoogleOptions)
+		public AuthController(IIdentityService identityService, IOptions<SignInWithGoogleOptions> signInWithGoogleOptions, ICurrentUserService currentUserService)
 		{
 			_identityService = identityService;
 			_signInWithGoogleOptions = signInWithGoogleOptions.Value;
+			_currentUserService = currentUserService;
 		}
 
 		[HttpPost]
@@ -96,10 +98,13 @@ namespace Auctionify.API.Controllers
 			return Ok(result);
 		}
 
-
         [HttpPost("assign-role")]
         public async Task<IActionResult> AssignRoleToUser([FromBody] AssignRoleToUserViewModel viewModel)
         {
+            var currentUserEmail = _currentUserService.UserEmail;
+
+            viewModel.Email = currentUserEmail;
+
             var result = await _identityService.AssignRoleToUserAsync(viewModel);
 
             if (!result.IsSuccess)

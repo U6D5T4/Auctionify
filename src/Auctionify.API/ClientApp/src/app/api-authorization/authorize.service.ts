@@ -77,10 +77,8 @@ export class AuthorizeService {
   }
 
   assignRoleToUser(role: UserRole): Observable<AssignRoleResponse | boolean> {
-    const userToken = localStorage.getItem(this.tokenString);
 
     const roleAssignmentData: AssignRoleViewModel = {
-      token: userToken ?? '',
       role
     };
   

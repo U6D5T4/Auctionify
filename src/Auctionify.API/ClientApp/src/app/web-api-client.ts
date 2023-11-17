@@ -131,7 +131,6 @@ export interface LoginResponse {
 }
 
 export interface AssignRoleViewModel {
-    token: string;
     role: UserRole;
 }
 

@@ -49,7 +49,6 @@ export class RegisterRoleComponent {
 
     const selectedRole = this.assignRoleForm.controls.role.value;
     
-
     this.authService.assignRoleToUser(
       selectedRole!
     ).subscribe({
