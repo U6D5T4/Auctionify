@@ -95,6 +95,9 @@ jobs:
         with:
           name: angular-app
 
+      - name: Display contents of Angular artifacts
+        run: ls ${{env.DOTNET_ROOT}}/myapp/wwwroot/dist
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
@@ -102,4 +105,4 @@ jobs:
           app-name: 'auctionify'
           slot-name: 'dev'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_FCDAE4D7F4484E2AB9D6DA41D2F98DC5 }}
-          package: ${{env.DOTNET_ROOT}}/myapp/wwwroot/dist
+          package: .
