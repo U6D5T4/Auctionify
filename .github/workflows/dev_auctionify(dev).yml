@@ -58,6 +58,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: angular-app
+          path: ${{env.DOTNET_ROOT}}/myapp/wwwroot
 
   test:
     runs-on: ubuntu-latest
@@ -101,4 +102,4 @@ jobs:
           app-name: 'auctionify'
           slot-name: 'dev'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_FCDAE4D7F4484E2AB9D6DA41D2F98DC5 }}
-          package: ${{ env.DOTNET_ROOT }}/myapp/wwwroot/dist
+          package: ${{env.DOTNET_ROOT}}/myapp/wwwroot/dist
