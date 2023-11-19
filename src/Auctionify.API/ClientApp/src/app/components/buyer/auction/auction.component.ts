@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { Client, FilteredLotModel } from 'src/app/web-api-client';
 
 @Component({
@@ -10,18 +10,33 @@ import { Client, FilteredLotModel } from 'src/app/web-api-client';
 export class AuctionComponent implements OnInit{
   links: any[] = Array(8).fill({ imgUrl: 'assets/icons/StarIcon.svg', linkText: 'Example' });
 
-  activeLots$!: Observable<FilteredLotModel[]>;
-  upcomingLots$!: Observable<FilteredLotModel[]>;
-  archivedLots$!: Observable<FilteredLotModel[]>;
+  activeLots$: Observable<FilteredLotModel[]>;
+  upcomingLots$: Observable<FilteredLotModel[]>;
+  archivedLots$: Observable<FilteredLotModel[]>;
 
-  constructor(private apiClient: Client) {}
+  private activeLotsSubject = new BehaviorSubject<FilteredLotModel[]>([]);
+  private upcomingLotsSubject = new BehaviorSubject<FilteredLotModel[]>([]);
+  private archivedLotsSubject = new BehaviorSubject<FilteredLotModel[]>([]);
+  private initiallyLoadedLotsCount = 20;
 
-  ngOnInit(): void {
-    this.getAllLots();
+  constructor(private apiClient: Client) {
+    this.activeLots$ = this.activeLotsSubject.asObservable();
+    this.upcomingLots$ = this.upcomingLotsSubject.asObservable();
+    this.archivedLots$ = this.archivedLotsSubject.asObservable();
   }
 
-  getAllLots(): void {
-    const activeFilterParams = {
+  ngOnInit(): void {
+    this.loadInitialLots();
+  }
+
+  loadInitialLots(): void {
+    this.loadActiveLots();
+    this.loadUpcomingLots(10);
+    this.loadArchivedLots(10);
+  }
+
+  loadActiveLots(): void {
+    const filterParams = {
       minimumPrice: null,
       maximumPrice: null,
       categoryId: null,
@@ -31,7 +46,14 @@ export class AuctionComponent implements OnInit{
       sortField: null
     };
 
-    const upcomingFilterParams = {
+    this.apiClient.filterLots(filterParams).subscribe((lots) => {
+      const slicedLots = lots.slice(0, this.initiallyLoadedLotsCount);
+      this.activeLotsSubject.next(slicedLots);
+    });
+  }
+
+  loadUpcomingLots(count: number): void {
+    const filterParams = {
       minimumPrice: null,
       maximumPrice: null,
       categoryId: null,
@@ -41,7 +63,14 @@ export class AuctionComponent implements OnInit{
       sortField: null
     };
 
-    const archivedFilterParams = {
+    this.apiClient.filterLots(filterParams).subscribe((lots) => {
+      const slicedLots = lots.slice(0, count);
+      this.activeLotsSubject.next(slicedLots);
+    });
+  }
+
+  loadArchivedLots(count: number): void {
+    const filterParams = {
       minimumPrice: null,
       maximumPrice: null,
       categoryId: null,
@@ -51,9 +80,15 @@ export class AuctionComponent implements OnInit{
       sortField: null
     };
 
-    this.activeLots$ = this.apiClient.filterLots(activeFilterParams);
-    this.upcomingLots$ = this.apiClient.filterLots(upcomingFilterParams);
-    this.archivedLots$ = this.apiClient.filterLots(archivedFilterParams);
+    this.apiClient.filterLots(filterParams).subscribe((lots) => {
+      const slicedLots = lots.slice(0, count);
+      this.activeLotsSubject.next(slicedLots);
+    });
+  }
+
+  loadMoreActiveLots(): void {
+    this.initiallyLoadedLotsCount += 20;
+    this.loadActiveLots();
   }
 
   calculateDaysLeft(startDate: Date | null, endDate: Date | null): number | null {
