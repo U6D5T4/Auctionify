@@ -93,21 +93,42 @@ export class FilesPopUpComponent {
         }
 
         if (files === null) return;
+        let existingFilesNames: string[] = [];
+
         for (let i = 0; i < files.length; i++) {
             if (!this.filesAmountCondition()) {
                 break;
             }
-            const element = files.item(i);
 
+            const element = files.item(i);
             if (element === null) return;
 
-            const file: FileModel = {
-                name: element.name!,
-                file: element,
-                fileUrl: null,
-            };
+            const existingFile = this.filesFormGroup.value.files?.find(
+                (x) => x.name === element.name
+            );
 
-            this.filesFormGroup.controls.files.value?.push(file);
+            if (existingFile) {
+                existingFilesNames.push(existingFile.name!);
+            } else {
+                const file: FileModel = {
+                    name: element.name!,
+                    file: element,
+                    fileUrl: null,
+                };
+
+                this.filesFormGroup.controls.files.value?.push(file);
+            }
+        }
+
+        if (existingFilesNames.length > 0) {
+            this.openDialog(
+                [
+                    'You tried to add the following existing files, so they will not be added again:',
+                    ...existingFilesNames,
+                ],
+                true,
+                false
+            );
         }
     }
 

@@ -394,7 +394,7 @@ export class CreateLotComponent implements OnInit {
                 }
             }
 
-            if (existingImagesName.length > 1) {
+            if (existingImagesName.length > 0) {
                 this.openDialog(
                     [
                         `You tried to add the following existing images, so they will not be added again:`,
@@ -418,6 +418,14 @@ export class CreateLotComponent implements OnInit {
                 fileUrl: null,
             };
             if (this.imagesToUpload.find((x) => x.name == element.name)) {
+                this.openDialog(
+                    [
+                        `You tried to add existing images, so it will not be added again:`,
+                        element.name!,
+                    ],
+                    true,
+                    false
+                );
                 return;
             }
             this.imagesToUpload.push(element);
