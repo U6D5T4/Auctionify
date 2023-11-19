@@ -1,0 +1,136 @@
+.menu {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 200px;
+    padding-right: 200px;
+
+    &__links-left {
+        display: flex;
+    }
+
+    &__links-left ul {
+        list-style: none;
+        display: flex;
+        gap: 32px;
+    }
+
+    &__links-left ul li {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+    }
+
+    &__links-left ul li a {
+        pointer-events: none;
+        text-decoration: none;
+        color: black;
+    }
+
+    &__btns-right {
+        display: flex;
+        gap: 16px;
+    }
+    
+    &__sort-btn {
+        width: 248px;
+        height: 48px;
+        border-radius: 8px;
+        border: 2px solid (gray);
+        background-color: white;
+    }
+
+    &__filter-btn {
+        width: 144px;
+        height: 48px;
+        border-radius: 8px;
+        border: 2px solid (gray);
+        background-color: white;
+    }
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-left: 200px;
+    padding-right: 200px;
+
+    &__auction-active {
+
+    }
+
+    &__show-more-btn {
+        border-radius: 8px;
+        width: 127px;
+        height: 48px;
+    }
+
+    &__auction-upcoming {
+
+    }
+}
+
+.lot {
+    width: 294px;
+    height: 446px;
+
+    &__image {
+        position: relative;
+    }
+    
+    &__image img {
+        border-radius: 20px;
+    }
+    
+    &__like-btn {
+        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+    
+    &__like-btn {
+        background-color: #F0F3FE;
+        border: none;
+        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 1;
+    }
+    
+    &__info {
+        padding-left: 8px;
+        padding-right: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    &__title {
+        font-size: 16px;
+        font-weight: bold;
+    }
+    
+    &__price-bid {
+        align-items: center;
+        display: flex;
+        justify-content: flex-start;
+        gap: 30px;
+    }
+    
+    &__bids-p {
+        font-size: 16px;
+        color: #e0e0e0;
+    }
+    
+    &__price-p {
+        font-size: 18px;
+        font-weight: bold;
+    }
+}

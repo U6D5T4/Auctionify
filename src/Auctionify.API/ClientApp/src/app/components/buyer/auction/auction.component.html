@@ -2,26 +2,103 @@
     <div class="menu__links-left">
         <ul>
             <li *ngFor="let link of links">
-                <img src="{{ link.imgUrl }}" alt="Image">
+                <img width="16px" src="{{ link.imgUrl }}" alt="Image">
                 <p><a href="#">{{ link.linkText }}</a></p>
             </li>
         </ul>
     </div>
-    <div class="menu__icons-right">
-        
+    <div class="menu__btns-right">
+        <button class="menu__sort-btn">
+            <p>Sort by: Popularity</p>
+        </button>
+        <button class="menu__filter-btn">
+            <p>Filter</p>
+        </button>
     </div>
 </div>
 
 <div class="main">
-    <div class="auction__active">
-
+    <div class="main__auction-active">
+        <div class="lot" *ngFor="let lot of activeLots$ | async">
+            <div class="lot__image">
+              <img [src]="lot.mainPhotoUrl" height="294px" width="294px" alt="">
+              <button class="lot__like-btn">
+                <img width="20px" src="assets/icons/WishList.svg" alt="">
+              </button>
+            </div>
+            <div class="lot__info">
+              <div class="lot__title">
+                <p>{{ lot.title }}</p>
+                <br>
+                <p>{{ calculateDaysLeft(lot.startDate, lot.endDate) }} Days</p>
+              </div>
+              <div class="lot__price-bid">
+                <div class="lot_price">
+                  <p class="lot__price-p">{{ lot.startingPrice }}</p>
+                </div>
+                <div class="lot__bid">
+                  <p class="lot__bids-p">{{ lot.bids.length }} bids</p>
+                </div>
+              </div>
+            </div>
+        </div>
     </div>
 
-    <div class="auction__upcoming">
-
+    <div class="main__btn">
+        <button class="main__show-more-btn">
+            <p>Show more</p>
+        </button>
     </div>
 
-    <div class="archived">
+    <div class="main__auction-upcoming">
+        <div class="lot" *ngFor="let lot of upcomingLots$ | async">
+            <div class="lot__image">
+              <img [src]="lot.mainPhotoUrl" height="294px" width="294px" alt="">
+              <button class="lot__like-btn">
+                <img width="20px" src="assets/icons/WishList.svg" alt="">
+              </button>
+            </div>
+            <div class="lot__info">
+              <div class="lot__title">
+                <p>{{ lot.title }}</p>
+                <br>
+                <p>{{ calculateDaysLeft(lot.startDate, lot.endDate) }} Days</p>
+              </div>
+              <div class="lot__price-bid">
+                <div class="lot_price">
+                  <p class="lot__price-p">{{ lot.startingPrice }}</p>
+                </div>
+                <div class="lot__bid">
+                  <p class="lot__bids-p">{{ lot.bids.length }} bids</p>
+                </div>
+              </div>
+            </div>
+        </div>
+    </div>
 
+    <div class="main__auction-archived">
+        <div class="lot" *ngFor="let lot of archivedLots$ | async">
+            <div class="lot__image">
+              <img [src]="lot.mainPhotoUrl" height="294px" width="294px" alt="">
+              <button class="lot__like-btn">
+                <img width="20px" src="assets/icons/WishList.svg" alt="">
+              </button>
+            </div>
+            <div class="lot__info">
+              <div class="lot__title">
+                <p>{{ lot.title }}</p>
+                <br>
+                <p>{{ calculateDaysLeft(lot.startDate, lot.endDate) }} Days</p>
+              </div>
+              <div class="lot__price-bid">
+                <div class="lot_price">
+                  <p class="lot__price-p">{{ lot.startingPrice }}</p>
+                </div>
+                <div class="lot__bid">
+                  <p class="lot__bids-p">{{ lot.bids.length }} bids</p>
+                </div>
+              </div>
+            </div>
+        </div>
     </div>
 </div>
