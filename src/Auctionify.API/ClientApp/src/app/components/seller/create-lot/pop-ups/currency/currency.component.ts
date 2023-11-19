@@ -41,7 +41,6 @@ export class CurrencyPopUpComponent {
         if (this.startingPriceFormGroup.controls.startingPrice.value !== null)
             this.startingPriceFormGroup.controls.startingPrice.addValidators([
                 Validators.min(1),
-                Validators.max(9999),
             ]);
 
         this.startingPriceFormGroup.controls.startingPrice.updateValueAndValidity();
