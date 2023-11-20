@@ -12,7 +12,7 @@ namespace Auctionify.Core.Entities
 
 		public virtual DateTime TimeStamp { get; set; }
 
-		//public bool BidRemoved { get; set; }
+		public bool BidRemoved { get; set; }
 
 		public virtual Lot Lot { get; set; }
 
