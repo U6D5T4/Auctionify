@@ -3,11 +3,11 @@ using FluentValidation;
 
 namespace Auctionify.Application.Features.Lots.Commands.DeleteLotFile
 {
-	public class DeleteLotFileValidator : AbstractValidator<DeleteLotFileCommand>
+	public class DeleteLotFileCommandValidator : AbstractValidator<DeleteLotFileCommand>
 	{
 		private readonly IFileRepository _fileRepository;
 
-		public DeleteLotFileValidator(IFileRepository fileRepository)
+		public DeleteLotFileCommandValidator(IFileRepository fileRepository)
 		{
 			_fileRepository = fileRepository;
 

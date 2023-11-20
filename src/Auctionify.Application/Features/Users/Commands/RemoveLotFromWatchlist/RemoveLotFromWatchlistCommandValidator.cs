@@ -6,14 +6,14 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Auctionify.Application.Features.Users.Commands.RemoveLotFromWatchlist
 {
-	public class RemoveLotFromWatchlistValidator : AbstractValidator<RemoveLotFromWatchlistCommand>
+	public class RemoveLotFromWatchlistCommandValidator : AbstractValidator<RemoveLotFromWatchlistCommand>
 	{
 		private readonly IWatchlistRepository _watchlistRepository;
 		private readonly ILotRepository _lotRepository;
 		private readonly ICurrentUserService _currentUserService;
 		private readonly UserManager<User> _userManager;
 
-		public RemoveLotFromWatchlistValidator(
+		public RemoveLotFromWatchlistCommandValidator(
 			IWatchlistRepository watchlistRepository,
 			ILotRepository lotRepository,
 			ICurrentUserService currentUserService,
