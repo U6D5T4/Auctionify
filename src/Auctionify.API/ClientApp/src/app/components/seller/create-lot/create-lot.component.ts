@@ -359,6 +359,7 @@ export class CreateLotComponent implements OnInit {
         if (this.lotForm.controls.startingPrice.value !== null)
             this.lotForm.controls.startingPrice.addValidators([
                 Validators.min(1),
+                Validators.max(1000000000000)
             ]);
 
         this.lotForm.controls.categoryId.updateValueAndValidity();
