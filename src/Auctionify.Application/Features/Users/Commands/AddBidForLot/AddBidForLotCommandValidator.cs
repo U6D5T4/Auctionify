@@ -29,7 +29,10 @@ namespace Auctionify.Application.Features.Users.Commands.AddBidForLot
 			_userManager = userManager;
 			_currentUserService = currentUserService;
 
+			ClassLevelCascadeMode = CascadeMode.Stop;
+
 			RuleFor(x => x.LotId)
+				.Cascade(CascadeMode.Stop)
 				.MustAsync(
 					async (lotId, cancellationToken) =>
 					{
@@ -41,14 +44,17 @@ namespace Auctionify.Application.Features.Users.Commands.AddBidForLot
 						return lot != null;
 					}
 				)
-				.WithMessage("Lot with this Id does not exist");
+				.WithMessage("Lot with this Id does not exist")
+				.OverridePropertyName("LotId")
+				.WithName("Lot Id");
 
-			RuleFor(x => x)
+			RuleFor(x => x.LotId)
+				.Cascade(CascadeMode.Stop)
 				.MustAsync(
-					async (request, cancellationToken) =>
+					async (lotId, cancellationToken) =>
 					{
 						var lot = await _lotRepository.GetAsync(
-							predicate: x => x.Id == request.LotId,
+							predicate: x => x.Id == lotId,
 							cancellationToken: cancellationToken
 						);
 
@@ -65,13 +71,19 @@ namespace Auctionify.Application.Features.Users.Commands.AddBidForLot
 						return false;
 					}
 				)
-				.WithMessage("You can bid only if the lot is active");
+				.WithMessage("You can bid only if the lot is active")
+				.OverridePropertyName("LotId")
+				.WithName("Lot Id");
 
 			RuleFor(x => x.Bid)
+				.Cascade(CascadeMode.Stop)
 				.GreaterThan(0)
-				.WithMessage("Bid must be greater than 0 and be a positive number");
+				.WithMessage("Bid must be greater than 0 and be a positive number")
+				.OverridePropertyName("Bid")
+				.WithName("Bid");
 
 			RuleFor(x => x)
+				.Cascade(CascadeMode.Stop)
 				.MustAsync(
 					async (request, cancellationToken) =>
 					{
@@ -88,9 +100,39 @@ namespace Auctionify.Application.Features.Users.Commands.AddBidForLot
 						return true;
 					}
 				)
-				.WithMessage("Bid must be greater than the lot's starting price");
+				.WithMessage("Bid must be greater than the lot's starting price")
+				.OverridePropertyName("Bid")
+				.WithName("Bid");
 
 			RuleFor(x => x)
+				.Cascade(CascadeMode.Stop)
+				.MustAsync(
+					async (request, cancellationToken) =>
+					{
+						var user = await _userManager.FindByEmailAsync(
+							_currentUserService.UserEmail!
+						);
+						var allUserBidsForLot = await _bidRepository.GetListAsync(
+							predicate: x => x.LotId == request.LotId && x.BuyerId == user!.Id,
+							orderBy: x => x.OrderByDescending(x => x.TimeStamp),
+							cancellationToken: cancellationToken
+						);
+
+						if (allUserBidsForLot is not null && allUserBidsForLot.Items.Count > 0)
+						{
+							var previousBid = allUserBidsForLot.Items[0];
+							return request.Bid > previousBid.NewPrice;
+						}
+
+						return true;
+					}
+				)
+				.WithMessage("Your new bid must be greater than your previous bid")
+				.OverridePropertyName("Bid")
+				.WithName("Bid");
+
+			RuleFor(x => x)
+				.Cascade(CascadeMode.Stop)
 				.MustAsync(
 					async (request, cancellationToken) =>
 					{
@@ -117,31 +159,9 @@ namespace Auctionify.Application.Features.Users.Commands.AddBidForLot
 						return true;
 					}
 				)
-				.WithMessage("Bid must be greater than the current bid of the lot");
-
-			RuleFor(x => x)
-				.MustAsync(
-					async (request, cancellationToken) =>
-					{
-						var user = await _userManager.FindByEmailAsync(
-							_currentUserService.UserEmail!
-						);
-						var allUserBidsForLot = await _bidRepository.GetListAsync(
-							predicate: x => x.LotId == request.LotId && x.BuyerId == user!.Id,
-							orderBy: x => x.OrderByDescending(x => x.TimeStamp),
-							cancellationToken: cancellationToken
-						);
-
-						if (allUserBidsForLot is not null && allUserBidsForLot.Items.Count > 0)
-						{
-							var previousBid = allUserBidsForLot.Items[0];
-							return request.Bid > previousBid.NewPrice;
-						}
-
-						return true;
-					}
-				)
-				.WithMessage("Bid must be greater than the previous bid");
+				.WithMessage("Bid must be greater than the current bid of the lot")
+				.OverridePropertyName("Bid")
+				.WithName("Bid");
 		}
 	}
 }

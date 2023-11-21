@@ -81,7 +81,7 @@ namespace Auctionify.API.Controllers
 		{
 			await _mediator.Send(new RemoveBidCommand { BidId = bidId });
 
-			return Ok($"Successfully removed the bid with id: {bidId}");
+			return Ok($"Successfully withdrew the bid with id: {bidId}");
 		}
 
 		[HttpGet("lots/{lotId}/bids")]

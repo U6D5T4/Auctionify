@@ -45,7 +45,8 @@ namespace Auctionify.Application.Features.Users.Commands.RemoveBid
 					}
 				)
 				.WithMessage("Bid with this Id does not exist")
-				.OverridePropertyName("BidId");
+				.OverridePropertyName("BidId")
+				.WithName("Bid Id");
 
 			RuleFor(x => x.BidId)
 				.Cascade(CascadeMode.Stop)
@@ -80,8 +81,7 @@ namespace Auctionify.Application.Features.Users.Commands.RemoveBid
 						return false;
 					}
 				)
-				.WithMessage("You can withdraw bid only if the lot is active")
-				.OverridePropertyName("");
+				.WithMessage("You can withdraw bid only if the lot is active");
 
 			RuleFor(x => x.BidId)
 				.Cascade(CascadeMode.Stop)
@@ -116,8 +116,52 @@ namespace Auctionify.Application.Features.Users.Commands.RemoveBid
 						return false;
 					}
 				)
-				.WithMessage("You can withdraw only your recent bid")
-				.OverridePropertyName("");
+				.WithMessage("You can withdraw only your recent bid");
+
+			RuleFor(x => x.BidId)
+				.Cascade(CascadeMode.Stop)
+				.MustAsync(
+					async (bidId, cancellationToken) =>
+					{
+						var user = await _userManager.FindByEmailAsync(
+							_currentUserService.UserEmail!
+						);
+
+						var bid = await _bidRepository.GetAsync(
+							predicate: x => x.Id == bidId,
+							cancellationToken: cancellationToken
+						);
+
+						if (bid is not null)
+						{
+							var currentAllUserBidsForLot = await _bidRepository.GetListAsync(
+								predicate: x => x.LotId == bid.LotId && x.BuyerId == user!.Id,
+								orderBy: x => x.OrderByDescending(x => x.TimeStamp),
+								cancellationToken: cancellationToken
+							);
+
+							if (currentAllUserBidsForLot!.Items.Any())
+							{
+								var count = 0;
+
+								foreach (var currentBid in currentAllUserBidsForLot.Items)
+								{
+									if (currentBid.BidRemoved)
+									{
+										count++;
+									}
+								}
+
+								return count == 0;
+							}
+
+							return false;
+						}
+
+						return false;
+					}
+				)
+				.WithMessage("You cannot withdraw your bid for lot more than once");
 		}
 	}
 }

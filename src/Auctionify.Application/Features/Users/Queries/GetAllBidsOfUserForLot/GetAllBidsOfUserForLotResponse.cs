@@ -9,5 +9,7 @@
 		public DateTime TimeStamp { get; set; }
 
 		public string Currency { get; set; }
+
+		public bool BidRemoved { get; set; }
 	}
 }

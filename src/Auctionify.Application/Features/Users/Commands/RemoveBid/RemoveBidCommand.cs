@@ -33,7 +33,9 @@ namespace Auctionify.Application.Features.Users.Commands.RemoveBid
 				cancellationToken: cancellationToken
 			);
 
-			await _bidRepository.DeleteAsync(bid!);
+			bid!.BidRemoved = true;
+
+			await _bidRepository.UpdateAsync(bid!);
 
 			var response = _mapper.Map<RemovedBidResponse>(bid);
 
