@@ -1,8 +1,8 @@
 .menu {
     display: flex;
-    justify-content: space-between;
-    padding-left: 200px;
-    padding-right: 200px;
+    justify-content: space-evenly;
+    height: 96px;
+    align-items: center;
 
     &__links-left {
         display: flex;
@@ -33,6 +33,10 @@
     }
     
     &__sort-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 13px;
         width: 248px;
         height: 48px;
         border-radius: 8px;
@@ -41,6 +45,10 @@
     }
 
     &__filter-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 11px;
         width: 144px;
         height: 48px;
         border-radius: 8px;
@@ -56,18 +64,50 @@
     padding-left: 200px;
     padding-right: 200px;
 
-    &__auction-active {
-
+    &__container {
+        width: max-content;
+        display: flex;
+        justify-content: flex-start;
+        gap: 12px;
+        flex-wrap: wrap;
     }
 
-    &__show-more-btn {
+    &__show-more-btn button {
         border-radius: 8px;
         width: 127px;
         height: 48px;
     }
 
-    &__auction-upcoming {
+    &__auction-upcoming-title {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+    }
 
+    &__auction-upcoming-title img {
+        transform: rotate(90deg);
+    }
+
+    &__auction-upcoming-more {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    &__auction-archived-title {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    &__auction-archived-title img {
+        transform: rotate(90deg);
+    }
+
+    &__auction-archived-more {
+        display: flex;
+        align-items: center;
+        gap: 12px;
     }
 }
 

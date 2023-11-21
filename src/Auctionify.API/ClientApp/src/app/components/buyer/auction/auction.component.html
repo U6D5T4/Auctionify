@@ -10,20 +10,23 @@
     <div class="menu__btns-right">
         <button class="menu__sort-btn">
             <p>Sort by: Popularity</p>
+            <img src="/../../assets/icons/PopularityIcon.svg" width="14px" alt="popularity-icon">
         </button>
         <button class="menu__filter-btn">
-            <p>Filter</p>
+          <img src="/../../assets/icons/FilterIcon.svg" width="14px" alt="popularity-icon">
+          <p>Filter</p>
         </button>
     </div>
 </div>
 
 <div class="main">
+  <div class="main__container">
     <div class="main__auction-active">
-        <div class="lot" *ngFor="let lot of activeLots$ | async">
+        <div class="lot" *ngFor="let lot of activeLots$ | async | slice:0:initialActiveLotsCount">
             <div class="lot__image">
               <img [src]="lot.mainPhotoUrl" height="294px" width="294px" alt="">
               <button class="lot__like-btn">
-                <img width="20px" src="assets/icons/WishList.svg" alt="">
+                <img width="20px" src="assets/icons/WishListIcon.svg" alt="wishlist-icon">
               </button>
             </div>
             <div class="lot__info">
@@ -34,7 +37,7 @@
               </div>
               <div class="lot__price-bid">
                 <div class="lot_price">
-                  <p class="lot__price-p">{{ lot.startingPrice }}</p>
+                  <p class="lot__price-p">{{ lot.startingPrice }} $</p>
                 </div>
                 <div class="lot__bid">
                   <p class="lot__bids-p">{{ lot.bids.length }} bids</p>
@@ -43,11 +46,21 @@
             </div>
         </div>
     </div>
+  </div>
 
     <div class="main__btn">
-        <button class="main__show-more-btn" (click)="loadMoreActiveLots()">
+        <p>What to see more items?</p>
+        <button class="main__show-more-btn" mat-raised-button color="primary">
             <p>Show more</p>
         </button>
+    </div>
+
+    <div class="main__auction-upcoming-title">
+      <h2>Future auctions</h2>
+      <div class="main__auction-upcoming-more" (click)="loadMoreUpcomingLots()">
+        <p>See more</p>
+        <img src="/../../assets/icons/PopularityIcon.svg" width="16px" alt="">
+      </div>
     </div>
 
     <div class="main__auction-upcoming">
@@ -55,7 +68,7 @@
             <div class="lot__image">
               <img [src]="lot.mainPhotoUrl" height="294px" width="294px" alt="">
               <button class="lot__like-btn">
-                <img width="20px" src="assets/icons/WishList.svg" alt="">
+                <img width="20px" src="assets/icons/WishListIcon.svg" alt="wishlist-icon">
               </button>
             </div>
             <div class="lot__info">
@@ -66,7 +79,7 @@
               </div>
               <div class="lot__price-bid">
                 <div class="lot_price">
-                  <p class="lot__price-p">{{ lot.startingPrice }}</p>
+                  <p class="lot__price-p">{{ lot.startingPrice }} $</p>
                 </div>
                 <div class="lot__bid">
                   <p class="lot__bids-p">{{ lot.bids.length }} bids</p>
@@ -76,12 +89,20 @@
         </div>
     </div>
 
+    <div class="main__auction-archived-title">
+      <h2>Future auctions</h2>
+      <div class="main__auction-archived-more" (click)="loadMoreArchivedLots()">
+        <p>See more</p>
+        <img src="/../../assets/icons/PopularityIcon.svg" width="16px" alt="">
+      </div>
+    </div>
+
     <div class="main__auction-archived">
         <div class="lot" *ngFor="let lot of archivedLots$ | async">
             <div class="lot__image">
               <img [src]="lot.mainPhotoUrl" height="294px" width="294px" alt="">
               <button class="lot__like-btn">
-                <img width="20px" src="assets/icons/WishList.svg" alt="">
+                <img width="20px" src="assets/icons/WishListIcon.svg" alt="wishlist-icon">
               </button>
             </div>
             <div class="lot__info">
@@ -92,7 +113,7 @@
               </div>
               <div class="lot__price-bid">
                 <div class="lot_price">
-                  <p class="lot__price-p">{{ lot.startingPrice }}</p>
+                  <p class="lot__price-p">{{ lot.startingPrice }} $</p>
                 </div>
                 <div class="lot__bid">
                   <p class="lot__bids-p">{{ lot.bids.length }} bids</p>

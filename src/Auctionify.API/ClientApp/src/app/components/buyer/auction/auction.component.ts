@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { Client, FilteredLotModel } from 'src/app/web-api-client';
+import { Observable, of } from 'rxjs';
+import { Client, LotModel } from 'src/app/web-api-client';
+import { FilterLot } from 'src/app/models/lots/filter';
 
 @Component({
   selector: 'app-auction',
@@ -10,84 +11,85 @@ import { Client, FilteredLotModel } from 'src/app/web-api-client';
 export class AuctionComponent implements OnInit{
   links: any[] = Array(8).fill({ imgUrl: 'assets/icons/StarIcon.svg', linkText: 'Example' });
 
-  activeLots$: Observable<FilteredLotModel[]>;
-  upcomingLots$: Observable<FilteredLotModel[]>;
-  archivedLots$: Observable<FilteredLotModel[]>;
+  initialActiveLotsCount: number = 10;
+  additionalActiveLotsCount: number = 10;
+  initialUpcomingLotsCount: number = 5;
+  additionalUpcomingLotsCount: number = 5;
+  initialArchivedLotsCount: number = 5;
+  additionalArchivedLotsCount: number = 5;
+  
+  activeLots$!: Observable<LotModel[]>;
+  upcomingLots$!: Observable<LotModel[]>;
+  archivedLots$!: Observable<LotModel[]>;
 
-  private activeLotsSubject = new BehaviorSubject<FilteredLotModel[]>([]);
-  private upcomingLotsSubject = new BehaviorSubject<FilteredLotModel[]>([]);
-  private archivedLotsSubject = new BehaviorSubject<FilteredLotModel[]>([]);
-  private initiallyLoadedLotsCount = 20;
-
-  constructor(private apiClient: Client) {
-    this.activeLots$ = this.activeLotsSubject.asObservable();
-    this.upcomingLots$ = this.upcomingLotsSubject.asObservable();
-    this.archivedLots$ = this.archivedLotsSubject.asObservable();
-  }
+  constructor(private apiClient: Client) {}
 
   ngOnInit(): void {
-    this.loadInitialLots();
-  }
-
-  loadInitialLots(): void {
     this.loadActiveLots();
-    this.loadUpcomingLots(10);
-    this.loadArchivedLots(10);
+    this.loadUpcomingLots();
+    this.loadArchivedLots();
   }
 
   loadActiveLots(): void {
-    const filterParams = {
+    const filterLot: FilterLot = {
       minimumPrice: null,
       maximumPrice: null,
       categoryId: null,
       location: null,
-      lotStatuses: [1],
+      lotStatuses: [5],
       sortDir: null,
-      sortField: null
+      sortField: null,
     };
 
-    this.apiClient.filterLots(filterParams).subscribe((lots) => {
-      const slicedLots = lots.slice(0, this.initiallyLoadedLotsCount);
-      this.activeLotsSubject.next(slicedLots);
+    this.apiClient.filterLots(filterLot).subscribe((activeLots) => {
+      this.activeLots$ = of(activeLots.slice(0, this.initialActiveLotsCount));
     });
   }
 
-  loadUpcomingLots(count: number): void {
-    const filterParams = {
+  loadUpcomingLots(): void {
+    const filterLot: FilterLot = {
       minimumPrice: null,
       maximumPrice: null,
       categoryId: null,
       location: null,
-      lotStatuses: [2],
+      lotStatuses: [4],
       sortDir: null,
-      sortField: null
+      sortField: null,
     };
 
-    this.apiClient.filterLots(filterParams).subscribe((lots) => {
-      const slicedLots = lots.slice(0, count);
-      this.activeLotsSubject.next(slicedLots);
+    this.apiClient.filterLots(filterLot).subscribe((upcomingLots) => {
+      this.upcomingLots$ = of(upcomingLots.slice(0, this.initialUpcomingLotsCount));
     });
   }
 
-  loadArchivedLots(count: number): void {
-    const filterParams = {
+  loadArchivedLots(): void {
+    const filterLot: FilterLot = {
       minimumPrice: null,
       maximumPrice: null,
       categoryId: null,
       location: null,
-      lotStatuses: [3],
+      lotStatuses: [10],
       sortDir: null,
-      sortField: null
+      sortField: null,
     };
 
-    this.apiClient.filterLots(filterParams).subscribe((lots) => {
-      const slicedLots = lots.slice(0, count);
-      this.activeLotsSubject.next(slicedLots);
+    this.apiClient.filterLots(filterLot).subscribe((archivedLots) => {
+      this.archivedLots$ = of(archivedLots.slice(0, this.initialArchivedLotsCount));
     });
+  }
+
+  loadMoreUpcomingLots(): void {
+    this.initialUpcomingLotsCount += this.additionalUpcomingLotsCount;
+    this.loadUpcomingLots();
+  }
+
+  loadMoreArchivedLots(): void {
+    this.initialArchivedLotsCount += this.additionalArchivedLotsCount;
+    this.loadArchivedLots();
   }
 
   loadMoreActiveLots(): void {
-    this.initiallyLoadedLotsCount += 20;
+    this.initialActiveLotsCount += this.additionalActiveLotsCount;
     this.loadActiveLots();
   }
 

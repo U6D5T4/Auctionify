@@ -364,6 +364,20 @@ export class Client {
         );
     }
 
+    getAllLots(pageIndex: number, pageSize: number): Observable<LotModel[]> {
+    let url_ = this.baseUrl + `/api/lots`;
+
+    const params = new HttpParams()
+        .set('pageIndex', pageIndex.toString())
+        .set('pageSize', pageSize.toString());
+
+    return this.http.get(url_, { params }).pipe(
+        mergeMap((response: any): Observable<LotModel[]> => {
+                return of(response.items);
+            })
+        );
+    }
+
     filterLots(params: FilterLot): Observable<FilteredLotModel[]> {
         let url_ = this.baseUrl + `/api/lots/filtered-lots`;
 
@@ -391,19 +405,29 @@ export class Client {
 
         return this.http.get(url_, { params: queryParams }).pipe(
             mergeMap((response: any): Observable<FilteredLotModel[]> => {
-                let data: FilteredLotModel[] = [];
-
-                if (response.body !== null) {
-                    data = response.body;
-                }
-
-                return of(data);
+                return of(response.items);
             })
         );
     }
 }
 
 export interface FilteredLotModel {
+    id: number;
+    title: string;
+    description: string;
+    startingPrice: number | null;
+    startDate: Date | null;
+    endDate: Date | null;
+    category: CategoryDto;
+    lotStatus: LotStatusDto;
+    location: LocationDto;
+    currency: CurrencyDto;
+    bids: BidDto[];
+    mainPhotoUrl: string | null;
+    isInWatchList: boolean;
+}
+
+export interface LotModel {
     id: number;
     title: string;
     description: string;
