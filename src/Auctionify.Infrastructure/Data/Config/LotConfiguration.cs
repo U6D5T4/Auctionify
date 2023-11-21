@@ -46,7 +46,7 @@ namespace Auctionify.Infrastructure.Data.Config
 
 			builder.Property(l => l.Title).HasMaxLength(100).IsRequired(false);
 			builder.Property(l => l.Description).HasMaxLength(500).IsRequired(false);
-			builder.Property(l => l.StartingPrice).HasColumnType("decimal(7,2)").IsRequired(false);
+			builder.Property(l => l.StartingPrice).HasColumnType("decimal(28,2)").IsRequired(false);
 			builder.Property(l => l.StartDate).IsRequired(true);
 			builder.Property(l => l.EndDate).IsRequired(true);
 

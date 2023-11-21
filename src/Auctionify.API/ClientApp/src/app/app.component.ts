@@ -20,5 +20,5 @@ export class AppComponent {
 
     constructor(private authService: AuthorizeService) {}
 
-    title = 'ClientApp';
+    title = 'Auctionify';
 }
