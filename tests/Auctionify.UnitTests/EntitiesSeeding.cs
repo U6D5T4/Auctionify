@@ -114,18 +114,21 @@ namespace Auctionify.UnitTests
 					LotId = 1,
 					BuyerId = 2,
 					NewPrice = 120,
+					BidRemoved = false,
 				},
 				new Bid
 				{
 					LotId = 1,
 					BuyerId = 3,
 					NewPrice = 140,
+					BidRemoved = false,
 				},
 				new Bid
 				{
 					LotId = 2,
 					BuyerId = 3,
 					NewPrice = 140,
+					BidRemoved = false,
 				}
 			};
 		}

@@ -12,8 +12,8 @@ namespace Auctionify.Application.Features.Users.Commands.RemoveBid
 		private readonly IBidRepository _bidRepository;
 		private readonly ILotRepository _lotRepository;
 		private readonly ILotStatusRepository _lotStatusRepository;
-		private readonly ICurrentUserService _currentUserService;
 		private readonly UserManager<User> _userManager;
+		private readonly ICurrentUserService _currentUserService;
 
 		public RemoveBidCommandValidator(
 			IBidRepository bidRepository,
