@@ -9,10 +9,10 @@
                     <strong>required</strong>
                 </mat-error>
                 <mat-error *ngIf="startingPriceFormGroup.controls.startingPrice.hasError('min')">
-                    Starting price minimum is 1
+                  Minimum starting price is 1
                 </mat-error>
                 <mat-error *ngIf="startingPriceFormGroup.controls.startingPrice.hasError('max')">
-                    Starting price maximum is 9999
+                  Maximum starting price is 1000000000000
                 </mat-error>
             </mat-form-field>
             <mat-form-field color="primary" appearance="outline">
