@@ -9,13 +9,11 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthorizeInterceptor } from './api-authorization/authorize.interceptor';
 import { UiElementsModule } from './ui-elements/ui-elements.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { BuyerComponent } from './components/buyer/buyer.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    BuyerComponent,
   ],
   imports: [
     BrowserModule,
