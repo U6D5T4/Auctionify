@@ -32,15 +32,15 @@
                             <mat-form-field appearance="outline">
                                 <mat-label>from 1</mat-label>
                                 <input type="number" [value]="filterForm.value.minimumPrice"
-                                    formControlName="minimumPrice" matInput>
+                                    formControlName="minimumPrice" matInput min="1" max="1000000000000">
                             </mat-form-field>
                             <mat-form-field appearance="outline">
-                                <mat-label>to 9999.99</mat-label>
-                                <input type="number" [value]="filterForm.value.maximumPrice"
+                                <mat-label>to 1000000000000.99</mat-label>
+                                <input type="number" [value]="filterForm.value.maximumPrice" min="1" max="1000000000000"
                                     formControlName="maximumPrice" matInput>
                             </mat-form-field>
                         </div>
-                        <mat-slider min="1" max="9999.99">
+                        <mat-slider min="1" max="1000000000000.99">
                             <input [value]="filterForm.value.minimumPrice" formControlName="minimumPrice" value="300"
                                 matSliderStartThumb>
                             <input [value]="filterForm.value.maximumPrice" formControlName="maximumPrice" value="400"
