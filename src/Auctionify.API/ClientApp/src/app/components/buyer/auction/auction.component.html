@@ -50,7 +50,7 @@
 
     <div class="main__btn">
         <p>What to see more items?</p>
-        <button class="main__show-more-btn" mat-raised-button color="primary">
+        <button class="main__show-more-btn" color="primary">
             <p>Show more</p>
         </button>
     </div>
@@ -75,7 +75,7 @@
               <div class="lot__title">
                 <p>{{ lot.title }}</p>
                 <br>
-                <p>{{ calculateDaysLeft(lot.startDate, lot.endDate) }} Days</p>
+                <p>{{ calculateDaysLeftUpcomming(lot.startDate) }} Days</p>
               </div>
               <div class="lot__price-bid">
                 <div class="lot_price">
@@ -108,8 +108,6 @@
             <div class="lot__info">
               <div class="lot__title">
                 <p>{{ lot.title }}</p>
-                <br>
-                <p>{{ calculateDaysLeft(lot.startDate, lot.endDate) }} Days</p>
               </div>
               <div class="lot__price-bid">
                 <div class="lot_price">

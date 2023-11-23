@@ -60,7 +60,6 @@
 .main {
     display: flex;
     flex-direction: column;
-    align-items: center;
     padding-left: 200px;
     padding-right: 200px;
 
@@ -72,7 +71,18 @@
         flex-wrap: wrap;
     }
 
-    &__show-more-btn button {
+    &__btn {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 24px;
+    }
+
+    &__show-more-btn {
+        color: white;
+        background-color: #2B5293;
+        border: none;
         border-radius: 8px;
         width: 127px;
         height: 48px;
