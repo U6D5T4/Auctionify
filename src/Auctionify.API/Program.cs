@@ -123,12 +123,6 @@ namespace Auctionify.API
                 }
 
                 app.UseStaticFiles();
-                app.UseStaticFiles(new StaticFileOptions
-                {
-                    FileProvider = new PhysicalFileProvider(
-                        Path.Combine(app.Environment.ContentRootPath, "myapp/wwwroot")),
-                    RequestPath = "/ClientApp/dist"
-                });
 
                 app.UseCors("CorsPolicy");
 				app.UseRouting();
