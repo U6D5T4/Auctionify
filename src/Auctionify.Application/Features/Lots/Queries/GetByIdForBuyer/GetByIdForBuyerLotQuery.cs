@@ -82,6 +82,8 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer
 				{
 					var notRemovedBids = lot.Bids.Where(x => !x.BidRemoved).OrderByDescending(x => x.TimeStamp).ToList();
 
+					result.BidCount = notRemovedBids.Count;
+
 					result.Bids = _mapper.Map<List<BidDto>>(notRemovedBids);
 				}
 

@@ -5,5 +5,6 @@ namespace Auctionify.Application.Features.Lots.Queries.FIlter
 	public class FilterLotsResponse : GetAllLots
 	{
 		public bool IsInWatchlist { get; set; }
+		public int BidCount { get; set; }
 	}
 }
