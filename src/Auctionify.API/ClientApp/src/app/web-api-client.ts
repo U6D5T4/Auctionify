@@ -267,6 +267,28 @@ export class Client {
         );
     }
 
+    getOneLotForBuyer(id: number): Observable<BuyerGetLotResponse> {
+        let url_ = this.baseUrl + `/api/lots/${id}/buyer`;
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<BuyerGetLotResponse> => {
+                if (response.body !== null) {
+                    let data: BuyerGetLotResponse = response.body;
+
+                    return of(data);
+                } else return throwError(() => new Error('data is empty!'));
+            })
+        );
+    }
+
     deleteLotFile(id: number, url: string): Observable<any> {
         let url_ = this.baseUrl + `/api/lots/${id}/files`;
 
@@ -369,6 +391,23 @@ export interface SellerGetLotResponse {
     location: LocationDto;
     currency: CurrencyDto;
     bids: BidDto[];
+}
+
+export interface BuyerGetLotResponse {
+    id: number;
+    title: string;
+    description: string;
+    startingPrice: number | null;
+    startDate: Date | null;
+    endDate: Date | null;
+    photosUrl: string[] | null;
+    additionalDocumentsUrl: string[] | null;
+    category: CategoryDto;
+    lotStatus: LotStatusDto;
+    location: LocationDto;
+    currency: CurrencyDto;
+    bids: BidDto[];
+    isInWatchlist: boolean;
 }
 
 export interface CreateLotResponse {
