@@ -36,4 +36,11 @@ export class SignalRService {
             callback();
         });
     }
+
+    public onReceiveWithdrawBidNotification(callback: () => void) {
+        this.connection.on('ReceiveWithdrawBidNotification', () => {
+            console.log('Withdraw bid received');
+            callback();
+        });
+    }
 }

@@ -26,6 +26,10 @@ export class GetLotComponent implements OnInit {
         this.signalRService.onReceiveBidNotification(() => {
             this.getLotFromRoute();
         });
+
+        this.signalRService.onReceiveWithdrawBidNotification(() => {
+            this.getLotFromRoute();
+        });
     }
 
     getLotFromRoute(): void {

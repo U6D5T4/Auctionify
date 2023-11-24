@@ -1,6 +1,8 @@
 ﻿using Auctionify.Application.Common.Interfaces.Repositories;
+using Auctionify.Application.Hubs;
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Auctionify.Application.Features.Users.Commands.RemoveBid
 {
@@ -13,14 +15,17 @@ namespace Auctionify.Application.Features.Users.Commands.RemoveBid
 	{
 		private readonly IMapper _mapper;
 		private readonly IBidRepository _bidRepository;
+		private readonly IHubContext<AuctionHub> _hubContext;
 
 		public RemoveBidCommandHandler(
 			IMapper mapper,
-			IBidRepository bidRepository
+			IBidRepository bidRepository,
+			IHubContext<AuctionHub> hubContext
 		)
 		{
 			_mapper = mapper;
 			_bidRepository = bidRepository;
+			_hubContext = hubContext;
 		}
 
 		public async Task<RemovedBidResponse> Handle(
@@ -36,6 +41,11 @@ namespace Auctionify.Application.Features.Users.Commands.RemoveBid
 			bid!.BidRemoved = true;
 
 			await _bidRepository.UpdateAsync(bid!);
+
+			await _hubContext.Clients.All.SendAsync(
+				"ReceiveWithdrawBidNotification",
+				cancellationToken: cancellationToken
+			);
 
 			var response = _mapper.Map<RemovedBidResponse>(bid);
 
