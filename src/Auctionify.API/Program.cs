@@ -28,7 +28,6 @@ namespace Auctionify.API
 
 				// SignalR
 				builder.Services.AddSignalR();
-				builder.Services.AddSingleton<TimerControl>();
 
 				builder.Services.AddApplicationServices();
 				builder.Services.AddInfrastructureServices(builder.Configuration);
@@ -91,7 +90,7 @@ namespace Auctionify.API
 										Id = "Bearer"
 									}
 								},
-								new string[] { }
+								Array.Empty<string>()
 							}
 						}
 					);
@@ -145,7 +144,7 @@ namespace Auctionify.API
 					});
 				}
 
-				app.MapHub<AuctionHub>("/auctionHub");
+				app.MapHub<AuctionHub>("/api/auctionHub"); // SignalR hub
 
 				app.UseCors("CorsPolicy");
 				app.UseRouting();
