@@ -92,7 +92,6 @@ export class CreateLotComponent implements OnInit {
     isLoadingDraft = false;
     isDeleteLoading = false;
 
-    private createStateEndpoint: string = 'create-lot';
     private updateStateEndpoint: string = 'update-lot';
 
     lotId: number = 0;
@@ -360,7 +359,7 @@ export class CreateLotComponent implements OnInit {
         if (this.lotForm.controls.startingPrice.value !== null)
             this.lotForm.controls.startingPrice.addValidators([
                 Validators.min(1),
-                Validators.max(9999),
+                Validators.max(1000000000000)
             ]);
 
         this.lotForm.controls.categoryId.updateValueAndValidity();
@@ -381,18 +380,29 @@ export class CreateLotComponent implements OnInit {
         if (!this.imagesAmountCondition(filesArray)) return;
 
         if (filesList.length > 1) {
-            let addedInputButtons = 0;
+            let existingImagesName: string[] = [];
             for (let i = 0; i < filesList.length; i++) {
-                if (
-                    this.imagesToUpload.find((x) => x.name == filesList[i].name)
-                ) {
+                const existingFile = this.imagesToUpload.find(
+                    (x) => x.name == filesList[i].name
+                );
+                if (existingFile) {
                     filesArray = filesArray.filter(
                         (x) => x.name !== filesList[i].name
                     );
+                    existingImagesName.push(existingFile.name!);
                     continue;
                 }
+            }
 
-                addedInputButtons++;
+            if (existingImagesName.length > 0) {
+                this.openDialog(
+                    [
+                        `You tried to add the following existing images, so they will not be added again:`,
+                        ...existingImagesName,
+                    ],
+                    true,
+                    false
+                );
             }
 
             const iterations = 20 - this.imagesToUpload.length;
@@ -408,6 +418,14 @@ export class CreateLotComponent implements OnInit {
                 fileUrl: null,
             };
             if (this.imagesToUpload.find((x) => x.name == element.name)) {
+                this.openDialog(
+                    [
+                        `You tried to add existing images, so it will not be added again:`,
+                        element.name!,
+                    ],
+                    true,
+                    false
+                );
                 return;
             }
             this.imagesToUpload.push(element);
