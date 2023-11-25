@@ -26,11 +26,10 @@ namespace Auctionify.API
 				logger.Debug("init main");
 				var builder = WebApplication.CreateBuilder(args);
 
-				// SignalR
 				builder.Services.AddSignalR();
-
 				builder.Services.AddApplicationServices();
 				builder.Services.AddInfrastructureServices(builder.Configuration);
+
 				// Add services to the container.
 				// To display enum values as strings in the response
 				builder.Services
@@ -44,10 +43,7 @@ namespace Auctionify.API
 
 				// So that the URLs are lowercase
 				builder.Services.AddRouting(options => options.LowercaseUrls = true);
-
 				builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
-
-				// Add services to the container.
 				builder.Services.AddRazorPages();
 				// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 				builder.Services.AddEndpointsApiExplorer();
@@ -95,7 +91,6 @@ namespace Auctionify.API
 						}
 					);
 				});
-
 
 				// NLog: Setup NLog for Dependency injection
 				builder.Logging.ClearProviders();
@@ -145,8 +140,8 @@ namespace Auctionify.API
 				}
 
 				app.MapHub<AuctionHub>("/api/auctionHub"); // SignalR hub
-				app.UseStaticFiles();
 				app.UseCors("CorsPolicy");
+				app.UseStaticFiles();
 				app.UseRouting();
 				app.UseHttpsRedirection();
 				app.UseAuthentication();
@@ -155,7 +150,6 @@ namespace Auctionify.API
 				app.MapControllers();
 				app.MapRazorPages();
 				app.MapFallbackToFile("index.html");
-
 				app.Run();
 			}
 			catch (HostAbortedException ex)
