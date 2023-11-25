@@ -1,15 +1,3 @@
-using Auctionify.API.Middlewares;
-using Auctionify.API.Services;
-using Auctionify.Application;
-using Auctionify.Application.Common.Interfaces;
-using Auctionify.Application.Hubs;
-using Auctionify.Infrastructure;
-using Auctionify.Infrastructure.Persistence;
-using Microsoft.OpenApi.Models;
-using NLog;
-using NLog.Web;
-using System.Text.Json.Serialization;
-
 namespace Auctionify.API
 {
 	public class Program
@@ -145,7 +133,7 @@ namespace Auctionify.API
 				}
 
 				app.MapHub<AuctionHub>("/api/auctionHub"); // SignalR hub
-
+				app.UseStaticFiles();
 				app.UseCors("CorsPolicy");
 				app.UseRouting();
 				app.UseHttpsRedirection();

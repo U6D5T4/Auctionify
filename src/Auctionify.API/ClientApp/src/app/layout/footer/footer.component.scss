@@ -1,25 +1,20 @@
 .main {
     display: flex;
-    margin: 0 auto;
     justify-content: center;
     border: 1px, 0px, 0px, 0px;
     flex-direction: column;
-    width: 1520px;
-    padding: 80px 40px;
 }
 
-.container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.main-container {
+    padding-left: 240px;
+    padding-right: 240px;
 }
 
 .container-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding-bottom: 32px;
-}
-
-.container-bott {
-    padding-top: 32px;
 }
 
 .left-side_top-footer p {
@@ -32,35 +27,35 @@
     padding-top: 32px;
 }
 
-.main-ul {
+.main-ul{
     gap: 60px;
     display: flex;
     list-style: none;
 }
 
-.main-ul ul {
+.main-ul ul{
     padding-left: 40px;
     font-weight: bold;
     list-style: none;
 }
 
-.main-ul ul li {
+.main-ul ul li{
     padding-top: 30px;
     align-items: center;
     display: flex;
 }
 
-.main-ul ul p {
+.main-ul ul p{
     padding-bottom: 24px;
 }
 
-.main-ul ul li a {
+.main-ul ul li a{
     padding-left: 20px;
     text-decoration: none;
     color: inherit;
 }
 
-hr {
+.line{
     height: 1px;
     background-color: #e0e0e0;
 }
@@ -78,21 +73,21 @@ hr {
     gap: 40px;
 }
 
-.special {
+.special{
     padding-left: 10px;
     list-style-type: disc;
 }
 
-.special::marker {
+.special::marker{
     color: #e0e0e0;
 }
 
-.right-bott {
+.right-bott{
     font-weight: bold;
     display: flex;
 }
 
-.orange {
+.orange{
     padding-left: 5px;
     color: orange;
 }

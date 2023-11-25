@@ -58,7 +58,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: angular-app
-          path: ${{env.DOTNET_ROOT}}/myapp/wwwroot
+          path: ${{env.DOTNET_ROOT}}/myapp/wwwroot/
 
   test:
     runs-on: ubuntu-latest
@@ -94,9 +94,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: angular-app
-
-      - name: Display contents of Angular artifacts
-        run: ls ${{env.DOTNET_ROOT}}/myapp/wwwroot/dist
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
