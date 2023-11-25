@@ -14,9 +14,9 @@ export class AuctionComponent implements OnInit{
   initialActiveLotsCount: number = 10;
   additionalActiveLotsCount: number = 10;
   initialUpcomingLotsCount: number = 5;
-  additionalUpcomingLotsCount: number = 5;
+  additionalUpcomingLotsCount: number = 55;
   initialArchivedLotsCount: number = 5;
-  additionalArchivedLotsCount: number = 5;
+  additionalArchivedLotsCount: number = 55;
   
   activeLots$!: Observable<LotModel[]>;
   upcomingLots$!: Observable<LotModel[]>;
