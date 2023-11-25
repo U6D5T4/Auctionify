@@ -1,6 +1,7 @@
 ﻿using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Features.Users.Commands.RemoveBid;
+using Auctionify.Application.Hubs;
 using Auctionify.Core.Entities;
 using Auctionify.Infrastructure.Persistence;
 using Auctionify.Infrastructure.Repositories;
@@ -8,6 +9,7 @@ using AutoMapper;
 using FluentAssertions;
 using FluentValidation.TestHelper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Moq;
 using System.Linq.Expressions;
 
@@ -88,7 +90,18 @@ namespace Auctionify.UnitTests.RemoveBidTests
 			var mapperMock = new Mock<IMapper>();
 			var bidRepositoryMock = new Mock<IBidRepository>();
 
-			var handler = new RemoveBidCommandHandler(mapperMock.Object, bidRepositoryMock.Object);
+			var mockClientProxy = new Mock<IClientProxy>();
+			var mockClients = new Mock<IHubClients>();
+			mockClients.Setup(clients => clients.All).Returns(mockClientProxy.Object);
+
+			var mockHubContext = new Mock<IHubContext<AuctionHub>>();
+			mockHubContext.Setup(x => x.Clients).Returns(mockClients.Object);
+
+			var handler = new RemoveBidCommandHandler(
+				mapperMock.Object,
+				bidRepositoryMock.Object,
+				mockHubContext.Object
+			);
 
 			var command = new RemoveBidCommand { BidId = 1 };
 
