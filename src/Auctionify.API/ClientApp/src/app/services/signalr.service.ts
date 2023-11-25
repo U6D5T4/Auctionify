@@ -14,6 +14,7 @@ export class SignalRService {
         this.connection = new signalR.HubConnectionBuilder()
             .configureLogging(signalR.LogLevel.Information)
             .withUrl(this.apiUrl + 'api/auctionHub')
+            .withAutomaticReconnect()
             .build();
 
         this.startConnection();
