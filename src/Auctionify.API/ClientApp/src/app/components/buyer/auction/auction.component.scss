@@ -95,6 +95,12 @@
         height: 48px;
     }
 
+    &__auction-upcoming {
+        display: inline-grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 13px;
+    }
+
     &__auction-upcoming-title {
         display: flex;
         width: 100%;
@@ -109,6 +115,12 @@
         display: flex;
         align-items: center;
         gap: 12px;
+    }
+
+    &__auction-archived {
+        display: inline-grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 13px;
     }
 
     &__auction-archived-title {
