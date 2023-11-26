@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { formatDate } from '@angular/common';
 import { Observable } from 'rxjs';
-import { BidDto, BuyerGetLotResponse, Client } from 'src/app/web-api-client';
+import { BuyerGetLotResponse, Client } from 'src/app/web-api-client';
 
 @Component({
   selector: 'app-lot-profile-buyer',
@@ -11,6 +11,7 @@ import { BidDto, BuyerGetLotResponse, Client } from 'src/app/web-api-client';
 export class LotProfileBuyerComponent implements OnInit {
   lotData$!: Observable<BuyerGetLotResponse>;
   showAllBids = false;
+  selectedMainPhotoIndex: number = 0;
 
   constructor(private apiService: Client) {}
 
@@ -27,6 +28,10 @@ export class LotProfileBuyerComponent implements OnInit {
     }
   }
 
+  setMainPhoto(index: number): void {
+    this.selectedMainPhotoIndex = index;
+  }
+
   formatBidDate(date: Date): string {
     return formatDate(date, 'd MMMM HH:mm', 'en-US');
   }
@@ -37,5 +42,22 @@ export class LotProfileBuyerComponent implements OnInit {
 
   formatEndDate(date: Date | null): string {
     return date ? formatDate(date, 'd/MM/yy', 'en-US') : '';
+  }
+
+  addLotToWatchlist(lotId: number){
+    this.apiService.addToWatchlist(lotId)
+  }
+
+  downloadDocument(documentUrl: string): void {
+    this.apiService.downloadDocument(documentUrl).subscribe((data: any) => {
+      const blob = new Blob([data], { type: 'application/octet-stream' });
+  
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      const fileName = documentUrl.substring(documentUrl.lastIndexOf('/') + 1);
+      link.download = fileName;
+  
+      link.click();
+    });
   }
 }

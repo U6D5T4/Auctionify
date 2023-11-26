@@ -335,6 +335,37 @@ export class Client {
             })
         );
     }
+
+    addToWatchlist(lotId: number): Observable<any> {
+        let url = this.baseUrl + `/watchlists/lots`;
+      
+        const formData = new FormData();
+        formData.append('LotId', lotId.toString());
+      
+        const options = {
+          body: formData,
+          observe: 'response' as 'body',
+          headers: new HttpHeaders({
+            Accept: 'application/json',
+          }),
+        };
+      
+        return this.http.post<any>(url, formData, options).pipe(
+          mergeMap((response: HttpResponse<any>) => {
+            let data: any = {};
+      
+            if (response.body !== null) {
+              data = response.body;
+            }
+      
+            return of(data);
+          })
+        );
+      }
+
+    downloadDocument(documentUrl: string): Observable<any> {
+        return this.http.get(documentUrl, { responseType: 'blob' });
+    }
 }
 
 export interface CategoryDto {
