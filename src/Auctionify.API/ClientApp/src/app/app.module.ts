@@ -14,7 +14,7 @@ import { LayoutModule } from './layout/layout.module';
 import { LotProfileBuyerComponent } from './components/buyer/lot-profile-buyer/lot-profile-buyer.component';
 
 @NgModule({
-    declarations: [AppComponent, HomeComponent, DashboardComponent, LotProfileBuyerComponent],
+    declarations: [AppComponent, HomeComponent, DashboardComponent],
     imports: [
         BrowserModule,
         AppRoutingModule,

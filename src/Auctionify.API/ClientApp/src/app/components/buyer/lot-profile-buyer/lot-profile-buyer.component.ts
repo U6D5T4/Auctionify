@@ -1,7 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Injectable } from '@angular/core';
 import { formatDate } from '@angular/common';
 import { Observable } from 'rxjs';
 import { BuyerGetLotResponse, Client } from 'src/app/web-api-client';
+
+@Injectable({
+  providedIn: 'root',
+})
 
 @Component({
   selector: 'app-lot-profile-buyer',
