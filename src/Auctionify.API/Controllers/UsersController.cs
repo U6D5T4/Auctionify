@@ -3,11 +3,12 @@ using Auctionify.Application.Features.Users.Commands.AddBidForLot;
 using Auctionify.Application.Features.Users.Commands.AddLotToWatchlist;
 using Auctionify.Application.Features.Users.Commands.RemoveBid;
 using Auctionify.Application.Features.Users.Commands.RemoveLotFromWatchlist;
-using Auctionify.Application.Features.Users.Commands.UpdateBuyerProfile;
+using Auctionify.Application.Features.Users.Commands.Update;
 using Auctionify.Application.Features.Users.Queries.GetAllBidsOfUserForLot;
-using Auctionify.Application.Features.Users.Queries.GetBuyerProfile;
+using Auctionify.Application.Features.Users.Queries.GetBuyer;
 using Auctionify.Application.Features.Users.Queries.GetById;
 using Auctionify.Application.Features.Users.Queries.GetByUserWatchlist;
+using Auctionify.Application.Features.Users.Queries.GetSeller;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -104,32 +105,28 @@ namespace Auctionify.API.Controllers
 			return Ok(bids);
 		}
 
-		[HttpGet("buyers/profile")]
+		[HttpGet("buyers")]
 		[Authorize(Roles = "Buyer")]
-		public async Task<IActionResult> GetBuyerProfile()
+		public async Task<IActionResult> GetBuyer()
 		{
-			var result = await _mediator.Send(new GetBuyerProfileQuery());
+			var result = await _mediator.Send(new GetBuyerQuery());
 			return Ok(result);
 		}
 
-		[HttpGet("sellers/profile")]
-		public async Task<IActionResult> GetSellerProfile()
+		[HttpGet("sellers")]
+		[Authorize(Roles = "Seller")]
+		public async Task<IActionResult> GetSeller()
 		{
-			return Ok();
-		}
-
-		[HttpPut("buyers/profile")]
-		[Authorize(Roles = "Buyer")]
-		public async Task<IActionResult> UpdateBuyerProfile([FromForm] UpdateBuyerProfileCommand updateBuyerProfileCommand)
-		{
-			var result = await _mediator.Send(updateBuyerProfileCommand);
+			var result = await _mediator.Send(new GetSellerQuery());
 			return Ok(result);
 		}
 
-		[HttpPut("sellers/profile")]
-		public async Task<IActionResult> UpdateSellerProfile()
+		[HttpPut]
+		[Authorize(Roles = "Buyer, Seller")]
+		public async Task<IActionResult> UpdateUserProfile([FromForm] UpdateUserCommand updateUserCommand)
 		{
-			return Ok();
+			var result = await _mediator.Send(updateUserCommand);
+			return Ok(result);
 		}
 	}
 }

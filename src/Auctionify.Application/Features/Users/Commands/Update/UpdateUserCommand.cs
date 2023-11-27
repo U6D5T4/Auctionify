@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 
-namespace Auctionify.Application.Features.Users.Commands.UpdateBuyerProfile
+namespace Auctionify.Application.Features.Users.Commands.Update
 {
-	public class UpdateBuyerProfileCommand : IRequest<UpdatedBuyerProfileResponse>
+	public class UpdateUserCommand : IRequest<UpdatedUserResponse>
 	{
 		public string? FirstName { get; set; }
 
@@ -24,8 +24,8 @@ namespace Auctionify.Application.Features.Users.Commands.UpdateBuyerProfile
 		public bool DeleteProfilePicture { get; set; }
 	}
 
-	public class UpdateBuyerProfileCommandHandler
-		: IRequestHandler<UpdateBuyerProfileCommand, UpdatedBuyerProfileResponse>
+	public class UpdateUserCommandHandler
+		: IRequestHandler<UpdateUserCommand, UpdatedUserResponse>
 	{
 		private readonly ICurrentUserService _currentUserService;
 		private readonly UserManager<User> _userManager;
@@ -33,7 +33,7 @@ namespace Auctionify.Application.Features.Users.Commands.UpdateBuyerProfile
 		private readonly AzureBlobStorageOptions _azureBlobStorageOptions;
 		private readonly IMapper _mapper;
 
-		public UpdateBuyerProfileCommandHandler(
+		public UpdateUserCommandHandler(
 			ICurrentUserService currentUserService,
 			UserManager<User> userManager,
 			IBlobService blobService,
@@ -48,8 +48,8 @@ namespace Auctionify.Application.Features.Users.Commands.UpdateBuyerProfile
 			_mapper = mapper;
 		}
 
-		public async Task<UpdatedBuyerProfileResponse> Handle(
-			UpdateBuyerProfileCommand request,
+		public async Task<UpdatedUserResponse> Handle(
+			UpdateUserCommand request,
 			CancellationToken cancellationToken
 		)
 		{
@@ -95,7 +95,7 @@ namespace Auctionify.Application.Features.Users.Commands.UpdateBuyerProfile
 
 			await _userManager.UpdateAsync(user);
 
-			var response = _mapper.Map<UpdatedBuyerProfileResponse>(user);
+			var response = _mapper.Map<UpdatedUserResponse>(user);
 
 			if (user.ProfilePicture != null)
 			{

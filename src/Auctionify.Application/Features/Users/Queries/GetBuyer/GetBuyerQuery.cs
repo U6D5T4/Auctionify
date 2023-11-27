@@ -6,12 +6,12 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 
-namespace Auctionify.Application.Features.Users.Queries.GetBuyerProfile
+namespace Auctionify.Application.Features.Users.Queries.GetBuyer
 {
-	public class GetBuyerProfileQuery : IRequest<GetBuyerProfileResponse> { }
+	public class GetBuyerQuery : IRequest<GetBuyerResponse> { }
 
-	public class GetBuyerProfileQueryHandler
-		: IRequestHandler<GetBuyerProfileQuery, GetBuyerProfileResponse>
+	public class GetBuyerQueryHandler
+		: IRequestHandler<GetBuyerQuery, GetBuyerResponse>
 	{
 		private readonly ICurrentUserService _currentUserService;
 		private readonly UserManager<User> _userManager;
@@ -19,7 +19,7 @@ namespace Auctionify.Application.Features.Users.Queries.GetBuyerProfile
 		private readonly AzureBlobStorageOptions _azureBlobStorageOptions;
 		private readonly IMapper _mapper;
 
-		public GetBuyerProfileQueryHandler(
+		public GetBuyerQueryHandler(
 			ICurrentUserService currentUserService,
 			UserManager<User> userManager,
 			IBlobService blobService,
@@ -34,8 +34,8 @@ namespace Auctionify.Application.Features.Users.Queries.GetBuyerProfile
 			_mapper = mapper;
 		}
 
-		public async Task<GetBuyerProfileResponse> Handle(
-			GetBuyerProfileQuery request,
+		public async Task<GetBuyerResponse> Handle(
+			GetBuyerQuery request,
 			CancellationToken cancellationToken
 		)
 		{
@@ -43,7 +43,7 @@ namespace Auctionify.Application.Features.Users.Queries.GetBuyerProfile
 
 			var profilePictureName = user.ProfilePicture;
 
-			var response = _mapper.Map<GetBuyerProfileResponse>(user);
+			var response = _mapper.Map<GetBuyerResponse>(user);
 
 			if (profilePictureName != null)
 			{

@@ -1,6 +1,6 @@
-﻿namespace Auctionify.Application.Features.Users.Queries.GetBuyerProfile
+﻿namespace Auctionify.Application.Features.Users.Queries.GetSeller
 {
-	public class GetBuyerProfileResponse
+	public class GetSellerResponse
 	{
 		public string FirstName { get; set; }
 
@@ -13,5 +13,9 @@
 		public string AboutMe { get; set; }
 
 		public string ProfilePictureUrl { get; set; }
+
+		public int CreatedLotsCount { get; set; }
+
+		public int FinishedLotsCount { get; set; }
 	}
 }

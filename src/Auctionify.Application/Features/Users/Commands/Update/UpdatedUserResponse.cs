@@ -1,6 +1,6 @@
-﻿namespace Auctionify.Application.Features.Users.Commands.UpdateBuyerProfile
+﻿namespace Auctionify.Application.Features.Users.Commands.Update
 {
-	public class UpdatedBuyerProfileResponse
+	public class UpdatedUserResponse
 	{
 		public string FirstName { get; set; }
 
