@@ -1,7 +1,6 @@
 :host {
     display: block;
     width: 480px;
-    height: 344px;
     background: #fff;
     border-radius: 24px;
 }
@@ -29,4 +28,10 @@
     flex-direction: column;
     gap: 21px;
     align-items: center;
+
+    h3 {
+        text-align: center;
+        max-width: 420px;
+        word-wrap: break-word;
+    }
 }

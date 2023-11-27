@@ -24,6 +24,10 @@ namespace Auctionify.Infrastructure.Persistence
             _mediator = mediator;
         }
 
+		public ApplicationDbContext(DbContextOptions options) : base(options)
+		{
+		}
+
 		public virtual DbSet<Category> Categories => Set<Category>();
 
 		public virtual DbSet<ChatMessage> ChatMessages => Set<ChatMessage>();
@@ -51,8 +55,6 @@ namespace Auctionify.Infrastructure.Persistence
 		protected override void OnModelCreating(ModelBuilder builder)
 		{
 			base.OnModelCreating(builder);
-			builder.Ignore<IdentityUserLogin<int>>();
-			builder.Ignore<IdentityUserToken<int>>();
 
 			builder.Entity<User>()
 				.Ignore(u => u.AccessFailedCount)
@@ -66,6 +68,8 @@ namespace Auctionify.Infrastructure.Persistence
             builder.Entity<IdentityUserRole<int>>().ToTable("UserRoles");
             builder.Entity<IdentityRoleClaim<int>>().ToTable("RoleClaims");
             builder.Entity<IdentityUserClaim<int>>().ToTable("UserClaims");
+            builder.Entity<IdentityUserLogin<int>>().ToTable("UserLogins");
+            builder.Entity<IdentityUserToken<int>>().ToTable("UserTokens");
 
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }

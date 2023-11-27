@@ -2,42 +2,53 @@
     <div class="login__container">
         <div class="login__container-inner">
             <div class="login__header">
-            <h1>Login</h1>
-            <p>Your one-stop shop for <br>
-                bidding and buying</p>
+                <h1>Login</h1>
+                <p>
+                    Your one-stop shop for <br />
+                    bidding and buying
+                </p>
+            </div>
+
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" action="submit" class="login__form form">
+                <mat-form-field color="primary" appearance="outline">
+                    <mat-label>Email</mat-label>
+                    <mat-error>Email required</mat-error>
+                    <input formControlName="email" matInput />
+                </mat-form-field>
+                <mat-form-field color="primary" appearance="outline">
+                    <mat-label>Password</mat-label>
+                    <input formControlName="password" matInput [type]="passwordHidden ? 'password' : 'text'" />
+                    <button type="button" mat-icon-button matSuffix (click)="togglePasswordVisibility()">
+                        <mat-icon>{{
+                            passwordHidden ? "visibility" : "visibility_off"
+                            }}</mat-icon>
+                    </button>
+                    <mat-error>Password required</mat-error>
+                </mat-form-field>
+                <button disabled="{{ isLoading }}" mat-raised-button color="primary">
+                    <mat-spinner *ngIf="isLoading" diameter="25"></mat-spinner>
+                    <div *ngIf="!isLoading">Log in</div>
+                </button>
+                <a class="form__link" [routerLink]="['/auth/forgot-password']">Forgot password?</a>
+
+                <p class="form__paragraph">
+                    Don't have an account?
+                    <a [routerLink]="['/auth/register']" class="form__link">Sign up</a>
+                </p>
+            </form>
+            <div class="login__border"></div>
+            <a href="" class="login__google-link">
+                <button mat-stroked-button>
+                    <div class="google-link__label">
+                        <img width="24px" src="../../../assets/icons/google-logo.svg" alt="" />
+                        Sign in with Google
+                    </div>
+                </button>
+            </a>
+            <p class="login__policy">
+                By signing up to create an account I accept <br />
+                Company’s Terms of Use and Privacy Policy
+            </p>
         </div>
-
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" action="submit" class="login__form form">
-            <mat-form-field color="primary" appearance="outline">
-                <mat-label>Email</mat-label>
-                <mat-error>Email required</mat-error>
-                <input formControlName="email" matInput>
-            </mat-form-field>
-            <mat-form-field color="primary" appearance="outline">
-                <mat-label>Password</mat-label>
-                <input type="password" formControlName="password" matInput>
-                <mat-error>Password required</mat-error>
-            </mat-form-field>
-            <button disabled="{{isLoading}}" mat-raised-button color="primary">
-                <mat-spinner *ngIf="isLoading" diameter="25"></mat-spinner>
-                <div *ngIf="!isLoading">Log in</div>
-            </button>
-            <a class="form__link" [routerLink]="['/auth/forgot-password']">Forgot password?</a>
-
-            <p class="form__paragraph">Don’t have an account? <a [routerLink]="['/auth/register']" class="form__link">Sign up</a></p>
-        </form>
-        <div class="login__border"></div>
-        <a href="" class="login__google-link">
-            <button mat-stroked-button>
-                <div class="google-link__label">
-                    <img width="24px" src="../../../assets/icons/google-logo.svg" alt="">
-                    Sign in with Google
-                </div>
-            </button>
-        </a>
-        <p class="login__policy">By signing up to create an account I accept <br>
-            Company’s Terms of Use and Privacy Policy
-        </p>
-    </div>
     </div>
 </div>

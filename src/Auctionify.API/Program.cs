@@ -4,6 +4,7 @@ using Auctionify.Application;
 using Auctionify.Application.Common.Interfaces;
 using Auctionify.Infrastructure;
 using Auctionify.Infrastructure.Persistence;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 using NLog;
 using NLog.Web;
@@ -84,6 +85,17 @@ namespace Auctionify.API
                 builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
                 builder.Host.UseNLog();
 
+                builder.Services.AddCors(options =>
+                {
+					options.AddPolicy(name: "CorsPolicy", builder =>
+                    {
+                        builder.WithOrigins("https://localhost:44452")
+								.AllowAnyMethod()
+                                .AllowAnyHeader()
+                                .AllowCredentials();
+					});
+				});
+
                 var app = builder.Build();
 
                 // Configure the HTTP request pipeline.
@@ -110,6 +122,9 @@ namespace Auctionify.API
                     });
                 }
 
+                app.UseStaticFiles();
+
+                app.UseCors("CorsPolicy");
 				app.UseRouting();
                 app.UseHttpsRedirection();
                 app.UseAuthentication();

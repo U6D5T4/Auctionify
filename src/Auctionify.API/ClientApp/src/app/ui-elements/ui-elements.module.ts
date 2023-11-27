@@ -5,6 +5,7 @@ import { ButtonComponent } from './button/button.component';
 import { DialogPopupComponent } from './dialog-popup/dialog-popup.component';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { ChoicePopupComponent } from './choice-popup/choice-popup.component';
 
 
 
@@ -13,7 +14,8 @@ import { MatButtonModule } from '@angular/material/button';
     ButtonComponent,
     InputComponent,
     ButtonComponent,
-    DialogPopupComponent
+    DialogPopupComponent,
+    ChoicePopupComponent
   ],
   imports: [
     CommonModule,

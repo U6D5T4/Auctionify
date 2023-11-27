@@ -16,8 +16,6 @@ import { DialogModule } from '@angular/cdk/dialog';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { ForgetPasswordComponent } from './forget-password/forget-password.component';
 import { isLoggedInGuard } from '../guards/is-logged-in.guard';
-import { isBuyerGuard } from '../guards/buyer/is-buyer.guard';
-import { isSellerGuard } from '../guards/seller/is-seller.guard';
 
 @NgModule({
   declarations: [LoginComponent, RegisterComponent, ResetPasswordComponent, ForgetPasswordComponent],
@@ -25,10 +23,24 @@ import { isSellerGuard } from '../guards/seller/is-seller.guard';
     CommonModule,
     HttpClientModule,
     RouterModule.forChild([
-      { path: ApplicationPaths.Login, component: LoginComponent },
-      { path: ApplicationPaths.Register, component: RegisterComponent },
-      { path: ApplicationPaths.ResetPassword, component: ResetPasswordComponent},
-      { path: ApplicationPaths.ForgetPassword, component: ForgetPasswordComponent}
+      {
+        path: ApplicationPaths.Login,
+        component: LoginComponent,
+        canActivate: [isLoggedInGuard],
+      },
+      {
+        path: ApplicationPaths.Register,
+        component: RegisterComponent,
+        canActivate: [isLoggedInGuard],
+      },
+      {
+        path: ApplicationPaths.ForgotPassword,
+        component: ForgotPasswordComponent,
+      },
+      {
+          path: ApplicationPaths.ResetPassword,
+          component: ResetPasswordComponent
+      },
     ]),
     UiElementsModule,
     MatFormFieldModule,
@@ -37,7 +49,7 @@ import { isSellerGuard } from '../guards/seller/is-seller.guard';
     ReactiveFormsModule,
     DialogModule,
     MatButtonModule,
-    MatProgressSpinnerModule
-  ]
+    MatProgressSpinnerModule,
+  ],
 })
 export class ApiAuthorizationModule {}

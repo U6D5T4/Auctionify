@@ -1,0 +1,39 @@
+<div class="starting-price-container">
+    <form [formGroup]="startingPriceFormGroup" class="starting-price-form">
+        <div class="starting-price-form-container">
+            <mat-form-field color="primary" appearance="outline">
+                <mat-label>Starting price</mat-label>
+                <input formControlName="startingPrice" type="number" matInput>
+                <mat-error *ngIf="startingPriceFormGroup.controls.startingPrice.hasError('required')">
+                    Starting price is
+                    <strong>required</strong>
+                </mat-error>
+                <mat-error *ngIf="startingPriceFormGroup.controls.startingPrice.hasError('min')">
+                  Minimum starting price is 1
+                </mat-error>
+                <mat-error *ngIf="startingPriceFormGroup.controls.startingPrice.hasError('max')">
+                  Maximum starting price is 1000000000000
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field color="primary" appearance="outline">
+                <mat-label>Currency</mat-label>
+                <mat-select formControlName="currencyId">
+                    <mat-option [value]="null">
+                        none
+                    </mat-option>
+                    <mat-option *ngFor="let currency of currencies" [value]="currency.id">
+                        {{currency.code}}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="startingPriceFormGroup.controls.currencyId.hasError('required')">
+                    Currency is
+                    <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
+        </div>
+
+        <button type="button" (click)="submit()" mat-flat-button color="primary">
+            Save
+        </button>
+    </form>
+</div>
