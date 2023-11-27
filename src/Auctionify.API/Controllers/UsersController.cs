@@ -123,7 +123,9 @@ namespace Auctionify.API.Controllers
 
 		[HttpPut]
 		[Authorize(Roles = "Buyer, Seller")]
-		public async Task<IActionResult> UpdateUserProfile([FromForm] UpdateUserCommand updateUserCommand)
+		public async Task<IActionResult> UpdateUserProfile(
+			[FromForm] UpdateUserCommand updateUserCommand
+		)
 		{
 			var result = await _mediator.Send(updateUserCommand);
 			return Ok(result);
