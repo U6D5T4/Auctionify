@@ -32,18 +32,18 @@
                             <mat-form-field appearance="outline">
                                 <mat-label>from 1</mat-label>
                                 <input type="number" [value]="filterForm.value.minimumPrice"
-                                    formControlName="minimumPrice" matInput min="1" max="1000000000000">
+                                    formControlName="minimumPrice" matInput min="1" [max]="highestLotPrice">
                             </mat-form-field>
                             <mat-form-field appearance="outline">
-                                <mat-label>to 1000000000000.99</mat-label>
-                                <input type="number" [value]="filterForm.value.maximumPrice" min="1" max="1000000000000"
-                                    formControlName="maximumPrice" matInput>
+                                <mat-label>to {{highestLotPrice}}</mat-label>
+                                <input type="number" [value]="filterForm.value.maximumPrice" min="1"
+                                    [max]="highestLotPrice" formControlName="maximumPrice" matInput>
                             </mat-form-field>
                         </div>
-                        <mat-slider min="1" max="1000000000000.99">
-                            <input [value]="filterForm.value.minimumPrice" formControlName="minimumPrice" value="300"
+                        <mat-slider min="1" [max]="highestLotPrice">
+                            <input [value]="filterForm.value.minimumPrice" formControlName="minimumPrice"
                                 matSliderStartThumb>
-                            <input [value]="filterForm.value.maximumPrice" formControlName="maximumPrice" value="400"
+                            <input [value]="filterForm.value.maximumPrice" formControlName="maximumPrice"
                                 matSliderEndThumb>
                         </mat-slider>
                     </div>

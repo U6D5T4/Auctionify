@@ -34,6 +34,7 @@ export class FilterComponent implements OnInit {
     categories: Category[] = [];
     lotStatuses: Status[] = [];
     locations: AppLocation[] = [];
+    highestLotPrice: number = 0;
 
     filterForm = new FormGroup<FilterParameters>({
         minimumPrice: new FormControl<number | null>(null),
@@ -53,6 +54,7 @@ export class FilterComponent implements OnInit {
         this.populateCategorySelector();
         this.populateLocations();
         this.populateLotStatuses();
+        this.populateHighestLotPrice();
     }
 
     filterClick() {
@@ -109,6 +111,14 @@ export class FilterComponent implements OnInit {
         this.client.getAllLocations().subscribe({
             next: (result: AppLocation[]) => {
                 this.locations = result;
+            },
+        });
+    }
+
+    populateHighestLotPrice() {
+        this.client.getHighestLotPrice().subscribe({
+            next: (result: number) => {
+                this.highestLotPrice = result;
             },
         });
     }

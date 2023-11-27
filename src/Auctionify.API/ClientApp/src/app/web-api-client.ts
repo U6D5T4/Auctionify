@@ -431,6 +431,18 @@ export class Client {
             })
         );
     }
+
+    getHighestLotPrice(): Observable<number> {
+        let url_ = this.baseUrl + `/api/lots/highest-price`;
+
+        return this.http.get(url_).pipe(
+            mergeMap((response: any): Observable<number> => {
+                if (response !== null) {
+                    return of(response as number);
+                } else return throwError(() => new Error('data is empty!'));
+            })
+        );
+    }
 }
 
 export interface FilteredLotModel {
