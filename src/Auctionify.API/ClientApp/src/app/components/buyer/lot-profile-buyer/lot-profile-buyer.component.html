@@ -43,8 +43,7 @@
                 </li>
             </ul>
             <div class="right__wishlist-btn" (click)="addLotToWatchlist(lot.id)">
-                <img [src]="lot.isInWatchlist ? '../../../../assets/icons/LikedIcon.svg' : '../../../../assets/icons/WishlistIcon.svg'" 
-                     alt="{{ lot.isInWatchlist ? 'Liked Icon' : 'Wishlist Icon' }}">
+              <mat-icon class="color-grey-3" [ngClass]="{'color-grey-3': lot.isInWatchlist}">{{ lot.isInWatchlist ? 'favorite' : 'favorite_border' }}</mat-icon>
                 <p>{{ lot.isInWatchlist ? 'Remove from wishlist' : 'Add to wishlist' }}</p>
               </div>      
         </div>
