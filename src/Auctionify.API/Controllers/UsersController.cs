@@ -3,7 +3,9 @@ using Auctionify.Application.Features.Users.Commands.AddBidForLot;
 using Auctionify.Application.Features.Users.Commands.AddLotToWatchlist;
 using Auctionify.Application.Features.Users.Commands.RemoveBid;
 using Auctionify.Application.Features.Users.Commands.RemoveLotFromWatchlist;
+using Auctionify.Application.Features.Users.Commands.UpdateBuyerProfile;
 using Auctionify.Application.Features.Users.Queries.GetAllBidsOfUserForLot;
+using Auctionify.Application.Features.Users.Queries.GetBuyerProfile;
 using Auctionify.Application.Features.Users.Queries.GetById;
 using Auctionify.Application.Features.Users.Queries.GetByUserWatchlist;
 using MediatR;
@@ -100,6 +102,34 @@ namespace Auctionify.API.Controllers
 			var bids = await _mediator.Send(query);
 
 			return Ok(bids);
+		}
+
+		[HttpGet("buyers/profile")]
+		[Authorize(Roles = "Buyer")]
+		public async Task<IActionResult> GetBuyerProfile()
+		{
+			var result = await _mediator.Send(new GetBuyerProfileQuery());
+			return Ok(result);
+		}
+
+		[HttpGet("sellers/profile")]
+		public async Task<IActionResult> GetSellerProfile()
+		{
+			return Ok();
+		}
+
+		[HttpPut("buyers/profile")]
+		[Authorize(Roles = "Buyer")]
+		public async Task<IActionResult> UpdateBuyerProfile([FromForm] UpdateBuyerProfileCommand updateBuyerProfileCommand)
+		{
+			var result = await _mediator.Send(updateBuyerProfileCommand);
+			return Ok(result);
+		}
+
+		[HttpPut("sellers/profile")]
+		public async Task<IActionResult> UpdateSellerProfile()
+		{
+			return Ok();
 		}
 	}
 }
