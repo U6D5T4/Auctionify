@@ -43,7 +43,7 @@ jobs:
           npm install
           ng build --configuration=production
           mkdir -p ${{env.DOTNET_ROOT}}/myapp/wwwroot/
-          mv dist ${{env.DOTNET_ROOT}}/myapp/wwwroot/
+          mv dist/client-app ${{env.DOTNET_ROOT}}/myapp/wwwroot/
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
