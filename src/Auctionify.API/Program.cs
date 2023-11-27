@@ -4,6 +4,7 @@ using Auctionify.Application;
 using Auctionify.Application.Common.Interfaces;
 using Auctionify.Infrastructure;
 using Auctionify.Infrastructure.Persistence;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 using NLog;
 using NLog.Web;
@@ -120,6 +121,8 @@ namespace Auctionify.API
                         c.RoutePrefix = "swagger";
                     });
                 }
+
+                app.UseStaticFiles();
 
                 app.UseCors("CorsPolicy");
 				app.UseRouting();

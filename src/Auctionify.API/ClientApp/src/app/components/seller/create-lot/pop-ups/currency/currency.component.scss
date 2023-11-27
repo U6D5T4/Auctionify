@@ -1,0 +1,17 @@
+.starting-price-container {
+    border-radius: 24px;
+    background-color: white;
+}
+
+.starting-price-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 20px;
+
+    &-container {
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
+    }
+}

@@ -270,7 +270,7 @@ namespace Auctionify.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal?>("StartingPrice")
-                        .HasColumnType("decimal(7,2)");
+                        .HasColumnType("decimal(28,2)");
 
                     b.Property<string>("Title")
                         .HasMaxLength(100)

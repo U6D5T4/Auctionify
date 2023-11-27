@@ -15,6 +15,10 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 				categoryRepository,
 				lotStatusRepository,
 				currencyRepository));
+
+			RuleFor(l => l.Photos)
+				.NotEmpty()
+				.When(l => l.IsDraft == false);
 		}
 	}
 }

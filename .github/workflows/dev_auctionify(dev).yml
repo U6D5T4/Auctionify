@@ -23,7 +23,7 @@ jobs:
           include-prerelease: true
 
       - name: Install dotnet-ef
-        run: dotnet tool install --global dotnet-ef
+        run: dotnet tool install --global dotnet-ef --version 7.*
 
       - name: Restore tools
         run: dotnet tool restore
@@ -36,6 +36,15 @@ jobs:
         env:
             ASPNETCORE_ENVIRONMENT: dev
 
+      - name: Build Angular App
+        run: |
+          cd src/Auctionify.API/ClientApp
+          npm install -g @angular/cli
+          npm install
+          ng build --configuration=production
+          mkdir -p ${{env.DOTNET_ROOT}}/myapp/wwwroot/
+          mv dist ${{env.DOTNET_ROOT}}/myapp/wwwroot/
+
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
@@ -44,21 +53,29 @@ jobs:
         with:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
-  #test:
-  #  runs-on: ubuntu-latest
 
-  #  steps:
-  #    - uses: actions/checkout@v4
+      - name: Upload Angular Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: angular-app
+          path: ${{env.DOTNET_ROOT}}/myapp/wwwroot/
 
-  #    - name: Set up .NET Core
-  #      uses: actions/setup-dotnet@v1
-  #      with:
-  #        dotnet-version: '7.x'
-  #        include-prerelease: true
+  test:
+    runs-on: ubuntu-latest
 
-  #    - name: Run unit tests
-  #      run: cd..
-  #      run: dotnet test --configuration Release
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '7.x'
+          include-prerelease: true
+
+      - name: Run unit tests
+        run: |
+          cd tests/Auctionify.UnitTests
+          dotnet test --configuration Release
   
   deploy:
     runs-on: ubuntu-latest
@@ -72,6 +89,11 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: .net-app
+
+      - name: Download Angular Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: angular-app
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
