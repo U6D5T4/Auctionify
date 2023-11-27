@@ -34,8 +34,8 @@ import { isLoggedInGuard } from '../guards/is-logged-in.guard';
         canActivate: [isLoggedInGuard],
       },
       {
-        path: ApplicationPaths.ForgotPassword,
-        component: ForgotPasswordComponent,
+        path: ApplicationPaths.ForgetPassword,
+        component: ForgetPasswordComponent,
       },
       {
           path: ApplicationPaths.ResetPassword,

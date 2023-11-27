@@ -344,6 +344,55 @@ export class Client {
             })
         );
     }
+
+    resetPassword(body: ResetPasswordViewModel | undefined) : Observable<ResetPasswordResponse> {
+        let url_ = this.baseUrl + "/api/auth/reset-password";
+    
+        const content_ = JSON.stringify(body);
+        
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/json"
+            })
+        };
+    
+        return this.http.request("post", url_, options_).pipe(mergeMap((response: any) : Observable<ResetPasswordResponse> => {
+            let data: ResetPasswordResponse = {};
+    
+            if (response.body !== null) {
+                data = response.body
+            }
+    
+            return of(data);
+        }));
+    }
+    
+    forgetPassword(email: string) : Observable<ForgetPasswordResponse> {
+        let url_ = `${this.baseUrl}/api/auth/forget-password?email=${encodeURIComponent(email)}`;
+    
+        console.log(email);
+        
+        let options_ : any = {
+            observe: "response",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/json"
+            })
+        };
+    
+        return this.http.request("post", url_, options_).pipe(mergeMap((response: any) : Observable<ForgetPasswordResponse> => {
+            let data: ForgetPasswordResponse = {};
+    
+            if (response.body !== null) {
+                data = response.body
+            }
+    
+            return of(data);
+        }));
+    }
 }
 
 export interface CategoryDto {
@@ -447,60 +496,6 @@ export interface Category {
     name: string;
     children: Category[];
     parentCategoryId: number | null;
-}
-            return of(data);
-        }));
-    }
-
-    resetPassword(body: ResetPasswordViewModel | undefined) : Observable<ResetPasswordResponse> {
-        let url_ = this.baseUrl + "/api/auth/reset-password";
-
-        const content_ = JSON.stringify(body);
-        
-        let options_ : any = {
-            body: content_,
-            observe: "response",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-                "Accept": "text/json"
-            })
-        };
-
-        return this.http.request("post", url_, options_).pipe(mergeMap((response: any) : Observable<ResetPasswordResponse> => {
-            let data: ResetPasswordResponse = {};
-
-            if (response.body !== null) {
-                data = response.body
-            }
-
-            return of(data);
-        }));
-    }
-
-    forgetPassword(email: string) : Observable<ForgetPasswordResponse> {
-        let url_ = `${this.baseUrl}/api/auth/forget-password?email=${encodeURIComponent(email)}`;
-    
-        console.log(email);
-        
-        let options_ : any = {
-            observe: "response",
-            headers: new HttpHeaders({
-                "Content-Type": "application/json",
-                "Accept": "text/json"
-            })
-        };
-    
-        return this.http.request("post", url_, options_).pipe(mergeMap((response: any) : Observable<ForgetPasswordResponse> => {
-            let data: ForgetPasswordResponse = {};
-    
-            if (response.body !== null) {
-                data = response.body
-            }
-    
-            return of(data);
-        }));
-    }
-    
 }
 
 export interface LoginResponse {
