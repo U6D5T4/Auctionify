@@ -1,0 +1,231 @@
+.main {
+    display: flex;
+    justify-content: space-evenly;
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+.left {
+    width: 776px;
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+    
+    &__photos-div {
+        display: flex;
+        gap: 8px;
+    }
+
+    &__photos {
+        width: 128px;
+        height: 520px;
+    }
+
+    &__photos img {
+        border-radius: 16px;
+    }
+
+    &__main-photo img{
+        border-radius: 16px;
+    }
+
+    &__description {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    &__location {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    &__address {
+        color: #2B5293;
+    }
+
+    &__download-btn {
+        display: flex;
+        justify-content: center;
+        border: 1px solid #2B5293;
+        color: #2B5293;
+        border-radius: 8px;
+    }
+}
+
+.right {
+    width: 712px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    &__wishlist {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    &__wishlist ul {
+        display: flex;
+        list-style: none;
+        gap: 40px;
+    }
+
+    &__wishlist ul li {
+        
+        color: #2B5293;
+    }
+
+    &__category-special {
+        list-style: disc;
+    }
+
+    &__wishlist-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #828282;
+    }
+
+    &__bids {
+        display: flex;
+        height: 108px;
+        justify-content: space-between;
+        background-color: #F0F3FE;
+        border-radius: 8px;
+        align-items: center;
+    }
+
+    &__bids-info {
+        padding-left: 24px;
+        display: flex;
+        gap: 80px;
+    } 
+    
+    &__bids-info p {
+        padding-top: 10px;
+    } 
+
+    &__bid-btns {
+        display: flex;
+        gap: 8px;
+        padding-right: 20px;
+    }
+
+    &__bid-btns button {
+        font-weight: bold;
+        font-size: 16px;
+        width: 113px;
+        height: 48px;
+        border-radius: 8px;
+    }
+
+    &__btn-remove {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        color: #2B5293;
+        background-color: transparent;
+        border: 2px solid #2B5293;
+    }
+
+    &__btn-edit-lot {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        color: white;
+        background-color: #2B5293;
+        border: none;
+    }
+
+    &__bids-history {
+        width: 712px;
+        border: 1px solid #828282;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    &__bids-history-title {
+        padding: 24px;
+        display: flex;
+        font-size: 16px;
+        color: #828282;
+        justify-content: space-between;
+    }
+
+    &__bids-history-title-left {
+        display: flex;
+        gap: 72px;
+    }
+
+    &__single-bid {
+        display: flex;
+        padding-left: 24px;
+        padding-bottom: 16px;
+        justify-content: space-between;
+    }
+
+    &__bid-number-date {
+        display: flex;
+        gap: 112px;
+    }
+
+    &__bid-date {
+        display: flex;
+        align-items: center;
+    }
+
+    &__bid-price {
+        display: flex;
+        align-items: center;
+        padding-right: 24px;
+    }
+
+    &__bid-number {
+        width: 48px;
+        height: 40px;
+        border-radius: 8px;
+        background-color: #F0F3FE;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    &__show-more-bids {
+        display: flex;
+        justify-content: center;
+        color: #2B5293;
+        padding-bottom: 24px;
+    }
+
+    &__lot-info {
+        width: 712px;
+        background-color: #F0F3FE;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 32px;
+    }
+
+    &__parametrs {
+        padding: 24px 0px 24px 40px;
+    }
+
+    &__parametrs ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    &__info ul {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+}

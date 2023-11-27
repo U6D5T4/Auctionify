@@ -1,5 +1,7 @@
 import { Component, OnInit, Injectable } from '@angular/core';
 import { formatDate } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+
 import { Observable } from 'rxjs';
 import { BuyerGetLotResponse, Client } from 'src/app/web-api-client';
 
@@ -17,11 +19,13 @@ export class LotProfileBuyerComponent implements OnInit {
   showAllBids = false;
   selectedMainPhotoIndex: number = 0;
 
-  constructor(private apiService: Client) {}
+  constructor(private apiService: Client, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    const lotId = 2;
-    this.lotData$ = this.apiService.getOneLotForBuyer(lotId);
+    this.route.params.subscribe(params => {
+      const lotId = +params['id'];
+      this.lotData$ = this.apiService.getOneLotForBuyer(lotId);
+    });
   }
 
   getHighestBidPrice(lotData: BuyerGetLotResponse | null): number | null {

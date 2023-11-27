@@ -4,7 +4,7 @@ import { LotProfileBuyerComponent } from './lot-profile-buyer/lot-profile-buyer.
 
 const buyerRoutes: Routes = [
     {
-        path: ':id/buyer',
+        path: 'lot-profile/:id',
         component: LotProfileBuyerComponent,
         pathMatch: 'full',
     }
