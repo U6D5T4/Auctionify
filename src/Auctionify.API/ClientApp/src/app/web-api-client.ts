@@ -21,6 +21,7 @@ import {
 } from '@angular/common/http';
 import { UserRole } from './api-authorization/authorize.service';
 import { CreateLotModel, UpdateLotModel } from './models/lots/lot-models';
+import { FilterLot } from './models/lots/filter';
 
 export const API_BASE_URL = new InjectionToken('API_BASE_URL');
 
@@ -131,6 +132,54 @@ export class Client {
         return this.http.request('get', url_, options_).pipe(
             mergeMap((response: any): Observable<Category[]> => {
                 let data: Category[] = [];
+
+                if (response.body !== null) {
+                    data = response.body;
+                }
+
+                return of(data);
+            })
+        );
+    }
+
+    getAllLotStatuses(): Observable<Status[]> {
+        let url_ = this.baseUrl + '/api/lotstatuses';
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<Status[]> => {
+                let data: Status[] = [];
+
+                if (response.body !== null) {
+                    data = response.body;
+                }
+
+                return of(data);
+            })
+        );
+    }
+
+    getAllLocations(): Observable<AppLocation[]> {
+        let url_ = this.baseUrl + '/api/locations';
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<AppLocation[]> => {
+                let data: AppLocation[] = [];
 
                 if (response.body !== null) {
                     data = response.body;
@@ -344,6 +393,72 @@ export class Client {
             })
         );
     }
+
+    filterLots(params: FilterLot): Observable<FilteredLotModel[]> {
+        let url_ = this.baseUrl + `/api/lots/filtered-lots`;
+
+        let queryParams = new HttpParams();
+
+        for (const [key, value] of Object.entries(params)) {
+            if (key == 'lotStatuses') {
+                if (value !== null) {
+                    for (const lotId of value as number[]) {
+                        queryParams = queryParams.append(
+                            key.charAt(0).toUpperCase() + key.slice(1),
+                            lotId.toString()
+                        );
+                    }
+                }
+            } else {
+                if (value !== null) {
+                    queryParams = queryParams.set(
+                        key.charAt(0).toUpperCase() + key.slice(1),
+                        value
+                    );
+                }
+            }
+        }
+
+        return this.http.get(url_, { params: queryParams }).pipe(
+            mergeMap((response: any): Observable<FilteredLotModel[]> => {
+                let data: FilteredLotModel[] = [];
+
+                if (response.body !== null) {
+                    data = response.body;
+                }
+
+                return of(data);
+            })
+        );
+    }
+
+    getHighestLotPrice(): Observable<number> {
+        let url_ = this.baseUrl + `/api/lots/highest-price`;
+
+        return this.http.get(url_).pipe(
+            mergeMap((response: any): Observable<number> => {
+                if (response !== null) {
+                    return of(response as number);
+                } else return throwError(() => new Error('data is empty!'));
+            })
+        );
+    }
+}
+
+export interface FilteredLotModel {
+    id: number;
+    title: string;
+    description: string;
+    startingPrice: number | null;
+    startDate: Date | null;
+    endDate: Date | null;
+    category: CategoryDto;
+    lotStatus: LotStatusDto;
+    location: LocationDto;
+    currency: CurrencyDto;
+    bids: BidDto[];
+    mainPhotoUrl: string | null;
+    isInWatchList: boolean;
 }
 
 export interface CategoryDto {
@@ -437,9 +552,18 @@ export interface CreateLotResponse {
     additionalDocuments: File[] | null;
 }
 
+export interface AppLocation {
+    city: string;
+}
+
 export interface Currency {
     id: number;
     code: string;
+}
+
+export interface Status {
+    id: number;
+    name: string;
 }
 
 export interface Category {
