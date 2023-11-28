@@ -13,6 +13,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Auctionify.Application.Features.Lots.Queries.FIlter;
+using Auctionify.Application.Features.Lots.Queries.GetHighestLotPrice;
 
 namespace Auctionify.API.Controllers
 {
@@ -128,6 +129,15 @@ namespace Auctionify.API.Controllers
 		public async Task<IActionResult> FilterLots([FromQuery] FilterLotsQuery query)
 		{
 			var result = await _mediator.Send(query);
+			return Ok(result);
+		}
+
+		[HttpGet("highest-price")]
+		[Authorize]
+		public async Task<ActionResult<decimal>> GetHighestLotPriceValue()
+		{
+			var result = await _mediator.Send(new GetHighestLotPriceQuery());
+
 			return Ok(result);
 		}
 	}

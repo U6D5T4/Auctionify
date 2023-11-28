@@ -11,6 +11,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SellerModule } from './components/seller/seller.module';
 import { DashboardComponent } from './components/seller/dashboard/dashboard.component';
 import { LayoutModule } from './layout/layout.module';
+import { BuyerModule } from './components/buyer/buyer.module';
 
 @NgModule({
     declarations: [AppComponent, HomeComponent, DashboardComponent],
@@ -21,6 +22,7 @@ import { LayoutModule } from './layout/layout.module';
         HttpClientModule,
         BrowserAnimationsModule,
         SellerModule,
+        BuyerModule,
         LayoutModule,
     ],
 

@@ -8,6 +8,6 @@ namespace Auctionify.Application.Common.Models.Requests
         public int PageIndex { get; set; }
 
         [Range(1, int.MaxValue)]
-        public int PageSize { get; set; }
+        public int PageSize { get; set; } = 10;
     }
 }
