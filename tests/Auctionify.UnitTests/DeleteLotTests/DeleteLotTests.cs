@@ -20,7 +20,8 @@ namespace Auctionify.UnitTests.DeleteLotTests
         private readonly IFileRepository _fileRepository;
         private readonly Mock<IBidRepository> _bidRepository;
         private readonly Mock<IBlobService> _blobServiceMock;
-        private readonly Mock<IOptions<AzureBlobStorageOptions>> _blobStorageOptionsMock;
+		private readonly Mock<IJobSchedulerService> _jobSchedulerServiceMock;
+		private readonly Mock<IOptions<AzureBlobStorageOptions>> _blobStorageOptionsMock;
 
         public DeleteLotTests()
         {
@@ -51,10 +52,13 @@ namespace Auctionify.UnitTests.DeleteLotTests
             _lotStatusRepository = new LotStatusRepository(mockDbContext.Object);
             _fileRepository = new FileRepository(mockDbContext.Object);
             var bidRepository = new Mock<IBidRepository>();
-            bidRepository.CallBase = true;
-            _blobServiceMock = new Mock<IBlobService>();
+			var jobSchedulerService = new Mock<IJobSchedulerService>();
 
-            _bidRepository = bidRepository;
+			bidRepository.CallBase = true;
+            _blobServiceMock = new Mock<IBlobService>();
+			_jobSchedulerServiceMock = jobSchedulerService;
+
+			_bidRepository = bidRepository;
         }
 
         [Fact]
@@ -69,7 +73,8 @@ namespace Auctionify.UnitTests.DeleteLotTests
                 _bidRepository.Object,
                 _fileRepository,
                 _blobServiceMock.Object,
-                _blobStorageOptionsMock.Object);
+                _blobStorageOptionsMock.Object,
+                _jobSchedulerServiceMock.Object);
 
             var result = await handler.Handle(cmd, default);
 
@@ -91,7 +96,8 @@ namespace Auctionify.UnitTests.DeleteLotTests
 				_bidRepository.Object,
 				_fileRepository,
 				_blobServiceMock.Object,
-				_blobStorageOptionsMock.Object);
+				_blobStorageOptionsMock.Object,
+                _jobSchedulerServiceMock.Object);
 
             var result = await handler.Handle(cmd, default);
 

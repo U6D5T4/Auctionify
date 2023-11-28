@@ -23,6 +23,7 @@ namespace Auctionify.Application.Features.Lots.Commands.Delete
 		private readonly IFileRepository _fileRepository;
 		private readonly IBlobService _blobService;
 		private readonly AzureBlobStorageOptions _azureBlobStorageOptions;
+		private readonly IJobSchedulerService _jobSchedulerService;
 
 		public DeleteLotCommandHandler(
 			IMapper mapper,
@@ -31,7 +32,8 @@ namespace Auctionify.Application.Features.Lots.Commands.Delete
 			IBidRepository bidRepository,
 			IFileRepository fileRepository,
 			IBlobService blobService,
-			IOptions<AzureBlobStorageOptions> azureBlobStorageOptions
+			IOptions<AzureBlobStorageOptions> azureBlobStorageOptions,
+			IJobSchedulerService jobSchedulerService
 		)
 		{
 			_mapper = mapper;
@@ -41,6 +43,7 @@ namespace Auctionify.Application.Features.Lots.Commands.Delete
 			_fileRepository = fileRepository;
 			_blobService = blobService;
 			_azureBlobStorageOptions = azureBlobStorageOptions.Value;
+			_jobSchedulerService = jobSchedulerService;
 		}
 
 		public async Task<DeletedLotResponse> Handle(
@@ -73,6 +76,8 @@ namespace Auctionify.Application.Features.Lots.Commands.Delete
 				var updateStatusResponse = _mapper.Map<DeletedLotResponse>(lot);
 
 				updateStatusResponse.WasDeleted = false;
+
+				await _jobSchedulerService.RemoveLotFinishJob(lot.Id);
 
 				return updateStatusResponse;
 			}
@@ -109,6 +114,8 @@ namespace Auctionify.Application.Features.Lots.Commands.Delete
 					);
 				}
 			}
+
+			await _jobSchedulerService.RemoveUpcomingToActiveJob(lot.Id);
 
 			await _lotRepository.DeleteAsync(lot);
 
