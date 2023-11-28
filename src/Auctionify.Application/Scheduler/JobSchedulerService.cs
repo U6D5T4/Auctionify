@@ -1,43 +1,54 @@
 ﻿using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Scheduler.Jobs;
 using Quartz;
+using Quartz.Spi;
 
 namespace Auctionify.Application.Scheduler
 {
 	public class JobSchedulerService : IJobSchedulerService
 	{
-		private readonly ISchedulerFactory _schedulerFactory;
+		public readonly static string lotIdJobDataParam = "lotId";
 
-		public JobSchedulerService(ISchedulerFactory schedulerFactory)
+		private readonly ISchedulerFactory _schedulerFactory;
+		private readonly IJobFactory _customJobFactory;
+
+		private readonly string finishGroup = "finish";
+		private readonly string upcomingActiveGroup = "upcoming-active";
+
+		public JobSchedulerService(ISchedulerFactory schedulerFactory, IJobFactory customJobFactory)
 		{
 			_schedulerFactory = schedulerFactory;
+			_customJobFactory = customJobFactory;
 		}
 
 		public async Task RemoveLotFinishJob(int lotId)
 		{
 			var scheduler = await _schedulerFactory.GetScheduler();
-			var jobKey = new JobKey($"finish-{lotId}", "finish");
+			scheduler.JobFactory = _customJobFactory;
+			var jobKey = new JobKey(FormFinishLotJobKey(lotId), finishGroup);
 			await scheduler.DeleteJob(jobKey);
 		}
 
 		public async Task RemoveUpcomingToActiveJob(int lotId)
 		{
 			var scheduler = await _schedulerFactory.GetScheduler();
-			var jobKey = new JobKey($"upcoming-active-{lotId}", "upcoming-active");
+			scheduler.JobFactory = _customJobFactory;
+			var jobKey = new JobKey(FormUpcomingActiveJobKey(lotId), upcomingActiveGroup);
 			await scheduler.DeleteJob(jobKey);
 		}
 
 		public async Task ScheduleLotFinishJob(int lotId, DateTime endDate)
 		{
 			var scheduler = await _schedulerFactory.GetScheduler();
+			scheduler.JobFactory = _customJobFactory;
 
 			var job = JobBuilder.Create<FinishLotJob>()
-				.WithIdentity($"finish-{lotId}", "finish")
-				.UsingJobData("lotId", lotId)
+				.WithIdentity(FormFinishLotJobKey(lotId), finishGroup)
+				.UsingJobData(lotIdJobDataParam, lotId)
 				.Build();
 
 			var trigger = TriggerBuilder.Create()
-				.WithIdentity($"finish-{lotId}", "finish")
+				.WithIdentity(FormFinishLotJobKey(lotId), finishGroup)
 				.StartAt(endDate)
 				.Build();
 
@@ -47,18 +58,29 @@ namespace Auctionify.Application.Scheduler
 		public async Task ScheduleUpcomingToActiveLotStatusJob(int lotId, DateTime startDate)
 		{
 			var scheduler = await _schedulerFactory.GetScheduler();
+			scheduler.JobFactory = _customJobFactory;
 
 			var job = JobBuilder.Create<UpcomingToActiveJob>()
-				.WithIdentity($"upcoming-active-{lotId}", "upcoming-active")
-				.UsingJobData("lotId", lotId)
+				.WithIdentity(FormUpcomingActiveJobKey(lotId), upcomingActiveGroup)
+				.UsingJobData(lotIdJobDataParam, lotId)
 				.Build();
 
 			var trigger = TriggerBuilder.Create()
-				.WithIdentity($"upcoming-active-{lotId}", "upcoming-active")
+				.WithIdentity(FormUpcomingActiveJobKey(lotId), upcomingActiveGroup)
 				.StartAt(startDate)
 				.Build();
 
 			await scheduler.ScheduleJob(job, trigger);
+		}
+
+		private string FormUpcomingActiveJobKey(int lotId)
+		{
+			return $"upcoming-active-{lotId}";
+		}
+
+		private string FormFinishLotJobKey(int lotId)
+		{
+			return $"finish-{lotId}";
 		}
 	}
 }

@@ -3,27 +3,35 @@ using Auctionify.Application.Features.Lots.Commands.UpdateLotStatus;
 using Auctionify.Core.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Quartz;
 
 namespace Auctionify.Application.Scheduler.Jobs
 {
 	public class FinishLotJob : IJob
 	{
-		private readonly ILotRepository _lotRepository;
-		private readonly IMediator _mediator;
+		private readonly IServiceScopeFactory _scopeFactory;
+		private readonly ILogger<FinishLotJob> _logger;
 
-		public FinishLotJob(ILotRepository lotRepository,
-			IMediator mediator)
+		public FinishLotJob(IServiceScopeFactory scopeFactory,
+			ILogger<FinishLotJob> logger)
 		{
-			_lotRepository = lotRepository;
-			_mediator = mediator;
+			_scopeFactory = scopeFactory;
+			_logger = logger;
 		}
 
 		public async Task Execute(IJobExecutionContext context)
 		{
-			var lotId = context.MergedJobDataMap.GetInt("lotId");
+			var lotId = context.MergedJobDataMap.GetInt(JobSchedulerService.lotIdJobDataParam);
+			_logger.LogInformation("FinishLot job started working for lot with id: {lotId}", lotId);
 
-			var lot = await _lotRepository.GetAsync(x => x.Id == lotId,
+			using var scope = _scopeFactory.CreateScope();
+			var lotRepository = scope.ServiceProvider.GetRequiredService<ILotRepository>();
+			var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+
+
+			var lot = await lotRepository.GetAsync(x => x.Id == lotId,
 				include: x =>
 							x.Include(l => l.LotStatus)
 							.Include(l => l.Bids));
@@ -39,7 +47,12 @@ namespace Auctionify.Application.Scheduler.Jobs
 				futureStatus = AuctionStatus.Sold;
 			}
 
-			var result = await _mediator.Send(new UpdateLotStatusCommand { Id = lotId, Name = futureStatus.ToString() });
+			var result = await mediator.Send(new UpdateLotStatusCommand { Id = lotId, Name = futureStatus.ToString() });
+
+			if (result != null)
+			{
+				_logger.LogInformation("FinishLot job finished working for lot with id: {lotId}", lotId);
+			}
 		}
 	}
 }

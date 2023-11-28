@@ -2,10 +2,8 @@ using Auctionify.API.Middlewares;
 using Auctionify.API.Services;
 using Auctionify.Application;
 using Auctionify.Application.Common.Interfaces;
-using Auctionify.Application.Scheduler;
 using Auctionify.Infrastructure;
 using Auctionify.Infrastructure.Persistence;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 using NLog;
 using NLog.Web;
@@ -28,6 +26,7 @@ namespace Auctionify.API
 
                 builder.Services.AddApplicationServices();
                 builder.Services.AddInfrastructureServices(builder.Configuration);
+                builder.Services.AddQuartzService();
                 // Add services to the container.
                 builder.Services.AddControllers()
                                 .AddJsonOptions(options =>
@@ -98,7 +97,6 @@ namespace Auctionify.API
 				});
 
                 var app = builder.Build();
-				using var scope = app.Services.CreateScope();
 
 				// Configure the HTTP request pipeline.
 				if (app.Environment.IsDevelopment())
@@ -106,14 +104,11 @@ namespace Auctionify.API
                     app.UseSwagger();
                     app.UseSwaggerUI();
 
-                    var initialiser = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitializer>();
+					using var scope = app.Services.CreateScope();
+					var initialiser = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitializer>();
                     await initialiser.InitialiseAsync();
                     await initialiser.SeedAsync();
                 }
-
-                var schedulerInitializer = scope.ServiceProvider.GetRequiredService<ApplicationExistingLotsScheduler>();
-                
-                await schedulerInitializer.InitializeJobs();
 
                 // So that the Swagger UI is available in production
                 // To invoke the Swagger UI, go to https://<host>/swagger or https://<host>/swagger/index.html

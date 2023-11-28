@@ -1,31 +1,32 @@
 ﻿using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Interfaces.Repositories;
-using Auctionify.Application.Scheduler.Jobs;
-using Auctionify.Core.Entities;
 using Auctionify.Core.Enums;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Quartz;
 
 namespace Auctionify.Application.Scheduler
 {
-	public class ApplicationExistingLotsScheduler
+	public class ApplicationExistingLotsScheduler : IHostedService
 	{
-		private readonly ILotRepository _lotRepository;
-		private readonly ISchedulerFactory _schedulerFactory;
 		private readonly IJobSchedulerService _jobSchedulerService;
+		private readonly IServiceScopeFactory _scopeFactory;
 
-		public ApplicationExistingLotsScheduler(ILotRepository lotRepository, ISchedulerFactory schedulerFactory,
-			IJobSchedulerService jobSchedulerService)
+		public ApplicationExistingLotsScheduler(
+			IJobSchedulerService jobSchedulerService,
+			IServiceScopeFactory scopeFactory)
 		{
-			_lotRepository = lotRepository;
-			_schedulerFactory = schedulerFactory;
 			_jobSchedulerService = jobSchedulerService;
+			_scopeFactory = scopeFactory;
 		}
 
-		public async Task InitializeJobs()
+		public async Task StartAsync(CancellationToken cancellationToken)
 		{
-			var lots = await _lotRepository.Query().Include(x => x.LotStatus).ToListAsync();
-			var scheduler = await _schedulerFactory.GetScheduler();
+			using var scope = _scopeFactory.CreateScope();
+			var lotRepository = scope.ServiceProvider.GetRequiredService<ILotRepository>();
+
+			var lots = await lotRepository.Query().Include(x => x.LotStatus).ToListAsync();
 
 			foreach (var lot in lots)
 			{
@@ -39,8 +40,11 @@ namespace Auctionify.Application.Scheduler
 					}
 				}
 			}
+		}
 
-			var currentJobs = scheduler.GetJobGroupNames();
+		public Task StopAsync(CancellationToken cancellationToken)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }
