@@ -98,14 +98,14 @@ namespace Auctionify.API
 
                 var app = builder.Build();
 
-				// Configure the HTTP request pipeline.
+                // Configure the HTTP request pipeline.
                 if (app.Environment.IsDevelopment())
                 {
                     app.UseSwagger();
                     app.UseSwaggerUI();
 
-					using var scope = app.Services.CreateScope();
-					var initialiser = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitializer>();
+                    using var scope = app.Services.CreateScope();
+                    var initialiser = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitializer>();
                     await initialiser.InitialiseAsync();
                     await initialiser.SeedAsync();
                 }
