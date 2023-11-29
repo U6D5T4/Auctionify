@@ -1,6 +1,7 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { FilterComponent } from './filter/filter.component';
+import { AuctionComponent } from './auction/auction.component';
 
 const buyerRoutes: Routes = [
     {
@@ -10,7 +11,7 @@ const buyerRoutes: Routes = [
     },
     {
         path: 'home',
-        component: FilterComponent,
+        component: AuctionComponent,
     },
 ];
 

@@ -131,7 +131,6 @@ $ClientApp-theme: mat.define-light-theme((color: (primary: $ClientApp-primary,
 * {
     margin: 0;
     padding: 0;
-    font-family: 'Onest', sans-serif !important;
 }
 
 html,
@@ -141,7 +140,7 @@ body {
 
 body {
     margin: 0;
-    font-family: 'Onest', sans-serif !important;
+    font-family: 'Onest', sans-serif;
 }
 
 ul {
