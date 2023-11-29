@@ -288,9 +288,9 @@ namespace Auctionify.Infrastructure.Identity
 			};
 		}
 
-		public async Task<AssignRoleToUserResponse> AssignRoleToUserAsync(AssignRoleToUserViewModel model)
+		public async Task<AssignRoleToUserResponse> AssignRoleToUserAsync(string email, string role)
         {
-            if (string.IsNullOrWhiteSpace(model.Email))
+            if (string.IsNullOrWhiteSpace(email))
             {
                 return new AssignRoleToUserResponse
                 {
@@ -299,7 +299,7 @@ namespace Auctionify.Infrastructure.Identity
                 };
             }
 
-            if (string.IsNullOrWhiteSpace(model.Role))
+            if (string.IsNullOrWhiteSpace(role))
             {
                 return new AssignRoleToUserResponse
                 {
@@ -308,7 +308,7 @@ namespace Auctionify.Infrastructure.Identity
                 };
             }
 
-            var roleExists = await _roleManager.RoleExistsAsync(model.Role);
+            var roleExists = await _roleManager.RoleExistsAsync(role);
 
             if (!roleExists)
             {
@@ -319,7 +319,7 @@ namespace Auctionify.Infrastructure.Identity
                 };
             }
 
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            var user = await _userManager.FindByEmailAsync(email);
 
             if (user == null)
             {
@@ -330,7 +330,7 @@ namespace Auctionify.Infrastructure.Identity
                 };
             }
 
-            var userHasRole = await _userManager.IsInRoleAsync(user, model.Role);
+            var userHasRole = await _userManager.IsInRoleAsync(user, role);
 
             if (userHasRole)
             {
@@ -341,14 +341,14 @@ namespace Auctionify.Infrastructure.Identity
                 };
             }
 
-            var result = await _userManager.AddToRoleAsync(user, model.Role);
+            var result = await _userManager.AddToRoleAsync(user, role);
 
             if (result.Succeeded)
             {
                 return new AssignRoleToUserResponse
                 {
                     IsSuccess = true,
-                    Message = $"Role '{model.Role}' assigned to the user successfully"
+                    Message = $"Role '{role}' assigned to the user successfully"
                 };
             }
             else

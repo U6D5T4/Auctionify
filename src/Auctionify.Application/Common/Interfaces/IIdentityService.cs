@@ -19,7 +19,7 @@ namespace Auctionify.Application.Common.Interfaces
 
         Task<LoginResponse> LoginUserAsync(LoginViewModel userModel);
 
-        Task<AssignRoleToUserResponse> AssignRoleToUserAsync(AssignRoleToUserViewModel model);
+        Task<AssignRoleToUserResponse> AssignRoleToUserAsync(string email, string role);
 		
         Task<LoginResponse> LoginUserWithGoogleAsync(Payload payload);
 	}

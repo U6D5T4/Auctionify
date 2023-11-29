@@ -103,9 +103,7 @@ namespace Auctionify.API.Controllers
         {
             var currentUserEmail = _currentUserService.UserEmail;
 
-            viewModel.Email = currentUserEmail;
-
-            var result = await _identityService.AssignRoleToUserAsync(viewModel);
+            var result = await _identityService.AssignRoleToUserAsync(currentUserEmail, viewModel.Role);
 
             if (!result.IsSuccess)
             {
