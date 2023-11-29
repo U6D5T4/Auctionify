@@ -45,6 +45,7 @@ namespace Auctionify.Application.Features.Lots.Queries.FIlter
 		private readonly ICurrentUserService _currentUserService;
 		private readonly UserManager<User> _userManager;
 		private readonly IWatchlistService _watchlistService;
+		private readonly IBidRepository _bidRepository;
 		private readonly List<string> validStatuses =
 			new()
 			{
@@ -59,7 +60,8 @@ namespace Auctionify.Application.Features.Lots.Queries.FIlter
 			IPhotoService photoService,
 			ICurrentUserService currentUserService,
 			UserManager<User> userManager,
-			IWatchlistService watchlistService
+			IWatchlistService watchlistService,
+			IBidRepository bidRepository
 		)
 		{
 			_lotRepository = lotRepository;
@@ -68,6 +70,7 @@ namespace Auctionify.Application.Features.Lots.Queries.FIlter
 			_currentUserService = currentUserService;
 			_userManager = userManager;
 			_watchlistService = watchlistService;
+			_bidRepository = bidRepository;
 		}
 
 		public async Task<GetListResponseDto<FilterLotsResponse>> Handle(
@@ -186,6 +189,17 @@ namespace Auctionify.Application.Features.Lots.Queries.FIlter
 					lot.Id,
 					cancellationToken
 				);
+
+				var bids = await _bidRepository.GetListAsync(
+					predicate: x => x.LotId == lot.Id && !x.BidRemoved,
+					orderBy: x => x.OrderByDescending(x => x.TimeStamp),
+					enableTracking: false,
+					cancellationToken: cancellationToken
+				);
+
+				lot.BidCount = bids.Items.Count;
+
+				lot.Bids = _mapper.Map<List<BidDto>>(bids.Items);
 			}
 
 			return response;

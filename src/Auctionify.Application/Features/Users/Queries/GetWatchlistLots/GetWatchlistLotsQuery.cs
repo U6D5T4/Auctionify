@@ -28,6 +28,7 @@ namespace Auctionify.Application.Features.Users.Queries.GetByUserWatchlist
 		private readonly IPhotoService _photoService;
 		private readonly ICurrentUserService _currentUserService;
 		private readonly UserManager<User> _userManager;
+		private readonly IBidRepository _bidRepository;
 
 		public GetWatchlistLotsQueryHandler(
 			IWatchlistRepository watchlistRepository,
@@ -35,7 +36,8 @@ namespace Auctionify.Application.Features.Users.Queries.GetByUserWatchlist
 			IMapper mapper,
 			IPhotoService photoService,
 			ICurrentUserService currentUserService,
-			UserManager<User> userManager
+			UserManager<User> userManager,
+			IBidRepository bidRepository
 		)
 		{
 			_watchlistRepository = watchlistRepository;
@@ -44,6 +46,7 @@ namespace Auctionify.Application.Features.Users.Queries.GetByUserWatchlist
 			_photoService = photoService;
 			_currentUserService = currentUserService;
 			_userManager = userManager;
+			_bidRepository = bidRepository;
 		}
 
 		public async Task<GetListResponseDto<GetWatchlistLotsResponse>> Handle(
@@ -75,7 +78,7 @@ namespace Auctionify.Application.Features.Users.Queries.GetByUserWatchlist
 				size: request.PageRequest.PageSize,
 				index: request.PageRequest.PageIndex,
 				cancellationToken: cancellationToken);
-			
+
 			var response = _mapper.Map<GetListResponseDto<GetWatchlistLotsResponse>>(lots);
 
 			foreach (var lot in response.Items)
@@ -84,6 +87,17 @@ namespace Auctionify.Application.Features.Users.Queries.GetByUserWatchlist
 					lot.Id,
 					cancellationToken
 				);
+
+				var bids = await _bidRepository.GetListAsync(
+					predicate: x => x.LotId == lot.Id && !x.BidRemoved,
+					orderBy: x => x.OrderByDescending(x => x.TimeStamp),
+					enableTracking: false,
+					cancellationToken: cancellationToken
+				);
+
+				lot.BidCount = bids.Items.Count;
+
+				lot.Bids = _mapper.Map<List<BidDto>>(bids.Items);
 			}
 
 			return response;
