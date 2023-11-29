@@ -1,0 +1,26 @@
+<form [formGroup]="bidForm" (ngSubmit)="onSubmit()">
+    <div>
+        <label for="bidAmount">Bid Amount:</label>
+        <input type="number" id="bidAmount" formControlName="bid" />
+    </div>
+    <div>
+        <button type="submit" [disabled]="!bidForm.valid">Place Bid</button>
+        <button type="button" (click)="closeDialog()">Go Back</button>
+    </div>
+</form>
+
+<div *ngIf="errorMsg" class="error-message">
+    <p>{{ errorMsg }}</p>
+</div>
+
+<div *ngIf="bids.length > 0" class="bids-section">
+    <h3>Bids for Lot</h3>
+    <ul>
+        <li *ngFor="let bid of bids">
+            {{ bid.timeStamp }} - {{ bid.newPrice }} - {{ bid.currency }}
+        </li>
+    </ul>
+</div>
+<div *ngIf="bids.length === 0" class="no-bids">
+    <p>No bids available.</p>
+</div>
