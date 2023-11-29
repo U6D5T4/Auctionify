@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 
-import { Observable } from 'rxjs';
+import { Observable, of, switchMap } from 'rxjs';
 import { SellerGetLotResponse, Client } from 'src/app/web-api-client';
 import { ChoicePopupComponent } from 'src/app/ui-elements/choice-popup/choice-popup.component';
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
@@ -20,21 +20,32 @@ import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-po
 })
 export class LotProfileSellerComponent {
   lotData$!: Observable<SellerGetLotResponse>;
+  lotId: number = 0;
   showAllBids = false;
   selectedMainPhotoIndex: number = 0;
 
   constructor(
-    private apiService: Client, 
+    private client: Client, 
     private router: Router,
     private route: ActivatedRoute,
     private dialog: MatDialog
     ) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      const lotId = + params['id'];
-      this.lotData$ = this.apiService.getOneLotForSeller(lotId);
-    });
+    this.getLotFromRoute();
+  }
+
+  getLotFromRoute(): void {
+    this.route.paramMap
+        .pipe(
+            switchMap((params) => {
+                this.lotId = Number(params.get('id')) || 0;
+                return this.client.getOneLotForSeller(this.lotId);
+            })
+        )
+        .subscribe((lot) => {
+            this.lotData$ = of(lot);
+        });
   }
 
   getHighestBidPrice(lotData: SellerGetLotResponse | null): number | null {
@@ -81,7 +92,7 @@ export class LotProfileSellerComponent {
   
       dialogRef.afterClosed().subscribe((result) => {
         if (result === 'true') {
-          this.apiService.deleteLot(lotId).subscribe(
+          this.client.deleteLot(lotId).subscribe(
             () => {
               this.router.navigate(['/dashboard']);
             },
@@ -114,7 +125,7 @@ export class LotProfileSellerComponent {
   }
 
   downloadDocument(documentUrl: string): void {
-    this.apiService.downloadDocument(documentUrl).subscribe((data: any) => {
+    this.client.downloadDocument(documentUrl).subscribe((data: any) => {
       const blob = new Blob([data], { type: 'application/octet-stream' });
   
       const link = document.createElement('a');

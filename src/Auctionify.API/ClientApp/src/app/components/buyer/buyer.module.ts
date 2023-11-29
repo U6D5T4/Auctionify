@@ -2,8 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LotProfileBuyerComponent } from './lot-profile-buyer/lot-profile-buyer.component';
 import { MatIconModule } from '@angular/material/icon';
-
-
+import { buyerRoutingModule } from './buyer-routing.module';
 
 @NgModule({
   declarations: [
@@ -11,7 +10,8 @@ import { MatIconModule } from '@angular/material/icon';
   ],
   imports: [
     CommonModule,
-    MatIconModule
+    MatIconModule,
+    buyerRoutingModule
   ],
   exports: [
     LotProfileBuyerComponent

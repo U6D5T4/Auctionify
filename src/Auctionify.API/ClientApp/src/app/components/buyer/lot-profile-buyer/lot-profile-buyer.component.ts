@@ -2,7 +2,7 @@ import { Component, OnInit, Injectable } from '@angular/core';
 import { formatDate } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 
-import { Observable } from 'rxjs';
+import { Observable, of, switchMap } from 'rxjs';
 import { BuyerGetLotResponse, Client } from 'src/app/web-api-client';
 
 @Injectable({
@@ -16,16 +16,27 @@ import { BuyerGetLotResponse, Client } from 'src/app/web-api-client';
 })
 export class LotProfileBuyerComponent implements OnInit {
   lotData$!: Observable<BuyerGetLotResponse>;
+  lotId: number = 0;
   showAllBids = false;
   selectedMainPhotoIndex: number = 0;
 
-  constructor(private apiService: Client, private route: ActivatedRoute) {}
+  constructor(private client: Client, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
-      const lotId = +params['id'];
-      this.lotData$ = this.apiService.getOneLotForBuyer(lotId);
-    });
+    this.getLotFromRoute();
+  }
+
+  getLotFromRoute(): void {
+    this.route.paramMap
+        .pipe(
+            switchMap((params) => {
+                this.lotId = Number(params.get('id')) || 0;
+                return this.client.getOneLotForBuyer(this.lotId);
+            })
+        )
+        .subscribe((lot) => {
+            this.lotData$ = of(lot);
+        });
   }
 
   getHighestBidPrice(lotData: BuyerGetLotResponse | null): number | null {
@@ -53,11 +64,11 @@ export class LotProfileBuyerComponent implements OnInit {
   }
 
   addLotToWatchlist(lotId: number){
-    this.apiService.addToWatchlist(lotId)
+    this.client.addToWatchlist(lotId)
   }
 
   downloadDocument(documentUrl: string): void {
-    this.apiService.downloadDocument(documentUrl).subscribe((data: any) => {
+    this.client.downloadDocument(documentUrl).subscribe((data: any) => {
       const blob = new Blob([data], { type: 'application/octet-stream' });
   
       const link = document.createElement('a');
