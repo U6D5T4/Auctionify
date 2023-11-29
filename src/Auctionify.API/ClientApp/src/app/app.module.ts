@@ -12,6 +12,7 @@ import { SellerModule } from './components/seller/seller.module';
 import { DashboardComponent } from './components/seller/dashboard/dashboard.component';
 import { LayoutModule } from './layout/layout.module';
 import { LotProfileBuyerComponent } from './components/buyer/lot-profile-buyer/lot-profile-buyer.component';
+import { BuyerModule } from './components/buyer/buyer.module';
 
 @NgModule({
     declarations: [AppComponent, HomeComponent, DashboardComponent],
@@ -22,6 +23,7 @@ import { LotProfileBuyerComponent } from './components/buyer/lot-profile-buyer/l
         HttpClientModule,
         BrowserAnimationsModule,
         SellerModule,
+        BuyerModule,
         LayoutModule,
     ],
 
