@@ -63,8 +63,8 @@ export class LotProfileBuyerComponent implements OnInit {
     return date ? formatDate(date, 'd/MM/yy', 'en-US') : '';
   }
 
-  addLotToWatchlist(lotId: number){
-    this.client.addToWatchlist(lotId)
+  addLotToWatchlist(){
+    this.client.addToWatchlist(this.lotId);
   }
 
   downloadDocument(documentUrl: string): void {

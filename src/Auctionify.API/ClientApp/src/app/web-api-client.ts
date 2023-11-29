@@ -337,7 +337,7 @@ export class Client {
     }
 
     addToWatchlist(lotId: number): Observable<any> {
-        let url = this.baseUrl + `/watchlists/lots`;
+        let url = this.baseUrl + `users/watchlists/lots`;
       
         const formData = new FormData();
         formData.append('LotId', lotId.toString());
@@ -361,7 +361,7 @@ export class Client {
             return of(data);
           })
         );
-      }
+    }
 
     downloadDocument(documentUrl: string): Observable<any> {
         return this.http.get(documentUrl, { responseType: 'blob' });
