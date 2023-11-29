@@ -2,7 +2,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { FilterComponent } from './filter/filter.component';
 
-const sellerRoutes: Routes = [
+const buyerRoutes: Routes = [
     {
         path: '',
         redirectTo: 'home',
@@ -15,7 +15,7 @@ const sellerRoutes: Routes = [
 ];
 
 @NgModule({
-    imports: [RouterModule.forChild(sellerRoutes)],
+    imports: [RouterModule.forChild(buyerRoutes)],
     exports: [RouterModule],
 })
 export class BuyerRoutingModule {}

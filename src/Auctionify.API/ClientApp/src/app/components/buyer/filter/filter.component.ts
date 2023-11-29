@@ -1,5 +1,5 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { Component, EventEmitter, Inject, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AppLocation, Category, Client, Status } from 'src/app/web-api-client';
 
@@ -24,7 +24,7 @@ interface FilterParameters {
     templateUrl: './filter.component.html',
     styleUrls: ['./filter.component.scss'],
 })
-export class FilterComponent {
+export class FilterComponent implements OnInit {
     checkboxValues = new FormGroup({
         Closed: new FormControl<boolean>(false),
         Active: new FormControl<boolean>(false),
@@ -34,6 +34,7 @@ export class FilterComponent {
     categories: Category[] = [];
     lotStatuses: Status[] = [];
     locations: AppLocation[] = [];
+    highestLotPrice: number = 0;
 
     filterForm = new FormGroup<FilterParameters>({
         minimumPrice: new FormControl<number | null>(null),
@@ -47,10 +48,13 @@ export class FilterComponent {
         public dialogRef: DialogRef<string>,
         @Inject(DIALOG_DATA) public data: any,
         private client: Client
-    ) {
+    ) {}
+
+    ngOnInit(): void {
         this.populateCategorySelector();
         this.populateLocations();
         this.populateLotStatuses();
+        this.populateHighestLotPrice();
     }
 
     filterClick() {
@@ -107,6 +111,14 @@ export class FilterComponent {
         this.client.getAllLocations().subscribe({
             next: (result: AppLocation[]) => {
                 this.locations = result;
+            },
+        });
+    }
+
+    populateHighestLotPrice() {
+        this.client.getHighestLotPrice().subscribe({
+            next: (result: number) => {
+                this.highestLotPrice = result;
             },
         });
     }
