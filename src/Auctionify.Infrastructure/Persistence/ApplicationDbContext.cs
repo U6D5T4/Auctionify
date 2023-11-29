@@ -11,8 +11,10 @@ namespace Auctionify.Infrastructure.Persistence
 {
     public class ApplicationDbContext : IdentityDbContext<User, Role, int>
     {
-        private readonly IMediator _mediator;
-        private readonly AuditableEntitySaveChangesInterceptor _auditableEntitiesInterceptor;
+        private readonly IMediator? _mediator;
+        private readonly AuditableEntitySaveChangesInterceptor? _auditableEntitiesInterceptor;
+
+        public ApplicationDbContext() { }
 
         public ApplicationDbContext(DbContextOptions options,
             AuditableEntitySaveChangesInterceptor auditableEntitiesInterceptor,
@@ -22,24 +24,37 @@ namespace Auctionify.Infrastructure.Persistence
             _mediator = mediator;
         }
 
-		public DbSet<Category> Categories => Set<Category>();
-		public DbSet<ChatMessage> ChatMessages => Set<ChatMessage>();
-		public DbSet<Lot> Lots => Set<Lot>();
-		public DbSet<Rate> Rates => Set<Rate>();
-		public DbSet<Watchlist> Watchlists => Set<Watchlist>();
-		public DbSet<Bid> Bids => Set<Bid>();
-		public DbSet<Currency> Currency => Set<Currency>();
-		public DbSet<Location> Locations => Set<Location>();
-		public DbSet<LotStatus> LotStatuses => Set<LotStatus>();
-		public DbSet<Core.Entities.File> Files => Set<Core.Entities.File>();
-		public DbSet<Subscription> Subscriptions => Set<Subscription>();
-		public DbSet<SubscriptionType> SubscriptionTypes => Set<SubscriptionType>();
+		public ApplicationDbContext(DbContextOptions options) : base(options)
+		{
+		}
+
+		public virtual DbSet<Category> Categories => Set<Category>();
+
+		public virtual DbSet<ChatMessage> ChatMessages => Set<ChatMessage>();
+
+		public virtual DbSet<Lot> Lots => Set<Lot>();
+
+		public virtual DbSet<Rate> Rates => Set<Rate>();
+
+		public virtual DbSet<Watchlist> Watchlists => Set<Watchlist>();
+
+		public virtual DbSet<Bid> Bids => Set<Bid>();
+
+		public virtual DbSet<Currency> Currency => Set<Currency>();
+
+		public virtual DbSet<Location> Locations => Set<Location>();
+
+		public virtual DbSet<LotStatus> LotStatuses => Set<LotStatus>();
+
+		public virtual DbSet<Core.Entities.File> Files => Set<Core.Entities.File>();
+
+		public virtual DbSet<Subscription> Subscriptions => Set<Subscription>();
+
+		public virtual DbSet<SubscriptionType> SubscriptionTypes => Set<SubscriptionType>();
 
 		protected override void OnModelCreating(ModelBuilder builder)
 		{
 			base.OnModelCreating(builder);
-			builder.Ignore<IdentityUserLogin<int>>();
-			builder.Ignore<IdentityUserToken<int>>();
 
 			builder.Entity<User>()
 				.Ignore(u => u.AccessFailedCount)
@@ -53,6 +68,8 @@ namespace Auctionify.Infrastructure.Persistence
             builder.Entity<IdentityUserRole<int>>().ToTable("UserRoles");
             builder.Entity<IdentityRoleClaim<int>>().ToTable("RoleClaims");
             builder.Entity<IdentityUserClaim<int>>().ToTable("UserClaims");
+            builder.Entity<IdentityUserLogin<int>>().ToTable("UserLogins");
+            builder.Entity<IdentityUserToken<int>>().ToTable("UserTokens");
 
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }

@@ -1,0 +1,16 @@
+<div class="modal">
+    <div class="modal__inner">
+        <div class="error-main">
+            <img src="{{iconPath}}" alt="info_icon">
+            <h3 *ngFor="let message of messages">{{message}}</h3>
+        </div>
+        <p *ngIf="isError && isErrorShown">
+            Oops, something went wrong <br>
+            Try to refresh this page or come back later
+        </p>
+        <p *ngIf="!isError">
+            Congratulations! Operation was successful
+        </p>
+        <button mat-raised-button (click)="closeDialog()" color="primary">Go back</button>
+    </div>
+</div>

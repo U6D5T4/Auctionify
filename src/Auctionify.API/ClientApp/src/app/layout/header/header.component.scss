@@ -1,0 +1,43 @@
+.header {
+    height: 80px;
+    border-bottom: 1px solid var(--color-grey-5);
+    display: flex;
+    justify-content: center;
+    gap: 64px;
+
+    &__search {
+        width: 20%;
+    }
+}
+
+.header img {
+    width: 160px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+}
+
+.navigation {
+    gap: 16px;
+    list-style: none;
+    display: flex;
+}
+
+.navigation li {
+    align-items: center;
+    display: flex;
+    font-size: 16;
+}
+
+.navigation li img {
+    width: 20px;
+    padding: 12px;
+}
+
+.navigation a {
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+}

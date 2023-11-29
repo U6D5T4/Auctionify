@@ -1,0 +1,93 @@
+.main {
+    display: flex;
+    justify-content: center;
+    border: 1px, 0px, 0px, 0px;
+    flex-direction: column;
+}
+
+.main-container {
+    padding-left: 240px;
+    padding-right: 240px;
+}
+
+.container-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 32px;
+}
+
+.left-side_top-footer p {
+    padding-top: 32px;
+}
+
+.left-side_top-footer ul {
+    list-style: none;
+    display: flex;
+    padding-top: 32px;
+}
+
+.main-ul{
+    gap: 60px;
+    display: flex;
+    list-style: none;
+}
+
+.main-ul ul{
+    padding-left: 40px;
+    font-weight: bold;
+    list-style: none;
+}
+
+.main-ul ul li{
+    padding-top: 30px;
+    align-items: center;
+    display: flex;
+}
+
+.main-ul ul p{
+    padding-bottom: 24px;
+}
+
+.main-ul ul li a{
+    padding-left: 20px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.line{
+    height: 1px;
+    background-color: #e0e0e0;
+}
+
+.container-bott {
+    padding-top: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.left-bott ul {
+    list-style: none;
+    display: flex;
+    gap: 40px;
+}
+
+.special{
+    padding-left: 10px;
+    list-style-type: disc;
+}
+
+.special::marker{
+    color: #e0e0e0;
+}
+
+.right-bott{
+    font-weight: bold;
+    display: flex;
+}
+
+.orange{
+    padding-left: 5px;
+    color: orange;
+}

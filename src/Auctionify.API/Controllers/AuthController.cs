@@ -1,6 +1,9 @@
 using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Models.Account;
+using Auctionify.Application.Common.Options;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using static Google.Apis.Auth.GoogleJsonWebSignature;
 
 namespace Auctionify.API.Controllers
 {
@@ -9,10 +12,12 @@ namespace Auctionify.API.Controllers
 	public class AuthController : Controller
 	{
 		private readonly IIdentityService _identityService;
+		private readonly SignInWithGoogleOptions _signInWithGoogleOptions;
 
-		public AuthController(IIdentityService identityService)
+		public AuthController(IIdentityService identityService, IOptions<SignInWithGoogleOptions> signInWithGoogleOptions)
 		{
 			_identityService = identityService;
+			_signInWithGoogleOptions = signInWithGoogleOptions.Value;
 		}
 
 		[HttpPost]
@@ -22,16 +27,15 @@ namespace Auctionify.API.Controllers
 			if (!ModelState.IsValid)
 			{
 				return BadRequest("Some properties are not valid.");
-            }
+			}
 
-            var result = await _identityService.RegisterUserAsync(model);
+			var result = await _identityService.RegisterUserAsync(model);
 
-            if (!result.IsSuccess)
-                return BadRequest(result);
+			if (!result.IsSuccess)
+				return BadRequest(result);
 
-            return Ok(result);
+			return Ok(result);
 		}
-
 
 		[HttpGet]
 		[Route("confirm-email")]
@@ -73,9 +77,9 @@ namespace Auctionify.API.Controllers
 			var result = await _identityService.ResetPasswordAsync(model);
 
 			if (!result.IsSuccess)
-                return BadRequest(result);
+				return BadRequest(result);
 
-            return Ok(result);
+			return Ok(result);
 
 		}
 
@@ -84,6 +88,26 @@ namespace Auctionify.API.Controllers
 		{
 			var result = await _identityService.LoginUserAsync(loginModel);
 
+			if (!result.IsSuccess)
+			{
+				return BadRequest(result);
+			}
+
+			return Ok(result);
+		}
+
+		[HttpPost("login-with-google")]
+		public async Task<IActionResult> LoginWithGoogle([FromBody] string credential)
+		{
+			var settings = new ValidationSettings()
+			{
+				Audience = new List<string> { _signInWithGoogleOptions.ClientId }
+			};
+
+			Payload payload = await ValidateAsync(credential, settings);
+
+			var result = await _identityService.LoginUserWithGoogleAsync(payload);
+			
 			if (!result.IsSuccess)
 			{
 				return BadRequest(result);
