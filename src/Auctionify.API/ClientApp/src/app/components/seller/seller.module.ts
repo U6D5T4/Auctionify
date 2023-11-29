@@ -39,6 +39,9 @@ import { LotProfileSellerComponent } from './lot-profile-seller/lot-profile-sell
         MatProgressSpinnerModule,
         MatSnackBarModule,
     ],
-    exports: [CreateLotComponent],
+    exports: [
+        CreateLotComponent,
+        LotProfileSellerComponent,
+    ],
 })
 export class SellerModule {}

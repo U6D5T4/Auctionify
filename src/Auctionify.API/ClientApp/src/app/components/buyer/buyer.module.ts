@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LotProfileBuyerComponent } from './lot-profile-buyer/lot-profile-buyer.component';
+import { MatIconModule } from '@angular/material/icon';
 
 
 
@@ -9,8 +10,11 @@ import { LotProfileBuyerComponent } from './lot-profile-buyer/lot-profile-buyer.
     LotProfileBuyerComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    MatIconModule
   ],
-  exports: [],
+  exports: [
+    LotProfileBuyerComponent
+  ],
 })
 export class BuyerModule { }

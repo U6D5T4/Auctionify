@@ -32,7 +32,7 @@ export class LotProfileSellerComponent {
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      const lotId = +params['id'];
+      const lotId = + params['id'];
       this.lotData$ = this.apiService.getOneLotForSeller(lotId);
     });
   }

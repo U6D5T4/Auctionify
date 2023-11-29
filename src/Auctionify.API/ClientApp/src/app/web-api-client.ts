@@ -268,7 +268,7 @@ export class Client {
     }
 
     getOneLotForBuyer(id: number): Observable<BuyerGetLotResponse> {
-        let url_ = this.baseUrl + `/api/lots/${id}/buyer`;
+        let url_ = this.baseUrl + `/api/lots/${id}/buyers`;
 
         let options_: any = {
             observe: 'response',
