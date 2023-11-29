@@ -26,7 +26,14 @@
                     formControlName="password" 
                     matInput
                     [type]="passwordHidden ? 'password' : 'text'"
+                    ><button 
+                    mat-icon-button 
+                    matSuffix 
+                    (click)="togglePasswordVisibility()"
+                    aria-label="Toggle password visibility"
                     >
+                    <mat-icon>remove_red_eye</mat-icon>
+                </button>
                     <mat-error>Password required</mat-error>
                 </mat-form-field>
 
@@ -37,6 +44,14 @@
                     matInput
                     [type]="passwordHidden ? 'password' : 'text'"
                     >
+                    <button 
+                        mat-icon-button 
+                        matSuffix 
+                        (click)="togglePasswordVisibility()"
+                        aria-label="Toggle password visibility"
+                    >
+                        <mat-icon>remove_red_eye</mat-icon>
+                    </button>
                     <mat-error>Password required</mat-error>
                 </mat-form-field>
 

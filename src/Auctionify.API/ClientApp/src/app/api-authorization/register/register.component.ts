@@ -59,7 +59,7 @@ export class RegisterComponent {
           this.router.navigate(['/home'])
         },
         error: (error: RegisterResponse) => {
-          this.openDialog(error.errors!, true);
+          this.openDialog(error.errors! || ['Something went wrong, please try later'], true);
         }
       })
   }

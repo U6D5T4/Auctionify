@@ -8,17 +8,21 @@
 
             <form [formGroup]="assignRoleForm" (ngSubmit)="onSubmit()" class="register-role__form form">
                 <div class="form__options">
-
-                    <div class="form__single-option" *ngFor="let role of roles">
-                        <input formControlName="role" type="radio" [id]="role.name" name="radio" [value]='role.name' required />
-                        <div class="form__user-type-option">
-                            <div class="radio">
-                                <label [for]="role.name">{{role.name}}</label>
-                            </div>
-                        <p class="form__option-desc">{{role.line1}} <br> {{role.line2}}</p>
+                  <div class="form__single-option" *ngFor="let role of roles">
+                    <label class="form__option-label">
+                      <input formControlName="role" type="radio" [id]="role.name" name="radio" 
+                      [value]='role.name' 
+                      [checked]="role.name === assignRoleForm.controls.role.value" required />
+                      <div class="form__user-type-option">
+                        <div class="radio">
+                          <p>{{ role.name }}</p>
                         </div>
-                    </div>
-
+                        <label [for]="role.name">
+                          <p class="form__option-desc">{{ role.line1 }} <br> {{ role.line2 }}</p>
+                        </label>
+                      </div>
+                    </label>
+                  </div>
                 </div>
 
                 <button type="submit" disabled="{{isLoading}}" mat-raised-button color="primary">

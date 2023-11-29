@@ -37,7 +37,7 @@ export class RegisterRoleComponent {
   }
 
   assignRoleForm = new FormGroup({
-    role: new FormControl<UserRole>(UserRole.Buyer)
+    role: new FormControl<UserRole>(UserRole.Seller)
   })
 
   onSubmit() {
@@ -56,7 +56,7 @@ export class RegisterRoleComponent {
         this.router.navigate(['/home']);
       },
         error: (error: AssignRoleResponse) => {
-          this.openDialog(error.errors!, true);
+          this.openDialog(error.errors! || ['Something went wrong, please try later'], true);
         }
       })
   }
