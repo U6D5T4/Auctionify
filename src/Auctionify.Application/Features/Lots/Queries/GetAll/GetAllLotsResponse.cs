@@ -4,6 +4,6 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAll
 {
     public class GetAllLotsResponse : GetAllLots
     {
-
-    }
+		public bool IsInWatchlist { get; set; }
+	}
 }

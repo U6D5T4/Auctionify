@@ -1,0 +1,189 @@
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+$main-palette: (
+    50: #2B5293,
+    100: #2B5293,
+    200: #2B5293,
+    300: #2B5293,
+    400: #2B5293,
+    500: #2B5293,
+    600: #2B5293,
+    700: #2B5293,
+    800: #2B5293,
+    900: #2B5293,
+    A100: #2B5293,
+    A200: #2B5293,
+    A400: #2B5293,
+    A700: #2B5293,
+    contrast: (50: #2B5293,
+        100: #2B5293,
+        200: #2B5293,
+        300: #2B5293,
+        400: #2B5293,
+        500: #2B5293,
+        600: #2B5293,
+        700: #2B5293,
+        800: #2B5293,
+        900: #2B5293,
+        A100: #2B5293,
+        A200: #2B5293,
+        A400: #2B5293,
+        A700: #2B5293,
+    )
+);
+
+$main-accent: (
+    50: #F2F5F7,
+    100: #F2F5F7,
+    200: #F2F5F7,
+    300: #F2F5F7,
+    400: #F2F5F7,
+    500: #F2F5F7,
+    600: #F2F5F7,
+    700: #F2F5F7,
+    800: #F2F5F7,
+    900: #F2F5F7,
+    contrast: (50: #F2F5F7,
+        100: #F2F5F7,
+        200: #F2F5F7,
+        300: #F2F5F7,
+        400: #F2F5F7,
+        500: #F2F5F7,
+        600: #F2F5F7,
+        700: #F2F5F7,
+        800: #F2F5F7,
+        900: #F2F5F7,
+    )
+);
+
+$main-error: (
+    50: #AB2D25,
+    100: #AB2D25,
+    200: #AB2D25,
+    300: #AB2D25,
+    400: #AB2D25,
+    500: #AB2D25,
+    600: #AB2D25,
+    700: #AB2D25,
+    800: #AB2D25,
+    900: #AB2D25,
+    contrast: (50: #AB2D25,
+        100: #AB2D25,
+        200: #AB2D25,
+        300: #AB2D25,
+        400: #AB2D25,
+        500: #AB2D25,
+        600: #AB2D25,
+        700: #AB2D25,
+        800: #AB2D25,
+        900: #AB2D25,
+    )
+);
+
+
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$ClientApp-primary: mat.define-palette($main-palette);
+$ClientApp-accent: mat.define-palette($main-accent);
+
+// The warn palette is optional (defaults to red).
+$ClientApp-warn: mat.define-palette($main-error);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$ClientApp-theme: mat.define-light-theme((color: (primary: $ClientApp-primary,
+                accent: $ClientApp-accent,
+                warn: $ClientApp-warn,
+            )));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($ClientApp-theme);
+
+/* You can add global styles to this file, and also import other style files */
+
+:root {
+    --color-main: #2B5293;
+    --color-error: #AB2D25;
+
+    --color-container: #F0F3FE;
+
+    --color-text-primary: #242424;
+    --color-placeholder: #bdbdbd;
+
+    --color-grey-3: #828282;
+    --color-grey-4: #BDBDBD;
+    --color-grey-5: #E0E0E0;
+    --color-grey-6: #ECEDEE;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: 'Onest', sans-serif !important;
+}
+
+ul {
+    padding: 0;
+}
+
+a,
+button {
+    cursor: pointer;
+}
+
+.mdc-text-field.mdc-text-field--outlined {
+    --mdc-outlined-text-field-container-shape: 8px;
+}
+
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__leading,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__notch,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing {
+    border-color: var(--color-grey-4);
+}
+
+.mat-mdc-outlined-button-custom {
+    border: 2px solid !important;
+    font-weight: 600 !important;
+}
+
+mat-error {
+    font-size: 14px;
+}
+
+.mdc-button {
+    height: 48px !important;
+    font-size: 16px !important;
+    font-family: 'Onest', sans-serif !important;
+    border-radius: 8px !important;
+    width: 100%;
+}
+
+hr.color-grey-5 {
+    border: none;
+    border-bottom: 1px solid var(--color-grey-5);
+}
+
+.color-grey-3 {
+    color: var(--color-grey-3) !important;
+}

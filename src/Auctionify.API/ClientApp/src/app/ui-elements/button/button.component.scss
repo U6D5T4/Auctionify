@@ -1,0 +1,41 @@
+#app-button {
+    font-family: 'Onest', sans-serif;
+    height: 46px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.design {
+    &__default {
+        border: 1px solid var(--color-main);
+        background-color: var(--color-main);
+        color: white;
+        transition: all 0.2s ease-in;
+
+        &:active {
+            background-color: white;
+            color: var(--color-main);
+        }
+    }
+
+    &__outline-grey {
+        border: 1px solid var(--color-grey-5);
+        background-color: white;
+    }
+
+    &__disabled {
+        background-color: var(--color-grey-6);
+        border: 1px solid var(--color-grey-6);
+        color: var(--color-grey-4);
+    }
+
+    &__outline-black {}
+}

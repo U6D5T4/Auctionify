@@ -23,7 +23,7 @@ jobs:
           include-prerelease: true
 
       - name: Install dotnet-ef
-        run: dotnet tool install --global dotnet-ef
+        run: dotnet tool install --global dotnet-ef --version 7.*
 
       - name: Restore tools
         run: dotnet tool restore
@@ -45,20 +45,22 @@ jobs:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
 
-  #test:
-  #  runs-on: ubuntu-latest
+  test:
+    runs-on: ubuntu-latest
 
-  #  steps:
-  #    - uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v4
 
-  #    - name: Set up .NET Core
-  #      uses: actions/setup-dotnet@v1
-  #      with:
-  #        dotnet-version: '7.x'
-  #        include-prerelease: true
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '7.x'
+          include-prerelease: true
 
-  #    - name: Run unit tests
-  #      run: dotnet test --configuration Release
+      - name: Run unit tests
+        run: |
+          cd tests/Auctionify.UnitTests
+          dotnet test --configuration Release
 
   deploy:
     runs-on: ubuntu-latest

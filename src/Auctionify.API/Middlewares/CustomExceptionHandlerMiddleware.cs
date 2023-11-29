@@ -45,6 +45,8 @@ namespace Auctionify.API.Middlewares
 		{
 			var code = HttpStatusCode.InternalServerError; // 500 if unexpected
 
+			object? errorObject = null;
+
 			if (exception is ArgumentException)
 			{
 				code = HttpStatusCode.BadRequest; // 400 if bad request
@@ -52,9 +54,15 @@ namespace Auctionify.API.Middlewares
 			else if (exception is ValidationException)
 			{
 				code = HttpStatusCode.BadRequest;
+
+				errorObject = new { errors = ((ValidationException)exception).Errors };
+			}
+			else if (exception is InvalidOperationException)
+			{
+				code = HttpStatusCode.BadRequest;
 			}
 
-			var result = JsonConvert.SerializeObject(new { error = exception.Message });
+			var result = JsonConvert.SerializeObject(errorObject ?? new { errors = exception.Message });
 			context.Response.ContentType = "application/json";
 			context.Response.StatusCode = (int)code;
 			return context.Response.WriteAsync(result);
