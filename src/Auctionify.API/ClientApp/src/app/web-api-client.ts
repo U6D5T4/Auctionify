@@ -476,9 +476,6 @@ export class Client {
             return of(data);
         }));
     }
-}
-
-
     filterLots(params: FilterLot): Observable<FilteredLotModel[]> {
         let url_ = this.baseUrl + `/api/lots/filtered-lots`;
 
