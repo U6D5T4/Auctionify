@@ -154,7 +154,7 @@ namespace Auctionify.Infrastructure.Identity
 			var encodedToken = Encoding.UTF8.GetBytes(token);
 			var validToken = WebEncoders.Base64UrlEncode(encodedToken);
 
-            string url = $"{_appOptions.ClientAppUrl}/auth/reset-password?email={email}&token={validToken}";
+            string url = $"{_appOptions.ClientApp}/auth/reset-password?email={email}&token={validToken}";
 
             await _emailService.SendEmailAsync(email, "Reset Password", "<h1>Follow the instructions to reset your password</h1>" +
                 $"<p>To reset your password <a href='{url}'>Click here</a></p>");
