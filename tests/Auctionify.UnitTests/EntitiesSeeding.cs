@@ -243,6 +243,34 @@ namespace Auctionify.UnitTests
 			};
 		}
 
+		public static List<Location> GetLocations()
+		{
+			return new List<Location>
+			{
+				new Location
+				{
+					Id = 1,
+					City = "Tashkent",
+					Country = "Uzbekistan",
+					Address = "Some address"
+				},
+				new Location
+				{
+					Id = 2,
+					City = "Moscow",
+					Country = "Russia Federation",
+					Address = "Some address"
+				},
+				new Location
+				{
+					Id = 3,
+					City = "London",
+					Country = "UK",
+					Address = "Some address"
+				},
+			};
+		}
+
 		public static UserManager<User> GetUserManagerMock()
 		{
 			var store = new Mock<IUserStore<User>>();

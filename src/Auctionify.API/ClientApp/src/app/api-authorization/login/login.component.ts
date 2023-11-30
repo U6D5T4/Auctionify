@@ -69,7 +69,13 @@ export class LoginComponent {
         this.service.loginWithGoogle(response.credential).subscribe({
             next: (x: any) => {
                 this._ngZone.run(() => {
-                    this.router.navigate(['/home']);
+                    if (this.service.isUserLoggedIn()) {
+                        if (this.service.isUserBuyer() || this.service.isUserSeller()) {
+                            this.router.navigate(['/home']);
+                        } else {
+                            this.router.navigate(['/auth/register-role']);
+                        }
+                    }
                 });
             },
             error: (error: any) => {},
@@ -90,7 +96,13 @@ export class LoginComponent {
             )
             .subscribe({
                 next: (result) => {
-                    this.router.navigate(['/home']);
+                    if (this.authService.isUserLoggedIn()) {
+                        if (this.authService.isUserBuyer() || this.authService.isUserSeller()) {
+                            this.router.navigate(['/home']);
+                        } else {
+                            this.router.navigate(['/auth/register-role']);
+                        }
+                    }
                 },
                 error: (error: LoginResponse) => {
                     this.openDialog(error.errors!, true);

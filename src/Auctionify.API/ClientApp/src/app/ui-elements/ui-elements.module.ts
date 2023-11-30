@@ -13,7 +13,6 @@ import { ChoicePopupComponent } from './choice-popup/choice-popup.component';
   declarations: [
     ButtonComponent,
     InputComponent,
-    ButtonComponent,
     DialogPopupComponent,
     ChoicePopupComponent
   ],

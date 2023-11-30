@@ -11,6 +11,7 @@ using Auctionify.Infrastructure.Services;
 using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -110,7 +111,8 @@ namespace Auctionify.Infrastructure
             services.AddScoped<ILotStatusRepository, LotStatusRepository>();
             services.AddScoped<ICurrencyRepository, CurrencyRepository>();
             services.AddScoped<IBidRepository, BidRepository>();
-            services.AddScoped<IFileRepository, FileRepository>();
+            services.AddScoped<ILocationRepository, LocationRepository>();
+			services.AddScoped<IFileRepository, FileRepository>();
             services.AddScoped<IWatchlistRepository, WatchlistRepository>();
 
             services.AddTransient<IEmailService, SendGridEmailService>();
