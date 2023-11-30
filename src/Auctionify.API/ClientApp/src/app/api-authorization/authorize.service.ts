@@ -4,12 +4,16 @@ import {
   AssignRoleResponse,
   AssignRoleViewModel,
   Client,
+  ForgetPasswordResponse,
+  ForgetPasswordViewModel,
   LoginResponse,
   LoginViewModel,
   RegisterResponse,
   RegisterViewModel,
+  ResetPasswordViewModel,
+  ResetPasswordResponse
 } from '../web-api-client';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 
 export enum UserRole {
   Administrator = 'Administrator',
@@ -142,6 +146,34 @@ export class AuthorizeService {
         return result;
       })
     );
+  }
+
+  forgetPassword(
+    email: string
+    ) : Observable<ForgetPasswordResponse | undefined> 
+    {
+    return this.client.forgetPassword(email).pipe(map((result) => {
+      return result;
+    }))
+  }
+
+  resetPassword(
+    token: string,
+    email: string,
+    newPassword: string,
+    confirmPassword: string
+  ): Observable<ResetPasswordResponse | undefined> 
+  {
+    const resetPasswordData: ResetPasswordViewModel = {
+      token,
+      email,
+      newPassword,
+      confirmPassword
+    };
+
+    return this.client.resetPassword(resetPasswordData).pipe(map((result) => {
+      return result;
+    }))
   }
 
   logout(): boolean {

@@ -428,6 +428,54 @@ export class Client {
         );
     }
 
+    resetPassword(body: ResetPasswordViewModel | undefined) : Observable<ResetPasswordResponse> {
+        let url_ = this.baseUrl + "/api/auth/reset-password";
+    
+        const content_ = JSON.stringify(body);
+        
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/json"
+            })
+        };
+    
+        return this.http.request("post", url_, options_).pipe(mergeMap((response: any) : Observable<ResetPasswordResponse> => {
+            let data: ResetPasswordResponse = {};
+    
+            if (response.body !== null) {
+                data = response.body
+            }
+    
+            return of(data);
+        }));
+    }
+    
+    forgetPassword(email: string) : Observable<ForgetPasswordResponse> {
+        let url_ = `${this.baseUrl}/api/auth/forget-password?email=${encodeURIComponent(email)}`;
+    
+        console.log(email);
+        
+        let options_ : any = {
+            observe: "response",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/json"
+            })
+        };
+    
+        return this.http.request("post", url_, options_).pipe(mergeMap((response: any) : Observable<ForgetPasswordResponse> => {
+            let data: ForgetPasswordResponse = {};
+    
+            if (response.body !== null) {
+                data = response.body
+            }
+    
+            return of(data);
+        }));
+    }
     filterLots(params: FilterLot): Observable<FilteredLotModel[]> {
         let url_ = this.baseUrl + `/api/lots/filtered-lots`;
 
@@ -636,6 +684,18 @@ export interface RegisterResponse {
     errors?: string[] | undefined;
 }
 
+export interface ForgetPasswordResponse {
+    message?: string | undefined;
+    isSuccess?: boolean;
+    errors?: string[] | undefined;
+}
+
+export interface ResetPasswordResponse {
+    message?: string | undefined;
+    isSuccess?: boolean;
+    errors?:  string[] | undefined;
+}
+
 export interface LoginViewModel {
     email: string;
     password: string;
@@ -644,6 +704,17 @@ export interface LoginViewModel {
 export interface RegisterViewModel {
     email: string;
     password: string;
+    confirmPassword: string;
+}
+
+export interface ForgetPasswordViewModel {
+    email: string;
+}
+
+export interface ResetPasswordViewModel {
+    token: string;
+    email: string;
+    newPassword: string;
     confirmPassword: string;
 }
 

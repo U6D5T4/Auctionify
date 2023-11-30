@@ -9,10 +9,6 @@ import { RegisterResponse } from 'src/app/web-api-client';
 import { environment } from 'src/environments/environment';
 import { AuthorizeService } from '../authorize.service';
 
-@Injectable({
-  providedIn: 'root'
-})
-
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',

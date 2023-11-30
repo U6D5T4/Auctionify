@@ -69,7 +69,7 @@ namespace Auctionify.API.Controllers
 		}
 
 		[HttpPost("reset-password")]
-		public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordViewModel model)
+		public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordViewModel model)
 		{
 			if (!ModelState.IsValid)
 			{

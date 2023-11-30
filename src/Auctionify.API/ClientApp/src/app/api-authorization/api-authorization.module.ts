@@ -18,10 +18,11 @@ import { RegisterComponent } from './register/register.component';
 import { ForgetPasswordComponent } from './forget-password/forget-password.component';
 import { RegisterRoleComponent } from './register-role/register-role.component';
 import { UiElementsModule } from '../ui-elements/ui-elements.module';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { isLoggedInGuard } from '../guards/is-logged-in.guard';
 
 @NgModule({
-  declarations: [LoginComponent, RegisterComponent, ForgetPasswordComponent, RegisterRoleComponent],
+    declarations: [LoginComponent, RegisterComponent, ForgetPasswordComponent, RegisterRoleComponent, ResetPasswordComponent],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -39,6 +40,10 @@ import { isLoggedInGuard } from '../guards/is-logged-in.guard';
       {
         path: ApplicationPaths.ForgetPassword,
         component: ForgetPasswordComponent,
+      },
+      {
+          path: ApplicationPaths.ResetPassword,
+          component: ResetPasswordComponent
       },
       {
         path: ApplicationPaths.RegisterRole,
