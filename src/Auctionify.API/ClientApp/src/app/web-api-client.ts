@@ -76,6 +76,40 @@ export class Client {
             );
     }
 
+    assignRoleToUser(body: AssignRoleViewModel): Observable<AssignRoleResponse> {
+        let url_ = this.baseUrl + "/api/auth/assign-role";
+
+        const content_ = JSON.stringify(body);
+        
+        let options_ : Object = {
+            body: content_,
+            observe: "response",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(mergeMap((response: any) : Observable<AssignRoleResponse> => {
+            let data: AssignRoleResponse = {};
+
+            if (response.body !== null) {
+                data = response.body
+            }
+
+            return of(data);
+        })).pipe(catchError((error) => {
+            return throwError(() => error);
+        }));
+    }
+
+    signUpWithGoogle(userData: any): Observable<any> {
+        const header = new HttpHeaders().set('Content-type', 'application/json');
+        let url_ = this.baseUrl + "api/auth/sign-up-with-google";
+      
+        return this.http.post(url_, JSON.stringify(userData), { headers: header, withCredentials: true });
+      }
+
     loginWithGoogle(credentials: string): Observable<any> {
         const header = new HttpHeaders().set(
             'Content-type',
@@ -578,6 +612,16 @@ export interface LoginResponse {
     isSuccess?: boolean;
     errors?: string[] | undefined;
     result?: TokenModel;
+}
+
+export interface AssignRoleViewModel {
+    role: UserRole;
+}
+
+export interface AssignRoleResponse{
+    message?: string | undefined;
+    isSuccess?: boolean;
+    errors?: string[] | undefined;
 }
 
 export interface TokenModel {

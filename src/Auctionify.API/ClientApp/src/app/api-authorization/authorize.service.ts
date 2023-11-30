@@ -1,6 +1,8 @@
 import { Injectable, WritableSignal, computed, signal } from '@angular/core';
 import { Observable, catchError, map, of, throwError } from 'rxjs';
 import {
+  AssignRoleResponse,
+  AssignRoleViewModel,
   Client,
   LoginResponse,
   LoginViewModel,
@@ -25,6 +27,7 @@ export interface IUser {
 @Injectable({
   providedIn: 'root',
 })
+
 export class AuthorizeService {
   private tokenString: string = 'token';
   private expireString: string = 'expires_at';
@@ -77,6 +80,17 @@ export class AuthorizeService {
           return throwError(() => err.error);
         })
       );
+  }
+
+  assignRoleToUser(role: UserRole): Observable<AssignRoleResponse | boolean> {
+
+    const roleAssignmentData: AssignRoleViewModel = {
+      role
+    };
+  
+    return this.client.assignRoleToUser(roleAssignmentData).pipe(map((result) => {
+      return result;
+    }))
   }
 
   processLoginResponse(response: LoginResponse) {
