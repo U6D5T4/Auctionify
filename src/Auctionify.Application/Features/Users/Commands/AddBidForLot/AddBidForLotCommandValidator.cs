@@ -109,33 +109,6 @@ namespace Auctionify.Application.Features.Users.Commands.AddBidForLot
 				.MustAsync(
 					async (request, cancellationToken) =>
 					{
-						var user = await _userManager.FindByEmailAsync(
-							_currentUserService.UserEmail!
-						);
-						var allUserBidsForLot = await _bidRepository.GetListAsync(
-							predicate: x => x.LotId == request.LotId && x.BuyerId == user!.Id,
-							orderBy: x => x.OrderByDescending(x => x.TimeStamp),
-							cancellationToken: cancellationToken
-						);
-
-						if (allUserBidsForLot is not null && allUserBidsForLot.Items.Count > 0)
-						{
-							var previousBid = allUserBidsForLot.Items[0];
-							return request.Bid > previousBid.NewPrice;
-						}
-
-						return true;
-					}
-				)
-				.WithMessage("Your new bid must be greater than your previous bid")
-				.OverridePropertyName("Bid")
-				.WithName("Bid");
-
-			RuleFor(x => x)
-				.Cascade(CascadeMode.Stop)
-				.MustAsync(
-					async (request, cancellationToken) =>
-					{
 						var lot = await _lotRepository.GetAsync(
 							predicate: x => x.Id == request.LotId,
 							cancellationToken: cancellationToken
