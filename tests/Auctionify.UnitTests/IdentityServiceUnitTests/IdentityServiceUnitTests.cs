@@ -60,7 +60,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				null,
 				null,
 				null
-				);
+			);
 		}
 
 		#endregion
@@ -327,7 +327,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 
 			_appOptionsMock
 				.Setup(options => options.Value)
-				.Returns(new AppOptions { Url = "https://testlocalhost:1234" });
+				.Returns(new AppOptions { ClientApp = "https://testlocalhost:1234" });
 
 			var sut = new IdentityService(
 				_userManagerMock.Object,
@@ -355,8 +355,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 						"Reset Password",
 						"<h1>Follow the instructions to reset your password</h1>"
 							+ "<p>To reset your password "
-							+ $"<a href='https://testlocalhost:1234/reset-password?email={email}&token={validToken}'>"
-							+ "Click here</p>"
+							+ $"<a href='https://testlocalhost:1234/auth/reset-password?email={email}&token={validToken}'>"
+							+ "Click here</a></p>"
 					),
 				Times.Once
 			);
