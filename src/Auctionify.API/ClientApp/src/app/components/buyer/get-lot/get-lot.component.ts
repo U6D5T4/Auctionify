@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, forkJoin, of, switchMap } from 'rxjs';
+import { Observable, of, switchMap } from 'rxjs';
 
 import { SignalRService } from 'src/app/services/signalr.service';
 import { BidDto, BuyerGetLotResponse, Client } from 'src/app/web-api-client';
@@ -21,7 +21,7 @@ export class GetLotComponent implements OnInit {
         private apiClient: Client,
         private route: ActivatedRoute,
         private signalRService: SignalRService,
-        private dialog: MatDialog
+        private dialog: Dialog
     ) {}
 
     ngOnInit(): void {
@@ -50,14 +50,8 @@ export class GetLotComponent implements OnInit {
     }
 
     openBidModal(): void {
-        const dialogRef = this.dialog.open(AddBidComponent, {
-            width: '500px',
-            height: '300px',
+        const dialog = this.dialog.open(AddBidComponent, {
             data: { lotId: this.lotId },
-        });
-
-        dialogRef.afterClosed().subscribe((result) => {
-            console.log('The dialog was closed');
         });
     }
 }

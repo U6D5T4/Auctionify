@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 
 import { SignalRService } from 'src/app/services/signalr.service';
 import { BidDto, Client } from 'src/app/web-api-client';
@@ -14,13 +14,13 @@ export class AddBidComponent implements OnInit {
     bidForm!: FormGroup;
     lotId!: number;
     bids: BidDto[] = [];
-    errorMsg!: string;
+    errorMessage!: string;
 
     constructor(
-        private dialogRef: MatDialogRef<AddBidComponent>,
+        private dialogRef: DialogRef<AddBidComponent>,
         private apiClient: Client,
         private signalRService: SignalRService,
-        @Inject(MAT_DIALOG_DATA) private data: any
+        @Inject(DIALOG_DATA) private data: any
     ) {
         this.lotId = this.data?.lotId;
     }
@@ -38,9 +38,22 @@ export class AddBidComponent implements OnInit {
     }
 
     getAllBidsForLot() {
-        this.apiClient.getAllBidsOfUserForLot(this.lotId, 0, 10).subscribe({
+        this.apiClient.getAllBidsOfUserForLot(this.lotId, 0, 3).subscribe({
             next: (bids) => {
                 this.bids = bids;
+                this.bids.forEach((bid) => {
+                    const date = new Date(bid.timeStamp);
+                    const day = date.getDay();
+                    const month = date.toLocaleString('default', {
+                        month: 'long',
+                    });
+                    const hours = date.getHours();
+                    const minutes = date.getMinutes();
+
+                    bid.timeStamp = `${day} ${month}, ${hours}:${
+                        minutes < 10 ? '0' + minutes : minutes
+                    }`;
+                });
                 console.log('Bids for lot:', this.bids);
             },
             error: (error) => {
@@ -60,11 +73,16 @@ export class AddBidComponent implements OnInit {
                 next: (response) => {
                     console.log('Bid placed successfully!', response);
                     this.bidForm.reset();
-                    this.errorMsg = '';
+                    this.errorMessage = '';
                 },
                 error: (error) => {
-                    console.log(error);
-                    this.errorMsg = error?.error?.errors[0]?.ErrorMessage;
+                    if (
+                        JSON.parse(error) &&
+                        JSON.parse(error)?.errors?.length
+                    ) {
+                        this.errorMessage =
+                            JSON.parse(error)?.errors[0]?.ErrorMessage;
+                    }
                 },
             });
         }

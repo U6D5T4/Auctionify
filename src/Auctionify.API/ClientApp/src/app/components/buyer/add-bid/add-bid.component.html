@@ -1,26 +1,41 @@
-<form [formGroup]="bidForm" (ngSubmit)="onSubmit()">
-    <div>
-        <label for="bidAmount">Bid Amount:</label>
-        <input type="number" id="bidAmount" formControlName="bid" />
-    </div>
-    <div>
-        <button type="submit" [disabled]="!bidForm.valid">Place Bid</button>
-        <button type="button" (click)="closeDialog()">Go Back</button>
-    </div>
-</form>
+<div class="bid-operation">
+    <h1 class="bid-operation__title">Place a bid</h1>
+    <p class="bid-operation__description">We will notify you in case you win</p>
+    <form [formGroup]="bidForm" (ngSubmit)="onSubmit()" class="bid-form">
+        <div class="main__form">
+            <mat-form-field color="primary" appearance="outline">
+                <mat-label>Bid price</mat-label>
+                <input type="number" formControlName="bid" matInput />
+                <mat-error *ngIf="errorMessage">
+                    {{ errorMessage }}
+                </mat-error>
+            </mat-form-field>
+        </div>
 
-<div *ngIf="errorMsg" class="error-message">
-    <p>{{ errorMsg }}</p>
-</div>
-
-<div *ngIf="bids.length > 0" class="bids-section">
-    <h3>Bids for Lot</h3>
-    <ul>
-        <li *ngFor="let bid of bids">
-            {{ bid.timeStamp }} - {{ bid.newPrice }} - {{ bid.currency }}
-        </li>
-    </ul>
-</div>
-<div *ngIf="bids.length === 0" class="no-bids">
-    <p>No bids available.</p>
+        <div *ngIf="bids.length > 0" class="bids-section">
+            <h3 class="bids-text">You already bid</h3>
+            <ul class="bids-list">
+                <li *ngFor="let bid of bids" class="bids-list__item">
+                    <p class="bids-list__item-date">{{ bid.timeStamp }}</p>
+                    <p class="bids-list__item-amount">
+                        {{ bid.newPrice }} {{ bid.currency }}
+                    </p>
+                </li>
+            </ul>
+        </div>
+        <div class="submit-button">
+            <button
+                type="submit"
+                mat-flat-button
+                [color]="'primary'"
+                class="bid-button"
+                [disabled]="!bidForm.valid"
+            >
+                Submit
+            </button>
+        </div>
+        <div *ngIf="bids.length === 0" class="no-bids">
+            <p>No bids available.</p>
+        </div>
+    </form>
 </div>

@@ -451,7 +451,7 @@ export interface BidDto {
     id: number;
     buyerId: number;
     newPrice: number;
-    timeStamp: Date;
+    timeStamp: string;
     currency: string;
     buyer: UserDto;
     bidRemoved: boolean;

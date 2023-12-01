@@ -1,59 +1,92 @@
-// Styles for the form
-form {
-  display: flex;
-  flex-direction: column;
-
-  div {
-    margin-bottom: 1rem;
-
-    label {
-      font-weight: bold;
+.bid {
+    &-operation {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 500px;
+        height: fit-content;
+        max-height: 360px;
+        min-height: 216px;
+        transform: translate(-50%, -50%);
+        padding: 40px 48px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        border-radius: 24px;
+        background-color: #f8f8f8; /* Light gray background */
     }
 
-    input {
-      padding: 0.5rem;
-      border-radius: 4px;
-      border: 1px solid #ccc;
+    &-operation__title {
+        color: var(--color-text-primary);
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 32px; /* 133.333% */
     }
-  }
 
-  button {
-    padding: 0.5rem 1rem;
-    margin-right: 1rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
+    &-operation__description {
+        color: var(--color-grey-3);
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 24px; /* 133.333% */
     }
-  }
+
+    &-button {
+        margin-top: 24px;
+        color: var(--color-grey-4);
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 24px;
+    }
 }
 
-// Styles for the bids section and error message
-div[bids], div[errorMessage] {
-  margin-top: 2rem;
+mat-form-field {
+    width: 100%;
+}
 
-  h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-  }
-
-  ul {
-    list-style: none;
-    padding: 0;
-
-    li {
-      margin-bottom: 0.5rem;
-      padding: 0.5rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      background-color: #f5f5f5;
+.bids {
+    &-section {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
     }
-  }
 
-  p {
-    color: #888;
-  }
+    &-text {
+        color: var(--color-grey-4);
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 24px; /* 133.333% */
+    }
+
+    &-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        &__item {
+            display: flex;
+            justify-content: space-between;
+            gap: 5px;
+
+            &-date {
+                color: var(--color-grey-3);
+                font-size: 16px;
+                font-style: normal;
+                font-weight: 600;
+                line-height: 24px; /* 150% */
+            }
+
+            &-amount {
+                color: var(--color-main);
+                font-size: 16px;
+                font-style: normal;
+                font-weight: 700;
+                line-height: 24px; /* 150% */
+            }
+        }
+    }
 }
