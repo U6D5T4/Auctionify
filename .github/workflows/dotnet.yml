@@ -27,7 +27,7 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx" || true
     - name: Test Report
-      uses: dorny/test-reporter@v1
+      uses: dorny/test-reporter@v1.6.0
       if: always()
       with:
         name: Auctionify Test Report
