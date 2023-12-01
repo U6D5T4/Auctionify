@@ -139,17 +139,24 @@ namespace Auctionify.API
 					});
 				}
 
-				app.MapHub<AuctionHub>("/api/auctionHub"); // SignalR hub
-				app.UseCors("CorsPolicy");
-				app.UseStaticFiles();
-				app.UseRouting();
+				app.UseCustomExceptionHandler(); // Custom exception handler middleware
+
 				app.UseHttpsRedirection();
+				app.UseStaticFiles();
+
+				app.UseRouting();
+				app.UseCors("CorsPolicy");
+
 				app.UseAuthentication();
 				app.UseAuthorization();
-				app.UseCustomExceptionHandler(); // Custom exception handler middleware
-				app.MapControllers();
+
 				app.MapRazorPages();
+
+				app.MapControllers();
 				app.MapFallbackToFile("index.html");
+
+				app.MapHub<AuctionHub>("/api/auctionHub"); // SignalR hub
+
 				app.Run();
 			}
 			catch (HostAbortedException ex)
