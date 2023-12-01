@@ -72,9 +72,7 @@ namespace Auctionify.UnitTests.AddBidForLotTests
 			_validator = new AddBidForLotCommandValidator(
 				_bidRepository,
 				_lotRepository,
-				_lotStatusRepository,
-				_userManagerMock.Object,
-				_currentUserServiceMock.Object
+				_lotStatusRepository
 			);
 		}
 
