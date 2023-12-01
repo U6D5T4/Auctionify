@@ -10,7 +10,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace Auctionify.Application.Features.Lots.Queries.FIlter
+namespace Auctionify.Application.Features.Lots.Queries.Filter
 {
 	public class FilterLotsQuery : IRequest<GetListResponseDto<FilterLotsResponse>>
 	{
@@ -77,12 +77,12 @@ namespace Auctionify.Application.Features.Lots.Queries.FIlter
 		{
 			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
 
-			var filterBase = new Filter
+			var filterBase = new Core.Persistence.Dynamic.Filter
 			{
 				Field = "Id",
 				Operator = "isnotnull",
 				Logic = "and",
-				Filters = new List<Filter>()
+				Filters = new List<Core.Persistence.Dynamic.Filter>()
 			};
 
 			if (request.LotStatuses != null)
@@ -103,13 +103,13 @@ namespace Auctionify.Application.Features.Lots.Queries.FIlter
 
 			if (request.CategoryId != null)
 			{
-				var filterCategory = new Filter
+				var filterCategory = new Core.Persistence.Dynamic.Filter
 				{
 					Field = categoryField,
 					Value = request.CategoryId.ToString(),
 					Operator = "eq",
 					Logic = "and",
-					Filters = new List<Filter>()
+					Filters = new List<Core.Persistence.Dynamic.Filter>()
 				};
 
 				filterBase.Filters.Add(filterCategory);
@@ -188,23 +188,23 @@ namespace Auctionify.Application.Features.Lots.Queries.FIlter
 			return response;
 		}
 
-		private Filter CreateStatusFilter(IList<int> statuses, string field)
+		private Core.Persistence.Dynamic.Filter CreateStatusFilter(IList<int> statuses, string field)
 		{
-			var statusFiltersBase = new Filter
+			var statusFiltersBase = new Core.Persistence.Dynamic.Filter
 			{
 				Field = lotStatusField,
 				Logic = "and",
 				Operator = "isnotnull",
-				Filters = new List<Filter>(),
+				Filters = new List<Core.Persistence.Dynamic.Filter>(),
 			};
 
-			Filter? localFilter = null;
+			Core.Persistence.Dynamic.Filter? localFilter = null;
 
 			foreach (var status in statuses)
 			{
-				var statusFilter = new Filter
+				var statusFilter = new Core.Persistence.Dynamic.Filter
 				{
-					Filters = new List<Filter>(),
+					Filters = new List<Core.Persistence.Dynamic.Filter>(),
 					Field = lotStatusField,
 					Logic = "or",
 					Value = status.ToString(),
@@ -222,26 +222,26 @@ namespace Auctionify.Application.Features.Lots.Queries.FIlter
 			return statusFiltersBase;
 		}
 
-		private Filter CreatePriceFilter(decimal? minPrice, decimal? maxPrice, string field)
+		private Core.Persistence.Dynamic.Filter CreatePriceFilter(decimal? minPrice, decimal? maxPrice, string field)
 		{
-			var priceBaseFilter = new Filter
+			var priceBaseFilter = new Core.Persistence.Dynamic.Filter
 			{
 				Field = field,
 				Operator = "isnotnull",
 				Logic = "and",
-				Filters = new List<Filter>()
+				Filters = new List<Core.Persistence.Dynamic.Filter>()
 			};
 
 			if (minPrice != null)
 			{
 				priceBaseFilter.Filters.Add(
-					new Filter
+					new Core.Persistence.Dynamic.Filter
 					{
 						Field = field,
 						Value = minPrice.ToString(),
 						Operator = "gte",
 						Logic = "and",
-						Filters = new List<Filter>()
+						Filters = new List<Core.Persistence.Dynamic.Filter>()
 					}
 				);
 			}
@@ -249,13 +249,13 @@ namespace Auctionify.Application.Features.Lots.Queries.FIlter
 			if (maxPrice != null)
 			{
 				priceBaseFilter.Filters.Add(
-					new Filter
+					new Core.Persistence.Dynamic.Filter
 					{
 						Field = field,
 						Value = maxPrice.ToString(),
 						Operator = "lte",
 						Logic = "and",
-						Filters = new List<Filter>()
+						Filters = new List<Core.Persistence.Dynamic.Filter>()
 					}
 				);
 			}
