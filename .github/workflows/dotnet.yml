@@ -32,4 +32,7 @@ jobs:
         name: Auctionify Test Report
         path: "**/test-results.trx"
         reporter: dotnet-trx
+        only-summary: 'false'
+        list-suites: 'all'
+        list-tests: 'all'
         fail-on-error: true
