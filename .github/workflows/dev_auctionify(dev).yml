@@ -47,6 +47,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    permissions: write-all
     needs: build
     steps:
       - uses: actions/checkout@v4
@@ -57,7 +58,18 @@ jobs:
           dotnet-version: '7.x'
           include-prerelease: true
       - name: Run unit tests
-        run: dotnet test --no-build --verbosity normal --configuration Release
+        run: dotnet test --no-build --verbosity normal --configuration Release --logger "trx;LogFileName=test-results.trx" || true
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Auctionify Test Report
+          path: "**/test-results.trx"
+          reporter: dotnet-trx
+          only-summary: 'false'
+          list-suites: 'all'
+          list-tests: 'all'
+          fail-on-error: true
   
   deploy:
     runs-on: ubuntu-latest
