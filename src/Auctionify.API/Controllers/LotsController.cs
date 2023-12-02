@@ -12,7 +12,7 @@ using Auctionify.Core.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Auctionify.Application.Features.Lots.Queries.FIlter;
+using Auctionify.Application.Features.Lots.Queries.Filter;
 
 namespace Auctionify.API.Controllers
 {

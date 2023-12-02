@@ -66,7 +66,7 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAllByName
 
 			var dynamicQuery = new DynamicQuery
 			{
-				Filter = new Filter
+				Filter = new Core.Persistence.Dynamic.Filter
 				{
 					Field = namePropertyField,
 					Operator = operatorPropertyField,
