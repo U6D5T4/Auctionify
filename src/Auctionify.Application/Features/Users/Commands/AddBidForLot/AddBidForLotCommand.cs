@@ -57,7 +57,9 @@ namespace Auctionify.Application.Features.Users.Commands.AddBidForLot
 
 			var result = await _bidRepository.AddAsync(bid);
 
-			await _hubContext.Clients.All.SendAsync("ReceiveBidNotification", cancellationToken: cancellationToken);
+			await _hubContext.Clients
+				.Group(request.LotId.ToString())
+				.SendAsync("ReceiveBidNotification", cancellationToken: cancellationToken);
 
 			var response = _mapper.Map<AddedBidForLotResponse>(result);
 
