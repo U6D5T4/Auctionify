@@ -1,7 +1,7 @@
 ﻿using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Common.Models.Requests;
-using Auctionify.Application.Features.Lots.Queries.FIlter;
+using Auctionify.Application.Features.Lots.Queries.Filter;
 using Auctionify.Core.Entities;
 using Auctionify.Infrastructure.Persistence;
 using Auctionify.Infrastructure.Repositories;

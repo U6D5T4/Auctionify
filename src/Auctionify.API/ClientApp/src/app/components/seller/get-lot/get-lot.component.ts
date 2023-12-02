@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 import { Client, SellerGetLotResponse } from 'src/app/web-api-client';
-import { SignalRService } from 'src/app/services/signalr.service';
+import { SignalRService } from 'src/app/services/signalr-service/signalr.service';
 
 @Component({
     selector: 'app-get-lot-seller',
