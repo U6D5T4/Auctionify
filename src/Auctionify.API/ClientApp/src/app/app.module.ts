@@ -22,8 +22,8 @@ import { LayoutModule } from './layout/layout.module';
         HttpClientModule,
         BrowserAnimationsModule,
         SellerModule,
-        LayoutModule,
         BuyerModule,
+        LayoutModule,
     ],
 
     providers: [

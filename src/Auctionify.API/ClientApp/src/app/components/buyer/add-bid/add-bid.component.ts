@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 
-import { SignalRService } from 'src/app/services/signalr.service';
+import { SignalRService } from 'src/app/services/signalr-service/signalr.service';
 import { BidDto, Client } from 'src/app/web-api-client';
 
 @Component({

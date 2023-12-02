@@ -3,7 +3,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, of, switchMap } from 'rxjs';
 
-import { SignalRService } from 'src/app/services/signalr.service';
+import { SignalRService } from 'src/app/services/signalr-service/signalr.service';
 import { BidDto, BuyerGetLotResponse, Client } from 'src/app/web-api-client';
 import { AddBidComponent } from '../add-bid/add-bid.component';
 
