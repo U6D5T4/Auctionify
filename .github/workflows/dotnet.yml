@@ -11,9 +11,8 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
+    permissions: write-all
     steps:
     - uses: actions/checkout@v3
     - name: Setup .NET
@@ -25,4 +24,15 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx" || true
+    - name: Test Report
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: Auctionify Test Report
+        path: "**/test-results.trx"
+        reporter: dotnet-trx
+        only-summary: 'false'
+        list-suites: 'all'
+        list-tests: 'all'
+        fail-on-error: true
