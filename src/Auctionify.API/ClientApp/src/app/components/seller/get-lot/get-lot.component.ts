@@ -20,27 +20,18 @@ export class GetLotComponent implements OnInit {
         private signalRService: SignalRService
     ) {}
 
-    ngOnInit() {
-        this.route.paramMap
-            .pipe(
-                switchMap((params) => {
-                    this.lotId = Number(params.get('id')) || 0;
-                    return this.apiClient.getOneLotForSeller(this.lotId);
-                })
-            )
-            .subscribe(async (lot) => {
-                this.lot$ = of(lot);
+    async ngOnInit() {
+        this.getLotFromRoute();
 
-                this.signalRService.onReceiveBidNotification(() => {
-                    this.getLotFromRoute();
-                }, this.lotId);
+        await this.signalRService.joinLotGroupAfterConnection(this.lotId);
 
-                this.signalRService.onReceiveWithdrawBidNotification(() => {
-                    this.getLotFromRoute();
-                }, this.lotId);
+        this.signalRService.onReceiveBidNotification(() => {
+            this.getLotFromRoute();
+        }, this.lotId);
 
-                await this.signalRService.joinLotGroup(this.lotId);
-            });
+        this.signalRService.onReceiveWithdrawBidNotification(() => {
+            this.getLotFromRoute();
+        }, this.lotId);
     }
 
     getLotFromRoute(): void {

@@ -13,6 +13,7 @@ import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 export class SignalRService {
     private apiUrl = environment.apiUrl;
     private connection: signalR.HubConnection;
+    private connectionEstablished: Promise<void>;
 
     constructor(authorizeService: AuthorizeService) {
         const tokenPromise = lastValueFrom(authorizeService.getAccessToken());
@@ -30,7 +31,7 @@ export class SignalRService {
             .withAutomaticReconnect()
             .build();
 
-        this.startConnection();
+        this.connectionEstablished = this.startConnection();
     }
 
     private async startConnection(): Promise<void> {
@@ -42,16 +43,19 @@ export class SignalRService {
         }
     }
 
-    public async joinLotGroup(lotId: number) {
-        try {
-            await this.connection.invoke('JoinLotGroup', lotId);
-            console.log(`Joined group for Lot ID: ${lotId}`);
-        } catch (err: any) {
-            console.error(
-                `Error joining group for Lot ID: ${lotId}`,
-                err.toString()
-            );
-        }
+    public async joinLotGroupAfterConnection(lotId: number) {
+        await this.connectionEstablished;
+        this.connection
+            .invoke('JoinLotGroup', lotId)
+            .then(() => {
+                console.log(`Joined group for Lot ID: ${lotId}`);
+            })
+            .catch((err) => {
+                console.error(
+                    `Error joining group for Lot ID: ${lotId}`,
+                    err.toString()
+                );
+            });
     }
 
     public onReceiveBidNotification(callback: () => void, lotId: number) {
