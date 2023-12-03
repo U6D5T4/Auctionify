@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
+import { lastValueFrom } from 'rxjs';
+import { IHttpConnectionOptions } from '@microsoft/signalr';
 import * as signalR from '@microsoft/signalr';
 
 import { environment } from 'src/environments/environment';
 import { SignalRActions } from './signalr-actions';
-import { AuthorizeService } from '../../api-authorization/authorize.service';
-import { mergeMap } from 'rxjs';
+import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 
 @Injectable({
     providedIn: 'root',
@@ -12,32 +13,24 @@ import { mergeMap } from 'rxjs';
 export class SignalRService {
     private apiUrl = environment.apiUrl;
     private connection: signalR.HubConnection;
-    private connectionEstablished: Promise<void>;
 
-    constructor(AuthorizeService: AuthorizeService) {
-        AuthorizeService.getAccessToken().subscribe((token) => {
-            if (token != null) {
-                this.connection = new signalR.HubConnectionBuilder()
-                    .configureLogging(signalR.LogLevel.Information)
-                    .withUrl(this.apiUrl + 'api/auctionHub', {
-                        accessTokenFactory: () => {
-                            return token;
-                        },
-                    })
-                    .withAutomaticReconnect()
-                    .build();
+    constructor(authorizeService: AuthorizeService) {
+        const tokenPromise = lastValueFrom(authorizeService.getAccessToken());
 
-                this.connectionEstablished = this.startConnection();
-            }
-        });
+        const options: IHttpConnectionOptions = {
+            accessTokenFactory: async () => {
+                const token = await tokenPromise;
+                return token ?? ''; // If token is null or undefined, default to an empty string
+            },
+        };
 
         this.connection = new signalR.HubConnectionBuilder()
             .configureLogging(signalR.LogLevel.Information)
-            .withUrl(this.apiUrl + 'api/auctionHub')
+            .withUrl(this.apiUrl + 'api/hubs/auctionHub', options)
             .withAutomaticReconnect()
             .build();
 
-        this.connectionEstablished = this.startConnection();
+        this.startConnection();
     }
 
     private async startConnection(): Promise<void> {
@@ -49,19 +42,16 @@ export class SignalRService {
         }
     }
 
-    public async joinLotGroupAfterConnection(lotId: number) {
-        await this.connectionEstablished;
-        this.connection
-            .invoke('JoinLotGroup', lotId)
-            .then(() => {
-                console.log(`Joined group for Lot ID: ${lotId}`);
-            })
-            .catch((err) => {
-                console.error(
-                    `Error joining group for Lot ID: ${lotId}`,
-                    err.toString()
-                );
-            });
+    public async joinLotGroup(lotId: number) {
+        try {
+            await this.connection.invoke('JoinLotGroup', lotId);
+            console.log(`Joined group for Lot ID: ${lotId}`);
+        } catch (err: any) {
+            console.error(
+                `Error joining group for Lot ID: ${lotId}`,
+                err.toString()
+            );
+        }
     }
 
     public onReceiveBidNotification(callback: () => void, lotId: number) {
