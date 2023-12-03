@@ -20,6 +20,8 @@ namespace Auctionify.Application.Features.Lots.Queries.Filter
 
 		public int? CategoryId { get; set; }
 
+		public string? Location { get; set; }
+
 		public IList<int>? LotStatuses { get; set; }
 
 		public string? SortField { get; set; }
@@ -35,6 +37,7 @@ namespace Auctionify.Application.Features.Lots.Queries.Filter
 		private const string startingPriceField = nameof(Lot.StartingPrice);
 		private const string categoryField = nameof(Lot.CategoryId);
 		private const string lotStatusField = nameof(Lot.LotStatusId);
+		private const string locationField = $"{nameof(Lot.Location)}.City";
 		private const string defaultOrder = "asc";
 		private readonly ILotRepository _lotRepository;
 		private readonly IMapper _mapper;
@@ -113,6 +116,20 @@ namespace Auctionify.Application.Features.Lots.Queries.Filter
 				};
 
 				filterBase.Filters.Add(filterCategory);
+			}
+
+			if (request.Location != null)
+			{
+				var filterLocation = new Core.Persistence.Dynamic.Filter
+				{
+					Field = locationField,
+					Value = request.Location,
+					Operator = "contains",
+					Logic = "and",
+					Filters = new List<Core.Persistence.Dynamic.Filter>()
+				};
+
+				filterBase.Filters.Add(filterLocation);
 			}
 
 			Sort dynamicSort = null;
