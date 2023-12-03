@@ -60,7 +60,18 @@ jobs:
       - name: Run unit tests
         run: |
           cd tests/Auctionify.UnitTests
-          dotnet test --configuration Release
+          dotnet test --configuration Release --logger "trx;LogFileName=test-results.trx" || true
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Auctionify Test Report
+          path: "**/test-results.trx"
+          reporter: dotnet-trx
+          only-summary: 'false'
+          list-suites: 'all'
+          list-tests: 'all'
+          fail-on-error: true
 
   deploy:
     runs-on: ubuntu-latest
