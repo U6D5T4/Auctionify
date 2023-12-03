@@ -4,15 +4,16 @@ using Auctionify.Application.Features.Lots.Commands.Delete;
 using Auctionify.Application.Features.Lots.Commands.DeleteLotFile;
 using Auctionify.Application.Features.Lots.Commands.Update;
 using Auctionify.Application.Features.Lots.Commands.UpdateLotStatus;
+using Auctionify.Application.Features.Lots.Queries.Filter;
 using Auctionify.Application.Features.Lots.Queries.GetAll;
 using Auctionify.Application.Features.Lots.Queries.GetAllByName;
 using Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer;
 using Auctionify.Application.Features.Lots.Queries.GetByIdForSeller;
+using Auctionify.Application.Features.Lots.Queries.GetHighestLotPrice;
 using Auctionify.Core.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Auctionify.Application.Features.Lots.Queries.Filter;
 
 namespace Auctionify.API.Controllers
 {
@@ -21,6 +22,7 @@ namespace Auctionify.API.Controllers
 	public class LotsController : ControllerBase
 	{
 		private readonly IMediator _mediator;
+
 		public LotsController(IMediator mediator)
 		{
 			_mediator = mediator;
@@ -68,10 +70,12 @@ namespace Auctionify.API.Controllers
 		{
 			var result = await _mediator.Send(new DeleteLotCommand { Id = id });
 
-			return Ok(result.WasDeleted
-				? $"Successfully deleted lot with id: {result.Id}"
-				: $"Could not delete lot with id: {result.Id} since its status is {AuctionStatus.Active.ToString()}," +
-				  $" but successfully updated status to {AuctionStatus.Cancelled.ToString()} and deleted all related bids.");
+			return Ok(
+				result.WasDeleted
+					? $"Successfully deleted lot with id: {result.Id}"
+					: $"Could not delete lot with id: {result.Id} since its status is {AuctionStatus.Active.ToString()},"
+						+ $" but successfully updated status to {AuctionStatus.Cancelled.ToString()} and deleted all related bids."
+			);
 		}
 
 		[HttpGet]
@@ -86,9 +90,16 @@ namespace Auctionify.API.Controllers
 
 		[HttpGet("locations/{location}")]
 		[Authorize]
-		public async Task<IActionResult> GetLotsByCity([FromRoute] string location, [FromQuery] PageRequest pageRequest)
+		public async Task<IActionResult> GetLotsByCity(
+			[FromRoute] string location,
+			[FromQuery] PageRequest pageRequest
+		)
 		{
-			var query = new GetAllLotsByLocationQuery { Location = location, PageRequest = pageRequest };
+			var query = new GetAllLotsByLocationQuery
+			{
+				Location = location,
+				PageRequest = pageRequest
+			};
 			var lots = await _mediator.Send(query);
 
 			return Ok(lots);
@@ -96,7 +107,10 @@ namespace Auctionify.API.Controllers
 
 		[HttpGet("names/{name}")]
 		[Authorize]
-		public async Task<IActionResult> GetLotsByName([FromRoute] string name, [FromQuery] PageRequest pageRequest)
+		public async Task<IActionResult> GetLotsByName(
+			[FromRoute] string name,
+			[FromQuery] PageRequest pageRequest
+		)
 		{
 			var query = new GetAllLotsByNameQuery { Name = name, PageRequest = pageRequest };
 			var lots = await _mediator.Send(query);
@@ -105,22 +119,39 @@ namespace Auctionify.API.Controllers
 		}
 
 		[HttpPut("{id}/statuses")]
-		public async Task<IActionResult> UpdateLotStatus([FromRoute] int id, [FromQuery] AuctionStatus status)
+		public async Task<IActionResult> UpdateLotStatus(
+			[FromRoute] int id,
+			[FromQuery] AuctionStatus status
+		)
 		{
-			var result = await _mediator.Send(new UpdateLotStatusCommand { Id = id, Name = status.ToString() });
+			var result = await _mediator.Send(
+				new UpdateLotStatusCommand { Id = id, Name = status.ToString() }
+			);
 
-			return Ok("Successfully updated lot status of lot with id: " + result.Id + " to " + status.ToString());
+			return Ok(
+				"Successfully updated lot status of lot with id: "
+					+ result.Id
+					+ " to "
+					+ status.ToString()
+			);
 		}
 
 		[HttpDelete("{id}/files")]
 		[Authorize(Roles = "Seller")]
-		public async Task<IActionResult> DeleteLotFile([FromRoute] int id, [FromBody] List<string> url)
+		public async Task<IActionResult> DeleteLotFile(
+			[FromRoute] int id,
+			[FromBody] List<string> url
+		)
 		{
-			var result = await _mediator.Send(new DeleteLotFileCommand { LotId = id, FileUrl = url });
+			var result = await _mediator.Send(
+				new DeleteLotFileCommand { LotId = id, FileUrl = url }
+			);
 
-			return Ok(result.WasDeleted
-				? $"Successfully deleted specified files of lot with id: {result.LotId}"
-				: $"Could not delete specified files of lot with id: {result.LotId}");
+			return Ok(
+				result.WasDeleted
+					? $"Successfully deleted specified files of lot with id: {result.LotId}"
+					: $"Could not delete specified files of lot with id: {result.LotId}"
+			);
 		}
 
 		[HttpGet("filtered-lots")]
@@ -128,6 +159,15 @@ namespace Auctionify.API.Controllers
 		public async Task<IActionResult> FilterLots([FromQuery] FilterLotsQuery query)
 		{
 			var result = await _mediator.Send(query);
+			return Ok(result);
+		}
+
+		[HttpGet("highest-price")]
+		[Authorize]
+		public async Task<ActionResult<decimal>> GetHighestLotPriceValue()
+		{
+			var result = await _mediator.Send(new GetHighestLotPriceQuery());
+
 			return Ok(result);
 		}
 	}

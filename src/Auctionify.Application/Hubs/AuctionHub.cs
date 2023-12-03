@@ -1,18 +1,25 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Auctionify.Application.Hubs
 {
+	[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 	public class AuctionHub : Hub
 	{
-		public async Task SendBidNotification()
+		public async Task JoinLotGroup(int lotId)
 		{
-			await Clients.All.SendAsync("ReceiveBidNotification");
+			await Groups.AddToGroupAsync(Context.ConnectionId, lotId.ToString());
 		}
 
-		public async Task SendWithdrawBidNotification()
+		public async Task SendBidNotification(int lotId)
 		{
-			await Clients.All.SendAsync("ReceiveWithdrawBidNotification");
+			await Clients.Group(lotId.ToString()).SendAsync("ReceiveBidNotification");
 		}
 
+		public async Task SendWithdrawBidNotification(int lotId)
+		{
+			await Clients.Group(lotId.ToString()).SendAsync("ReceiveWithdrawBidNotification");
+		}
 	}
 }

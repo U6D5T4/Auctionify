@@ -23,6 +23,7 @@ namespace Auctionify.Infrastructure.Identity
 		private readonly SignInManager<User> _signInManager;
 		private readonly ILogger<IdentityService> _logger;
 		private readonly IEmailService _emailService;
+		private readonly RoleManager<Role> _roleManager;
 		private readonly AuthSettingsOptions _authSettingsOptions;
 		private readonly AppOptions _appOptions;
 
@@ -31,6 +32,7 @@ namespace Auctionify.Infrastructure.Identity
 			SignInManager<User> signInManager,
 			ILogger<IdentityService> logger,
 			IEmailService emailService,
+			RoleManager<Role> roleManager,
 			IOptions<AuthSettingsOptions> authSettingsOptions,
 			IOptions<AppOptions> appOptions
 		)
@@ -39,6 +41,7 @@ namespace Auctionify.Infrastructure.Identity
 			_signInManager = signInManager;
 			_logger = logger;
 			_emailService = emailService;
+			_roleManager = roleManager;
 			_authSettingsOptions = authSettingsOptions.Value;
 			_appOptions = appOptions.Value;
 		}
@@ -151,15 +154,10 @@ namespace Auctionify.Infrastructure.Identity
 			var encodedToken = Encoding.UTF8.GetBytes(token);
 			var validToken = WebEncoders.Base64UrlEncode(encodedToken);
 
-			string url = $"{_appOptions.Url}/reset-password?email={email}&token={validToken}";
+			string url = $"{_appOptions.ClientApp}/auth/reset-password?email={email}&token={validToken}";
 
-			await _emailService.SendEmailAsync(
-				email,
-				"Reset Password",
-				"<h1>Follow the instructions to reset your password</h1>"
-					+ $"<p>To reset your password <a href='{url}'>Click here</p> <br>"
-					+ $"<p> Token: {token}</p>"
-			);
+			await _emailService.SendEmailAsync(email, "Reset Password", "<h1>Follow the instructions to reset your password</h1>" +
+				$"<p>To reset your password <a href='{url}'>Click here</a></p>");
 
 			return new ResetPasswordResponse
 			{
@@ -284,6 +282,80 @@ namespace Auctionify.Infrastructure.Identity
 				IsSuccess = false,
 				Errors = result.Errors.Select(e => e.Description),
 			};
+		}
+
+		public async Task<AssignRoleToUserResponse> AssignRoleToUserAsync(string email, string role)
+		{
+			if (string.IsNullOrWhiteSpace(email))
+			{
+				return new AssignRoleToUserResponse
+				{
+					IsSuccess = false,
+					Message = "Email is not defined"
+				};
+			}
+
+			if (string.IsNullOrWhiteSpace(role))
+			{
+				return new AssignRoleToUserResponse
+				{
+					IsSuccess = false,
+					Message = "Role name is not provided"
+				};
+			}
+
+			var roleExists = await _roleManager.RoleExistsAsync(role);
+
+			if (!roleExists)
+			{
+				return new AssignRoleToUserResponse
+				{
+					IsSuccess = false,
+					Message = "Role not found"
+				};
+			}
+
+			var user = await _userManager.FindByEmailAsync(email);
+
+			if (user == null)
+			{
+				return new AssignRoleToUserResponse
+				{
+					IsSuccess = false,
+					Message = "User not found"
+				};
+			}
+
+			var userHasRole = await _userManager.IsInRoleAsync(user, role);
+
+			if (userHasRole)
+			{
+				return new AssignRoleToUserResponse
+				{
+					IsSuccess = false,
+					Message = "User already has the specified role"
+				};
+			}
+
+			var result = await _userManager.AddToRoleAsync(user, role);
+
+			if (result.Succeeded)
+			{
+				return new AssignRoleToUserResponse
+				{
+					IsSuccess = true,
+					Message = $"Role '{role}' assigned to the user successfully"
+				};
+			}
+			else
+			{
+				return new AssignRoleToUserResponse
+				{
+					IsSuccess = false,
+					Message = "Failed to assign role",
+					Errors = result.Errors.Select(e => e.Description)
+				};
+			}
 		}
 
 		public async Task<LoginResponse> LoginUserWithGoogleAsync(Payload payload)

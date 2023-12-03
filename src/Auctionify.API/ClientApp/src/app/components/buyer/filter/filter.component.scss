@@ -1,0 +1,92 @@
+.filter {
+    &-component {
+        border-radius: 24px;
+        background-color: white;
+    }
+
+    &__container {
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+        padding: 24px 0;
+    }
+
+    &__row-1 {
+        border-bottom: 1px solid var(--color-grey-5);
+    }
+
+    &__row-1-container {
+        padding-bottom: 24px;
+    }
+
+    &__row-2-container {
+        flex-direction: column;
+    }
+
+    &__row-3-container {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
+
+.row {
+    &-container {
+        display: flex;
+        justify-content: space-between;
+        margin: 0 40px;
+        gap: 16px;
+    }
+}
+
+.filters {
+    &-location {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        justify-content: flex-start;
+    }
+
+    &-price-range {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        justify-content: flex-start;
+    }
+
+    &-category-status {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        justify-content: flex-start;
+    }
+}
+
+.price {
+    &-inputs {
+        display: flex;
+        gap: 16px;
+
+        & mat-form-field {
+            width: 100%;
+        }
+
+        &-container {
+            display: flex;
+            flex-direction: column;
+
+            & mat-slider {
+                width: 100%;
+            }
+        }
+    }
+
+
+}
+
+.show-button {
+    max-width: 170px;
+}
+
+.clear-button {
+    max-width: 100px;
+}
