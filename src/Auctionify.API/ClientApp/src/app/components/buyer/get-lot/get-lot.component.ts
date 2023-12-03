@@ -24,16 +24,18 @@ export class GetLotComponent implements OnInit {
         private dialog: Dialog
     ) {}
 
-    ngOnInit(): void {
+    async ngOnInit() {
         this.getLotFromRoute();
+
+        await this.signalRService.joinLotGroupAfterConnection(this.lotId);
 
         this.signalRService.onReceiveBidNotification(() => {
             this.getLotFromRoute();
-        });
+        }, this.lotId);
 
         this.signalRService.onReceiveWithdrawBidNotification(() => {
             this.getLotFromRoute();
-        });
+        }, this.lotId);
     }
 
     getLotFromRoute(): void {

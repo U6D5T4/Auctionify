@@ -2,7 +2,6 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 
-import { SignalRService } from 'src/app/services/signalr-service/signalr.service';
 import { BidDto, Client } from 'src/app/web-api-client';
 
 @Component({
@@ -19,7 +18,6 @@ export class AddBidComponent implements OnInit {
     constructor(
         private dialogRef: DialogRef<AddBidComponent>,
         private apiClient: Client,
-        private signalRService: SignalRService,
         @Inject(DIALOG_DATA) private data: any
     ) {
         this.lotId = this.data?.lotId;
@@ -31,10 +29,6 @@ export class AddBidComponent implements OnInit {
         });
 
         this.getAllBidsForLot();
-
-        this.signalRService.onReceiveBidNotification(() => {
-            this.getAllBidsForLot();
-        });
     }
 
     getAllBidsForLot() {
@@ -43,7 +37,7 @@ export class AddBidComponent implements OnInit {
                 this.bids = bids;
                 this.bids.forEach((bid) => {
                     const date = new Date(bid.timeStamp);
-                    const day = date.getDay();
+                    const day = date.getDate();
                     const month = date.toLocaleString('default', {
                         month: 'long',
                     });
@@ -71,7 +65,7 @@ export class AddBidComponent implements OnInit {
 
             this.apiClient.addBidForLot(bidData).subscribe({
                 next: (response) => {
-                    console.log('Bid placed successfully!', response);
+                    console.log(response);
                     this.bidForm.reset();
                     this.errorMessage = '';
                 },

@@ -26,6 +26,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 		private readonly Mock<IOptions<AuthSettingsOptions>> _authSettingsOptionsMock;
 		private readonly Mock<IOptions<AppOptions>> _appOptionsMock;
 		private readonly Mock<IEmailService> _emailServiceMock;
+		private readonly Mock<RoleManager<Role>> _roleManagerMock;
 
 		public IdentityServiceUnitTests()
 		{
@@ -53,6 +54,13 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 			_authSettingsOptionsMock = new Mock<IOptions<AuthSettingsOptions>>();
 			_appOptionsMock = new Mock<IOptions<AppOptions>>();
 			_emailServiceMock = new Mock<IEmailService>();
+			_roleManagerMock = new Mock<RoleManager<Role>>(
+				Mock.Of<IRoleStore<Role>>(),
+				null,
+				null,
+				null,
+				null
+			);
 		}
 
 		#endregion
@@ -90,6 +98,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
 				_appOptionsMock.Object
 			);
@@ -134,6 +143,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
 				_appOptionsMock.Object
 			);
@@ -179,6 +189,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
 				_appOptionsMock.Object
 			);
@@ -224,6 +235,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
 				_appOptionsMock.Object
 			);
@@ -249,6 +261,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
 				_appOptionsMock.Object
 			);
@@ -276,6 +289,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
 				_appOptionsMock.Object
 			);
@@ -313,13 +327,14 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 
 			_appOptionsMock
 				.Setup(options => options.Value)
-				.Returns(new AppOptions { Url = "https://testlocalhost:1234" });
+				.Returns(new AppOptions { ClientApp = "https://testlocalhost:1234" });
 
 			var sut = new IdentityService(
 				_userManagerMock.Object,
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
 				_appOptionsMock.Object
 			);
@@ -340,10 +355,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 						"Reset Password",
 						"<h1>Follow the instructions to reset your password</h1>"
 							+ "<p>To reset your password "
-							+ $"<a href='https://testlocalhost:1234/reset-password?email={email}&token={validToken}'>"
-							+ "Click here</p> "
-							+ "<br>"
-							+ $"<p> Token: {token}</p>"
+							+ $"<a href='https://testlocalhost:1234/auth/reset-password?email={email}&token={validToken}'>"
+							+ "Click here</a></p>"
 					),
 				Times.Once
 			);
@@ -368,6 +381,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
 				_appOptionsMock.Object
 			);
@@ -399,6 +413,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
 				_appOptionsMock.Object
 			);
@@ -440,6 +455,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
 				_appOptionsMock.Object
 			);
@@ -484,6 +500,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
 				_appOptionsMock.Object
 			);
@@ -508,6 +525,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
 				_appOptionsMock.Object
 			);
@@ -539,6 +557,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
 				_appOptionsMock.Object
 			);
@@ -590,6 +609,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
 				_appOptionsMock.Object
 			);
@@ -637,6 +657,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
 				_appOptionsMock.Object
 			);
@@ -668,6 +689,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
 				_appOptionsMock.Object
 			);
@@ -701,6 +723,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
 				_appOptionsMock.Object
 			);
@@ -736,6 +759,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
 				_appOptionsMock.Object
 			);
@@ -772,6 +796,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
 				_appOptionsMock.Object
 			);
@@ -805,6 +830,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
 				_appOptionsMock.Object
 			);
@@ -843,6 +869,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
 				_appOptionsMock.Object
 			);

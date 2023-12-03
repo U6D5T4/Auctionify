@@ -42,10 +42,9 @@ namespace Auctionify.Application.Features.Users.Commands.RemoveBid
 
 			await _bidRepository.UpdateAsync(bid!);
 
-			await _hubContext.Clients.All.SendAsync(
-				"ReceiveWithdrawBidNotification",
-				cancellationToken: cancellationToken
-			);
+			await _hubContext.Clients
+				.Group(bid!.LotId.ToString())
+				.SendAsync("ReceiveWithdrawBidNotification", cancellationToken: cancellationToken);
 
 			var response = _mapper.Map<RemovedBidResponse>(bid);
 

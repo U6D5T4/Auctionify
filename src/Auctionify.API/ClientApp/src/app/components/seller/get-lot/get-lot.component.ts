@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Observable, of, switchMap } from 'rxjs';
 
 import { Client, SellerGetLotResponse } from 'src/app/web-api-client';
 import { SignalRService } from 'src/app/services/signalr-service/signalr.service';
@@ -21,16 +20,18 @@ export class GetLotComponent implements OnInit {
         private signalRService: SignalRService
     ) {}
 
-    ngOnInit() {
+    async ngOnInit() {
         this.getLotFromRoute();
+
+        await this.signalRService.joinLotGroupAfterConnection(this.lotId);
 
         this.signalRService.onReceiveBidNotification(() => {
             this.getLotFromRoute();
-        });
+        }, this.lotId);
 
         this.signalRService.onReceiveWithdrawBidNotification(() => {
             this.getLotFromRoute();
-        });
+        }, this.lotId);
     }
 
     getLotFromRoute(): void {
