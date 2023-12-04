@@ -4,7 +4,7 @@ using Auctionify.Application.Features.Lots.Commands.Delete;
 using Auctionify.Application.Features.Lots.Commands.DeleteLotFile;
 using Auctionify.Application.Features.Lots.Commands.Update;
 using Auctionify.Application.Features.Lots.Commands.UpdateLotStatus;
-using Auctionify.Application.Features.Lots.Queries.FIlter;
+using Auctionify.Application.Features.Lots.Queries.Filter;
 using Auctionify.Application.Features.Lots.Queries.GetAll;
 using Auctionify.Application.Features.Lots.Queries.GetAllByName;
 using Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer;

@@ -31,5 +31,7 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer
 		public ICollection<string> AdditionalDocumentsUrl { get; set; }
 
 		public bool IsInWatchlist { get; set; }
+
+		public int BidCount { get; set; }
 	}
 }

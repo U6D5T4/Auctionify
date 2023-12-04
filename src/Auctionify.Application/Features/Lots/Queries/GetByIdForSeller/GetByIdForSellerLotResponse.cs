@@ -29,5 +29,7 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForSeller
 		public ICollection<string> PhotosUrl { get; set; }
 
 		public ICollection<string> AdditionalDocumentsUrl { get; set; }
+
+		public int BidCount { get; set; }
 	}
 }

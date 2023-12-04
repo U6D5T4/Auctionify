@@ -26,6 +26,8 @@ namespace Auctionify.Application.Features.Lots.Queries.BaseQueryModels
 
 		public ICollection<BidDto> Bids { get; set; }
 
+		public int BidCount { get; set; }
+
 		public string? MainPhotoUrl { get; set; }
 	}
 }

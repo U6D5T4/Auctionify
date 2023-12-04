@@ -31,6 +31,7 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAllByName
 		private readonly IWatchlistService _watchlistService;
 		private readonly IPhotoService _photoService;
 		private readonly IMapper _mapper;
+		private readonly IBidRepository _bidRepository;
 		private readonly string namePropertyField = "Location.City";
 		private readonly string operatorPropertyField = "contains";
 		private readonly List<string> validStatuses =
@@ -47,7 +48,8 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAllByName
 			UserManager<User> userManager,
 			IWatchlistService watchlistService,
 			IPhotoService photoService,
-			IMapper mapper
+			IMapper mapper,
+			IBidRepository bidRepository
 		)
 		{
 			_lotRepository = lotRepository;
@@ -56,6 +58,7 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAllByName
 			_watchlistService = watchlistService;
 			_photoService = photoService;
 			_mapper = mapper;
+			_bidRepository = bidRepository;
 		}
 
 		public async Task<GetListResponseDto<GetAllLotsByLocationResponse>> Handle(
@@ -67,7 +70,7 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAllByName
 
 			var dynamicQuery = new DynamicQuery
 			{
-				Filter = new Filter
+				Filter = new Core.Persistence.Dynamic.Filter
 				{
 					Field = namePropertyField,
 					Operator = operatorPropertyField,
@@ -104,6 +107,17 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAllByName
 					lot.Id,
 					cancellationToken
 				);
+
+				var bids = await _bidRepository.GetListAsync(
+					predicate: x => x.LotId == lot.Id && !x.BidRemoved,
+					orderBy: x => x.OrderByDescending(x => x.TimeStamp),
+					enableTracking: false,
+					cancellationToken: cancellationToken
+				);
+
+				lot.BidCount = bids.Items.Count;
+
+				lot.Bids = _mapper.Map<List<BidDto>>(bids.Items);
 			}
 
 			return response;
