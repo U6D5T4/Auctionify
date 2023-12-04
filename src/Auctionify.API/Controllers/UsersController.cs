@@ -3,9 +3,12 @@ using Auctionify.Application.Features.Users.Commands.AddBidForLot;
 using Auctionify.Application.Features.Users.Commands.AddLotToWatchlist;
 using Auctionify.Application.Features.Users.Commands.RemoveBid;
 using Auctionify.Application.Features.Users.Commands.RemoveLotFromWatchlist;
+using Auctionify.Application.Features.Users.Commands.Update;
 using Auctionify.Application.Features.Users.Queries.GetAllBidsOfUserForLot;
+using Auctionify.Application.Features.Users.Queries.GetBuyer;
 using Auctionify.Application.Features.Users.Queries.GetById;
 using Auctionify.Application.Features.Users.Queries.GetByUserWatchlist;
+using Auctionify.Application.Features.Users.Queries.GetSeller;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -100,6 +103,32 @@ namespace Auctionify.API.Controllers
 			var bids = await _mediator.Send(query);
 
 			return Ok(bids);
+		}
+
+		[HttpGet("buyers")]
+		[Authorize(Roles = "Buyer")]
+		public async Task<IActionResult> GetBuyer()
+		{
+			var result = await _mediator.Send(new GetBuyerQuery());
+			return Ok(result);
+		}
+
+		[HttpGet("sellers")]
+		[Authorize(Roles = "Seller")]
+		public async Task<IActionResult> GetSeller()
+		{
+			var result = await _mediator.Send(new GetSellerQuery());
+			return Ok(result);
+		}
+
+		[HttpPut]
+		[Authorize(Roles = "Buyer, Seller")]
+		public async Task<IActionResult> UpdateUserProfile(
+			[FromForm] UpdateUserCommand updateUserCommand
+		)
+		{
+			var result = await _mediator.Send(updateUserCommand);
+			return Ok(result);
 		}
 	}
 }

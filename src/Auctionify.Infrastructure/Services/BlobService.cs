@@ -21,18 +21,27 @@ namespace Auctionify.Infrastructure.Services
 			_azureBlobStorageOptions = azureBlobStorageOptions.Value;
 		}
 
-		public async Task UploadFileBlobAsync(IFormFile file, string filePath)
+		public async Task UploadFileBlobAsync(
+			IFormFile file,
+			string filePath,
+			string guid = null
+		)
 		{
+			string fileName =
+				guid != null
+					? $"{Path.GetFileNameWithoutExtension(file.FileName)}_{guid}{Path.GetExtension(file.FileName)}"
+					: file.FileName;
+
 			var containerClient = _blobServiceClient.GetBlobContainerClient(
 				_azureBlobStorageOptions.ContainerName
 			);
-			
-			var blobClient = containerClient.GetBlobClient($"{filePath}/{file.FileName}");
+
+			var blobClient = containerClient.GetBlobClient($"{filePath}/{fileName}");
 
 			if (await blobClient.ExistsAsync())
 			{
 				throw new InvalidOperationException(
-					$"File '{file.FileName}' already exists in the specified path."
+					$"File '{fileName}' already exists in the specified path."
 				);
 			}
 
@@ -51,7 +60,7 @@ namespace Auctionify.Infrastructure.Services
 			);
 
 			var blobClient = containerClient.GetBlobClient($"{filePath}/{fileName}");
-			
+
 			var url = blobClient.Uri.AbsoluteUri;
 
 			return url;
@@ -62,9 +71,9 @@ namespace Auctionify.Infrastructure.Services
 			var containerClient = _blobServiceClient.GetBlobContainerClient(
 				_azureBlobStorageOptions.ContainerName
 			);
-			
+
 			var blobClient = containerClient.GetBlobClient($"{filePath}/{fileName}");
-			
+
 			await blobClient.DeleteIfExistsAsync();
 		}
 	}

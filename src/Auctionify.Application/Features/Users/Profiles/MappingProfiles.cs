@@ -3,9 +3,12 @@ using Auctionify.Application.Features.Users.Commands.AddBidForLot;
 using Auctionify.Application.Features.Users.Commands.AddLotToWatchlist;
 using Auctionify.Application.Features.Users.Commands.RemoveBid;
 using Auctionify.Application.Features.Users.Commands.RemoveLotFromWatchlist;
+using Auctionify.Application.Features.Users.Commands.Update;
 using Auctionify.Application.Features.Users.Queries.GetAllBidsOfUserForLot;
+using Auctionify.Application.Features.Users.Queries.GetBuyer;
 using Auctionify.Application.Features.Users.Queries.GetById;
 using Auctionify.Application.Features.Users.Queries.GetByUserWatchlist;
+using Auctionify.Application.Features.Users.Queries.GetSeller;
 using Auctionify.Core.Entities;
 using Auctionify.Core.Persistence.Paging;
 using AutoMapper;
@@ -17,6 +20,9 @@ namespace Auctionify.Application.Features.Users.Profiles
 		public MappingProfiles()
 		{
 			CreateMap<User, GetByIdUserResponse>().ReverseMap();
+			CreateMap<User, GetBuyerResponse>().ReverseMap();
+			CreateMap<User, GetSellerResponse>().ReverseMap();
+			CreateMap<User, UpdatedUserResponse>().ReverseMap();
 			CreateMap<Watchlist, AddedToWatchlistResponse>().ReverseMap();
 			CreateMap<Watchlist, RemovedLotFromWatchlistResponse>().ReverseMap();
 			CreateMap<Bid, AddedBidForLotResponse>().ReverseMap();
