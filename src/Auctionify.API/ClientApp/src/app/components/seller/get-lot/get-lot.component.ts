@@ -46,4 +46,8 @@ export class GetLotComponent implements OnInit {
                 this.lot$ = of(lot);
             });
     }
+
+    ngOnDestroy() {
+        this.signalRService.leaveLotGroup(this.lotId);
+    }
 }
