@@ -42,11 +42,9 @@
     }
 }
 
-.input-with-currency {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
+mat-form-field {
     width: 100%;
+    position: relative;
 }
 
 .currency-label {
@@ -57,10 +55,6 @@
     color: var(--color-grey-3);
     font-weight: bold;
     pointer-events: none;
-}
-
-mat-form-field {
-    width: 100%;
 }
 
 .bids {

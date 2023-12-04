@@ -47,9 +47,9 @@ export class AddBidComponent implements OnInit {
         this.getAllBidsForLot();
     }
 
-    onBidInputChange(event: Event) {
-        const inputElement = event.target as HTMLInputElement;
-    }
+    // onBidInputChange(event: Event) {
+    //     const inputElement = event.target as HTMLInputElement;
+    // }
 
     getAllBidsForLot() {
         this.apiClient.getAllBidsOfUserForLot(this.lotId, 0, 3).subscribe({
@@ -74,6 +74,18 @@ export class AddBidComponent implements OnInit {
                 console.error('Failed to fetch bids:', error);
             },
         });
+    }
+
+    onInputChanged() {
+        if (!this.bidForm.value.bid.includes(this.currency)) {
+            this.bidForm.value.bid += this.currency;
+        } else {
+            this.bidForm.value.bid = this.bidForm.value.bid.replace(
+                this.currency,
+                ''
+            );
+        }
+        console.log('BID:');
     }
 
     onSubmit() {
