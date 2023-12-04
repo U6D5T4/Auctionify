@@ -1,5 +1,10 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+    FormBuilder,
+    FormControl,
+    FormGroup,
+    Validators,
+} from '@angular/forms';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 
 import { BidDto, Client } from 'src/app/web-api-client';
@@ -12,23 +17,38 @@ import { BidDto, Client } from 'src/app/web-api-client';
 export class AddBidComponent implements OnInit {
     bidForm!: FormGroup;
     lotId!: number;
+    bidCount!: number;
+    currency!: string;
+    startingPrice!: number;
     bids: BidDto[] = [];
     errorMessage!: string;
 
     constructor(
         private dialogRef: DialogRef<AddBidComponent>,
         private apiClient: Client,
-        @Inject(DIALOG_DATA) private data: any
+        @Inject(DIALOG_DATA) private data: any,
+        private formBuilder: FormBuilder
     ) {
         this.lotId = this.data?.lotId;
+        this.bidCount = this.data?.bidCount;
+        this.currency = this.data?.currency;
+        this.startingPrice = this.data?.startingPrice;
+        console.log('Lot id:', this.lotId);
+        console.log('Bid count:', this.bidCount);
+        console.log('Currency:', this.currency);
+        console.log('Starting price:', this.startingPrice);
     }
 
     ngOnInit() {
-        this.bidForm = new FormGroup({
-            bid: new FormControl(null, Validators.required),
+        this.bidForm = this.formBuilder.group({
+            bid: [null, Validators.required],
         });
 
         this.getAllBidsForLot();
+    }
+
+    onBidInputChange(event: Event) {
+        const inputElement = event.target as HTMLInputElement;
     }
 
     getAllBidsForLot() {

@@ -42,6 +42,23 @@
     }
 }
 
+.input-with-currency {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    width: 100%;
+}
+
+.currency-label {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 25px;
+    color: var(--color-grey-3);
+    font-weight: bold;
+    pointer-events: none;
+}
+
 mat-form-field {
     width: 100%;
 }

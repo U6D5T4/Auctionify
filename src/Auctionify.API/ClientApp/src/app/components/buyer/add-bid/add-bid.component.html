@@ -3,13 +3,16 @@
     <p class="bid-operation__description">We will notify you in case you win</p>
     <form [formGroup]="bidForm" (ngSubmit)="onSubmit()" class="bid-form">
         <div class="main__form">
-            <mat-form-field color="primary" appearance="outline">
-                <mat-label>Bid price</mat-label>
-                <input type="number" formControlName="bid" matInput />
-                <mat-error *ngIf="errorMessage">
-                    {{ errorMessage }}
-                </mat-error>
-            </mat-form-field>
+            <div class="input-with-currency">
+                <mat-form-field color="primary" appearance="outline">
+                    <mat-label>Bid price</mat-label>
+                    <span class="currency-label">{{ currency }}</span>
+                    <input type="number" formControlName="bid" matInput />
+                    <mat-error *ngIf="errorMessage">
+                        {{ errorMessage }}
+                    </mat-error>
+                </mat-form-field>
+            </div>
         </div>
 
         <div *ngIf="bids.length > 0" class="bids-section">

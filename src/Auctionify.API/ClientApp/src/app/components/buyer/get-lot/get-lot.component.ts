@@ -14,6 +14,9 @@ import { AddBidComponent } from '../add-bid/add-bid.component';
 })
 export class GetLotComponent implements OnInit {
     lotId: number = 0;
+    bidCount!: number;
+    currency!: string;
+    startingPrice!: number;
     lot$!: Observable<BuyerGetLotResponse>;
     bids$!: Observable<BidDto[]>;
 
@@ -48,12 +51,20 @@ export class GetLotComponent implements OnInit {
             )
             .subscribe((lot) => {
                 this.lot$ = of(lot);
+                this.bidCount = lot.bidCount || 0;
+                this.currency = lot.currency.code || '';
+                this.startingPrice = lot.startingPrice || 0;
             });
     }
 
     openBidModal(): void {
         const dialog = this.dialog.open(AddBidComponent, {
-            data: { lotId: this.lotId },
+            data: {
+                lotId: this.lotId,
+                bidCount: this.bidCount,
+                currency: this.currency,
+                startingPrice: this.startingPrice,
+            },
         });
     }
 }
