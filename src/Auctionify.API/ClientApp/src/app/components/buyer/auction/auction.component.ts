@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { Dialog } from '@angular/cdk/dialog';
+import { Router } from '@angular/router';
+
 import { Observable, of } from 'rxjs';
+
 import { Client, LotModel } from 'src/app/web-api-client';
 import { FilterLot } from 'src/app/models/lots/filter';
 import { FilterComponent, FilterResult } from '../filter/filter.component';
-import { Dialog } from '@angular/cdk/dialog';
+
 
 @Component({
     selector: 'app-auction',
@@ -19,15 +23,19 @@ export class AuctionComponent implements OnInit {
     initialActiveLotsCount: number = 10;
     additionalActiveLotsCount: number = 10;
     initialUpcomingLotsCount: number = 5;
-    additionalUpcomingLotsCount: number = 55;
+    additionalUpcomingLotsCount: number = 10;
     initialArchivedLotsCount: number = 5;
-    additionalArchivedLotsCount: number = 55;
+    additionalArchivedLotsCount: number = 10;
 
     activeLots$!: Observable<LotModel[]>;
     upcomingLots$!: Observable<LotModel[]>;
     archivedLots$!: Observable<LotModel[]>;
 
-    constructor(private apiClient: Client, private dialog: Dialog) {}
+    constructor(
+        private apiClient: Client, 
+        private dialog: Dialog, 
+        private router: Router
+        ) {}
 
     ngOnInit(): void {
         this.loadActiveLots();
@@ -44,12 +52,12 @@ export class AuctionComponent implements OnInit {
             lotStatuses: [5],
             sortDir: null,
             sortField: null,
+            pageIndex: 0,
+            pageSize: this.initialActiveLotsCount,
         };
 
         this.apiClient.filterLots(filterLot).subscribe((activeLots) => {
-            this.activeLots$ = of(
-                activeLots.slice(0, this.initialActiveLotsCount)
-            );
+            this.activeLots$ = of(activeLots);
         });
     }
 
@@ -62,12 +70,12 @@ export class AuctionComponent implements OnInit {
             lotStatuses: [4],
             sortDir: null,
             sortField: null,
+            pageIndex: 0,
+            pageSize: this.initialUpcomingLotsCount,
         };
 
         this.apiClient.filterLots(filterLot).subscribe((upcomingLots) => {
-            this.upcomingLots$ = of(
-                upcomingLots.slice(0, this.initialUpcomingLotsCount)
-            );
+            this.upcomingLots$ = of(upcomingLots);
         });
     }
 
@@ -80,13 +88,18 @@ export class AuctionComponent implements OnInit {
             lotStatuses: [10],
             sortDir: null,
             sortField: null,
+            pageIndex: 0,
+            pageSize: this.initialArchivedLotsCount,
         };
 
         this.apiClient.filterLots(filterLot).subscribe((archivedLots) => {
-            this.archivedLots$ = of(
-                archivedLots.slice(0, this.initialArchivedLotsCount)
-            );
+            this.archivedLots$ = of(archivedLots)
         });
+    }
+
+    loadMoreActiveLots(): void {
+        this.initialActiveLotsCount += this.additionalActiveLotsCount;
+        this.loadActiveLots();
     }
 
     loadMoreUpcomingLots(): void {
@@ -97,11 +110,6 @@ export class AuctionComponent implements OnInit {
     loadMoreArchivedLots(): void {
         this.initialArchivedLotsCount += this.additionalArchivedLotsCount;
         this.loadArchivedLots();
-    }
-
-    loadMoreActiveLots(): void {
-        this.initialActiveLotsCount += this.additionalActiveLotsCount;
-        this.loadActiveLots();
     }
 
     calculateDaysLeft(
@@ -143,7 +151,9 @@ export class AuctionComponent implements OnInit {
                 const filterData: FilterLot = {
                     ...data,
                     sortDir: null,
-                    sortField: null,
+                    sortField: null,  
+                    pageIndex: 0,
+                    pageSize: 20               
                 };
 
                 this.apiClient.filterLots(filterData).subscribe((res) => {

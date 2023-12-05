@@ -104,13 +104,7 @@
     &__auction-upcoming-title {
         display: flex;
         width: 100%;
-        justify-content: space-between;
-    }
-
-    &__auction-upcoming-more {
-        display: flex;
-        align-items: center;
-        gap: 12px;
+        justify-content: flex-start;
     }
 
     &__auction-archived {
@@ -123,16 +117,6 @@
         display: flex;
         width: 100%;
         justify-content: space-between;
-    }
-
-    &__auction-archived-title img {
-        transform: rotate(90deg);
-    }
-
-    &__auction-archived-more {
-        display: flex;
-        align-items: center;
-        gap: 12px;
     }
 }
 
