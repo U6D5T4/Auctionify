@@ -11,8 +11,8 @@ import { ChoicePopupComponent } from './choice-popup/choice-popup.component';
 
 @NgModule({
   declarations: [
-    InputComponent,
     ButtonComponent,
+    InputComponent,
     DialogPopupComponent,
     ChoicePopupComponent
   ],

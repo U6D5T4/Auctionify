@@ -36,15 +36,6 @@ jobs:
         env:
             ASPNETCORE_ENVIRONMENT: dev
 
-      - name: Build Angular App
-        run: |
-          cd src/Auctionify.API/ClientApp
-          npm install -g @angular/cli
-          npm install
-          ng build --configuration=production
-          mkdir -p ${{env.DOTNET_ROOT}}/myapp/wwwroot/
-          mv dist ${{env.DOTNET_ROOT}}/myapp/wwwroot/
-
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
@@ -54,15 +45,9 @@ jobs:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
 
-      - name: Upload Angular Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: angular-app
-          path: ${{env.DOTNET_ROOT}}/myapp/wwwroot
-
   test:
     runs-on: ubuntu-latest
-
+    permissions: write-all
     steps:
       - uses: actions/checkout@v4
 
@@ -75,11 +60,22 @@ jobs:
       - name: Run unit tests
         run: |
           cd tests/Auctionify.UnitTests
-          dotnet test --configuration Release
-  
+          dotnet test --configuration Release --logger "trx;LogFileName=test-results.trx" || true
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Auctionify Test Report
+          path: "**/test-results.trx"
+          reporter: dotnet-trx
+          only-summary: 'false'
+          list-suites: 'all'
+          list-tests: 'all'
+          fail-on-error: true
+
   deploy:
     runs-on: ubuntu-latest
-    needs: build
+    needs: [build, test]
     environment:
       name: 'dev'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
@@ -89,14 +85,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: .net-app
-
-      - name: Download Angular Artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: angular-app
-
-      - name: Display contents of Angular artifacts
-        run: ls ${{env.DOTNET_ROOT}}/myapp/wwwroot/dist
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
