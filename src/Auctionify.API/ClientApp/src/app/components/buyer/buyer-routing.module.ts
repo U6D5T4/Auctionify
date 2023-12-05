@@ -1,6 +1,5 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
-import { LotProfileBuyerComponent } from './lot-profile-buyer/lot-profile-buyer.component';
 
 const buyerRoutes: Routes = [
     {
@@ -8,11 +7,6 @@ const buyerRoutes: Routes = [
         redirectTo: 'home',
         pathMatch: 'full',
     },
-    {
-        path: 'lot-profile/:id',
-        component: LotProfileBuyerComponent,
-        pathMatch: 'full',
-    }
 ];
 
 @NgModule({

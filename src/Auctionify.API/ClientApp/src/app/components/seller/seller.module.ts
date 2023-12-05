@@ -15,7 +15,7 @@ import { LocationPopUpComponent } from './create-lot/pop-ups/location/location.c
 import { CurrencyPopUpComponent } from './create-lot/pop-ups/currency/currency.component';
 import { FilesPopUpComponent } from './create-lot/pop-ups/files/files.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { LotProfileSellerComponent } from './lot-profile-seller/lot-profile-seller.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 @NgModule({
     declarations: [
@@ -23,7 +23,7 @@ import { LotProfileSellerComponent } from './lot-profile-seller/lot-profile-sell
         LocationPopUpComponent,
         CurrencyPopUpComponent,
         FilesPopUpComponent,
-        LotProfileSellerComponent,
+        DashboardComponent,
     ],
     imports: [
         CommonModule,
@@ -39,9 +39,6 @@ import { LotProfileSellerComponent } from './lot-profile-seller/lot-profile-sell
         MatProgressSpinnerModule,
         MatSnackBarModule,
     ],
-    exports: [
-        CreateLotComponent,
-        LotProfileSellerComponent,
-    ],
+    exports: [CreateLotComponent, DashboardComponent],
 })
 export class SellerModule {}
