@@ -5,9 +5,9 @@
 }
 
 .left {
-    width: 49%;
     min-width: 520px;
     display: flex;
+    flex: 1;
     flex-direction: column;
     gap: 48px;
 
@@ -37,6 +37,16 @@
         & .photo-element {
             width: 100%;
         }
+
+        &.not-available>.photo-element {
+            background-color: #f4f4f4;
+            border-radius: 16px;
+
+            & img {
+                object-fit: contain;
+                cursor: default;
+            }
+        }
     }
 
     &__photos::-webkit-scrollbar {
@@ -57,6 +67,15 @@
         overflow: hidden;
         border-radius: 16px;
         margin-left: 136px;
+
+        &.not-available {
+            background-color: #f4f4f4;
+            border-radius: 16px;
+
+            & img {
+                object-fit: contain;
+            }
+        }
     }
 
     &__main-photo img {
@@ -88,6 +107,11 @@
     }
 
     &__docs {
+
+        & h3 {
+            color: var(--color-main);
+        }
+
         &-line {
             display: flex;
             flex-direction: row;
@@ -100,7 +124,7 @@
                 flex-direction: row;
                 gap: 24px;
                 align-items: center;
-                justify-content: start;
+                justify-content: flex-start;
                 overflow: hidden;
             }
 
@@ -128,9 +152,9 @@
 }
 
 .right {
-    width: 49%;
     min-width: 520px;
     display: flex;
+    flex: 1;
     flex-direction: column;
     gap: 24px;
 
@@ -323,6 +347,7 @@
         justify-content: center;
         color: #2B5293;
         padding-bottom: 24px;
+        cursor: pointer;
     }
 
     &__lot-info {
@@ -349,5 +374,11 @@
         display: flex;
         flex-direction: column;
         gap: 12px;
+    }
+}
+
+@media only screen and (max-width: 1450px) {
+    .lot-details {
+        flex-wrap: wrap-reverse;
     }
 }

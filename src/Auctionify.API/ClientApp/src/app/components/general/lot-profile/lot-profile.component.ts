@@ -1,10 +1,11 @@
 import { formatDate } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 import { FileModel } from 'src/app/models/fileModel';
+import { SignalRService } from 'src/app/services/signalr-service/signalr.service';
 import {
+    BidDto,
     BuyerGetLotResponse,
     Client,
     SellerGetLotResponse,
@@ -17,17 +18,21 @@ import {
 })
 export class LotProfileComponent implements OnInit {
     lotData: BuyerGetLotResponse | SellerGetLotResponse | null = null;
+    bidsToShow: BidDto[] = [];
     files: FileModel[] | null = null;
     lotId: number = 0;
     showAllBids = false;
     selectedMainPhotoIndex: number = 0;
     parentCategoryName: string = '';
 
+    private isSignalrConnected = false;
+
     constructor(
         private client: Client,
         private route: ActivatedRoute,
         private router: Router,
-        private authService: AuthorizeService
+        private authService: AuthorizeService,
+        private signalRService: SignalRService
     ) {}
 
     ngOnInit() {
@@ -35,8 +40,22 @@ export class LotProfileComponent implements OnInit {
     }
 
     getLotFromRoute() {
-        this.route.paramMap.subscribe((params: ParamMap) => {
+        this.route.paramMap.subscribe(async (params: ParamMap) => {
             this.lotId = Number(params.get('id'));
+
+            if (!this.isSignalrConnected) {
+                await this.signalRService.joinLotGroupAfterConnection(
+                    this.lotId
+                );
+
+                this.signalRService.onReceiveBidNotification(() => {
+                    this.getLotFromRoute();
+                }, this.lotId);
+
+                this.signalRService.onReceiveWithdrawBidNotification(() => {
+                    this.getLotFromRoute();
+                }, this.lotId);
+            }
 
             if (this.authService.isUserBuyer()) {
                 this.client.getOneLotForBuyer(this.lotId).subscribe({
@@ -81,6 +100,14 @@ export class LotProfileComponent implements OnInit {
                 },
             });
         }
+
+        if (this.lotData.bids.length > 0) {
+            if (this.showAllBids) {
+                this.bidsToShow = this.lotData.bids;
+            } else {
+                this.bidsToShow = this.lotData.bids.slice(0, 3);
+            }
+        }
     }
 
     handleLotError() {
@@ -94,6 +121,16 @@ export class LotProfileComponent implements OnInit {
             return Math.max(...lotData.bids.map((bid) => bid.newPrice));
         } else {
             return lotData ? lotData.startingPrice : null;
+        }
+    }
+
+    showBidsClick() {
+        if (!this.showAllBids) {
+            this.bidsToShow = this.lotData?.bids!;
+            this.showAllBids = true;
+        } else {
+            this.bidsToShow = this.lotData?.bids!.slice(0, 3)!;
+            this.showAllBids = false;
         }
     }
 
@@ -140,5 +177,9 @@ export class LotProfileComponent implements OnInit {
         if (fileName === null) return '';
 
         return decodeURI(fileName[0].split('/')[1]);
+    }
+
+    ngOnDestroy() {
+        this.signalRService.leaveLotGroup(this.lotId);
     }
 }
