@@ -16,6 +16,8 @@
                 </div>
                 <div class="left__main-photo not-available">
                     <img src="../../../../assets/images/Image_not_available.png" alt="Main Photo">
+                    <ng-container *ngTemplateOutlet="lot_status">
+                    </ng-container>
                 </div>
             </ng-template>
             <ng-template #photos_exist>
@@ -26,7 +28,13 @@
                 </div>
                 <div class="left__main-photo">
                     <img [src]="lotData.photosUrl?.[selectedMainPhotoIndex]" alt="Main Photo">
+                    <ng-container *ngTemplateOutlet="lot_status">
+                    </ng-container>
                 </div>
+            </ng-template>
+
+            <ng-template #lot_status>
+                <h4 class="left__main-status">{{lotData.lotStatus.name}}</h4>
             </ng-template>
         </div>
 
@@ -55,7 +63,7 @@
                         <img src="../../../../assets/icons/FileIcon.svg" alt="documentIcon">
                         <p>{{file.name}}</p>
                     </div>
-                    <button mat-flat-button class="left__download-btn mat-mdc-outlined-button-custom"
+                    <button color="primary" mat-stroked-button class="mat-mdc-outlined-button-custom left__download-btn"
                         (click)="downloadDocument(file.fileUrl!)">Download</button>
                 </div>
                 <hr class="color-grey-5">
@@ -80,7 +88,7 @@
                     <li>{{lotData.category.name}}</li>
                 </ng-template>
             </ul>
-            <div *ngIf="isResponseForBuyer(lotData)" class="right__wishlist-btn" (click)="addLotToWatchlist()">
+            <div *ngIf="isResponseForBuyer(lotData)" class="right__wishlist-btn" (click)="handleLotWatchlist()">
                 <mat-icon class="color-grey-3" [ngClass]="{'color-grey-3': lotData.isInWatchlist}">{{
                     lotData.isInWatchlist
                     ? 'favorite' : 'favorite_border' }}</mat-icon>
@@ -115,11 +123,13 @@
                     </ng-template>
                     <ng-template #seller_buttons>
                         <button class="mat-mdc-outlined-button-custom price-button" mat-stroked-button type="button"
-                            color="primary">
-                            <mat-icon>delete_forever</mat-icon>
-                            Remove
+                            color="primary" (click)="deleteLot()">
+                            <mat-spinner *ngIf="isDeleteLoading" diameter="25" color="warn"></mat-spinner>
+                            <div *ngIf="!isDeleteLoading">Remove</div>
+                            <mat-icon *ngIf="!isDeleteLoading">delete_forever</mat-icon>
                         </button>
-                        <button class="mat-mdc-outlined-button-custom price-button" mat-flat-button type="button"
+                        <button [routerLink]="['/seller/update-lot', lotData.id,]"
+                            class="mat-mdc-outlined-button-custom price-button" mat-flat-button type="button"
                             color="primary">
                             <mat-icon>edit</mat-icon>
                             Edit lot

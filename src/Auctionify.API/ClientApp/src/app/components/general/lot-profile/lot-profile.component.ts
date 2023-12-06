@@ -1,9 +1,16 @@
+import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { formatDate } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 import { FileModel } from 'src/app/models/fileModel';
 import { SignalRService } from 'src/app/services/signalr-service/signalr.service';
+import {
+    ChoicePopupComponent,
+    ChoicePopupData,
+} from 'src/app/ui-elements/choice-popup/choice-popup.component';
 import {
     BidDto,
     BuyerGetLotResponse,
@@ -24,6 +31,7 @@ export class LotProfileComponent implements OnInit {
     showAllBids = false;
     selectedMainPhotoIndex: number = 0;
     parentCategoryName: string = '';
+    isDeleteLoading = false;
 
     private isSignalrConnected = false;
 
@@ -32,7 +40,9 @@ export class LotProfileComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private authService: AuthorizeService,
-        private signalRService: SignalRService
+        private signalRService: SignalRService,
+        private dialog: Dialog,
+        private snackBar: MatSnackBar
     ) {}
 
     ngOnInit() {
@@ -150,8 +160,53 @@ export class LotProfileComponent implements OnInit {
         return date ? formatDate(date, 'd/MM/yy', 'en-US') : '';
     }
 
-    addLotToWatchlist() {
-        this.client.addToWatchlist(this.lotId);
+    handleLotWatchlist() {
+        const lotData = this.lotData as BuyerGetLotResponse;
+        if (!lotData.isInWatchlist) {
+            this.client.addToWatchlist(this.lotId).subscribe({
+                next: (result) => {
+                    this.snackBar.open(result, 'Ok', {
+                        horizontalPosition: 'right',
+                        verticalPosition: 'top',
+                        duration: 5000,
+                    });
+                    this.getLotFromRoute();
+                },
+                error: (result: HttpErrorResponse) => {
+                    this.snackBar.open(
+                        result.error.errors[0].ErrorMessage,
+                        'Ok',
+                        {
+                            horizontalPosition: 'right',
+                            verticalPosition: 'top',
+                            duration: 5000,
+                        }
+                    );
+                },
+            });
+        } else {
+            this.client.removeFromWatchList(this.lotId).subscribe({
+                next: (result) => {
+                    this.snackBar.open(result, 'Ok', {
+                        horizontalPosition: 'right',
+                        verticalPosition: 'top',
+                        duration: 5000,
+                    });
+                    this.getLotFromRoute();
+                },
+                error: (result: HttpErrorResponse) => {
+                    this.snackBar.open(
+                        result.error.errors[0].ErrorMessage,
+                        'Ok',
+                        {
+                            horizontalPosition: 'right',
+                            verticalPosition: 'top',
+                            duration: 5000,
+                        }
+                    );
+                },
+            });
+        }
     }
 
     downloadDocument(documentUrl: string): void {
@@ -167,8 +222,55 @@ export class LotProfileComponent implements OnInit {
         });
     }
 
+    deleteLot() {
+        this.isDeleteLoading = true;
+        const msg = ['This action will delete lot or cancel it.'];
+        const dialogData: ChoicePopupData = {
+            isError: true,
+            isErrorShown: true,
+            continueBtnText: 'Delete',
+            breakBtnText: 'Cancel',
+            text: msg,
+            additionalText: 'Continue?',
+            continueBtnColor: 'warn',
+            breakBtnColor: 'primary',
+        };
+        const openedChoiceDialog = this.openChoiceDialog(dialogData);
+        const dialogSubscriber = openedChoiceDialog.closed.subscribe(
+            (result) => {
+                const isResult = result === 'true';
+                if (isResult) {
+                    const deleteLotSubscriber = this.client
+                        .deleteLot(this.lotId)
+                        .subscribe({
+                            next: (res) => {
+                                this.snackBar.open(res, 'Ok', {
+                                    duration: 10000,
+                                });
+                                this.router.navigate(['/home']);
+                                deleteLotSubscriber.unsubscribe();
+                            },
+                            error: (error) => {},
+                            complete: () => {
+                                this.isDeleteLoading = false;
+                            },
+                        });
+                }
+
+                this.isDeleteLoading = false;
+                dialogSubscriber.unsubscribe();
+            }
+        );
+    }
+
+    openChoiceDialog(data: ChoicePopupData): DialogRef<string, unknown> {
+        return this.dialog.open<string>(ChoicePopupComponent, {
+            data,
+        });
+    }
+
     isResponseForBuyer(response: any): response is BuyerGetLotResponse {
-        return 'isInWatchList' in response;
+        return 'isInWatchlist' in response;
     }
 
     getFileNameFromUrl(fileUrl: string): string {

@@ -62,11 +62,23 @@
         cursor: pointer;
     }
 
+    &__main-status {
+        position: absolute;
+        display: block;
+        top: 16px;
+        right: 16px;
+        padding: 8px 16px;
+        background-color: #2B9355;
+        border-radius: 500px;
+        color: white;
+    }
+
     &__main-photo {
         width: 100%;
         overflow: hidden;
         border-radius: 16px;
         margin-left: 136px;
+        position: relative;
 
         &.not-available {
             background-color: #f4f4f4;
@@ -141,14 +153,6 @@
             }
         }
     }
-
-    &__download-btn {
-        display: flex;
-        justify-content: center;
-        border: 1px solid #2B5293;
-        color: #2B5293;
-        border-radius: 8px;
-    }
 }
 
 .right {
@@ -193,6 +197,7 @@
         align-items: center;
         gap: 10px;
         color: #828282;
+        cursor: pointer;
     }
 
     &__price {
@@ -233,7 +238,7 @@
             gap: 8px;
 
             & .price-button {
-                min-width: 115px;
+                min-width: 120px;
 
                 & mat-icon {
                     font-size: 24px;

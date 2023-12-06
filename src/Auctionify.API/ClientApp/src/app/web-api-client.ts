@@ -466,28 +466,37 @@ export class Client {
     }
 
     addToWatchlist(lotId: number): Observable<any> {
-        let url = this.baseUrl + `users/watchlists/lots`;
+        let url_ = this.baseUrl + `/api/users/watchlists/lots`;
 
         const formData = new FormData();
         formData.append('LotId', lotId.toString());
 
-        const options = {
+        const options_: any = {
             body: formData,
-            observe: 'response' as 'body',
             headers: new HttpHeaders({
-                Accept: 'application/json',
+                Accept: 'text/json',
             }),
         };
 
-        return this.http.post<any>(url, formData, options).pipe(
-            mergeMap((response: HttpResponse<any>) => {
-                let data: any = {};
+        return this.http.request('post', url_, options_).pipe(
+            mergeMap((response): Observable<any> => {
+                return of(response);
+            })
+        );
+    }
 
-                if (response.body !== null) {
-                    data = response.body;
-                }
+    removeFromWatchList(lotId: number) {
+        let url_ = this.baseUrl + `/api/users/watchlists/lots/${lotId}`;
 
-                return of(data);
+        const options_: any = {
+            headers: new HttpHeaders({
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('delete', url_, options_).pipe(
+            mergeMap((response): Observable<any> => {
+                return of(response);
             })
         );
     }
