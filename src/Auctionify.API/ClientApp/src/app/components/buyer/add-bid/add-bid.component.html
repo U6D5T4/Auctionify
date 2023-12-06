@@ -5,18 +5,39 @@
         <div class="main__form">
             <mat-form-field color="primary" appearance="outline">
                 <mat-label>Bid price</mat-label>
-                <input class="currency-input" type="number" formControlName="bid" matInput />
-                <span matTextSuffix class="currency-label"> {{ currency }}</span>
-                <mat-error *ngIf="errorMessage">
-                    {{ errorMessage }}
-                </mat-error>
+                <input
+                    class="currency-input"
+                    type="number"
+                    formControlName="bid"
+                    matInput
+                    [errorStateMatcher]="matcher"
+                    [placeholder]="
+                        bidCount > 0
+                            ? 'Current highest bid is ' + currentHighestBid
+                            : 'Starts from ' + startingPrice
+                    "
+                />
+                <span matTextSuffix class="currency-label">
+                    {{ currency }}</span
+                >
                 <mat-error *ngIf="bidForm.controls['bid'].hasError('required')">
                     Bid is required!
                 </mat-error>
-                <mat-error *ngIf="bidForm.controls['bid'].hasError('min')">
-                    Your bid must be greater than starting price!
+                <mat-error
+                    *ngIf="bidForm.controls['bid'].hasError('minStartingBid')"
+                >
+                    Your bid must be greater than the starting price!
                 </mat-error>
-                <mat-error *ngIf="bidForm.controls['bid'].hasError('maxBidExceeded')">
+                <mat-error
+                    *ngIf="
+                        bidForm.controls['bid'].hasError('minCurrentHighestBid')
+                    "
+                >
+                    Your bid must be higher than the current highest bid!
+                </mat-error>
+                <mat-error
+                    *ngIf="bidForm.controls['bid'].hasError('maxBidExceeded')"
+                >
                     Your bid must be less than trillion!
                 </mat-error>
             </mat-form-field>
@@ -34,12 +55,15 @@
             </ul>
         </div>
         <div class="submit-button">
-            <button type="submit" mat-flat-button [color]="'primary'" class="bid-button" [disabled]="!bidForm.valid">
+            <button
+                type="submit"
+                mat-flat-button
+                [color]="'primary'"
+                class="bid-button"
+                [disabled]="!bidForm.valid"
+            >
                 Submit
             </button>
-        </div>
-        <div *ngIf="bids.length === 0" class="no-bids">
-            <p>No bids available.</p>
         </div>
     </form>
 </div>

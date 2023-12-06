@@ -19,6 +19,7 @@ export class GetLotComponent implements OnInit {
     startingPrice!: number;
     lot$!: Observable<BuyerGetLotResponse>;
     bids$!: Observable<BidDto[]>;
+    currentHighestBid!: number;
 
     constructor(
         private apiClient: Client,
@@ -54,6 +55,7 @@ export class GetLotComponent implements OnInit {
                 this.bidCount = lot.bidCount || 0;
                 this.currency = lot.currency.code || '';
                 this.startingPrice = lot.startingPrice || 0;
+                this.currentHighestBid = lot.bids[0]?.newPrice || 0;
             });
     }
 
@@ -64,6 +66,7 @@ export class GetLotComponent implements OnInit {
                 bidCount: this.bidCount,
                 currency: this.currency,
                 startingPrice: this.startingPrice,
+                currentHighestBid: this.currentHighestBid,
             },
         });
     }
