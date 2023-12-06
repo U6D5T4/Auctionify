@@ -33,23 +33,15 @@ export class AddBidComponent implements OnInit {
         this.bidCount = this.data?.bidCount;
         this.currency = this.data?.currency;
         this.startingPrice = this.data?.startingPrice;
-        console.log('Lot id:', this.lotId);
-        console.log('Bid count:', this.bidCount);
-        console.log('Currency:', this.currency);
-        console.log('Starting price:', this.startingPrice);
     }
 
     ngOnInit() {
         this.bidForm = this.formBuilder.group({
-            bid: [null, Validators.required],
+            bid: [null, [Validators.required, this.maxBidValidator.bind(this)]],
         });
 
         this.getAllBidsForLot();
     }
-
-    // onBidInputChange(event: Event) {
-    //     const inputElement = event.target as HTMLInputElement;
-    // }
 
     getAllBidsForLot() {
         this.apiClient.getAllBidsOfUserForLot(this.lotId, 0, 3).subscribe({
@@ -76,18 +68,6 @@ export class AddBidComponent implements OnInit {
         });
     }
 
-    onInputChanged() {
-        if (!this.bidForm.value.bid.includes(this.currency)) {
-            this.bidForm.value.bid += this.currency;
-        } else {
-            this.bidForm.value.bid = this.bidForm.value.bid.replace(
-                this.currency,
-                ''
-            );
-        }
-        console.log('BID:');
-    }
-
     onSubmit() {
         if (this.bidForm.valid) {
             const bidData = {
@@ -100,6 +80,7 @@ export class AddBidComponent implements OnInit {
                     console.log(response);
                     this.bidForm.reset();
                     this.errorMessage = '';
+                    this.closeDialog();
                 },
                 error: (error) => {
                     if (
@@ -108,6 +89,7 @@ export class AddBidComponent implements OnInit {
                     ) {
                         this.errorMessage =
                             JSON.parse(error)?.errors[0]?.ErrorMessage;
+                        this.bidForm.reset();
                     }
                 },
             });
@@ -116,5 +98,13 @@ export class AddBidComponent implements OnInit {
 
     closeDialog() {
         this.dialogRef.close();
+    }
+
+    maxBidValidator(control: FormControl) {
+        const maxBid = 1000000000000; // 1 trillion
+        if (control.value && control.value > maxBid) {
+            return { maxBidExceeded: true };
+        }
+        return null;
     }
 }
