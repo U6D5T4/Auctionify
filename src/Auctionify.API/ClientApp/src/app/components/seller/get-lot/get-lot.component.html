@@ -15,18 +15,15 @@
     <p><strong>Start Date:</strong> {{ lot.startDate | date }}</p>
     <p><strong>End Date:</strong> {{ lot.endDate | date }}</p>
 
-    <div
-        *ngIf="
+    <div *ngIf="
             lot.additionalDocumentsUrl && lot.additionalDocumentsUrl.length > 0
-        "
-        class="additional-docs"
-    >
+        " class="additional-docs">
         <h3>Additional Documents:</h3>
         <ul>
             <li *ngFor="let doc of lot.additionalDocumentsUrl">
                 <a [href]="doc" target="_blank" rel="noopener noreferrer">{{
                     doc
-                }}</a>
+                    }}</a>
             </li>
         </ul>
     </div>

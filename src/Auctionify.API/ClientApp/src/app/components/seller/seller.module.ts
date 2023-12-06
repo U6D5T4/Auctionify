@@ -16,6 +16,7 @@ import { CurrencyPopUpComponent } from './create-lot/pop-ups/currency/currency.c
 import { FilesPopUpComponent } from './create-lot/pop-ups/files/files.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { GetLotComponent } from './get-lot/get-lot.component';
 
 @NgModule({
     declarations: [
@@ -24,6 +25,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
         CurrencyPopUpComponent,
         FilesPopUpComponent,
         DashboardComponent,
+        GetLotComponent,
     ],
     imports: [
         CommonModule,

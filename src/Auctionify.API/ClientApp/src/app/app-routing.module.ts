@@ -29,7 +29,7 @@ const routes: Routes = [
         canActivate: [isBuyerGuard],
     },
     {
-        path: 'get-profile/:id',
+        path: 'get-lot/:id',
         component: LotProfileComponent,
         canActivate: [isLoggedInGuard],
     },

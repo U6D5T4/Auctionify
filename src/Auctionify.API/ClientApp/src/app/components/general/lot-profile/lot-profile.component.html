@@ -1,67 +1,110 @@
 <div class="main">
-    <div *ngIf="lotData$ | async as lot" class="lot-details">
-
+    <div *ngIf="lotData" class="lot-details">
         <div class="left">
             <div class="left__photos-div">
                 <div class="left__photos">
-                    <img *ngFor="let photo of lot.photosUrl; let i = index" [src]="photo" alt="Photo"
-                        (click)="setMainPhoto(i)">
+                    <div class="photo-element" *ngFor="let photo of lotData.photosUrl; let i = index">
+                        <img [src]="photo" alt="Photo" (click)="setMainPhoto(i)">
+                    </div>
                 </div>
                 <div class="left__main-photo">
-                    <img width="640" height="520" [src]="lot.photosUrl?.[0]" alt="Main Photo">
+                    <img [src]="lotData.photosUrl?.[selectedMainPhotoIndex]" alt="Main Photo">
                 </div>
             </div>
 
             <div class="left__description">
                 <h1>Description</h1>
-                <p>{{lot.description}}</p>
+                <p>{{lotData.description}}</p>
             </div>
 
             <div class="left__location">
                 <h1>Location</h1>
-                <iframe
+                <iframe class="left__location-map"
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d366.4323639308003!2d69.28140568640073!3d41.297167709949846!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38ae8bf5210ab4a3%3A0x86209464b9b26bcd!2sTanuki!5e0!3m2!1sru!2s!4v1700680822796!5m2!1sru!2s"
-                    width="770" height="320" style="border:0;" allowfullscreen="" loading="lazy"
+                    style="border:0;" allowfullscreen="" loading="lazy"
                     referrerpolicy="no-referrer-when-downgrade"></iframe>
-                <p class="left__address">{{lot.location.country + " " + lot.location.city + " " + lot.location.address}}
+                <p class="left__address">{{lotData.location.country + ", " + lotData.location.city + " " +
+                    lotData.location.address}}
                 </p>
             </div>
 
             <div class="left__docs">
                 <h1>Additional documents</h1>
-            </div>
-            <div class="left__docs-line" *ngFor="let doc of (lotData$ | async)?.additionalDocumentsUrl; let i = index">
-                <img src="../../../../assets/icons/FileIcon.svg" alt="documentIcon">
-                <p>{{ doc }}</p>
-                <button class="left__download-btn" (click)="downloadDocument(doc)">Download</button>
+                <div class="left__docs-item" *ngFor="let file of files">
+                    <div class="left__docs-line">
+                        <div class="line-left">
+                            <img src="../../../../assets/icons/FileIcon.svg" alt="documentIcon">
+                            <p>{{file.name}}</p>
+                        </div>
+                        <button mat-flat-button class="left__download-btn mat-mdc-outlined-button-custom"
+                            (click)="downloadDocument(file.fileUrl!)">Download</button>
+                    </div>
+                    <hr class="color-grey-5">
+                </div>
             </div>
         </div>
 
         <div class="right">
-            <h1>{{lot.title}}</h1>
+            <h1>{{lotData.title}}</h1>
             <div class="right__wishlist">
                 <ul class="right__category">
-                    <li>{{lot.category.name}}</li>
-                    <li class="right__category-special" *ngIf="lot.category.parentCategoryId != null">
-                        {{lot.category.parentCategoryId}}
-                    </li>
+                    <div *ngIf="lotData.category.parentCategoryId; then category_main else category_parent">
+                    </div>
+                    <ng-template #category_main>
+                        <li>{{parentCategoryName}}</li>
+                        <li class="right__category-circle"></li>
+                        <li>
+                            {{lotData.category.name}}
+                        </li>
+                    </ng-template>
+                    <ng-template #category_parent>
+                        <li>{{lotData.category.name}}</li>
+                    </ng-template>
                 </ul>
-                <div class="right__wishlist-btn" (click)="addLotToWatchlist()">
-                    <mat-icon class="color-grey-3" [ngClass]="{'color-grey-3': lot.isInWatchlist}">{{ lot.isInWatchlist
+                <div *ngIf="isResponseForBuyer(lotData)" class="right__wishlist-btn" (click)="addLotToWatchlist()">
+                    <mat-icon class="color-grey-3" [ngClass]="{'color-grey-3': lotData.isInWatchlist}">{{
+                        lotData.isInWatchlist
                         ? 'favorite' : 'favorite_border' }}</mat-icon>
-                    <p>{{ lot.isInWatchlist ? 'Remove from wishlist' : 'Add to wishlist' }}</p>
+                    <p>{{ lotData.isInWatchlist ? 'Remove from wishlist' : 'Add to wishlist' }}</p>
                 </div>
             </div>
 
-            <div class="right__bids" *ngIf="lot.bids && lot.bids.length > 0">
+            <div class="right__price">
+                <div class="right__price-container">
+                    <div class="right__price-info">
+                        <div class="price-block">
+                            <b>Current price:</b>
+                            <h2>{{lotData.startingPrice}} {{lotData.currency.code}}</h2>
+                        </div>
+                        <div class="price-block">
+                            <b>Starting price:</b>
+                            <h2>{{lotData.startingPrice}} {{lotData.currency.code}}</h2>
+                        </div>
+                    </div>
+                    <div class="right__price-buttons">
+                        <button class="mat-mdc-outlined-button-custom price-button" mat-stroked-button type="button"
+                            color="primary">
+                            <mat-icon>delete_forever</mat-icon>
+                            Remove
+                        </button>
+                        <button class="mat-mdc-outlined-button-custom price-button" mat-flat-button type="button"
+                            color="primary">
+                            <mat-icon>edit</mat-icon>
+                            Edit lot
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right__bids" *ngIf="lotData.bids && lotData.bids.length > 0">
                 <div class="right__bids-info">
                     <div class="right-current-price">
                         <h4>Current Price:</h4>
-                        <p>{{ getHighestBidPrice(lotData$ | async) | currency: 'USD' }}</p>
+                        <p>{{ getHighestBidPrice(lotData) | currency: 'USD' }}</p>
                     </div>
                     <div class="right__starting-price">
                         <h4>Starting Price:</h4>
-                        <p>{{ lot.startingPrice | currency: 'USD' }}</p>
+                        <p>{{ lotData.startingPrice | currency: 'USD' }}</p>
                     </div>
                 </div>
                 <div class="right__bid-btns">
@@ -80,7 +123,7 @@
                         <p>Price</p>
                     </div>
                 </div>
-                <ng-container *ngFor="let bid of (lotData$ | async)?.bids; let i = index">
+                <ng-container *ngFor="let bid of lotData.bids; let i = index">
                     <div class="right__single-bid">
                         <div class="right__bid-number-date">
                             <div class="right__bid-number">
@@ -95,9 +138,8 @@
                         </div>
                     </div>
                 </ng-container>
-                <div class="right__show-more-bids" *ngIf="lotData$ | async as lotData">
-                    <div *ngIf="lotData && lotData.bids && lotData.bids.length > 3"
-                        (click)="showAllBids = !showAllBids">
+                <div class="right__show-more-bids" *ngIf="lotData">
+                    <div *ngIf="lotData.bids && lotData.bids.length > 3" (click)="showAllBids = !showAllBids">
                         {{ showAllBids ? 'Show less bids' : 'Show all bids' }}
                     </div>
                 </div>
@@ -113,13 +155,12 @@
                 </div>
                 <div class="right__info">
                     <ul>
-                        <li>{{lot.id}}</li>
-                        <li>{{ formatStartDate(lot.startDate) }}</li>
-                        <li>{{ formatEndDate(lot.endDate) }}</li>
+                        <li>{{lotData.id}}</li>
+                        <li>{{ formatStartDate(lotData.startDate) }}</li>
+                        <li>{{ formatEndDate(lotData.endDate) }}</li>
                     </ul>
                 </div>
             </div>
         </div>
-
     </div>
 </div>
