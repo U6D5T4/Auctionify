@@ -37,7 +37,14 @@ export class AddBidComponent implements OnInit {
 
     ngOnInit() {
         this.bidForm = this.formBuilder.group({
-            bid: [null, [Validators.required, this.maxBidValidator.bind(this)]],
+            bid: [
+                null,
+                [
+                    Validators.required,
+                    Validators.min(this.startingPrice + 0.01),
+                    this.maxBidValidator.bind(this),
+                ],
+            ],
         });
 
         this.getAllBidsForLot();
@@ -69,6 +76,7 @@ export class AddBidComponent implements OnInit {
     }
 
     onSubmit() {
+        console.log(this.bidForm.controls['bid'].errors);
         if (this.bidForm.valid) {
             const bidData = {
                 lotId: this.lotId,

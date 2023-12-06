@@ -13,7 +13,8 @@
         flex-direction: column;
         gap: 24px;
         border-radius: 24px;
-        background-color: #f8f8f8; /* Light gray background */
+        background-color: #f8f8f8;
+        /* Light gray background */
     }
 
     &-operation__title {
@@ -21,7 +22,8 @@
         font-size: 24px;
         font-style: normal;
         font-weight: 700;
-        line-height: 32px; /* 133.333% */
+        line-height: 32px;
+        /* 133.333% */
     }
 
     &-operation__description {
@@ -29,7 +31,8 @@
         font-size: 18px;
         font-style: normal;
         font-weight: 600;
-        line-height: 24px; /* 133.333% */
+        line-height: 24px;
+        /* 133.333% */
     }
 
     &-button {
@@ -48,13 +51,17 @@ mat-form-field {
 }
 
 .currency-label {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    right: 25px;
-    color: var(--color-grey-3);
-    font-weight: bold;
-    pointer-events: none;
+    padding-left: 5px;
+}
+
+input.currency-input::-webkit-outer-spin-button,
+input.currency-input::-webkit-inner-spin-button {
+    display: none;
+}
+
+input.currency-input {
+    -moz-appearance: textfield;
+    appearance: textfield;
 }
 
 .bids {
@@ -69,7 +76,8 @@ mat-form-field {
         font-size: 18px;
         font-style: normal;
         font-weight: 600;
-        line-height: 24px; /* 133.333% */
+        line-height: 24px;
+        /* 133.333% */
     }
 
     &-list {
@@ -88,7 +96,8 @@ mat-form-field {
                 font-size: 16px;
                 font-style: normal;
                 font-weight: 600;
-                line-height: 24px; /* 150% */
+                line-height: 24px;
+                /* 150% */
             }
 
             &-amount {
@@ -96,7 +105,8 @@ mat-form-field {
                 font-size: 16px;
                 font-style: normal;
                 font-weight: 700;
-                line-height: 24px; /* 150% */
+                line-height: 24px;
+                /* 150% */
             }
         }
     }
