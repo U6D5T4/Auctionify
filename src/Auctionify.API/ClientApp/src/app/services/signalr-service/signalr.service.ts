@@ -58,6 +58,21 @@ export class SignalRService {
             });
     }
 
+    public async leaveLotGroup(lotId: number) {
+        await this.connectionEstablished;
+        this.connection
+            .invoke('LeaveLotGroup', lotId)
+            .then(() => {
+                console.log(`Left group for Lot ID: ${lotId}`);
+            })
+            .catch((err) => {
+                console.error(
+                    `Error leaving group for Lot ID: ${lotId}`,
+                    err.toString()
+                );
+            });
+    }
+
     public onReceiveBidNotification(callback: () => void, lotId: number) {
         this.connection.on(SignalRActions.ReceiveBidNotification, () => {
             console.log(`Bid received for Lot ID: ${lotId}`);

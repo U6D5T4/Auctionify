@@ -12,14 +12,9 @@ namespace Auctionify.Application.Hubs
 			await Groups.AddToGroupAsync(Context.ConnectionId, lotId.ToString());
 		}
 
-		public async Task SendBidNotification(int lotId)
+		public async Task LeaveLotGroup(int lotId)
 		{
-			await Clients.Group(lotId.ToString()).SendAsync("ReceiveBidNotification");
-		}
-
-		public async Task SendWithdrawBidNotification(int lotId)
-		{
-			await Clients.Group(lotId.ToString()).SendAsync("ReceiveWithdrawBidNotification");
+			await Groups.RemoveFromGroupAsync(Context.ConnectionId, lotId.ToString());
 		}
 	}
 }
