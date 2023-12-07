@@ -9,86 +9,87 @@
 @include mat.core();
 
 $main-palette: (
-    50: #2B5293,
-    100: #2B5293,
-    200: #2B5293,
-    300: #2B5293,
-    400: #2B5293,
-    500: #2B5293,
-    600: #2B5293,
-    700: #2B5293,
-    800: #2B5293,
-    900: #2B5293,
-    A100: #2B5293,
-    A200: #2B5293,
-    A400: #2B5293,
-    A700: #2B5293,
-    contrast: (50: #2B5293,
-        100: #2B5293,
-        200: #2B5293,
-        300: #2B5293,
-        400: #2B5293,
-        500: #2B5293,
-        600: #2B5293,
-        700: #2B5293,
-        800: #2B5293,
-        900: #2B5293,
-        A100: #2B5293,
-        A200: #2B5293,
-        A400: #2B5293,
-        A700: #2B5293,
-    )
+    50: #2b5293,
+    100: #2b5293,
+    200: #2b5293,
+    300: #2b5293,
+    400: #2b5293,
+    500: #2b5293,
+    600: #2b5293,
+    700: #2b5293,
+    800: #2b5293,
+    900: #2b5293,
+    A100: #2b5293,
+    A200: #2b5293,
+    A400: #2b5293,
+    A700: #2b5293,
+    contrast: (
+        50: #2b5293,
+        100: #2b5293,
+        200: #2b5293,
+        300: #2b5293,
+        400: #2b5293,
+        500: #2b5293,
+        600: #2b5293,
+        700: #2b5293,
+        800: #2b5293,
+        900: #2b5293,
+        A100: #2b5293,
+        A200: #2b5293,
+        A400: #2b5293,
+        A700: #2b5293,
+    ),
 );
 
 $main-accent: (
-    50: #F2F5F7,
-    100: #F2F5F7,
-    200: #F2F5F7,
-    300: #F2F5F7,
-    400: #F2F5F7,
-    500: #F2F5F7,
-    600: #F2F5F7,
-    700: #F2F5F7,
-    800: #F2F5F7,
-    900: #F2F5F7,
-    contrast: (50: #F2F5F7,
-        100: #F2F5F7,
-        200: #F2F5F7,
-        300: #F2F5F7,
-        400: #F2F5F7,
-        500: #F2F5F7,
-        600: #F2F5F7,
-        700: #F2F5F7,
-        800: #F2F5F7,
-        900: #F2F5F7,
-    )
+    50: #f2f5f7,
+    100: #f2f5f7,
+    200: #f2f5f7,
+    300: #f2f5f7,
+    400: #f2f5f7,
+    500: #f2f5f7,
+    600: #f2f5f7,
+    700: #f2f5f7,
+    800: #f2f5f7,
+    900: #f2f5f7,
+    contrast: (
+        50: #f2f5f7,
+        100: #f2f5f7,
+        200: #f2f5f7,
+        300: #f2f5f7,
+        400: #f2f5f7,
+        500: #f2f5f7,
+        600: #f2f5f7,
+        700: #f2f5f7,
+        800: #f2f5f7,
+        900: #f2f5f7,
+    ),
 );
 
 $main-error: (
-    50: #AB2D25,
-    100: #AB2D25,
-    200: #AB2D25,
-    300: #AB2D25,
-    400: #AB2D25,
-    500: #AB2D25,
-    600: #AB2D25,
-    700: #AB2D25,
-    800: #AB2D25,
-    900: #AB2D25,
-    contrast: (50: #AB2D25,
-        100: #AB2D25,
-        200: #AB2D25,
-        300: #AB2D25,
-        400: #AB2D25,
-        500: #AB2D25,
-        600: #AB2D25,
-        700: #AB2D25,
-        800: #AB2D25,
-        900: #AB2D25,
-    )
+    50: #ab2d25,
+    100: #ab2d25,
+    200: #ab2d25,
+    300: #ab2d25,
+    400: #ab2d25,
+    500: #ab2d25,
+    600: #ab2d25,
+    700: #ab2d25,
+    800: #ab2d25,
+    900: #ab2d25,
+    contrast: (
+        50: #ab2d25,
+        100: #ab2d25,
+        200: #ab2d25,
+        300: #ab2d25,
+        400: #ab2d25,
+        500: #ab2d25,
+        600: #ab2d25,
+        700: #ab2d25,
+        800: #ab2d25,
+        900: #ab2d25,
+    ),
 );
-
-
 
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
@@ -101,10 +102,15 @@ $ClientApp-warn: mat.define-palette($main-error);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
-$ClientApp-theme: mat.define-light-theme((color: (primary: $ClientApp-primary,
-                accent: $ClientApp-accent,
-                warn: $ClientApp-warn,
-            )));
+$ClientApp-theme: mat.define-light-theme(
+    (
+        color: (
+            primary: $ClientApp-primary,
+            accent: $ClientApp-accent,
+            warn: $ClientApp-warn,
+        ),
+    )
+);
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
@@ -114,18 +120,18 @@ $ClientApp-theme: mat.define-light-theme((color: (primary: $ClientApp-primary,
 /* You can add global styles to this file, and also import other style files */
 
 :root {
-    --color-main: #2B5293;
-    --color-error: #AB2D25;
+    --color-main: #2b5293;
+    --color-error: #ab2d25;
 
-    --color-container: #F0F3FE;
+    --color-container: #f0f3fe;
 
     --color-text-primary: #242424;
     --color-placeholder: #bdbdbd;
 
     --color-grey-3: #828282;
-    --color-grey-4: #BDBDBD;
-    --color-grey-5: #E0E0E0;
-    --color-grey-6: #ECEDEE;
+    --color-grey-4: #bdbdbd;
+    --color-grey-5: #e0e0e0;
+    --color-grey-6: #ecedee;
 }
 
 * {
@@ -156,9 +162,12 @@ button {
     --mdc-outlined-text-field-container-shape: 8px;
 }
 
-.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__leading,
-.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__notch,
-.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing {
+.mdc-text-field--outlined:not(.mdc-text-field--disabled)
+    .mdc-notched-outline__leading,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled)
+    .mdc-notched-outline__notch,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled)
+    .mdc-notched-outline__trailing {
     border-color: var(--color-grey-4);
 }
 
@@ -186,4 +195,18 @@ hr.color-grey-5 {
 
 .color-grey-3 {
     color: var(--color-grey-3) !important;
+}
+
+.mat-mdc-snack-bar-container {
+    &.success-snackbar {
+        --mdc-snackbar-container-color: #4caf50;
+        --mat-mdc-snack-bar-button-color: #fff;
+        --mdc-snackbar-supporting-text-color: #fff;
+    }
+
+    &.error-snackbar {
+        --mdc-snackbar-container-color: #ab2d25;
+        --mat-mdc-snack-bar-button-color: #fff;
+        --mdc-snackbar-supporting-text-color: #fff;
+    }
 }

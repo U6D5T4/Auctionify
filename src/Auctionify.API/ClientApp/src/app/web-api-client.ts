@@ -8,7 +8,7 @@
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 
-import { mergeMap, catchError } from 'rxjs/operators';
+import { mergeMap, catchError, map } from 'rxjs/operators';
 import { Observable, throwError, of } from 'rxjs';
 import { Injectable, Inject, Optional, InjectionToken } from '@angular/core';
 import {
@@ -21,6 +21,7 @@ import {
 } from '@angular/common/http';
 import { UserRole } from './api-authorization/authorize.service';
 import { CreateLotModel, UpdateLotModel } from './models/lots/lot-models';
+import { AddBidModel } from './models/bids/bid-models';
 import { FilterLot } from './models/lots/filter';
 
 export const API_BASE_URL = new InjectionToken('API_BASE_URL');
@@ -465,6 +466,60 @@ export class Client {
         );
     }
 
+    getAllBidsOfUserForLot(
+        lotId: number,
+        pageIndex: number,
+        pageSize: number
+    ): Observable<BidDto[]> {
+        const url = `${this.baseUrl}/api/users/lots/${lotId}/bids`;
+
+        const params = new HttpParams()
+            .set('pageIndex', pageIndex.toString())
+            .set('pageSize', pageSize.toString());
+
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+            Accept: 'text/json',
+        });
+
+        return this.http.get<BidDto[]>(url, { params, headers }).pipe(
+            catchError((error: any) => {
+                console.error('Error fetching bids:', error);
+                return throwError(() => new Error('Failed to fetch bids'));
+            }),
+            map((response: any): BidDto[] => {
+                if (response && response.items) {
+                    return response.items as BidDto[];
+                } else {
+                    throw new Error('Invalid response structure');
+                }
+            })
+        );
+    }
+
+    addBidForLot(body: AddBidModel): Observable<string> {
+        let url_ = this.baseUrl + '/api/users/bids';
+
+        let formData = new FormData();
+
+        formData.append('lotId', body.lotId.toString());
+        formData.append('bid', body.bid.toString());
+
+        let options_: any = {
+            body: formData,
+            responseType: 'text',
+        };
+
+        return this.http.request('post', url_, options_).pipe(
+            map((response: any) => {
+                return response;
+            }),
+            catchError((error) => {
+                return throwError(() => error.error);
+            })
+        );
+    }
+
     addToWatchlist(lotId: number): Observable<any> {
         let url_ = this.baseUrl + `/api/users/watchlists/lots`;
 
@@ -595,7 +650,6 @@ export class Client {
             })
         );
     }
-
     getHighestLotPrice(): Observable<number> {
         let url_ = this.baseUrl + `/api/lots/highest-price`;
 
@@ -657,8 +711,10 @@ export interface BidDto {
     id: number;
     buyerId: number;
     newPrice: number;
-    timeStamp: Date;
+    timeStamp: string;
+    currency: string;
     buyer: UserDto;
+    bidRemoved: boolean;
 }
 
 export interface UserDto {
@@ -688,6 +744,25 @@ export interface SearchLotResponse {
     isInWatchList: boolean;
 }
 
+export interface BuyerGetLotResponse {
+    id: number;
+    title: string;
+    description: string;
+    startingPrice: number | null;
+    startDate: Date | null;
+    endDate: Date | null;
+    photosUrl: string[] | null;
+    additionalDocumentsUrl: string[] | null;
+    category: CategoryDto;
+    lotStatus: LotStatusDto;
+    location: LocationDto;
+    currency: CurrencyDto;
+    bids: BidDto[];
+    isInWatchlist: boolean;
+    bidCount: number | null;
+    sellerEmail: string;
+}
+
 export interface SellerGetLotResponse {
     id: number;
     title: string;
@@ -703,25 +778,6 @@ export interface SellerGetLotResponse {
     currency: CurrencyDto;
     bids: BidDto[];
     bidCount: number;
-}
-
-export interface BuyerGetLotResponse {
-    id: number;
-    title: string;
-    description: string;
-    startingPrice: number | null;
-    startDate: Date | null;
-    endDate: Date | null;
-    photosUrl: string[] | null;
-    additionalDocumentsUrl: string[] | null;
-    category: CategoryDto;
-    lotStatus: LotStatusDto;
-    location: LocationDto;
-    currency: CurrencyDto;
-    bids: BidDto[];
-    bidCount: number;
-    isInWatchlist: boolean;
-    sellerEmail: string;
 }
 
 export interface CreateLotResponse {
