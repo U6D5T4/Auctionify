@@ -43,7 +43,12 @@
 
     &__border {
         height: 1px;
-        background: linear-gradient(90deg, rgba(189, 189, 189, 0) 0%, #BDBDBD 51.04%, rgba(189, 189, 189, 0) 100%);
+        background: linear-gradient(
+            90deg,
+            rgba(189, 189, 189, 0) 0%,
+            #bdbdbd 51.04%,
+            rgba(189, 189, 189, 0) 100%
+        );
     }
 
     &__policy {
@@ -73,6 +78,7 @@
 
     &__single-option p {
         color: #828282;
+        cursor: pointer;
     }
 
     &__user-type-option {
@@ -84,6 +90,7 @@
         height: 152px;
         border-radius: 8px;
         border: 2px solid #e0e0e0;
+        cursor: pointer;
     }
 
     &__option-desc {
@@ -101,14 +108,19 @@
     border-radius: 500px;
 }
 
-.form__single-option input:checked+.form__user-type-option {
-    border-color: #2B5293;
+.form__single-option input:checked + .form__user-type-option {
+    border-color: #2b5293;
 }
 
-.form__single-option input:checked+.form__user-type-option label {
-    color: #2B5293;
+.form__single-option input:checked + .form__user-type-option label {
+    color: #2b5293;
 }
 
-.form__single-option input:checked+.form__user-type-option .radio {
-    background-color: #C5D1EA80;
+.form__single-option input:checked + .form__user-type-option .radio {
+    background-color: #c5d1ea80;
+}
+
+.form__single-option:hover .form__user-type-option {
+    box-shadow: 0 0 10px 0 #2b5293;
+    transition: box-shadow 0.2s ease;
 }

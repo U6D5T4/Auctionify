@@ -1,12 +1,13 @@
 import { Component, Injectable, NgZone } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AuthorizeService } from '../authorize.service';
+import { Router } from '@angular/router';
 import { Dialog } from '@angular/cdk/dialog';
+import { CredentialResponse, PromptMomentNotification } from 'google-one-tap';
+
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import { LoginResponse } from 'src/app/web-api-client';
-import { Router } from '@angular/router';
-import { CredentialResponse, PromptMomentNotification } from 'google-one-tap';
 import { environment } from 'src/environments/environment';
+import { AuthorizeService } from '../authorize.service';
 
 @Injectable({
     providedIn: 'root',
@@ -19,10 +20,6 @@ import { environment } from 'src/environments/environment';
 export class LoginComponent {
     passwordHidden: boolean = true;
     isLoading = false;
-
-    togglePasswordVisibility() {
-        this.passwordHidden = !this.passwordHidden;
-    }
 
     private clientId = environment.clientId;
 
@@ -40,6 +37,10 @@ export class LoginComponent {
         ]),
         password: new FormControl('', [Validators.required]),
     });
+
+    togglePasswordVisibility() {
+        this.passwordHidden = !this.passwordHidden;
+    }
 
     ngOnInit(): void {
         // @ts-ignore
@@ -70,7 +71,10 @@ export class LoginComponent {
             next: (x: any) => {
                 this._ngZone.run(() => {
                     if (this.service.isUserLoggedIn()) {
-                        if (this.service.isUserBuyer() || this.service.isUserSeller()) {
+                        if (
+                            this.service.isUserBuyer() ||
+                            this.service.isUserSeller()
+                        ) {
                             this.router.navigate(['/home']);
                         } else {
                             this.router.navigate(['/auth/register-role']);
@@ -97,7 +101,10 @@ export class LoginComponent {
             .subscribe({
                 next: (result) => {
                     if (this.authService.isUserLoggedIn()) {
-                        if (this.authService.isUserBuyer() || this.authService.isUserSeller()) {
+                        if (
+                            this.authService.isUserBuyer() ||
+                            this.authService.isUserSeller()
+                        ) {
                             this.router.navigate(['/home']);
                         } else {
                             this.router.navigate(['/auth/register-role']);
