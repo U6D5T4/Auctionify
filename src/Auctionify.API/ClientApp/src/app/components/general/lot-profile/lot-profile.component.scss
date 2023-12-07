@@ -79,10 +79,12 @@
         border-radius: 16px;
         margin-left: 136px;
         position: relative;
+        cursor: pointer;
 
         &.not-available {
             background-color: #f4f4f4;
             border-radius: 16px;
+            cursor: default;
 
             & img {
                 object-fit: contain;
@@ -196,7 +198,7 @@
         display: flex;
         align-items: center;
         gap: 10px;
-        color: #828282;
+        color: var(--color-grey-3);
         cursor: pointer;
     }
 
@@ -305,7 +307,7 @@
         padding: 24px;
         display: flex;
         font-size: 16px;
-        color: #828282;
+        color: var(--color-grey-4);
         justify-content: space-between;
     }
 
@@ -329,19 +331,33 @@
     &__bid-date {
         display: flex;
         align-items: center;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 24px;
+        text-align: left;
+        color: var(--color-grey-3);
     }
 
     &__bid-price {
         display: flex;
         align-items: center;
         padding-right: 24px;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 24px;
+        text-align: left;
+        color: var(--color-main);
     }
 
     &__bid-number {
         width: 48px;
         height: 40px;
         border-radius: 8px;
-        background-color: #F0F3FE;
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 24px;
+        text-align: left;
+        background-color: #F2F2F2;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -353,6 +369,7 @@
         color: #2B5293;
         padding-bottom: 24px;
         cursor: pointer;
+        text-decoration: underline;
     }
 
     &__lot-info {

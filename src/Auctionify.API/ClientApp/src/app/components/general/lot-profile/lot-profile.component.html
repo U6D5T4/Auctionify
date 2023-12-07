@@ -27,7 +27,8 @@
                     </div>
                 </div>
                 <div class="left__main-photo">
-                    <img [src]="lotData.photosUrl?.[selectedMainPhotoIndex]" alt="Main Photo">
+                    <img [src]="lotData.photosUrl?.[selectedMainPhotoIndex]" alt="Main Photo"
+                        (click)="openMainPhoto(lotData.photosUrl?.[selectedMainPhotoIndex]!)">
                     <ng-container *ngTemplateOutlet="lot_status">
                     </ng-container>
                 </div>
@@ -166,7 +167,7 @@
             </ng-container>
             <div class="right__show-more-bids" *ngIf="lotData">
                 <div *ngIf="lotData.bids && lotData.bids.length > 3" (click)="showBidsClick()">
-                    {{ showAllBids ? 'Show less bids' : 'Show all bids' }}
+                    {{ showAllBids ? 'Show less bids' : getBidsCountString() }}
                 </div>
             </div>
         </div>
@@ -177,6 +178,7 @@
                     <li>Item ID:</li>
                     <li>Start date:</li>
                     <li>End date:</li>
+                    <li *ngIf="isResponseForBuyer(lotData)">Seller email:</li>
                 </ul>
             </div>
             <div class="right__info">
@@ -184,6 +186,7 @@
                     <li>{{lotData.id}}</li>
                     <li>{{ formatStartDate(lotData.startDate) }}</li>
                     <li>{{ formatEndDate(lotData.endDate) }}</li>
+                    <li *ngIf="isResponseForBuyer(lotData)">{{ lotData.sellerEmail }}</li>
                 </ul>
             </div>
         </div>

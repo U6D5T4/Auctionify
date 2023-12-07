@@ -3,6 +3,7 @@ import { formatDate } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 import { FileModel } from 'src/app/models/fileModel';
@@ -17,6 +18,7 @@ import {
     Client,
     SellerGetLotResponse,
 } from 'src/app/web-api-client';
+import { ImagePopupComponent } from '../image-popup/image-popup.component';
 
 @Component({
     selector: 'app-lot-profile',
@@ -42,7 +44,8 @@ export class LotProfileComponent implements OnInit {
         private authService: AuthorizeService,
         private signalRService: SignalRService,
         private dialog: Dialog,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
+        private sanitizer: DomSanitizer
     ) {}
 
     ngOnInit() {
@@ -134,6 +137,10 @@ export class LotProfileComponent implements OnInit {
         }
     }
 
+    getBidsCountString() {
+        return `Show all ${this.lotData?.bidCount} bids`;
+    }
+
     showBidsClick() {
         if (!this.showAllBids) {
             this.bidsToShow = this.lotData?.bids!;
@@ -148,16 +155,22 @@ export class LotProfileComponent implements OnInit {
         this.selectedMainPhotoIndex = index;
     }
 
+    openMainPhoto(imageUrl: string) {
+        this.dialog.open<string>(ImagePopupComponent, {
+            data: imageUrl,
+        });
+    }
+
     formatBidDate(date: Date): string {
         return formatDate(date, 'd MMMM HH:mm', 'en-US');
     }
 
     formatStartDate(date: Date | null): string {
-        return date ? formatDate(date, 'd/MM/yy', 'en-US') : '';
+        return date ? formatDate(date, 'dd LLLL, h:mm (z)', 'en-US') : '';
     }
 
     formatEndDate(date: Date | null): string {
-        return date ? formatDate(date, 'd/MM/yy', 'en-US') : '';
+        return date ? formatDate(date, 'dd LLLL, h:mm (z)', 'en-US') : '';
     }
 
     handleLotWatchlist() {

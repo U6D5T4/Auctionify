@@ -702,6 +702,7 @@ export interface SellerGetLotResponse {
     location: LocationDto;
     currency: CurrencyDto;
     bids: BidDto[];
+    bidCount: number;
 }
 
 export interface BuyerGetLotResponse {
@@ -718,7 +719,9 @@ export interface BuyerGetLotResponse {
     location: LocationDto;
     currency: CurrencyDto;
     bids: BidDto[];
+    bidCount: number;
     isInWatchlist: boolean;
+    sellerEmail: string;
 }
 
 export interface CreateLotResponse {

@@ -5,9 +5,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ImagePopupComponent } from './image-popup/image-popup.component';
 
 @NgModule({
-    declarations: [LotProfileComponent],
+    declarations: [LotProfileComponent, ImagePopupComponent],
     imports: [
         CommonModule,
         RouterModule,
