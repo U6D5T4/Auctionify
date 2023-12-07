@@ -161,7 +161,7 @@ export class AddBidComponent implements OnInit {
         if (
             this.bidCount === 0 &&
             control.value &&
-            control.value < this.startingPrice
+            control.value <= this.startingPrice
         ) {
             return { minStartingBid: true };
         }
