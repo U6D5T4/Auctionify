@@ -59,9 +59,7 @@ export class SignalRService {
         await this.connectionEstablished;
         this.connection
             .invoke('LeaveLotGroup', lotId)
-            .then(() => {
-                console.log(`Left group for Lot ID: ${lotId}`);
-            })
+            .then(() => {})
             .catch((err) => {
                 console.error(
                     `Error leaving group for Lot ID: ${lotId}`,
