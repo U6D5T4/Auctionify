@@ -156,7 +156,7 @@ namespace Auctionify.API
 				app.MapControllers();
 				app.MapFallbackToFile("index.html");
 
-				app.MapHub<AuctionHub>("/api/hubs/auctionHub"); // SignalR hub
+				app.MapHub<AuctionHub>("/hubs/auction-hub"); // SignalR hub
 
 				app.Run();
 			}
