@@ -19,6 +19,7 @@ import {
     SellerGetLotResponse,
 } from 'src/app/web-api-client';
 import { ImagePopupComponent } from '../image-popup/image-popup.component';
+import { AddBidComponent } from '../add-bid/add-bid.component';
 
 @Component({
     selector: 'app-lot-profile',
@@ -129,11 +130,11 @@ export class LotProfileComponent implements OnInit {
 
     getHighestBidPrice(
         lotData: BuyerGetLotResponse | SellerGetLotResponse | null
-    ): number | null {
+    ): number {
         if (lotData && lotData.bids && lotData.bids.length > 0) {
             return Math.max(...lotData.bids.map((bid) => bid.newPrice));
         } else {
-            return lotData ? lotData.startingPrice : null;
+            return lotData?.startingPrice!;
         }
     }
 
@@ -157,7 +158,20 @@ export class LotProfileComponent implements OnInit {
 
     openMainPhoto(imageUrl: string) {
         this.dialog.open<string>(ImagePopupComponent, {
+            autoFocus: true,
             data: imageUrl,
+        });
+    }
+
+    openBidModal(): void {
+        const dialog = this.dialog.open(AddBidComponent, {
+            data: {
+                lotId: this.lotId,
+                bidCount: this.lotData!.bidCount,
+                currency: this.lotData!.currency,
+                startingPrice: this.lotData!.startingPrice,
+                currentHighestBid: this.getHighestBidPrice(this.lotData),
+            },
         });
     }
 

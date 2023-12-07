@@ -1,3 +1,9 @@
-img {
+.image-container {
+    background-color: white;
+    border-radius: 16px;
+}
+
+.image-main {
     display: block;
+    padding: 10px;
 }

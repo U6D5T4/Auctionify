@@ -711,7 +711,7 @@ export interface BidDto {
     id: number;
     buyerId: number;
     newPrice: number;
-    timeStamp: string;
+    timeStamp: Date;
     currency: string;
     buyer: UserDto;
     bidRemoved: boolean;

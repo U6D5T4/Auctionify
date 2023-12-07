@@ -11,12 +11,10 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { BuyerRoutingModule } from './buyer-routing.module';
-import { GetLotComponent } from './get-lot/get-lot.component';
-import { AddBidComponent } from './add-bid/add-bid.component';
 import { FilterComponent } from './filter/filter.component';
 
 @NgModule({
-    declarations: [GetLotComponent, AddBidComponent, FilterComponent],
+    declarations: [FilterComponent],
     imports: [
         CommonModule,
         MatIconModule,
@@ -30,6 +28,6 @@ import { FilterComponent } from './filter/filter.component';
         MatDialogModule,
         ReactiveFormsModule,
     ],
-    exports: [AddBidComponent, FilterComponent],
+    exports: [FilterComponent],
 })
 export class BuyerModule {}
