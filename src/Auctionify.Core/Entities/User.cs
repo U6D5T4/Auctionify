@@ -8,6 +8,10 @@ namespace Auctionify.Core.Entities
 
 		public string? LastName { get; set; }
 
+		public string? AboutMe { get; set; }
+
+		public string? ProfilePicture { get; set; }
+
 		public virtual ICollection<Lot> SellingLots { get; set; }
 
 		public virtual ICollection<Lot> BuyingLots { get; set; }

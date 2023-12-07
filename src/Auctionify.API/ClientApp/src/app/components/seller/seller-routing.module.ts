@@ -2,6 +2,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { CreateLotComponent } from './create-lot/create-lot.component';
 import { NgModule } from '@angular/core';
+import { GetLotComponent } from './get-lot/get-lot.component';
 
 const sellerRoutes: Routes = [
     {
@@ -23,6 +24,11 @@ const sellerRoutes: Routes = [
         component: CreateLotComponent,
         pathMatch: 'full',
     },
+    {
+      path: 'get-lot/:id',
+      component: GetLotComponent,
+      pathMatch: 'full',
+    }
 ];
 
 @NgModule({

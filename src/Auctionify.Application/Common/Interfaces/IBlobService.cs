@@ -4,7 +4,7 @@ namespace Auctionify.Application.Common.Interfaces
 {
 	public interface IBlobService
 	{
-		Task UploadFileBlobAsync(IFormFile file, string filePath);
+		Task UploadFileBlobAsync(IFormFile file, string filePath, string guid = null);
 		string GetBlobUrl(string filePath, string fileName);
 		Task DeleteFileBlobAsync(string filePath, string fileName);
 	}

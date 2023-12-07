@@ -4,26 +4,26 @@ using Auctionify.Core.Entities;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 
-namespace Auctionify.Application.Features.Users.Commands.RemoveLotFromWatchlist
+namespace Auctionify.Application.Features.Users.Commands.AddLotToWatchlist
 {
-	public class RemoveLotFromWatchlistValidator : AbstractValidator<RemoveLotFromWatchlistCommand>
+	public class AddToWatchlistCommandValidator : AbstractValidator<AddToWatchlistCommand>
 	{
 		private readonly IWatchlistRepository _watchlistRepository;
 		private readonly ILotRepository _lotRepository;
 		private readonly ICurrentUserService _currentUserService;
 		private readonly UserManager<User> _userManager;
 
-		public RemoveLotFromWatchlistValidator(
+		public AddToWatchlistCommandValidator(
 			IWatchlistRepository watchlistRepository,
 			ILotRepository lotRepository,
-			ICurrentUserService currentUserService,
-			UserManager<User> userManager
+			UserManager<User> userManager,
+			ICurrentUserService currentUserService
 		)
 		{
 			_watchlistRepository = watchlistRepository;
 			_lotRepository = lotRepository;
-			_currentUserService = currentUserService;
 			_userManager = userManager;
+			_currentUserService = currentUserService;
 
 			RuleFor(x => x.LotId)
 				.MustAsync(
@@ -52,10 +52,10 @@ namespace Auctionify.Application.Features.Users.Commands.RemoveLotFromWatchlist
 							cancellationToken: cancellationToken
 						);
 
-						return watchlist != null;
+						return watchlist == null;
 					}
 				)
-				.WithMessage("User does not have this lot in his watchlist");
+				.WithMessage("User already has this lot in his watchlist");
 		}
 	}
 }
