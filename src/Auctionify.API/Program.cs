@@ -29,6 +29,7 @@ namespace Auctionify.API
 				builder.Services.AddSignalR();
 				builder.Services.AddApplicationServices();
 				builder.Services.AddInfrastructureServices(builder.Configuration);
+				builder.Services.AddQuartzService();
 
 				// Add services to the container.
 				// To display enum values as strings in the response
