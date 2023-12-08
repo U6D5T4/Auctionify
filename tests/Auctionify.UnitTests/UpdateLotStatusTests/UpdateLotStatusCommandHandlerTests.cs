@@ -56,6 +56,7 @@ namespace Auctionify.UnitTests.UpdateLotStatusTests
 		[Fact]
 		public async Task Handle_GivenValidRequest_ShouldReturnUpdatedLotStatusResponse()
 		{
+			// Arrange
 			var handler = new UpdateLotStatusCommandHandler(
 				_lotRepository,
 				_lotStatusRepository,
@@ -64,8 +65,10 @@ namespace Auctionify.UnitTests.UpdateLotStatusTests
 
 			var request = new UpdateLotStatusCommand { LotId = 1, Name = "Sold" };
 
+			// Act
 			var result = await handler.Handle(request, CancellationToken.None);
 
+			// Assert
 			result.Should().BeOfType<UpdatedLotStatusResponse>();
 			result.Should().NotBeNull();
 			result
@@ -76,6 +79,7 @@ namespace Auctionify.UnitTests.UpdateLotStatusTests
 		[Fact]
 		public async Task Handle_GivenInvalidRequest_ShouldThrowValidationException()
 		{
+			// Arrange
 			var handler = new UpdateLotStatusCommandHandler(
 				_lotRepository,
 				_lotStatusRepository,
@@ -84,6 +88,7 @@ namespace Auctionify.UnitTests.UpdateLotStatusTests
 
 			var request = new UpdateLotStatusCommand { LotId = 1, Name = "Archive", };
 
+			// Act, Assert
 			await Assert.ThrowsAsync<ValidationException>(
 				async () => await handler.Handle(request, CancellationToken.None)
 			);
@@ -92,10 +97,13 @@ namespace Auctionify.UnitTests.UpdateLotStatusTests
 		[Fact]
 		public async Task Handle_GivenIncorrectLotStatusName_ShouldThrowValidationException()
 		{
+			// Arrange
 			var command = new UpdateLotStatusCommand { LotId = 1, Name = "IncorrectLotStatus" };
 
+			// Act
 			var result = await _validator.TestValidateAsync(command);
 
+			// Assert
 			result.Should().NotBeNull();
 			result.IsValid.Should().BeFalse();
 			result.Errors
