@@ -15,10 +15,6 @@ import { FilterComponent, FilterResult } from '../filter/filter.component';
     styleUrls: ['./auction.component.scss'],
 })
 export class AuctionComponent implements OnInit {
-    links: any[] = Array(8).fill({
-        imgUrl: 'assets/icons/StarIcon.svg',
-        linkText: 'Example',
-    });
 
     initialActiveLotsCount: number = 10;
     additionalActiveLotsCount: number = 10;

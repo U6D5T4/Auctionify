@@ -1,31 +1,9 @@
 .menu {
     display: flex;
-    justify-content: space-evenly;
+    padding-right: 200px;
+    justify-content: flex-end;
     height: 96px;
     align-items: center;
-
-    &__links-left {
-        display: flex;
-    }
-
-    &__links-left ul {
-        list-style: none;
-        display: flex;
-        gap: 32px;
-    }
-
-    &__links-left ul li {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-    }
-
-    &__links-left ul li a {
-        pointer-events: none;
-        text-decoration: none;
-        color: black;
-    }
 
     &__btns-right {
         display: flex;
@@ -60,7 +38,6 @@
 .main {
     display: flex;
     flex-direction: column;
-    align-items: center;
     padding-left: 200px;
     padding-right: 200px;
 
@@ -73,9 +50,11 @@
     }
 
     &__auction-active {
-        display: inline-grid;
-        grid-template-columns: repeat(5, 1fr);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
         gap: 13px;
+        max-width: calc(294px * 5 + 13px * 4);
     }
 
     &__btn {
@@ -84,6 +63,7 @@
         justify-content: center;
         align-items: center;
         gap: 24px;
+        padding-bottom: 20px;
     }
 
     &__show-more-btn {
@@ -96,9 +76,11 @@
     }
 
     &__auction-upcoming {
-        display: inline-grid;
-        grid-template-columns: repeat(5, 1fr);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
         gap: 13px;
+        max-width: calc(294px * 5 + 13px * 4);
     }
 
     &__auction-upcoming-title {
@@ -108,9 +90,11 @@
     }
 
     &__auction-archived {
-        display: inline-grid;
-        grid-template-columns: repeat(5, 1fr);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
         gap: 13px;
+        max-width: calc(294px * 5 + 13px * 4);
     }
 
     &__auction-archived-title {
