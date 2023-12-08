@@ -123,7 +123,7 @@ export class FilesPopUpComponent {
         if (existingFilesNames.length > 0) {
             this.openDialog(
                 [
-                    'You tried to add the following existing files, so they will not be added again:',
+                    "These files already exist and won't be added again:",
                     ...existingFilesNames,
                 ],
                 true,
@@ -135,7 +135,7 @@ export class FilesPopUpComponent {
     filesAmountCondition(): boolean {
         if (this.filesFormGroup.controls.files.value?.length! >= 3) {
             let errorMessages = [];
-            errorMessages.push('You can add only 3 files to your lot!');
+            errorMessages.push('You can only add 3 files!');
             const dialog = this.openDialog(errorMessages, true, false);
             return false;
         }
