@@ -471,6 +471,7 @@ export interface FilteredLotModel {
     location: LocationDto;
     currency: CurrencyDto;
     bids: BidDto[];
+    bidCount: number;
     mainPhotoUrl: string | null;
     isInWatchList: boolean;
 }
@@ -487,6 +488,7 @@ export interface LotModel {
     location: LocationDto;
     currency: CurrencyDto;
     bids: BidDto[];
+    bidCount: number
     mainPhotoUrl: string | null;
     isInWatchList: boolean;
 }
