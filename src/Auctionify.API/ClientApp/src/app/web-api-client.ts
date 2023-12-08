@@ -76,6 +76,40 @@ export class Client {
             );
     }
 
+    assignRoleToUser(body: AssignRoleViewModel): Observable<AssignRoleResponse> {
+        let url_ = this.baseUrl + "/api/auth/assign-role";
+
+        const content_ = JSON.stringify(body);
+        
+        let options_ : Object = {
+            body: content_,
+            observe: "response",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(mergeMap((response: any) : Observable<AssignRoleResponse> => {
+            let data: AssignRoleResponse = {};
+
+            if (response.body !== null) {
+                data = response.body
+            }
+
+            return of(data);
+        })).pipe(catchError((error) => {
+            return throwError(() => error);
+        }));
+    }
+
+    signUpWithGoogle(userData: any): Observable<any> {
+        const header = new HttpHeaders().set('Content-type', 'application/json');
+        let url_ = this.baseUrl + "api/auth/sign-up-with-google";
+      
+        return this.http.post(url_, JSON.stringify(userData), { headers: header, withCredentials: true });
+      }
+
     loginWithGoogle(credentials: string): Observable<any> {
         const header = new HttpHeaders().set(
             'Content-type',
@@ -394,6 +428,54 @@ export class Client {
         );
     }
 
+    resetPassword(body: ResetPasswordViewModel | undefined) : Observable<ResetPasswordResponse> {
+        let url_ = this.baseUrl + "/api/auth/reset-password";
+    
+        const content_ = JSON.stringify(body);
+        
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/json"
+            })
+        };
+    
+        return this.http.request("post", url_, options_).pipe(mergeMap((response: any) : Observable<ResetPasswordResponse> => {
+            let data: ResetPasswordResponse = {};
+    
+            if (response.body !== null) {
+                data = response.body
+            }
+    
+            return of(data);
+        }));
+    }
+    
+    forgetPassword(email: string) : Observable<ForgetPasswordResponse> {
+        let url_ = `${this.baseUrl}/api/auth/forget-password?email=${encodeURIComponent(email)}`;
+    
+        console.log(email);
+        
+        let options_ : any = {
+            observe: "response",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "text/json"
+            })
+        };
+    
+        return this.http.request("post", url_, options_).pipe(mergeMap((response: any) : Observable<ForgetPasswordResponse> => {
+            let data: ForgetPasswordResponse = {};
+    
+            if (response.body !== null) {
+                data = response.body
+            }
+    
+            return of(data);
+        }));
+    }
     getAllLots(pageIndex: number, pageSize: number): Observable<LotModel[]> {
         let url_ = this.baseUrl + `/api/lots`;
 
@@ -612,6 +694,16 @@ export interface LoginResponse {
     result?: TokenModel;
 }
 
+export interface AssignRoleViewModel {
+    role: UserRole;
+}
+
+export interface AssignRoleResponse{
+    message?: string | undefined;
+    isSuccess?: boolean;
+    errors?: string[] | undefined;
+}
+
 export interface TokenModel {
     accessToken: string;
     expireDate: string;
@@ -624,6 +716,18 @@ export interface RegisterResponse {
     errors?: string[] | undefined;
 }
 
+export interface ForgetPasswordResponse {
+    message?: string | undefined;
+    isSuccess?: boolean;
+    errors?: string[] | undefined;
+}
+
+export interface ResetPasswordResponse {
+    message?: string | undefined;
+    isSuccess?: boolean;
+    errors?:  string[] | undefined;
+}
+
 export interface LoginViewModel {
     email: string;
     password: string;
@@ -632,6 +736,17 @@ export interface LoginViewModel {
 export interface RegisterViewModel {
     email: string;
     password: string;
+    confirmPassword: string;
+}
+
+export interface ForgetPasswordViewModel {
+    email: string;
+}
+
+export interface ResetPasswordViewModel {
+    token: string;
+    email: string;
+    newPassword: string;
     confirmPassword: string;
 }
 

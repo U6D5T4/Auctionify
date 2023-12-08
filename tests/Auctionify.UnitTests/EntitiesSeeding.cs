@@ -17,7 +17,8 @@ namespace Auctionify.UnitTests
 				{
 					Id = 1,
 					Title = "Test lot with size",
-					Description = "Test lot with description and some moreeeeee DECSRIPTIOn mock data with long description and some other else",
+					Description =
+						"Test lot with description and some moreeeeee DECSRIPTIOn mock data with long description and some other else",
 					LotStatusId = 1,
 					LotStatus = lotStatuses.Find(x => x.Id == 1)!,
 					StartDate = DateTime.Now,
@@ -32,17 +33,14 @@ namespace Auctionify.UnitTests
 					SellerId = 1,
 					CategoryId = 1,
 					CurrencyId = 1,
-					Bids = new List<Bid>
-					{
-						bids[0],
-						bids[1],
-					}
+					Bids = new List<Bid> { bids[0], bids[1], }
 				},
 				new Lot
 				{
 					Id = 2,
 					Title = "Test lot with size",
-					Description = "Test lot with description and some moreeeeee DECSRIPTIOn mock data with long description and some other else",
+					Description =
+						"Test lot with description and some moreeeeee DECSRIPTIOn mock data with long description and some other else",
 					LotStatusId = 1,
 					LotStatus = lotStatuses.Find(x => x.Id == 3)!,
 					StartDate = DateTime.Now,
@@ -57,16 +55,14 @@ namespace Auctionify.UnitTests
 					SellerId = 1,
 					CategoryId = 1,
 					CurrencyId = 1,
-					Bids = new List<Bid>
-					{
-
-					}
+					Bids = new List<Bid> { }
 				},
 				new Lot
 				{
 					Id = 3,
 					Title = "Test lot with size",
-					Description = "Test lot with description and some moreeeeee DECSRIPTIOn mock data with long description and some other else",
+					Description =
+						"Test lot with description and some moreeeeee DECSRIPTIOn mock data with long description and some other else",
 					LotStatusId = 1,
 					LotStatus = lotStatuses.Find(x => x.Id == 3)!,
 					StartDate = DateTime.Now,
@@ -86,7 +82,8 @@ namespace Auctionify.UnitTests
 				{
 					Id = 4,
 					Title = "Test lot with size",
-					Description = "Test lot with description and some moreeeeee DECSRIPTIOn mock data with long description and some other else",
+					Description =
+						"Test lot with description and some moreeeeee DECSRIPTIOn mock data with long description and some other else",
 					LotStatusId = 1,
 					LotStatus = lotStatuses.Find(x => x.Id == 3)!,
 					StartDate = DateTime.Now,
@@ -114,18 +111,21 @@ namespace Auctionify.UnitTests
 					LotId = 1,
 					BuyerId = 2,
 					NewPrice = 120,
+					BidRemoved = false,
 				},
 				new Bid
 				{
 					LotId = 1,
 					BuyerId = 3,
 					NewPrice = 140,
+					BidRemoved = false,
 				},
 				new Bid
 				{
 					LotId = 2,
 					BuyerId = 3,
 					NewPrice = 140,
+					BidRemoved = false,
 				}
 			};
 		}
@@ -134,26 +134,13 @@ namespace Auctionify.UnitTests
 		{
 			return new List<LotStatus>
 			{
-				new LotStatus
-				{
-					Id = 1,
-					Name = "Active",
-				},
-				new LotStatus
-				{
-					Id = 2,
-					Name = "Draft"
-				},
-				new LotStatus
-				{
-					Id = 3,
-					Name = "Upcoming"
-				},
-				new LotStatus
-				{
-					Id = 4,
-					Name = "Cancelled"
-				}
+				new LotStatus { Id = 1, Name = "Active", },
+				new LotStatus { Id = 2, Name = "Draft" },
+				new LotStatus { Id = 3, Name = "Upcoming" },
+				new LotStatus { Id = 4, Name = "Cancelled" },
+				new LotStatus { Id = 5, Name = "Sold" },
+				new LotStatus { Id = 6, Name = "NotSold" },
+				new LotStatus { Id = 7, Name = "Archive" }
 			};
 		}
 
@@ -161,18 +148,9 @@ namespace Auctionify.UnitTests
 		{
 			return new List<Category>
 			{
-				new Category
-				{
-					Id = 1,
-				},
-				new Category
-				{
-					Id = 2,
-				},
-				new Category
-				{
-					Id = 3,
-				}
+				new Category { Id = 1, },
+				new Category { Id = 2, },
+				new Category { Id = 3, }
 			};
 		}
 
@@ -180,18 +158,9 @@ namespace Auctionify.UnitTests
 		{
 			return new List<Currency>
 			{
-				new Currency
-				{
-					Id = 1,
-				},
-				new Currency
-				{
-					Id = 2,
-				},
-				new Currency
-				{
-					Id = 3,
-				},
+				new Currency { Id = 1, },
+				new Currency { Id = 2, },
+				new Currency { Id = 3, },
 			};
 		}
 
@@ -200,6 +169,14 @@ namespace Auctionify.UnitTests
 			return new User
 			{
 				Id = 1,
+				UserName = "TestUserName",
+				Email = "test@test.COM",
+				EmailConfirmed = true,
+				PhoneNumber = "123456789",
+				FirstName = "TestFirstName",
+				LastName = "TestLastName",
+				AboutMe = "TestAboutMe",
+				ProfilePicture = "TestProfilePicture.png",
 			};
 		}
 
@@ -210,14 +187,38 @@ namespace Auctionify.UnitTests
 				new User
 				{
 					Id = 1,
+					UserName = "TestUserName",
+					Email = "test@test.COM",
+					EmailConfirmed = true,
+					PhoneNumber = "123456789",
+					FirstName = "TestFirstName",
+					LastName = "TestLastName",
+					AboutMe = "TestAboutMe",
+					ProfilePicture = "TestProfilePicture.png",
 				},
 				new User
 				{
-					Id = 2
+					Id = 2,
+					UserName = "TestUserName",
+					Email = "test@test.COM",
+					EmailConfirmed = true,
+					PhoneNumber = "123456789",
+					FirstName = "TestFirstName",
+					LastName = "TestLastName",
+					AboutMe = "TestAboutMe",
+					ProfilePicture = "TestProfilePicture.png"
 				},
 				new User
 				{
-					Id = 3
+					Id = 3,
+					UserName = "TestUserName",
+					Email = "test@test.COM",
+					EmailConfirmed = true,
+					PhoneNumber = "123456789",
+					FirstName = "TestFirstName",
+					LastName = "TestLastName",
+					AboutMe = "TestAboutMe",
+					ProfilePicture = "TestProfilePicture.png"
 				}
 			};
 		}
@@ -275,7 +276,17 @@ namespace Auctionify.UnitTests
 		{
 			var store = new Mock<IUserStore<User>>();
 
-			var userManager = new Mock<UserManager<User>>(store.Object, null, null, null, null, null, null, null, null);
+			var userManager = new Mock<UserManager<User>>(
+				store.Object,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null
+			);
 			userManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(GetUser());
 			userManager.Object.UserValidators.Add(new UserValidator<User>());
 			userManager.Object.PasswordValidators.Add(new PasswordValidator<User>());

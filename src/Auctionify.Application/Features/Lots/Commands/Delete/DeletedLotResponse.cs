@@ -4,6 +4,6 @@
 	{
 		public int Id { get; set; }
 
-		public bool WasDeleted { get; set; }
+		public bool WasDeleted { get; set; } = false;
 	}
 }
