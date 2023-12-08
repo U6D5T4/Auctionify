@@ -37,4 +37,8 @@ export class LocationPopUpComponent {
             this.dialogRef.close('true');
         }
     }
+
+    closePopup() {
+        this.dialogRef.close();
+    }
 }

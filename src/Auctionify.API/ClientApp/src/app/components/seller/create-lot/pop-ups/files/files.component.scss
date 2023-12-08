@@ -6,8 +6,34 @@
 .file-container {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding: 20px;
+    gap: 20px;
+    padding: 50px 20px 20px 20px;
+    position: relative;
+    width: 300px;
+
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        flex-wrap: wrap;
+        align-content: stretch;
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+
+    .close-button {
+        position: absolute;
+        color: red;
+        top: 0;
+        right: 0;
+        margin: 8px;
+        transform: scale(0.9);
+    }
+    .close-button:hover {
+        cursor: pointer;
+        transform: scale(0.8);
+    }
 }
 
 .files-list {

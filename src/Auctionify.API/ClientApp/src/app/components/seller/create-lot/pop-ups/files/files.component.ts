@@ -168,4 +168,8 @@ export class FilesPopUpComponent {
             data,
         });
     }
+
+    closePopup() {
+        this.dialogRef.close();
+    }
 }
