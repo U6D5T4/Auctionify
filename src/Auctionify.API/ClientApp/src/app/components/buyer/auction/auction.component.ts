@@ -17,21 +17,21 @@ import { FilterComponent, FilterResult } from '../filter/filter.component';
 export class AuctionComponent implements OnInit {
 
     initialActiveLotsCount: number = 10;
-    additionalActiveLotsCount: number = 10;
+    additionalActiveLotsCount: number = 5;
     initialUpcomingLotsCount: number = 5;
-    additionalUpcomingLotsCount: number = 10;
+    additionalUpcomingLotsCount: number = 5;
     initialArchivedLotsCount: number = 5;
-    additionalArchivedLotsCount: number = 10;
+    additionalArchivedLotsCount: number = 5;
 
     activeLots$!: Observable<LotModel[]>;
     upcomingLots$!: Observable<LotModel[]>;
     archivedLots$!: Observable<LotModel[]>;
 
     constructor(
-        private apiClient: Client, 
-        private dialog: Dialog, 
+        private apiClient: Client,
+        private dialog: Dialog,
         private router: Router
-        ) {}
+    ) { }
 
     ngOnInit(): void {
         this.loadActiveLots();
@@ -147,9 +147,9 @@ export class AuctionComponent implements OnInit {
                 const filterData: FilterLot = {
                     ...data,
                     sortDir: null,
-                    sortField: null,  
+                    sortField: null,
                     pageIndex: 0,
-                    pageSize: 20               
+                    pageSize: 20
                 };
 
                 this.apiClient.filterLots(filterData).subscribe((res) => {

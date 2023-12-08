@@ -395,14 +395,14 @@ export class Client {
     }
 
     getAllLots(pageIndex: number, pageSize: number): Observable<LotModel[]> {
-    let url_ = this.baseUrl + `/api/lots`;
+        let url_ = this.baseUrl + `/api/lots`;
 
-    const params = new HttpParams()
-        .set('pageIndex', pageIndex.toString())
-        .set('pageSize', pageSize.toString());
+        const params = new HttpParams()
+            .set('pageIndex', pageIndex.toString())
+            .set('pageSize', pageSize.toString());
 
-    return this.http.get(url_, { params }).pipe(
-        mergeMap((response: any): Observable<LotModel[]> => {
+        return this.http.get(url_, { params }).pipe(
+            mergeMap((response: any): Observable<LotModel[]> => {
                 return of(response.items);
             })
         );
@@ -421,6 +421,12 @@ export class Client {
                             key.charAt(0).toUpperCase() + key.slice(1),
                             lotId.toString()
                         );
+                    }
+                }
+            } else if (key == 'pageIndex' || key == 'pageSize') {
+                if (value !== null) {
+                    if (value !== null) {
+                        queryParams = queryParams.append(`PageRequest.${key.charAt(0).toUpperCase() + key.slice(1)}`, value.toString());
                     }
                 }
             } else {
