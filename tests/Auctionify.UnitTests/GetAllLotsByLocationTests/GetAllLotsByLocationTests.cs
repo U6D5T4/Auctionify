@@ -15,6 +15,8 @@ namespace Auctionify.UnitTests.GetAllLotsByLocationTests
 {
 	public class GetAllLotsByLocationTests
 	{
+		#region Initialization
+
 		private readonly IMapper _mapper;
 		private readonly ILotRepository _lotRepository;
 		private readonly IBidRepository _bidRepository;
@@ -68,6 +70,10 @@ namespace Auctionify.UnitTests.GetAllLotsByLocationTests
 			_mapper = new Mapper(configuration);
 		}
 
+		#endregion
+
+		#region Tests
+
 		[Fact]
 		public async Task GetAllLotsByLocationQueryHandler_WhenNoLotsMatchLocation_ReturnsEmptyList()
 		{
@@ -96,87 +102,54 @@ namespace Auctionify.UnitTests.GetAllLotsByLocationTests
 			result.Count.Should().Be(0);
 		}
 
+		[Fact]
+		public async Task GetAllLotsByLocationQueryHandler_WhenThereIsLocationMatch_ReturnsListWithLots()
+		{
+			// Arrange
+			var query = new GetAllLotsByLocationQuery
+			{
+				PageRequest = new PageRequest { PageIndex = 0, PageSize = 10 },
+				Location = "Test City"
+			};
 
-		// wrong test case... no need to check watchlist info.. 
-		//[Fact]
-		//public async Task GetAllLotsByLocationQueryHandler_WhenNoUser_ReturnsLotsWithoutWatchlistInfo()
-		//{
-		//	var query = new GetAllLotsByLocationQuery
-		//	{
-		//		PageRequest = new PageRequest { PageIndex = 0, PageSize = 10 },
-		//		Location = "Test"
-		//	};
+			var handler = new GetAllLotsByLocationQueryHandler(
+				_lotRepository,
+				_currentUserServiceMock.Object,
+				_userManager,
+				_watchListServiceMock.Object,
+				_photoServiceMock.Object,
+				_mapper,
+				_bidRepository
+			);
 
-		//	var handler = new GetAllLotsByLocationQueryHandler(
-		//		_lotRepository,
-		//		_currentUserServiceMock.Object,
-		//		_userManager,
-		//		_watchListServiceMock.Object,
-		//		_photoServiceMock.Object,
-		//		_mapper,
-		//		_bidRepository
-		//	);
+			// Act
+			var result = await handler.Handle(query, default);
 
-		//	var result = await handler.Handle(query, default);
+			// Assert
+			result.Should().BeOfType<GetListResponseDto<GetAllLotsByLocationResponse>>();
+			result.Count.Should().Be(4); 
+		}
 
-		//	result.Should().BeOfType<GetListResponseDto<GetAllLotsByLocationResponse>>();
-		//	result.Count.Should().Be(1);
-		//}
+		#endregion
 
-		// the case is wrong.. the tests passes no because of pageSize is 0, but because of the location is invalid
-		//[Fact]
-		//public async Task GetAllLotsByLocationQueryHandler_WhenPageSizeIsZero_ReturnsEmptyList()
-		//{
-		//	// Arrange
-		//	var query = new GetAllLotsByLocationQuery
-		//	{
-		//		PageRequest = new PageRequest { PageIndex = 0, PageSize = 0 },
-		//		Location = "London"
-		//	};
+		#region Deinitialization
 
-		//	var handler = new GetAllLotsByLocationQueryHandler(
-		//		_lotRepository,
-		//		_currentUserServiceMock.Object,
-		//		_userManager,
-		//		_watchListServiceMock.Object,
-		//		_photoServiceMock.Object,
-		//		_mapper,
-		//		_bidRepository
-		//	);
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
 
-		//	// Act
-		//	var result = await handler.Handle(query, default);
+		protected virtual void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				_watchListServiceMock.Reset();
+				_currentUserServiceMock.Reset();
+				_photoServiceMock.Reset();
+			}
+		}
 
-		//	// Assert
-		//	result.Should().BeOfType<GetListResponseDto<GetAllLotsByLocationResponse>>();
-		//	result.Count.Should().Be(0);
-		//}
-
-		// you already checked that the location is invalid in the first test case..
-		// write some other test case
-		//[Fact]
-		//public async Task GetAllLotsByLocationQueryHandler_WhenInvalidLocation_ReturnsEmptyList()
-		//{
-		//	var query = new GetAllLotsByLocationQuery
-		//	{
-		//		PageRequest = new PageRequest { PageIndex = 0, PageSize = 10 },
-		//		Location = "InvalidLocation"
-		//	};
-
-		//	var handler = new GetAllLotsByLocationQueryHandler(
-		//		_lotRepository,
-		//		_currentUserServiceMock.Object,
-		//		_userManager,
-		//		_watchListServiceMock.Object,
-		//		_photoServiceMock.Object,
-		//		_mapper,
-		//		_bidRepository
-		//	);
-
-		//	var result = await handler.Handle(query, default);
-
-		//	result.Should().BeOfType<GetListResponseDto<GetAllLotsByLocationResponse>>();
-		//	result.Count.Should().Be(0);
-		//}
+		#endregion
 	}
 }
