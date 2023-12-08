@@ -87,6 +87,7 @@
         display: flex;
         width: 100%;
         justify-content: flex-start;
+        padding-bottom: 30px;
     }
 
     &__auction-archived {
@@ -101,6 +102,7 @@
         display: flex;
         width: 100%;
         justify-content: space-between;
+        padding-bottom: 30px;
     }
 }
 
