@@ -6,8 +6,7 @@
             <button class="search-button" type="submit" (click)="search($event, searchInputTrigger, auto)">
                 <img class="search-icon" src="assets/icons/SearchIcon.svg" alt="Search Icon">
             </button>
-            <mat-autocomplete (optionSelected)="elementSelect($event)" [panelWidth]="420" class="search-autocomplete"
-                #auto="matAutocomplete">
+            <mat-autocomplete [panelWidth]="420" class="search-autocomplete" #auto="matAutocomplete">
                 <mat-option *ngIf="isSearching" [disabled]="true">
                     <div class="body-spinner">
                         <mat-spinner diameter="45"></mat-spinner>
