@@ -150,23 +150,26 @@
                     <p>Price</p>
                 </div>
             </div>
-            <ng-container *ngFor="let bid of bidsToShow; let i = index">
-                <div class="right__single-bid">
-                    <div class="right__bid-number-date">
-                        <div class="right__bid-number">
-                            <p>{{ lotData.bids.length - i }}</p>
+            <h3 *ngIf="!bidsToShow || bidsToShow.length <= 0">No bids yet!</h3>
+            <div class="right__all-bids">
+                <ng-container *ngFor="let bid of bidsToShow; let i = index">
+                    <div class="right__single-bid">
+                        <div class="right__bid-number-date">
+                            <div class="right__bid-number">
+                                <p>{{ lotData.bids.length - i }}</p>
+                            </div>
+                            <div class="right__bid-date">
+                                <p>{{ formatBidDate(bid.timeStamp) }}</p>
+                            </div>
                         </div>
-                        <div class="right__bid-date">
-                            <p>{{ formatBidDate(bid.timeStamp) }}</p>
+                        <div class="right__bid-price">
+                            <p>{{ bid.newPrice | currency: 'USD' }}</p>
                         </div>
                     </div>
-                    <div class="right__bid-price">
-                        <p>{{ bid.newPrice | currency: 'USD' }}</p>
-                    </div>
-                </div>
-            </ng-container>
-            <div class="right__show-more-bids" *ngIf="lotData">
-                <div *ngIf="lotData.bids && lotData.bids.length > 3" (click)="showBidsClick()">
+                </ng-container>
+            </div>
+            <div class="right__show-more-bids" *ngIf="lotData.bids && lotData.bids.length > 3">
+                <div (click)="showBidsClick()">
                     {{ showAllBids ? 'Show less bids' : getBidsCountString() }}
                 </div>
             </div>

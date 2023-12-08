@@ -301,14 +301,21 @@
         border-radius: 8px;
         display: flex;
         flex-direction: column;
+        padding: 24px;
+        align-items: center;
+        gap: 24px;
+
+        & h3 {
+            color: var(--color-main);
+        }
     }
 
     &__bids-history-title {
-        padding: 24px;
         display: flex;
         font-size: 16px;
         color: var(--color-grey-4);
         justify-content: space-between;
+        min-width: 100%;
     }
 
     &__bids-history-title-left {
@@ -316,9 +323,12 @@
         gap: 72px;
     }
 
+    &__all-bids {
+        min-width: 100%;
+    }
+
     &__single-bid {
         display: flex;
-        padding-left: 24px;
         padding-bottom: 16px;
         justify-content: space-between;
     }
@@ -341,7 +351,6 @@
     &__bid-price {
         display: flex;
         align-items: center;
-        padding-right: 24px;
         font-size: 16px;
         font-weight: 700;
         line-height: 24px;

@@ -19,7 +19,7 @@
                 <div class="result-header-text" *ngIf="searchNameResult.length > 0">
                     <h4>Lot name results:</h4>
                 </div>
-                <mat-option [value]="lot.id" *ngFor="let lot of searchNameResult">
+                <mat-option [routerLink]="['/get-lot', lot.id,]" [value]="lot.id" *ngFor="let lot of searchNameResult">
                     <div class="option-body">
                         <div class="body-image">
                             <img width="80px" height="80px"
@@ -42,7 +42,8 @@
                 <div class="result-header-text" *ngIf="searchLocationResult.length > 0">
                     <h4>Lot location results:</h4>
                 </div>
-                <mat-option [value]="lot.id" *ngFor="let lot of searchLocationResult">
+                <mat-option [routerLink]="['/get-lot', lot.id,]" [value]="lot.id"
+                    *ngFor="let lot of searchLocationResult">
                     <div class="option-body">
                         <div class="body-image">
                             <img width="80px" height="80px"

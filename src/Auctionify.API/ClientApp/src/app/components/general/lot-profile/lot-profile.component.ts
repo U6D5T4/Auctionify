@@ -56,6 +56,7 @@ export class LotProfileComponent implements OnInit {
     getLotFromRoute() {
         this.route.paramMap.subscribe(async (params: ParamMap) => {
             this.lotId = Number(params.get('id'));
+            this.bidsToShow = [];
 
             if (!this.isSignalrConnected) {
                 await this.signalRService.joinLotGroupAfterConnection(
