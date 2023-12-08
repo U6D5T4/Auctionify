@@ -23,6 +23,10 @@ export class AuctionComponent implements OnInit {
     initialArchivedLotsCount: number = 5;
     additionalArchivedLotsCount: number = 5;
 
+    noMoreActiveLotsToLoad: boolean = false;
+    noMoreUpcomingLotsToLoad: boolean = false;
+    noMoreArchivedLotsToLoad: boolean = false;
+
     activeLots$!: Observable<LotModel[]>;
     upcomingLots$!: Observable<LotModel[]>;
     archivedLots$!: Observable<LotModel[]>;
@@ -53,6 +57,9 @@ export class AuctionComponent implements OnInit {
         };
 
         this.apiClient.filterLots(filterLot).subscribe((activeLots) => {
+            if (activeLots.length < this.initialActiveLotsCount) {
+                this.noMoreActiveLotsToLoad = true;
+            }
             this.activeLots$ = of(activeLots);
         });
     }
@@ -71,6 +78,9 @@ export class AuctionComponent implements OnInit {
         };
 
         this.apiClient.filterLots(filterLot).subscribe((upcomingLots) => {
+            if (upcomingLots.length < this.initialUpcomingLotsCount) {
+                this.noMoreUpcomingLotsToLoad = true;
+            }
             this.upcomingLots$ = of(upcomingLots);
         });
     }
@@ -89,7 +99,10 @@ export class AuctionComponent implements OnInit {
         };
 
         this.apiClient.filterLots(filterLot).subscribe((archivedLots) => {
-            this.archivedLots$ = of(archivedLots)
+            if (archivedLots.length < this.initialArchivedLotsCount) {
+                this.noMoreArchivedLotsToLoad = true;
+            }
+            this.archivedLots$ = of(archivedLots);
         });
     }
 

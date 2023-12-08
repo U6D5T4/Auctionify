@@ -37,7 +37,7 @@
               <p class="lot__price-p">{{ lot.startingPrice }} $</p>
             </div>
             <div class="lot__bid">
-              <p class="lot__bids-p">{{ lot.bids?.length || "No" }} bids</p>
+              <p class="lot__bids-p">{{ lot.bids.length }} bids</p>
             </div>
           </div>
         </div>
@@ -45,7 +45,7 @@
     </div>
   </div>
 
-  <div class="main__btn">
+  <div class="main__btn" *ngIf="!noMoreActiveLotsToLoad">
     <p>What to see more items?</p>
     <button class="main__show-more-btn" color="primary" (click)="loadMoreActiveLots()">
       <p>Show more</p>
@@ -84,7 +84,7 @@
       </div>
     </div>
 
-    <div class="main__btn" *ngIf="upcomingLots && upcomingLots.length > 0">
+    <div class="main__btn" *ngIf="!noMoreUpcomingLotsToLoad">
       <p>What to see more items?</p>
       <button class="main__show-more-btn" color="primary" (click)="loadMoreUpcomingLots()">
         <p>Show more</p>
@@ -122,7 +122,7 @@
       </div>
     </div>
 
-    <div class="main__btn" *ngIf="archivedLots && archivedLots.length > 0">
+    <div class="main__btn" *ngIf="!noMoreArchivedLotsToLoad">
       <p>What to see more items?</p>
       <button class="main__show-more-btn" color="primary" (click)="loadMoreArchivedLots()">
         <p>Show more</p>
