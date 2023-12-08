@@ -2,7 +2,7 @@
 {
 	public class UpdatedLotStatusResponse
 	{
-		public int Id { get; set; }
+		public int LotId { get; set; }
 
 		public string Name { get; set; }
 	}
