@@ -10,9 +10,15 @@ import { AddBidComponent } from './add-bid/add-bid.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { WithdrawBidComponent } from './withdraw-bid/withdraw-bid.component';
 
 @NgModule({
-    declarations: [LotProfileComponent, ImagePopupComponent, AddBidComponent],
+    declarations: [
+        LotProfileComponent,
+        ImagePopupComponent,
+        AddBidComponent,
+        WithdrawBidComponent,
+    ],
     imports: [
         CommonModule,
         RouterModule,

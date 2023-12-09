@@ -20,6 +20,7 @@ import {
 } from 'src/app/web-api-client';
 import { ImagePopupComponent } from '../image-popup/image-popup.component';
 import { AddBidComponent } from '../add-bid/add-bid.component';
+import { WithdrawBidComponent } from '../withdraw-bid/withdraw-bid.component';
 
 @Component({
     selector: 'app-lot-profile',
@@ -35,6 +36,7 @@ export class LotProfileComponent implements OnInit {
     selectedMainPhotoIndex: number = 0;
     parentCategoryName: string = '';
     isDeleteLoading = false;
+    recentBidOfCurrentBuyer: number = 0;
 
     private isSignalrConnected = false;
 
@@ -173,6 +175,35 @@ export class LotProfileComponent implements OnInit {
                 startingPrice: this.lotData!.startingPrice,
                 currentHighestBid: this.getHighestBidPrice(this.lotData),
             },
+        });
+    }
+
+    openWithdrawBidModal(): void {
+        this.getBuyerRecentBidForLot().then((bidId) => {
+            const dialog = this.dialog.open(WithdrawBidComponent, {
+                data: {
+                    bidId: bidId,
+                },
+            });
+        });
+    }
+
+    getBuyerRecentBidForLot(): Promise<number> {
+        return new Promise<number>((resolve, reject) => {
+            this.client.getAllBidsOfUserForLot(this.lotId, 0, 1).subscribe({
+                next: (bids) => {
+                    if (bids.length > 0) {
+                        this.recentBidOfCurrentBuyer = bids[0].newPrice;
+                        resolve(bids[0].id);
+                    } else {
+                        resolve(0);
+                    }
+                },
+                error: (error) => {
+                    console.error('Failed to fetch bids:', error);
+                    reject(error);
+                },
+            });
         });
     }
 
