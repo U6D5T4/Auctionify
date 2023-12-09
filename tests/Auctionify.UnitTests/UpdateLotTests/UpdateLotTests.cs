@@ -280,6 +280,7 @@ namespace Auctionify.UnitTests.UpdateLotTests
 			{
 				_blobServiceMock.Reset();
 				_blobStorageOptionsMock.Reset();
+				_jobSchedulerServiceMock.Reset();
 			}
 		}
 
