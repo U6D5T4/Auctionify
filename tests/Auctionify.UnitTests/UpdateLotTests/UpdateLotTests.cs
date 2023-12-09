@@ -24,6 +24,7 @@ namespace Auctionify.UnitTests.UpdateLotTests
 		private readonly Mock<IBlobService> _blobServiceMock;
 		private readonly Mock<IOptions<AzureBlobStorageOptions>> _blobStorageOptionsMock;
 		private readonly UpdateLotCommandValidator _validator;
+		private readonly Mock<IJobSchedulerService> _jobSchedulerServiceMock;
 
 		public UpdateLotTests()
 		{
@@ -76,6 +77,8 @@ namespace Auctionify.UnitTests.UpdateLotTests
 					}
 				);
 
+			_jobSchedulerServiceMock = new Mock<IJobSchedulerService>();
+
 			_blobStorageOptionsMock = blobStorageOptionsMock;
 			_lotRepository = new LotRepository(mockDbContext.Object);
 			_lotStatusRepository = new LotStatusRepository(mockDbContext.Object);
@@ -119,7 +122,8 @@ namespace Auctionify.UnitTests.UpdateLotTests
 				_mapper,
 				_blobServiceMock.Object,
 				_fileRepository,
-				_blobStorageOptionsMock.Object
+				_blobStorageOptionsMock.Object,
+				_jobSchedulerServiceMock.Object
 			);
 
 			var result = await handler.Handle(updateCommand, default);
@@ -164,7 +168,8 @@ namespace Auctionify.UnitTests.UpdateLotTests
 				_mapper,
 				_blobServiceMock.Object,
 				_fileRepository,
-				_blobStorageOptionsMock.Object
+				_blobStorageOptionsMock.Object,
+				_jobSchedulerServiceMock.Object
 			);
 
 			var result = await handler.Handle(updateCommand, default);
@@ -209,7 +214,8 @@ namespace Auctionify.UnitTests.UpdateLotTests
 				_mapper,
 				_blobServiceMock.Object,
 				_fileRepository,
-				_blobStorageOptionsMock.Object
+				_blobStorageOptionsMock.Object,
+				_jobSchedulerServiceMock.Object
 			);
 
 			var result = await handler.Handle(updateCommand, default);
