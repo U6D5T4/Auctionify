@@ -25,10 +25,10 @@ const sellerRoutes: Routes = [
         pathMatch: 'full',
     },
     {
-      path: 'get-lot/:id',
-      component: GetLotComponent,
-      pathMatch: 'full',
-    }
+        path: 'get-lot/:id',
+        component: GetLotComponent,
+        pathMatch: 'full',
+    },
 ];
 
 @NgModule({

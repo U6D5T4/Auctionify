@@ -24,6 +24,7 @@ namespace Auctionify.UnitTests.CreateLotTests
 		private readonly Mock<IBlobService> _blobServiceMock;
 		private readonly Mock<IOptions<AzureBlobStorageOptions>> _blobStorageOptionsMock;
 		private readonly Mock<ICurrentUserService> _currentUserServiceMock;
+		private readonly Mock<IJobSchedulerService> _jobSchedulerServiceMock;
 		private readonly UserManager<User> _userManager;
 		private readonly CreateLotCommandValidator _validator;
 		private static readonly DateTime CustomDateTimeNow = new DateTime(2023, 11, 2, 13, 0, 0);
@@ -45,8 +46,10 @@ namespace Auctionify.UnitTests.CreateLotTests
 			_mapper = new Mapper(configuration);
 
 			var currentUserService = new Mock<ICurrentUserService>();
+			var jobSchedulerService = new Mock<IJobSchedulerService>();
 			_blobServiceMock = new Mock<IBlobService> { CallBase = true };
 			_currentUserServiceMock = currentUserService;
+			_jobSchedulerServiceMock = jobSchedulerService;
 			_userManager = EntitiesSeeding.GetUserManagerMock();
 
 			currentUserService.Setup(x => x.UserEmail).Returns(It.IsAny<string>());
@@ -87,7 +90,8 @@ namespace Auctionify.UnitTests.CreateLotTests
 				_mapper,
 				_blobServiceMock.Object,
 				_fileRepository,
-				_blobStorageOptionsMock.Object);
+				_blobStorageOptionsMock.Object,
+				_jobSchedulerServiceMock.Object);
 
 			var result = await command.Handle(newLot, default);
 
