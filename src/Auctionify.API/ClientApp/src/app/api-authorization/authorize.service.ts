@@ -1,209 +1,229 @@
 import { Injectable, WritableSignal, computed, signal } from '@angular/core';
-import { Observable, catchError, map, of, throwError } from 'rxjs';
+import { Observable, Subject, catchError, map, of, throwError } from 'rxjs';
 import {
-  AssignRoleResponse,
-  AssignRoleViewModel,
-  Client,
-  ForgetPasswordResponse,
-  ForgetPasswordViewModel,
-  LoginResponse,
-  LoginViewModel,
-  RegisterResponse,
-  RegisterViewModel,
-  ResetPasswordViewModel,
-  ResetPasswordResponse
+    AssignRoleResponse,
+    AssignRoleViewModel,
+    Client,
+    ForgetPasswordResponse,
+    ForgetPasswordViewModel,
+    LoginResponse,
+    LoginViewModel,
+    RegisterResponse,
+    RegisterViewModel,
+    ResetPasswordViewModel,
+    ResetPasswordResponse,
 } from '../web-api-client';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import {
+    HttpClient,
+    HttpErrorResponse,
+    HttpHeaders,
+} from '@angular/common/http';
 
 export enum UserRole {
-  Administrator = 'Administrator',
-  Seller = 'Seller',
-  Buyer = 'Buyer',
-  User = 'User',
+    Administrator = 'Administrator',
+    Seller = 'Seller',
+    Buyer = 'Buyer',
+    User = 'User',
 }
 
 export interface IUser {
-  userToken: string | null;
-  role: WritableSignal<UserRole | null>;
-  expireDate: string | null;
+    userToken: string | null;
+    role: WritableSignal<UserRole | null>;
+    expireDate: string | null;
 }
 
 @Injectable({
-  providedIn: 'root',
+    providedIn: 'root',
 })
-
 export class AuthorizeService {
-  private tokenString: string = 'token';
-  private expireString: string = 'expires_at';
-  private roleString: string = 'role';
-  private user: IUser | null = null;
+    private tokenString: string = 'token';
+    private expireString: string = 'expires_at';
+    private roleString: string = 'role';
+    private user: IUser | null = null;
 
-  constructor(private client: Client, private httpClient: HttpClient) {
-    this.initializeAuthorizeService();
-  }
+    private authenticationChangedSource = new Subject<boolean>();
+    authenticationChanged: Observable<boolean> =
+        this.authenticationChangedSource.asObservable();
 
-  private initializeAuthorizeService() {
-    const token = localStorage.getItem(this.tokenString);
-    const tokenExpireDate = localStorage.getItem(this.expireString);
-    const role = localStorage.getItem(this.roleString);
-    if (token === null && tokenExpireDate === null && role === null) {
-      this.user = {
-        userToken: null,
-        expireDate: null,
-        role: signal(null),
-      };
-    } else {
-      const roleEnum: UserRole = role as UserRole;
-
-      const user: IUser = {
-        userToken: token!,
-        expireDate: tokenExpireDate!,
-        role: signal(roleEnum),
-      };
-
-      this.user = user;
+    constructor(private client: Client, private httpClient: HttpClient) {
+        this.initializeAuthorizeService();
     }
-  }
 
-  login(email: string, password: string): Observable<LoginResponse | boolean> {
-    const loginData: LoginViewModel = {
-      email,
-      password,
-    };
+    private initializeAuthorizeService() {
+        const token = localStorage.getItem(this.tokenString);
+        const tokenExpireDate = localStorage.getItem(this.expireString);
+        const role = localStorage.getItem(this.roleString);
+        if (token === null && tokenExpireDate === null && role === null) {
+            this.user = {
+                userToken: null,
+                expireDate: null,
+                role: signal(null),
+            };
+        } else {
+            const roleEnum: UserRole = role as UserRole;
 
-    return this.client
-      .login(loginData)
-      .pipe(
-        map((response): boolean => {
-          this.processLoginResponse(response);
-          return true;
-        })
-      )
-      .pipe(
-        catchError((err: HttpErrorResponse): Observable<LoginResponse> => {
-          return throwError(() => err.error);
-        })
-      );
-  }
+            const user: IUser = {
+                userToken: token!,
+                expireDate: tokenExpireDate!,
+                role: signal(roleEnum),
+            };
 
-  assignRoleToUser(role: UserRole): Observable<AssignRoleResponse | boolean> {
+            this.user = user;
+        }
+    }
 
-    const roleAssignmentData: AssignRoleViewModel = {
-      role
-    };
-  
-    return this.client.assignRoleToUser(roleAssignmentData).pipe(map((result) => {
-      return result;
-    }))
-  }
+    login(
+        email: string,
+        password: string
+    ): Observable<LoginResponse | boolean> {
+        const loginData: LoginViewModel = {
+            email,
+            password,
+        };
 
-  processLoginResponse(response: LoginResponse) {
-    if (response.result === undefined) throw new Error('user not found');
+        return this.client
+            .login(loginData)
+            .pipe(
+                map((response): boolean => {
+                    this.processLoginResponse(response);
+                    this.authenticationChangedSource.next(true);
+                    return true;
+                })
+            )
+            .pipe(
+                catchError(
+                    (err: HttpErrorResponse): Observable<LoginResponse> => {
+                        return throwError(() => err.error);
+                    }
+                )
+            );
+    }
 
-    localStorage.setItem(this.tokenString, response.result.accessToken);
-    localStorage.setItem(this.expireString, response.result.expireDate);
-    localStorage.setItem(this.roleString, response.result.role);
+    assignRoleToUser(role: UserRole): Observable<AssignRoleResponse | boolean> {
+        const roleAssignmentData: AssignRoleViewModel = {
+            role,
+        };
 
-    if (this.user == null) return false;
+        return this.client.assignRoleToUser(roleAssignmentData).pipe(
+            map((result) => {
+                return result;
+            })
+        );
+    }
 
-    this.user.userToken = response.result.accessToken;
-    this.user.expireDate = response.result.expireDate;
+    processLoginResponse(response: LoginResponse) {
+        if (response.result === undefined) throw new Error('user not found');
 
-    this.user.role!.set(response.result?.role as UserRole);
+        localStorage.setItem(this.tokenString, response.result.accessToken);
+        localStorage.setItem(this.expireString, response.result.expireDate);
+        localStorage.setItem(this.roleString, response.result.role);
 
-    return true;
-  }
+        if (this.user == null) return false;
 
-  loginWithGoogle(credentials: string): Observable<any> {
-    return this.client
-      .loginWithGoogle(credentials)
-      .pipe(
-        map((response): boolean => {
-          this.processLoginResponse(response);
-          return true;
-        })
-      )
-      .pipe(
-        catchError((err: HttpErrorResponse): Observable<LoginResponse> => {
-          return throwError(() => err.error);
-        })
-      );
-  }
+        this.user.userToken = response.result.accessToken;
+        this.user.expireDate = response.result.expireDate;
 
-  register(
-    email: string,
-    password: string,
-    confirmPassword: string
-  ): Observable<RegisterResponse | undefined> {
-    const registerData: RegisterViewModel = {
-      email,
-      password,
-      confirmPassword,
-    };
+        this.user.role!.set(response.result?.role as UserRole);
 
-    return this.client.register(registerData).pipe(
-      map((result) => {
-        return result;
-      })
-    );
-  }
+        return true;
+    }
 
-  forgetPassword(
-    email: string
-    ) : Observable<ForgetPasswordResponse | undefined> 
-    {
-    return this.client.forgetPassword(email).pipe(map((result) => {
-      return result;
-    }))
-  }
+    loginWithGoogle(credentials: string): Observable<any> {
+        return this.client
+            .loginWithGoogle(credentials)
+            .pipe(
+                map((response): boolean => {
+                    this.processLoginResponse(response);
+                    return true;
+                })
+            )
+            .pipe(
+                catchError(
+                    (err: HttpErrorResponse): Observable<LoginResponse> => {
+                        return throwError(() => err.error);
+                    }
+                )
+            );
+    }
 
-  resetPassword(
-    token: string,
-    email: string,
-    newPassword: string,
-    confirmPassword: string
-  ): Observable<ResetPasswordResponse | undefined> 
-  {
-    const resetPasswordData: ResetPasswordViewModel = {
-      token,
-      email,
-      newPassword,
-      confirmPassword
-    };
+    register(
+        email: string,
+        password: string,
+        confirmPassword: string
+    ): Observable<RegisterResponse | undefined> {
+        const registerData: RegisterViewModel = {
+            email,
+            password,
+            confirmPassword,
+        };
 
-    return this.client.resetPassword(resetPasswordData).pipe(map((result) => {
-      return result;
-    }))
-  }
+        return this.client.register(registerData).pipe(
+            map((result) => {
+                return result;
+            })
+        );
+    }
 
-  logout(): boolean {
-    localStorage.removeItem(this.tokenString);
-    localStorage.removeItem(this.expireString);
-    localStorage.removeItem(this.roleString);
-    this.user?.role.set(null);
-    this.user!.expireDate = null;
-    this.user!.userToken = null;
+    forgetPassword(
+        email: string
+    ): Observable<ForgetPasswordResponse | undefined> {
+        return this.client.forgetPassword(email).pipe(
+            map((result) => {
+                return result;
+            })
+        );
+    }
 
-    return true;
-  }
+    resetPassword(
+        token: string,
+        email: string,
+        newPassword: string,
+        confirmPassword: string
+    ): Observable<ResetPasswordResponse | undefined> {
+        const resetPasswordData: ResetPasswordViewModel = {
+            token,
+            email,
+            newPassword,
+            confirmPassword,
+        };
 
-  getAccessToken(): Observable<string | null> {
-    const localToken = localStorage.getItem(this.tokenString);
+        return this.client.resetPassword(resetPasswordData).pipe(
+            map((result) => {
+                return result;
+            })
+        );
+    }
 
-    if (localToken === null && localToken !== this.user?.userToken)
-      return of(null);
-    return of(localToken);
-  }
+    logout(): boolean {
+        localStorage.removeItem(this.tokenString);
+        localStorage.removeItem(this.expireString);
+        localStorage.removeItem(this.roleString);
+        this.user?.role.set(null);
+        this.user!.expireDate = null;
+        this.user!.userToken = null;
 
-  isUserBuyer = computed(() => {
-    return this.user?.role() == UserRole.Buyer;
-  });
+        this.authenticationChangedSource.next(false);
 
-  isUserSeller = computed(() => {
-    return this.user?.role() == UserRole.Seller;
-  });
+        return true;
+    }
 
-  isUserLoggedIn(): boolean {
-    return this.user?.userToken !== null && this.getAccessToken() !== null;
-  }
+    getAccessToken(): Observable<string | null> {
+        const localToken = localStorage.getItem(this.tokenString);
+
+        if (localToken === null && localToken !== this.user?.userToken)
+            return of(null);
+        return of(localToken);
+    }
+
+    isUserBuyer = computed(() => {
+        return this.user?.role() == UserRole.Buyer;
+    });
+
+    isUserSeller = computed(() => {
+        return this.user?.role() == UserRole.Seller;
+    });
+
+    isUserLoggedIn(): boolean {
+        return this.user?.userToken !== null && this.getAccessToken() !== null;
+    }
 }

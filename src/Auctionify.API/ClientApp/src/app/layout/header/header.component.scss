@@ -40,4 +40,16 @@
     text-decoration: none;
     color: #000;
     font-weight: bold;
+
+    &:hover {
+        color: var(--color-main);
+    }
+
+    &.logout-button {
+        color: var(--color-error);
+    }
+
+    &.logout-button:hover {
+        color: red;
+    }
 }
