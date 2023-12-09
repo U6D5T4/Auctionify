@@ -33,6 +33,13 @@
         border: 2px solid (gray);
         background-color: white;
     }
+
+    &__filter-btn:hover {
+        border: none;
+        background-color: #2B5293;
+        transition: 0.5s ease;
+        color: white;
+    }
 }
 
 .main {
@@ -55,6 +62,7 @@
         justify-content: flex-start;
         gap: 13px;
         max-width: calc(294px * 5 + 13px * 4);
+        padding-bottom: 20px;
     }
 
     &__btn {
@@ -66,21 +74,13 @@
         padding-bottom: 20px;
     }
 
-    &__show-more-btn {
-        color: white;
-        background-color: #2B5293;
-        border: none;
-        border-radius: 8px;
-        width: 127px;
-        height: 48px;
-    }
-
     &__auction-upcoming {
         display: flex;
         flex-wrap: wrap;
         justify-content: flex-start;
         gap: 13px;
         max-width: calc(294px * 5 + 13px * 4);
+        padding-bottom: 20px;
     }
 
     &__auction-upcoming-title {
@@ -97,6 +97,7 @@
         justify-content: flex-start;
         gap: 13px;
         max-width: calc(294px * 5 + 13px * 4);
+        padding-bottom: 20px;
     }
 
     &__auction-archived-title {
@@ -178,7 +179,7 @@
 
     &:hover {
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-        transition: box-shadow 0.3s ease; 
+        transition: box-shadow 0.3s ease;
         border-radius: 16px;
     }
 
