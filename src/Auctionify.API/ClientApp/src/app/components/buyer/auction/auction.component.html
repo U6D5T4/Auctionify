@@ -12,9 +12,14 @@
     <div class="main__auction-active">
       <div class="lot" *ngFor="let lot of activeLots$ | async">
         <div class="lot__image">
-          <a [routerLink]="">
-            <img [src]="lot.mainPhotoUrl ? lot.mainPhotoUrl : '../../../../assets/icons/NoImage.svg'" height="294px"
-              width="294px" alt="Main Photo">
+          <a [routerLink]="'get-lot/' + lot.id">
+            <img 
+            [src]="lot.mainPhotoUrl ? lot.mainPhotoUrl : 
+            '../../../../assets/icons/NoImage.svg'" 
+            height="294px"
+            width="294px" 
+            alt="Main Photo"
+            >
           </a>
           <button class="lot__like-btn">
             <mat-icon class="primary">favorite_border</mat-icon>
@@ -22,7 +27,7 @@
         </div>
         <div class="lot__info">
           <div class="lot__title">
-            <a href="">
+            <a [routerLink]="'get-lot/' + lot.id">
               <p>{{ lot.title }}</p>
             </a>
             <br>
@@ -30,10 +35,14 @@
           </div>
           <div class="lot__price-bid">
             <div class="lot_price">
-              <p class="lot__price-p">{{ lot.startingPrice }} {{ lot.currency.code }}</p>
+              <p class="lot__price-p">
+                {{ lot.startingPrice }} {{ lot.currency.code }}
+              </p>
             </div>
             <div class="lot__bid">
-              <p class="lot__bids-p">{{ lot.bidCount }} bids</p>
+              <p class="lot__bids-p">
+                {{ lot.bidCount }} bids
+              </p>
             </div>
           </div>
         </div>
@@ -41,30 +50,54 @@
     </div>
   </div>
 
-  <div class="main__btn" *ngIf="!noMoreActiveLotsToLoad">
-    <p>What to see more items?</p>
-    <button class="main__show-more-btn" color="primary" (click)="loadMoreActiveLots()">
+  <div 
+  class="main__btn" 
+  *ngIf="!noMoreActiveLotsToLoad"
+  >
+    <p>
+      What to see more items?
+    </p>
+    <button 
+    class="main__show-more-btn" 
+    color="primary" 
+    (click)="loadMoreActiveLots()"
+    >
       <p>Show more</p>
     </button>
   </div>
 
-  <div class="main__container-upcoming" *ngIf="upcomingLots$ | async as upcomingLots">
-    <div class="main__auction-upcoming-title" *ngIf="upcomingLots && upcomingLots.length > 0">
+  <div 
+  class="main__container-upcoming" 
+  *ngIf="upcomingLots$ | async as upcomingLots"
+  >
+    <div 
+    class="main__auction-upcoming-title" 
+    *ngIf="upcomingLots && upcomingLots.length > 0"
+    >
       <h2>Future auctions</h2>
     </div>
 
     <div class="main__auction-upcoming">
       <div class="lot" *ngFor="let lot of upcomingLots$ | async">
         <div class="lot__image">
-          <img [src]="lot.mainPhotoUrl ? lot.mainPhotoUrl : '../../../../assets/icons/NoImage.svg'" height="294px"
-            width="294px" alt="Main Photo">
+          <a [routerLink]="'get-lot/' + lot.id">
+            <img 
+            [src]="lot.mainPhotoUrl ? lot.mainPhotoUrl : 
+            '../../../../assets/icons/NoImage.svg'" 
+            height="294px"
+            width="294px" 
+            alt="Main Photo"
+            >
+          </a>
           <button class="lot__like-btn">
             <mat-icon class="primary">favorite_border</mat-icon>
           </button>
         </div>
         <div class="lot__info">
           <div class="lot__title">
-            <p>{{ lot.title }}</p>
+            <a [routerLink]="'get-lot/' + lot.id">
+              <p>{{ lot.title }}</p>
+            </a>
             <br>
             <p>{{ calculateDaysLeftUpcomming(lot.startDate) }} Days</p>
           </div>
@@ -80,31 +113,57 @@
       </div>
     </div>
 
-    <div class="main__btn" *ngIf="!noMoreUpcomingLotsToLoad">
+    <div 
+    class="main__btn" 
+    *ngIf="!noMoreUpcomingLotsToLoad"
+    >
       <p>What to see more items?</p>
-      <button class="main__show-more-btn" color="primary" (click)="loadMoreUpcomingLots()">
+      <button 
+      class="main__show-more-btn" 
+      color="primary" 
+      (click)="loadMoreUpcomingLots()"
+      >
         <p>Show more</p>
       </button>
     </div>
   </div>
 
-  <div class="main__container-archived" *ngIf="archivedLots$ | async as archivedLots">
-    <div class="main__auction-archived-title" *ngIf="archivedLots && archivedLots.length > 0">
+  <div 
+  class="main__container-archived" 
+  *ngIf="archivedLots$ | async as archivedLots"
+  >
+    <div 
+    class="main__auction-archived-title" 
+    *ngIf="archivedLots && archivedLots.length > 0"
+    >
       <h2>Archived auctions</h2>
     </div>
 
     <div class="main__auction-archived">
       <div class="lot" *ngFor="let lot of archivedLots$ | async">
         <div class="lot__image">
-          <img [src]="lot.mainPhotoUrl ? lot.mainPhotoUrl : '../../../../assets/icons/NoImage.svg'" height="294px"
-            width="294px" alt="Main Photo">
+          <a [routerLink]="'get-lot/' + lot.id">
+            <img 
+            [src]="lot.mainPhotoUrl ? lot.mainPhotoUrl : 
+            '../../../../assets/icons/NoImage.svg'" 
+            height="294px"
+            width="294px" 
+            alt="Main Photo"
+            >
+          </a>
           <button class="lot__like-btn">
             <mat-icon class="primary">favorite_border</mat-icon>
           </button>
         </div>
         <div class="lot__info">
           <div class="lot__title">
-            <p>{{ lot.title }}</p>
+            <a 
+            [routerLink]="'get-lot/' + lot.id"
+            >
+              <p>
+                {{ lot.title }}
+              </p>
+            </a>
           </div>
           <div class="lot__price-bid">
             <div class="lot_price">
@@ -118,9 +177,16 @@
       </div>
     </div>
 
-    <div class="main__btn" *ngIf="!noMoreArchivedLotsToLoad">
+    <div 
+    class="main__btn" 
+    *ngIf="!noMoreArchivedLotsToLoad"
+    >
       <p>What to see more items?</p>
-      <button class="main__show-more-btn" color="primary" (click)="loadMoreArchivedLots()">
+      <button 
+      class="main__show-more-btn" 
+      color="primary" 
+      (click)="loadMoreArchivedLots()"
+      >
         <p>Show more</p>
       </button>
     </div>
