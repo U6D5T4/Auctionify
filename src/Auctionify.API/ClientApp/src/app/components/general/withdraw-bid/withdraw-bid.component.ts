@@ -38,6 +38,13 @@ export class WithdrawBidComponent implements OnInit {
                     ) {
                         this.errorMessage =
                             JSON.parse(error)?.errors[0]?.ErrorMessage;
+                        if (
+                            this.errorMessage ===
+                            'Bid with this Id does not exist'
+                        ) {
+                            this.errorMessage =
+                                "Withdraw Error! You haven't placed a bid on this lot yet";
+                        }
                         this.showSnackBar(this.errorMessage, 'error');
                         this.dialogRef.close();
                     }
