@@ -21,7 +21,7 @@
             alt="Main Photo"
             >
           </a>
-          <button class="lot__like-btn">
+          <button class="lot__like-btn" *ngIf="!isUserSeller">
             <mat-icon class="primary">favorite_border</mat-icon>
           </button>
         </div>
@@ -89,7 +89,7 @@
             alt="Main Photo"
             >
           </a>
-          <button class="lot__like-btn">
+          <button class="lot__like-btn" *ngIf="!isUserSeller">
             <mat-icon class="primary">favorite_border</mat-icon>
           </button>
         </div>
@@ -151,7 +151,7 @@
             alt="Main Photo"
             >
           </a>
-          <button class="lot__like-btn">
+          <button class="lot__like-btn" *ngIf="!isUserSeller">
             <mat-icon class="primary">favorite_border</mat-icon>
           </button>
         </div>
