@@ -77,7 +77,6 @@ export class AddBidComponent implements OnInit {
         this.apiClient.getAllBidsOfUserForLot(this.lotId, 0, 3).subscribe({
             next: (bids) => {
                 this.bids = bids;
-                console.log('Bids for lot:', this.bids);
             },
             error: (error) => {
                 console.error('Failed to fetch bids:', error);
