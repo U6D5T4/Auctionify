@@ -9,9 +9,9 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { AuthorizeInterceptor } from './api-authorization/authorize.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SellerModule } from './components/seller/seller.module';
+import { BuyerModule } from './components/buyer/buyer.module';
 import { DashboardComponent } from './components/seller/dashboard/dashboard.component';
 import { LayoutModule } from './layout/layout.module';
-import { BuyerModule } from './components/buyer/buyer.module';
 
 @NgModule({
     declarations: [AppComponent, HomeComponent, DashboardComponent],

@@ -3,7 +3,6 @@ import { lastValueFrom } from 'rxjs';
 import { IHttpConnectionOptions } from '@microsoft/signalr';
 import * as signalR from '@microsoft/signalr';
 
-import { environment } from 'src/environments/environment';
 import { SignalRActions } from './signalr-actions';
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 
@@ -11,7 +10,6 @@ import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
     providedIn: 'root',
 })
 export class SignalRService {
-    private apiUrl = environment.apiUrl;
     private connection: signalR.HubConnection;
     private connectionEstablished: Promise<void>;
 
@@ -27,7 +25,7 @@ export class SignalRService {
 
         this.connection = new signalR.HubConnectionBuilder()
             .configureLogging(signalR.LogLevel.Information)
-            .withUrl(this.apiUrl + 'api/hubs/auctionHub', options)
+            .withUrl('hubs/auction-hub', options)
             .withAutomaticReconnect()
             .build();
 

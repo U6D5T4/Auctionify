@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { HomeComponent } from './components/home/home.component';
 import { isSellerGuard } from './guards/seller/is-seller.guard';
+import { isBuyerGuard } from './guards/buyer/is-buyer.guard';
 
 const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -22,6 +23,8 @@ const routes: Routes = [
             import('./components/buyer/buyer.module').then(
                 (m) => m.BuyerModule
             ),
+        data: { breadcrumb: { skip: true } },
+        canActivate: [isBuyerGuard],
     },
 ];
 
