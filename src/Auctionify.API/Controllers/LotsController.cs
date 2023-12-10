@@ -155,7 +155,6 @@ namespace Auctionify.API.Controllers
 		}
 
 		[HttpGet("filtered-lots")]
-		[Authorize(Roles = "Buyer")]
 		public async Task<IActionResult> FilterLots([FromQuery] FilterLotsQuery query)
 		{
 			var result = await _mediator.Send(query);

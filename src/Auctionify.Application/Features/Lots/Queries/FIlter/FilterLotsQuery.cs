@@ -78,7 +78,7 @@ namespace Auctionify.Application.Features.Lots.Queries.Filter
 			CancellationToken cancellationToken
 		)
 		{
-			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail ?? "");
 
 			var filterBase = new Core.Persistence.Dynamic.Filter
 			{
@@ -179,11 +179,14 @@ namespace Auctionify.Application.Features.Lots.Queries.Filter
 
 			foreach (var lot in response.Items)
 			{
-				lot.IsInWatchlist = await _watchlistService.IsLotInUserWatchlist(
-					lot.Id,
-					user!.Id,
-					cancellationToken
-				);
+				if (user is not null)
+				{
+					lot.IsInWatchlist = await _watchlistService.IsLotInUserWatchlist(
+						lot.Id,
+						user!.Id,
+						cancellationToken
+					);
+				}
 
 				lot.MainPhotoUrl = await _photoService.GetMainPhotoUrlAsync(
 					lot.Id,
