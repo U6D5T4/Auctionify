@@ -100,7 +100,9 @@ export class RegisterComponent {
             )
             .subscribe({
                 next: (result) => {
-                    this.router.navigate(['/home']);
+                    this.router.navigate([
+                        `auth/email-sent/${this.registerForm.value.email}`,
+                    ]);
                 },
                 error: (error: RegisterResponse) => {
                     this.openDialog(

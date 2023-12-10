@@ -76,39 +76,54 @@ export class Client {
             );
     }
 
-    assignRoleToUser(body: AssignRoleViewModel): Observable<AssignRoleResponse> {
-        let url_ = this.baseUrl + "/api/auth/assign-role";
+    assignRoleToUser(
+        body: AssignRoleViewModel
+    ): Observable<AssignRoleResponse> {
+        let url_ = this.baseUrl + `/api/auth/assign-role`;
 
-        const content_ = JSON.stringify(body);
-        
-        let options_ : Object = {
-            body: content_,
-            observe: "response",
+        const params = new HttpParams().set('role', body.role);
+
+        let options_: Object = {
+            observe: 'response',
             headers: new HttpHeaders({
-                "Content-Type": "application/json",
-                "Accept": "text/json"
-            })
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+            params,
         };
 
-        return this.http.request("post", url_, options_).pipe(mergeMap((response: any) : Observable<AssignRoleResponse> => {
-            let data: AssignRoleResponse = {};
+        return this.http
+            .request('post', url_, options_)
+            .pipe(
+                mergeMap((response: any): Observable<AssignRoleResponse> => {
+                    let data: AssignRoleResponse = {};
 
-            if (response.body !== null) {
-                data = response.body
-            }
+                    if (response.body !== null) {
+                        data = response.body;
+                    }
 
-            return of(data);
-        })).pipe(catchError((error) => {
-            return throwError(() => error);
-        }));
+                    return of(data);
+                })
+            )
+            .pipe(
+                catchError((error) => {
+                    return throwError(() => error);
+                })
+            );
     }
 
     signUpWithGoogle(userData: any): Observable<any> {
-        const header = new HttpHeaders().set('Content-type', 'application/json');
-        let url_ = this.baseUrl + "api/auth/sign-up-with-google";
-      
-        return this.http.post(url_, JSON.stringify(userData), { headers: header, withCredentials: true });
-      }
+        const header = new HttpHeaders().set(
+            'Content-type',
+            'application/json'
+        );
+        let url_ = this.baseUrl + 'api/auth/sign-up-with-google';
+
+        return this.http.post(url_, JSON.stringify(userData), {
+            headers: header,
+            withCredentials: true,
+        });
+    }
 
     loginWithGoogle(credentials: string): Observable<any> {
         const header = new HttpHeaders().set(
@@ -428,53 +443,61 @@ export class Client {
         );
     }
 
-    resetPassword(body: ResetPasswordViewModel | undefined) : Observable<ResetPasswordResponse> {
-        let url_ = this.baseUrl + "/api/auth/reset-password";
-    
+    resetPassword(
+        body: ResetPasswordViewModel | undefined
+    ): Observable<ResetPasswordResponse> {
+        let url_ = this.baseUrl + '/api/auth/reset-password';
+
         const content_ = JSON.stringify(body);
-        
-        let options_ : any = {
+
+        let options_: any = {
             body: content_,
-            observe: "response",
+            observe: 'response',
             headers: new HttpHeaders({
-                "Content-Type": "application/json",
-                "Accept": "text/json"
-            })
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
         };
-    
-        return this.http.request("post", url_, options_).pipe(mergeMap((response: any) : Observable<ResetPasswordResponse> => {
-            let data: ResetPasswordResponse = {};
-    
-            if (response.body !== null) {
-                data = response.body
-            }
-    
-            return of(data);
-        }));
+
+        return this.http.request('post', url_, options_).pipe(
+            mergeMap((response: any): Observable<ResetPasswordResponse> => {
+                let data: ResetPasswordResponse = {};
+
+                if (response.body !== null) {
+                    data = response.body;
+                }
+
+                return of(data);
+            })
+        );
     }
-    
-    forgetPassword(email: string) : Observable<ForgetPasswordResponse> {
-        let url_ = `${this.baseUrl}/api/auth/forget-password?email=${encodeURIComponent(email)}`;
-    
+
+    forgetPassword(email: string): Observable<ForgetPasswordResponse> {
+        let url_ = `${
+            this.baseUrl
+        }/api/auth/forget-password?email=${encodeURIComponent(email)}`;
+
         console.log(email);
-        
-        let options_ : any = {
-            observe: "response",
+
+        let options_: any = {
+            observe: 'response',
             headers: new HttpHeaders({
-                "Content-Type": "application/json",
-                "Accept": "text/json"
-            })
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
         };
-    
-        return this.http.request("post", url_, options_).pipe(mergeMap((response: any) : Observable<ForgetPasswordResponse> => {
-            let data: ForgetPasswordResponse = {};
-    
-            if (response.body !== null) {
-                data = response.body
-            }
-    
-            return of(data);
-        }));
+
+        return this.http.request('post', url_, options_).pipe(
+            mergeMap((response: any): Observable<ForgetPasswordResponse> => {
+                let data: ForgetPasswordResponse = {};
+
+                if (response.body !== null) {
+                    data = response.body;
+                }
+
+                return of(data);
+            })
+        );
     }
     filterLots(params: FilterLot): Observable<FilteredLotModel[]> {
         let url_ = this.baseUrl + `/api/lots/filtered-lots`;
@@ -666,10 +689,11 @@ export interface AssignRoleViewModel {
     role: UserRole;
 }
 
-export interface AssignRoleResponse{
+export interface AssignRoleResponse {
     message?: string | undefined;
     isSuccess?: boolean;
     errors?: string[] | undefined;
+    result?: TokenModel;
 }
 
 export interface TokenModel {
@@ -693,7 +717,7 @@ export interface ForgetPasswordResponse {
 export interface ResetPasswordResponse {
     message?: string | undefined;
     isSuccess?: boolean;
-    errors?:  string[] | undefined;
+    errors?: string[] | undefined;
 }
 
 export interface LoginViewModel {
