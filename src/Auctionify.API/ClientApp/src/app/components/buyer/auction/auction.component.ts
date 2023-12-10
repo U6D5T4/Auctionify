@@ -9,14 +9,12 @@ import { FilterLot } from 'src/app/models/lots/filter';
 import { FilterComponent, FilterResult } from '../filter/filter.component';
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 
-
 @Component({
     selector: 'app-auction',
     templateUrl: './auction.component.html',
     styleUrls: ['./auction.component.scss'],
 })
 export class AuctionComponent implements OnInit {
-
     initialActiveLotsCount: number = 10;
     additionalActiveLotsCount: number = 5;
     initialUpcomingLotsCount: number = 5;
@@ -34,12 +32,14 @@ export class AuctionComponent implements OnInit {
     upcomingLots$!: Observable<LotModel[]>;
     archivedLots$!: Observable<LotModel[]>;
 
+    private filterData: FilterResult | null = null;
+
     constructor(
         private apiClient: Client,
         private dialog: Dialog,
         private router: Router,
         private authService: AuthorizeService
-    ) { }
+    ) {}
 
     ngOnInit(): void {
         this.isUserSeller = this.authService.isUserSeller();
@@ -156,18 +156,21 @@ export class AuctionComponent implements OnInit {
     }
 
     callFilter() {
-        const dialogSubscriber = this.dialog.open(FilterComponent);
+        const dialogSubscriber = this.dialog.open(FilterComponent, {
+            data: this.filterData,
+        });
 
         dialogSubscriber.closed.subscribe((res: any) => {
             if (res) {
                 const data = JSON.parse(res) as FilterResult;
+                this.filterData = data;
 
                 const filterData: FilterLot = {
                     ...data,
                     sortDir: null,
                     sortField: null,
                     pageIndex: 0,
-                    pageSize: 20
+                    pageSize: 20,
                 };
 
                 this.apiClient.filterLots(filterData).subscribe((res) => {
