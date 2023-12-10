@@ -1,1 +1,60 @@
-<p>user-profile works!</p>
+<div class="profile">
+    <div class="profile__title">
+        <h1>My profile</h1>
+    </div>
+    <div class="profile__top-container">
+        <img src="" alt="" width="100">
+        <div class="profile__container-left-info">
+            <p>Welcome Back, Maftuna!</p>
+            <div class="profile__rate-lots">
+                <div class="profile__rate">
+                    (24)
+                </div>
+                <div class="profile__lots-count">
+                    Lots created 123 | Lots finished 123
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-container">
+        <div class="main">
+            <div class="main__profile">
+                <div class="main__photo">
+                    <img src="" alt="" width="200">
+                    <button mat-button>Change picture</button>
+                </div>
+                <div class="main__name-date">
+                    <h1>Maftuna Abdullaeva</h1>
+                    <p>Registered: 12/12/12</p>
+                </div>
+            </div>
+            <div class="main__about-me">
+                <h2>About me</h2>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
+                    Quo, dignissimos similique quasi doloremque nobis veniam sequi deleniti 
+                    fugit facilis tempore nemo voluptatum 
+                    est pariatur veritatis hic! Consectetur, labore quibusdam! Eligendi?</p>
+            </div>
+            <div class="main__personal-info">
+                <h2>Presonal info</h2>
+                <div class="main__number-email">
+                    <p>123124123</p>
+                    <p>Sample@gmail.com</p>
+                </div>
+            </div>
+            <div class="main__btns">
+                <div class="main__btns-edit">
+                    <button mat-flat-button>
+                        <mat-icon>edit</mat-icon> Change Info
+                    </button>
+                    <button mat-flat-button>
+                        <mat-icon>lock</mat-icon> Change Password
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="right">
+            <app-profile-navbar></app-profile-navbar>
+        </div>
+    </div>
+</div>

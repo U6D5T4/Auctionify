@@ -1,1 +1,29 @@
-<p>profile-navbar works!</p>
+<div class="menu">
+    <div class="menu__items">
+        <button 
+        mat-flat-button
+        routerLinkActive="mat-primary"
+        color="white"
+        >
+            <mat-icon>person_outline</mat-icon>
+            My profile
+        </button>
+        <button 
+        mat-flat-button 
+        routerLinkActive="mat-primary"
+        color="white"
+        >
+            <mat-icon>star_border</mat-icon>
+            Rating & Review
+        </button>
+        <button 
+        type="button" 
+        (click)="logOut()" 
+        mat-flat-button 
+        color="white"
+        >
+            <mat-icon color="warn">logout</mat-icon>
+            Log out
+        </button>
+    </div>
+</div>

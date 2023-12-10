@@ -12,6 +12,7 @@ import { SellerModule } from './components/seller/seller.module';
 import { DashboardComponent } from './components/seller/dashboard/dashboard.component';
 import { LayoutModule } from './layout/layout.module';
 import { BuyerModule } from './components/buyer/buyer.module';
+import { GeneralModule } from './components/general/general.module';
 
 @NgModule({
     declarations: [AppComponent, HomeComponent, DashboardComponent],
@@ -24,6 +25,7 @@ import { BuyerModule } from './components/buyer/buyer.module';
         SellerModule,
         BuyerModule,
         LayoutModule,
+        GeneralModule,
     ],
 
     providers: [
