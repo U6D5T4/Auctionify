@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, effect } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
@@ -8,32 +8,14 @@ import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
     templateUrl: './header.component.html',
     styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent implements OnInit {
-    isAuthenticated: boolean = false;
-    isBuyer: boolean = false;
+export class HeaderComponent {
+    isUserBuyer: boolean = false;
 
-    constructor(
-        private authService: AuthorizeService,
-        private router: Router
-    ) {}
+    private isBuyerEffect = effect(() => {
+        this.isUserBuyer = this.authService.isUserBuyer();
+    });
 
-    ngOnInit() {
-        this.checkAuthentication();
-        this.checkUserRole();
-
-        this.authService.authenticationChanged.subscribe((status) => {
-            this.isAuthenticated = status;
-            this.checkUserRole();
-        });
-    }
-
-    checkAuthentication() {
-        this.isAuthenticated = this.authService.isUserLoggedIn();
-    }
-
-    checkUserRole() {
-        this.isBuyer = this.authService.isUserBuyer();
-    }
+    constructor(private authService: AuthorizeService) {}
 
     logout() {
         this.authService.logout();

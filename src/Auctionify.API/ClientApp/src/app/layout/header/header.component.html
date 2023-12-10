@@ -16,7 +16,7 @@
             <img src="assets/icons/WishlistIcon.svg" alt="Wishlist Icon" />
             <a routerLink="/wishlist">Wishlist</a>
         </li>
-        <ng-container *ngIf="isAuthenticated">
+        <ng-container *ngIf="isUserBuyer">
             <li>
                 <img src="assets/icons/ProfileIcon.svg" alt="Profile Icon" />
                 <a routerLink="/profile">My Profile</a>
@@ -26,8 +26,7 @@
                 <a (click)="logout()" class="logout-button">Logout</a>
             </li>
         </ng-container>
-
-        <ng-container *ngIf="!isAuthenticated">
+        <ng-container *ngIf="!isUserBuyer">
             <li>
                 <img src="assets/icons/ProfileIcon.svg" alt="Profile Icon" />
                 <a [routerLink]="['/auth/login']">Login</a>

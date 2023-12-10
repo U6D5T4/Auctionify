@@ -41,10 +41,6 @@ export class AuthorizeService {
     private roleString: string = 'role';
     private user: IUser | null = null;
 
-    private authenticationChangedSource = new Subject<boolean>();
-    authenticationChanged: Observable<boolean> =
-        this.authenticationChangedSource.asObservable();
-
     constructor(private client: Client, private httpClient: HttpClient) {
         this.initializeAuthorizeService();
     }
@@ -86,7 +82,6 @@ export class AuthorizeService {
             .pipe(
                 map((response): boolean => {
                     this.processLoginResponse(response);
-                    this.authenticationChangedSource.next(true);
                     return true;
                 })
             )
@@ -202,8 +197,6 @@ export class AuthorizeService {
         this.user?.role.set(null);
         this.user!.expireDate = null;
         this.user!.userToken = null;
-
-        this.authenticationChangedSource.next(false);
 
         return true;
     }
