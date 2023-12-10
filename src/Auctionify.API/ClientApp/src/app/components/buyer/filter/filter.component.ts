@@ -2,6 +2,7 @@ import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, forkJoin, map } from 'rxjs';
+
 import { AppLocation, Category, Client, Status } from 'src/app/web-api-client';
 
 export interface FilterResult {
