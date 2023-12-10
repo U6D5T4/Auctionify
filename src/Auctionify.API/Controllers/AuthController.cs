@@ -1,6 +1,7 @@
 using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Models.Account;
 using Auctionify.Application.Common.Options;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
@@ -13,13 +14,14 @@ namespace Auctionify.API.Controllers
 	{
 		private readonly IIdentityService _identityService;
 		private readonly SignInWithGoogleOptions _signInWithGoogleOptions;
-		private readonly ICurrentUserService _currentUserService;
 
-		public AuthController(IIdentityService identityService, IOptions<SignInWithGoogleOptions> signInWithGoogleOptions, ICurrentUserService currentUserService)
+		public AuthController(
+			IIdentityService identityService,
+			IOptions<SignInWithGoogleOptions> signInWithGoogleOptions
+		)
 		{
 			_identityService = identityService;
 			_signInWithGoogleOptions = signInWithGoogleOptions.Value;
-			_currentUserService = currentUserService;
 		}
 
 		[HttpPost]
@@ -82,7 +84,6 @@ namespace Auctionify.API.Controllers
 				return BadRequest(result);
 
 			return Ok(result);
-
 		}
 
 		[HttpPost("login")]
@@ -98,20 +99,19 @@ namespace Auctionify.API.Controllers
 			return Ok(result);
 		}
 
-        [HttpPost("assign-role")]
-        public async Task<IActionResult> AssignRoleToUser([FromBody] AssignRoleToUserViewModel viewModel)
-        {
-            var currentUserEmail = _currentUserService.UserEmail;
+		[HttpPost("assign-role")]
+		[Authorize]
+		public async Task<IActionResult> AssignRole(string role)
+		{
+			var result = await _identityService.AssignRoleToUserAsync(role);
 
-            var result = await _identityService.AssignRoleToUserAsync(currentUserEmail, viewModel.Role);
+			if (!result.IsSuccess)
+			{
+				return BadRequest(result);
+			}
 
-            if (!result.IsSuccess)
-            {
-                return BadRequest(result);
-            }
-
-            return Ok(result);
-        }
+			return Ok(result);
+		}
 
 		[HttpPost("login-with-google")]
 		public async Task<IActionResult> LoginWithGoogle([FromBody] string credential)
@@ -124,7 +124,7 @@ namespace Auctionify.API.Controllers
 			Payload payload = await ValidateAsync(credential, settings);
 
 			var result = await _identityService.LoginUserWithGoogleAsync(payload);
-			
+
 			if (!result.IsSuccess)
 			{
 				return BadRequest(result);
