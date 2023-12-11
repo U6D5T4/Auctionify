@@ -7,6 +7,5 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAllByName
 	{
 		public UserDto Seller { get; set; }
 		public bool IsInWatchlist { get; set; }
-		public int BidCount { get; set; }
 	}
 }

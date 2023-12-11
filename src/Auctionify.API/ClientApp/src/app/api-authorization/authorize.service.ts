@@ -1,15 +1,21 @@
 import { Injectable, WritableSignal, computed, signal } from '@angular/core';
 import { Observable, catchError, map, of, throwError } from 'rxjs';
 import {
+  AssignRoleResponse,
+  AssignRoleViewModel,
   ChangePasswordResponse,
   ChangeUserPasswordModel,
   Client,
+  ForgetPasswordResponse,
+  ForgetPasswordViewModel,
   LoginResponse,
   LoginViewModel,
   RegisterResponse,
   RegisterViewModel,
+  ResetPasswordViewModel,
+  ResetPasswordResponse
 } from '../web-api-client';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 
 export enum UserRole {
   Administrator = 'Administrator',
@@ -27,6 +33,7 @@ export interface IUser {
 @Injectable({
   providedIn: 'root',
 })
+
 export class AuthorizeService {
   private tokenString: string = 'token';
   private expireString: string = 'expires_at';
@@ -81,6 +88,17 @@ export class AuthorizeService {
       );
   }
 
+  assignRoleToUser(role: UserRole): Observable<AssignRoleResponse | boolean> {
+
+    const roleAssignmentData: AssignRoleViewModel = {
+      role
+    };
+  
+    return this.client.assignRoleToUser(roleAssignmentData).pipe(map((result) => {
+      return result;
+    }))
+  }
+
   processLoginResponse(response: LoginResponse) {
     if (response.result === undefined) throw new Error('user not found');
 
@@ -130,6 +148,34 @@ export class AuthorizeService {
         return result;
       })
     );
+  }
+
+  forgetPassword(
+    email: string
+    ) : Observable<ForgetPasswordResponse | undefined> 
+    {
+    return this.client.forgetPassword(email).pipe(map((result) => {
+      return result;
+    }))
+  }
+
+  resetPassword(
+    token: string,
+    email: string,
+    newPassword: string,
+    confirmPassword: string
+  ): Observable<ResetPasswordResponse | undefined> 
+  {
+    const resetPasswordData: ResetPasswordViewModel = {
+      token,
+      email,
+      newPassword,
+      confirmPassword
+    };
+
+    return this.client.resetPassword(resetPasswordData).pipe(map((result) => {
+      return result;
+    }))
   }
 
   changePassword(

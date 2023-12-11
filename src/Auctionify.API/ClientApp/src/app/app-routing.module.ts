@@ -3,9 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { HomeComponent } from './components/home/home.component';
 import { isSellerGuard } from './guards/seller/is-seller.guard';
+import { isBuyerGuard } from './guards/buyer/is-buyer.guard';
 import { UserProfileComponent } from './components/general/user-profile/user-profile.component';
-import { UpdateUserProfileComponent } from './components/general/update-user-profile/update-user-profile.component';
-import { ChangePasswordComponent } from './components/general/change-password/change-password.component';
 
 const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -33,6 +32,8 @@ const routes: Routes = [
             import('./components/buyer/buyer.module').then(
                 (m) => m.BuyerModule
             ),
+        data: { breadcrumb: { skip: true } },
+        canActivate: [isBuyerGuard],
     },
 ];
 

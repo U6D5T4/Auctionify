@@ -92,7 +92,9 @@ namespace Auctionify.UnitTests.RemoveBidTests
 
 			var mockClientProxy = new Mock<IClientProxy>();
 			var mockClients = new Mock<IHubClients>();
-			mockClients.Setup(clients => clients.All).Returns(mockClientProxy.Object);
+			mockClients
+				.Setup(clients => clients.Group(It.IsAny<string>()))
+				.Returns(mockClientProxy.Object);
 
 			var mockHubContext = new Mock<IHubContext<AuctionHub>>();
 			mockHubContext.Setup(x => x.Clients).Returns(mockClients.Object);

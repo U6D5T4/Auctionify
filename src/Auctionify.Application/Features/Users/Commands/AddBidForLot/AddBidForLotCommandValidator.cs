@@ -1,9 +1,6 @@
-﻿using Auctionify.Application.Common.Interfaces;
-using Auctionify.Application.Common.Interfaces.Repositories;
-using Auctionify.Core.Entities;
+﻿using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Core.Enums;
 using FluentValidation;
-using Microsoft.AspNetCore.Identity;
 
 namespace Auctionify.Application.Features.Users.Commands.AddBidForLot
 {
@@ -12,22 +9,16 @@ namespace Auctionify.Application.Features.Users.Commands.AddBidForLot
 		private readonly IBidRepository _bidRepository;
 		private readonly ILotRepository _lotRepository;
 		private readonly ILotStatusRepository _lotStatusRepository;
-		private readonly UserManager<User> _userManager;
-		private readonly ICurrentUserService _currentUserService;
 
 		public AddBidForLotCommandValidator(
 			IBidRepository bidRepository,
 			ILotRepository lotRepository,
-			ILotStatusRepository lotStatusRepository,
-			UserManager<User> userManager,
-			ICurrentUserService currentUserService
+			ILotStatusRepository lotStatusRepository
 		)
 		{
 			_bidRepository = bidRepository;
 			_lotRepository = lotRepository;
 			_lotStatusRepository = lotStatusRepository;
-			_userManager = userManager;
-			_currentUserService = currentUserService;
 
 			ClassLevelCascadeMode = CascadeMode.Stop;
 
@@ -101,33 +92,6 @@ namespace Auctionify.Application.Features.Users.Commands.AddBidForLot
 					}
 				)
 				.WithMessage("Bid must be greater than the lot's starting price")
-				.OverridePropertyName("Bid")
-				.WithName("Bid");
-
-			RuleFor(x => x)
-				.Cascade(CascadeMode.Stop)
-				.MustAsync(
-					async (request, cancellationToken) =>
-					{
-						var user = await _userManager.FindByEmailAsync(
-							_currentUserService.UserEmail!
-						);
-						var allUserBidsForLot = await _bidRepository.GetListAsync(
-							predicate: x => x.LotId == request.LotId && x.BuyerId == user!.Id,
-							orderBy: x => x.OrderByDescending(x => x.TimeStamp),
-							cancellationToken: cancellationToken
-						);
-
-						if (allUserBidsForLot is not null && allUserBidsForLot.Items.Count > 0)
-						{
-							var previousBid = allUserBidsForLot.Items[0];
-							return request.Bid > previousBid.NewPrice;
-						}
-
-						return true;
-					}
-				)
-				.WithMessage("Your new bid must be greater than your previous bid")
 				.OverridePropertyName("Bid")
 				.WithName("Bid");
 

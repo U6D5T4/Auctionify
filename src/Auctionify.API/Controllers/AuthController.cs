@@ -72,7 +72,7 @@ namespace Auctionify.API.Controllers
 		}
 
 		[HttpPost("reset-password")]
-		public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordViewModel model)
+		public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordViewModel model)
 		{
 			if (!ModelState.IsValid)
 			{
@@ -100,6 +100,21 @@ namespace Auctionify.API.Controllers
 
 			return Ok(result);
 		}
+
+        [HttpPost("assign-role")]
+        public async Task<IActionResult> AssignRoleToUser([FromBody] AssignRoleToUserViewModel viewModel)
+        {
+            var currentUserEmail = _currentUserService.UserEmail;
+
+            var result = await _identityService.AssignRoleToUserAsync(currentUserEmail, viewModel.Role);
+
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result);
+            }
+
+            return Ok(result);
+        }
 
 		[HttpPost("login-with-google")]
 		public async Task<IActionResult> LoginWithGoogle([FromBody] string credential)
