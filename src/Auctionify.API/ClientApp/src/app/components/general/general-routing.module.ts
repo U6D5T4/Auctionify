@@ -1,12 +1,24 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { RouterModule, Routes } from '@angular/router';
+
+import { UpdateUserProfileComponent } from './update-user-profile/update-user-profile.component';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 
 
+const generalRoutes: Routes = [
+  {
+      path: 'update-profile',
+      component: UpdateUserProfileComponent,
+  },
+  {
+      path: 'change-password',
+      component: ChangePasswordComponent,
+      pathMatch: 'full',
+  },
+];
 
 @NgModule({
-  declarations: [],
-  imports: [
-    CommonModule
-  ]
+  imports: [RouterModule.forChild(generalRoutes)],
+  exports: [RouterModule],
 })
 export class GeneralRoutingModule { }

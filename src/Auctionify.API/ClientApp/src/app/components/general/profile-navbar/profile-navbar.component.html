@@ -1,20 +1,15 @@
 <div class="menu">
     <div class="menu__items">
         <button 
+        routerLink="/profile"
+        routerLinkActive="mat-primary" 
         mat-flat-button
-        routerLinkActive="mat-primary"
         color="white"
         >
-            <mat-icon>person_outline</mat-icon>
-            My profile
-        </button>
-        <button 
-        mat-flat-button 
-        routerLinkActive="mat-primary"
-        color="white"
-        >
-            <mat-icon>star_border</mat-icon>
-            Rating & Review
+            <div class="button-content">
+                <mat-icon>person_outline</mat-icon>
+                My profile
+            </div>
         </button>
         <button 
         type="button" 
@@ -22,8 +17,10 @@
         mat-flat-button 
         color="white"
         >
-            <mat-icon color="warn">logout</mat-icon>
-            Log out
+            <div class="button-content">
+                <mat-icon color="warn">logout</mat-icon>
+                Log out
+            </div>
         </button>
     </div>
 </div>

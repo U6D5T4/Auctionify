@@ -20,5 +20,7 @@ namespace Auctionify.Application.Common.Interfaces
         Task<LoginResponse> LoginUserAsync(LoginViewModel userModel);
 		
         Task<LoginResponse> LoginUserWithGoogleAsync(Payload payload);
+
+        Task<ChangePasswordResponse> ChangeUserPasswordAsync(string email, ChangePasswordViewModel model);
 	}
 }

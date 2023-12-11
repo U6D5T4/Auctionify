@@ -5,11 +5,11 @@
     gap: 32px;
 
     &__top-container {
-        width: 1520px;
         height: 148px;
         border-radius: 16px;
         border: 1px solid #E0E0E0;
         display: flex;
+        gap: 40px;
         align-items: center;
         padding-left: 40px;
         padding-right: 40px;
@@ -40,10 +40,12 @@
     display: flex;
     flex-direction: column;
     gap: 32px;
-    width: 1136px;
     border-radius: 16px;
     border: 1px solid #E0E0E0;
     padding: 40px;
+    min-width: 700px;
+    width: 1136px;
+    max-width: 1136px;
 
     &__profile {
         display: flex;
@@ -109,7 +111,21 @@
     }
 
     &__btns-edit button {
-        border: 1px solid #E0E0E0;
+        border: 2px solid #E0E0E0;
         background-color: transparent;
+    }
+
+    &__btns-edit button:hover {
+        background-color: #2B5293;
+        color: white;
+        transition: 0.3s ease;
+    }
+
+    &__edit-btn {
+        width: 164px;
+    }
+
+    &__change-password-btn {
+        width: 210px;
     }
 }

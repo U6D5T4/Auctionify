@@ -3,7 +3,6 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { CreateLotComponent } from './create-lot/create-lot.component';
 import { NgModule } from '@angular/core';
 import { GetLotComponent } from './get-lot/get-lot.component';
-import { ProfileComponent } from './profile/profile.component';
 
 const sellerRoutes: Routes = [
     {
@@ -28,11 +27,6 @@ const sellerRoutes: Routes = [
     {
         path: 'get-lot/:id',
         component: GetLotComponent,
-        pathMatch: 'full',
-    },
-    {
-        path: 'profile/:id',
-        component: ProfileComponent,
         pathMatch: 'full',
     },
 ];

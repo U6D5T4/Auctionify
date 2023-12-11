@@ -15,8 +15,6 @@ import { LocationPopUpComponent } from './create-lot/pop-ups/location/location.c
 import { CurrencyPopUpComponent } from './create-lot/pop-ups/currency/currency.component';
 import { FilesPopUpComponent } from './create-lot/pop-ups/files/files.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { ProfileComponent } from './profile/profile.component';
-import { RatingComponent } from './rating/rating.component';
 import { GetLotComponent } from './get-lot/get-lot.component';
 
 @NgModule({
@@ -25,9 +23,7 @@ import { GetLotComponent } from './get-lot/get-lot.component';
         LocationPopUpComponent,
         CurrencyPopUpComponent,
         FilesPopUpComponent,
-        RatingComponent,
         GetLotComponent,
-        ProfileComponent,
     ],
     imports: [
         CommonModule,

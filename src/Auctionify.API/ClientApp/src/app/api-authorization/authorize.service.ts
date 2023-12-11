@@ -1,6 +1,8 @@
 import { Injectable, WritableSignal, computed, signal } from '@angular/core';
 import { Observable, catchError, map, of, throwError } from 'rxjs';
 import {
+  ChangePasswordResponse,
+  ChangeUserPasswordModel,
   Client,
   LoginResponse,
   LoginViewModel,
@@ -124,6 +126,24 @@ export class AuthorizeService {
     };
 
     return this.client.register(registerData).pipe(
+      map((result) => {
+        return result;
+      })
+    );
+  }
+
+  changePassword(
+    oldPassword: string,
+    newPassword: string,
+    confirmNewPassword: string
+  ): Observable<ChangePasswordResponse | undefined> {
+    const changePasswordData: ChangeUserPasswordModel = {
+      oldPassword,
+      newPassword,
+      confirmNewPassword,
+    };
+
+    return this.client.changePassword(changePasswordData).pipe(
       map((result) => {
         return result;
       })

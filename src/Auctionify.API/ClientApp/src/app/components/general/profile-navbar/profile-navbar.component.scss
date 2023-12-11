@@ -6,4 +6,15 @@
     border: 1px solid #E0E0E0;
     gap: 8px;
     padding: 20px;
+
+    &__items {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+.button-content {
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }

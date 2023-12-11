@@ -1,7 +1,6 @@
 .profile {
     display: flex;
-    padding-top: 40px;
-    padding-left: 40px;
+    padding: 40px;
     flex-direction: column;
     gap: 32px;
 
@@ -10,8 +9,8 @@
         border-radius: 16px;
         border: 1px solid #E0E0E0;
         display: flex;
+        gap: 40px;
         align-items: center;
-        justify-content: space-between;
         padding-left: 40px;
         padding-right: 40px;
     }
@@ -32,24 +31,38 @@
     }
 }
 
-.left{
+.main-container {
+    display: flex;
+    gap: 16px;
+}
+
+.main {
     display: flex;
     flex-direction: column;
-    gap: 32px;
-    height: 1014px;
     border-radius: 16px;
     border: 1px solid #E0E0E0;
+    min-width: 800px;
+    width: 1136px;
+    max-width: 1136px;
+
+    &__profile-form {
+        display: flex;
+        flex-direction: column;
+        padding: 40px;
+        gap: 32px;
+    }
 
     &__profile {
         display: flex;
         align-items: center;
-        width: 585px;
-        justify-content: space-between;
+        gap: 40px;
     }
 
     &__photo {
         display: flex;
+        flex-direction: column;
         justify-content: center;
+        align-items: center;
         gap: 4px;
     }
 
@@ -68,7 +81,9 @@
         border: none;
     }
 
-    &__name-date {
+    &__name {
+        width: 300px;
+        padding-left: 20px;
         display: flex;
         flex-direction: column;
         gap: 16px;
@@ -78,12 +93,15 @@
         display: flex;
         flex-direction: column;
         gap: 24px;
+        min-width: 500px;
+        width: 1056px;
     }
 
     &__personal-info {
         display: flex;
         flex-direction: column;
         gap: 24px;
+        width: 300px;
     }
 
     &__number-email {
@@ -95,15 +113,12 @@
     &__btns {
         display: flex;
         justify-content: space-between;
+        width: 180px;
     }
 
-    &__btns-edit {
+    &__btn {
         display: flex;
-        gap: 16px;
-    }
-
-    &__btns-edit button {
-        border: 1px solid #E0E0E0;
-        background-color: transparent;
+        align-items: center;
+        gap: 5px;
     }
 }

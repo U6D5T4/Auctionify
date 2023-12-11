@@ -1,0 +1,118 @@
+<div class="profile">
+    <div class="profile__title">
+        <h1>My profile</h1>
+    </div>
+    <div class="profile__top-container">
+        <img src="{{ userProfileData?.profilePictureUrl }}" alt="User-prodile-image" width="100">
+        <div class="profile__container-left-info">
+            <p>Welcome Back, {{ userProfileData?.firstName }}!</p>
+            <div class="profile__rate-lots">
+                <div class="profile__rate">
+                    <!-- Div for rates -->
+                </div>
+                <div class="profile__lots-count" *ngIf="isUserSeller()">
+                    Lots created {{ userProfileData?.createdLotsCount }} | Lots finished {{ userProfileData?.finishedLotsCount }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-container">
+        <div class="main">
+            <form [formGroup]="profileForm" class="main__profile-form" action="">
+                <div class="main__profile">
+                    <div class="main__photo">
+                        <img
+                            src="{{ profileForm.controls.deleteProfilePicture.value ? '/../../../../../assets/images/Image_not_available.png' : userProfileData?.profilePictureUrl }}"
+                            alt="User-photo"
+                            width="200"
+                            (click)="toggleDeleteProfilePicture()"
+                        />
+                        <button mat-button (click)="fileInput.click()">Change picture</button>
+                        <input
+                            type="file"
+                            #fileInput
+                            style="display: none"
+                            (change)="onFileChange($event)"
+                        />
+                    </div>
+                    <div class="main__name">
+                        <mat-form-field color="primary" appearance="outline">
+                            <mat-label>Name</mat-label>
+                            <input formControlName="firstName" matInput>
+                            <mat-error *ngIf="profileForm.controls.firstName.hasError('required')">
+                                First name is
+                                <strong>required</strong>
+                            </mat-error>
+                            <mat-error *ngIf="profileForm.controls.firstName.hasError('invalidCharacters')">
+                                Only letters are allowed
+                            </mat-error>
+                            <mat-error *ngIf="profileForm.controls.firstName.hasError('maxlength')">
+                                Maximum 30 characters allowed
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field color="primary" appearance="outline">
+                            <mat-label>Surename</mat-label>
+                            <input formControlName="lastName" matInput>
+                            <mat-error *ngIf="profileForm.controls.lastName.hasError('required')">
+                                Last name is
+                                <strong>required</strong>
+                            </mat-error>
+                            <mat-error *ngIf="profileForm.controls.lastName.hasError('invalidCharacters')">
+                                Only letters are allowed
+                            </mat-error>
+                            <mat-error *ngIf="profileForm.controls.lastName.hasError('maxlength')">
+                                Maximum 30 characters allowed
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="main__about-me">
+                    <h2>About me</h2>
+                    <mat-form-field color="primary" appearance="outline">
+                        <mat-label>About me</mat-label>
+                        <textarea formControlName="aboutMe" matInput></textarea>
+                        <mat-error *ngIf="profileForm.controls.aboutMe.hasError('required')">
+                            About me field is
+                            <strong>required</strong>
+                        </mat-error>
+                        <mat-error *ngIf="profileForm.controls.aboutMe.hasError('invalidCharacters')">
+                            Only letters are allowed
+                        </mat-error>
+                        <mat-error *ngIf="profileForm.controls.aboutMe.hasError('minlength')">
+                            Minimum 30 characters required
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="main__personal-info">
+                    <h2>Presonal info</h2>
+                    <div class="main__number-email">
+                        <mat-form-field color="primary" appearance="outline">
+                            <mat-label>Phone number</mat-label>
+                            <input formControlName="phoneNumber" matInput>
+                            <mat-error *ngIf="profileForm.controls.phoneNumber.hasError('required')">
+                                About me field is
+                                <strong>required</strong>
+                            </mat-error>
+                            <mat-error *ngIf="profileForm.controls.phoneNumber.hasError('pattern')">
+                                Invalid phone number format. Use the format: <strong>+123456789012345</strong>
+                            </mat-error>
+                        </mat-form-field>
+                        <p>{{ userProfileData?.email }}</p>
+                    </div>
+                </div>
+                <div class="main__btns">
+                    <button mat-flat-button disabled="{{ isLoading }}" color="primary" 
+                        type="submit" (click)="OnSubmit()">
+                        <mat-spinner *ngIf="isLoading" diameter="25"></mat-spinner>
+                        <div class="main__btn" *ngIf="!isLoading">
+                            <mat-icon>save</mat-icon> Save changes
+                        </div>
+                    </button>
+                </div>
+            </form> 
+        </div>
+        <div class="nav">
+            <app-profile-navbar></app-profile-navbar>
+        </div>
+    </div>
+</div>
