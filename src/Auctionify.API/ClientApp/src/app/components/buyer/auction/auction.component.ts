@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { Router } from '@angular/router';
 
-import { Observable, of } from 'rxjs';
+import { Observable, mergeMap, of } from 'rxjs';
 
 import { Client, LotModel } from 'src/app/web-api-client';
 import { FilterLot } from 'src/app/models/lots/filter';
@@ -173,11 +173,81 @@ export class AuctionComponent implements OnInit {
                     pageSize: 20,
                 };
 
-                this.apiClient.filterLots(filterData).subscribe((res) => {
-                    console.log(res);
-                    this.activeLots$ = of(res);
+                this.mapFilter(filterData).subscribe({
+                    next: (res) => {
+                        const archivedLotsIds = [];
+
+                        for (const [statusName, statusId] of res) {
+                            if (statusName === 'Active') {
+                                const activeFilterData = {
+                                    ...filterData,
+                                };
+                                activeFilterData.lotStatuses = [statusId];
+
+                                const subscriber = this.apiClient
+                                    .filterLots(activeFilterData)
+                                    .subscribe((activeLots) => {
+                                        this.activeLots$ = of(activeLots);
+
+                                        subscriber.unsubscribe();
+                                    });
+                            } else if (statusName === 'Upcoming') {
+                                const upcomingFilterData = {
+                                    ...filterData,
+                                };
+                                upcomingFilterData.lotStatuses = [statusId];
+
+                                const subscriber = this.apiClient
+                                    .filterLots(upcomingFilterData)
+                                    .subscribe((upcomingLots) => {
+                                        this.upcomingLots$ = of(upcomingLots);
+
+                                        subscriber.unsubscribe();
+                                    });
+                            } else if (
+                                statusName === 'Sold' ||
+                                statusName === 'NotSold' ||
+                                statusName === 'Cancelled'
+                            ) {
+                                archivedLotsIds.push(statusId);
+                            }
+                        }
+
+                        if (archivedLotsIds.length > 0) {
+                            const archivedFilterData = {
+                                ...filterData,
+                            };
+                            archivedFilterData.lotStatuses = archivedLotsIds;
+
+                            const subscriber = this.apiClient
+                                .filterLots(archivedFilterData)
+                                .subscribe((archivedLots) => {
+                                    this.archivedLots$ = of(archivedLots);
+
+                                    subscriber.unsubscribe();
+                                });
+                        }
+                    },
                 });
             }
         });
+    }
+
+    mapFilter(filter: FilterLot): Observable<[string, number][]> {
+        return this.apiClient.getAllLotStatuses().pipe(
+            mergeMap((res): Observable<[string, number][]> => {
+                let statuses: [string, number][] = [];
+
+                if (filter.lotStatuses) {
+                    for (const status of filter.lotStatuses) {
+                        const statusFiltered = res.find((x) => x.id === status);
+                        if (statusFiltered === null) continue;
+                        statuses.push([statusFiltered?.name!, status]);
+                    }
+                }
+
+                return of(statuses);
+            })
+        );
     }
 }
