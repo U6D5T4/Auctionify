@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 
 import { Observable, mergeMap, of } from 'rxjs';
 
-import { Client, LotModel } from 'src/app/web-api-client';
+import { Client, LotModel, Status } from 'src/app/web-api-client';
 import { FilterLot } from 'src/app/models/lots/filter';
 import { FilterComponent, FilterResult } from '../filter/filter.component';
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
@@ -32,84 +32,107 @@ export class AuctionComponent implements OnInit {
     upcomingLots$!: Observable<LotModel[]>;
     archivedLots$!: Observable<LotModel[]>;
 
-    sortDir: string | null = null;
+    sortDir: string = 'asc';
 
-    private filterData: FilterResult | null = null;
+    private filterData: FilterResult;
+    private lotStatuses: Status[] = [];
 
     constructor(
         private apiClient: Client,
         private dialog: Dialog,
         private router: Router,
         private authService: AuthorizeService
-    ) {}
-
-    ngOnInit(): void {
-        this.isUserSeller = this.authService.isUserSeller();
-        this.loadActiveLots();
-        this.loadUpcomingLots();
-        this.loadArchivedLots();
-    }
-
-    loadActiveLots(): void {
-        const filterLot: FilterLot = {
+    ) {
+        this.filterData = {
             minimumPrice: null,
             maximumPrice: null,
             categoryId: null,
+            lotStatuses: null,
             location: null,
-            lotStatuses: [5],
+        };
+    }
+
+    ngOnInit(): void {
+        this.isUserSeller = this.authService.isUserSeller();
+        this.apiClient.getAllLotStatuses().subscribe({
+            next: (res) => {
+                this.lotStatuses = res;
+                this.loadActiveLots();
+                this.loadUpcomingLots();
+                this.loadArchivedLots();
+            },
+        });
+    }
+
+    loadActiveLots(): void {
+        const activeStatus = this.lotStatuses.find((x) => x.name === 'Active');
+
+        if (!activeStatus) return;
+
+        const filterLot: FilterLot = {
+            ...this.filterData,
             sortDir: this.sortDir,
-            sortField: null,
+            sortField: 'EndDate',
             pageIndex: 0,
             pageSize: this.initialActiveLotsCount,
         };
 
-        this.apiClient.filterLots(filterLot).subscribe((activeLots) => {
-            if (activeLots.length < this.initialActiveLotsCount) {
-                this.noMoreActiveLotsToLoad = true;
-            }
-            this.activeLots$ = of(activeLots);
+        filterLot.lotStatuses = [activeStatus.id];
+
+        this.apiClient.filterLots(filterLot).subscribe((filterResult) => {
+            this.noMoreActiveLotsToLoad = filterResult.hasNext;
+            this.activeLots$ = of(filterResult.items);
         });
     }
 
     loadUpcomingLots(): void {
+        const upcomingStatus = this.lotStatuses.find(
+            (x) => x.name === 'Upcoming'
+        );
+
+        if (!upcomingStatus) return;
+
         const filterLot: FilterLot = {
-            minimumPrice: null,
-            maximumPrice: null,
-            categoryId: null,
-            location: null,
-            lotStatuses: [4],
+            ...this.filterData,
             sortDir: this.sortDir,
-            sortField: null,
+            sortField: 'EndDate',
             pageIndex: 0,
             pageSize: this.initialUpcomingLotsCount,
         };
 
-        this.apiClient.filterLots(filterLot).subscribe((upcomingLots) => {
-            if (upcomingLots.length < this.initialUpcomingLotsCount) {
-                this.noMoreUpcomingLotsToLoad = true;
-            }
-            this.upcomingLots$ = of(upcomingLots);
+        filterLot.lotStatuses = [upcomingStatus.id];
+
+        this.apiClient.filterLots(filterLot).subscribe((filterResult) => {
+            this.noMoreUpcomingLotsToLoad = filterResult.hasNext;
+            this.upcomingLots$ = of(filterResult.items);
         });
     }
 
     loadArchivedLots(): void {
+        const cancelledStatuses = this.lotStatuses
+            .filter(
+                (x) =>
+                    x.name === 'Cancelled' ||
+                    x.name === 'Sold' ||
+                    x.name === 'NotSold'
+            )
+            .map((x) => x.id);
+
+        if (!cancelledStatuses) return;
+
         const filterLot: FilterLot = {
-            minimumPrice: null,
-            maximumPrice: null,
-            categoryId: null,
-            location: null,
-            lotStatuses: [10],
+            ...this.filterData,
             sortDir: this.sortDir,
-            sortField: null,
+            sortField: 'EndDate',
             pageIndex: 0,
             pageSize: this.initialArchivedLotsCount,
         };
 
-        this.apiClient.filterLots(filterLot).subscribe((archivedLots) => {
-            if (archivedLots.length < this.initialArchivedLotsCount) {
-                this.noMoreArchivedLotsToLoad = true;
-            }
-            this.archivedLots$ = of(archivedLots);
+        filterLot.lotStatuses = cancelledStatuses;
+
+        this.apiClient.filterLots(filterLot).subscribe((filterResult) => {
+            this.noMoreArchivedLotsToLoad = filterResult.hasNext;
+            this.archivedLots$ = of(filterResult.items);
         });
     }
 
@@ -124,7 +147,11 @@ export class AuctionComponent implements OnInit {
     }
 
     loadMoreArchivedLots(): void {
+        console.log('HERE');
         this.initialArchivedLotsCount += this.additionalArchivedLotsCount;
+        console.log(this.initialArchivedLotsCount);
+        console.log(this.additionalArchivedLotsCount);
+
         this.loadArchivedLots();
     }
 
@@ -167,70 +194,9 @@ export class AuctionComponent implements OnInit {
                 const data = JSON.parse(res) as FilterResult;
                 this.filterData = data;
 
-                const filterData: FilterLot = {
-                    ...data,
-                    sortDir: null,
-                    sortField: null,
-                    pageIndex: 0,
-                    pageSize: 20,
-                };
-
-                this.mapFilter(filterData).subscribe({
-                    next: (res) => {
-                        const archivedLotsIds = [];
-
-                        for (const [statusName, statusId] of res) {
-                            if (statusName === 'Active') {
-                                const activeFilterData = {
-                                    ...filterData,
-                                };
-                                activeFilterData.lotStatuses = [statusId];
-
-                                const subscriber = this.apiClient
-                                    .filterLots(activeFilterData)
-                                    .subscribe((activeLots) => {
-                                        this.activeLots$ = of(activeLots);
-
-                                        subscriber.unsubscribe();
-                                    });
-                            } else if (statusName === 'Upcoming') {
-                                const upcomingFilterData = {
-                                    ...filterData,
-                                };
-                                upcomingFilterData.lotStatuses = [statusId];
-
-                                const subscriber = this.apiClient
-                                    .filterLots(upcomingFilterData)
-                                    .subscribe((upcomingLots) => {
-                                        this.upcomingLots$ = of(upcomingLots);
-
-                                        subscriber.unsubscribe();
-                                    });
-                            } else if (
-                                statusName === 'Sold' ||
-                                statusName === 'NotSold' ||
-                                statusName === 'Cancelled'
-                            ) {
-                                archivedLotsIds.push(statusId);
-                            }
-                        }
-
-                        if (archivedLotsIds.length > 0) {
-                            const archivedFilterData = {
-                                ...filterData,
-                            };
-                            archivedFilterData.lotStatuses = archivedLotsIds;
-
-                            const subscriber = this.apiClient
-                                .filterLots(archivedFilterData)
-                                .subscribe((archivedLots) => {
-                                    this.archivedLots$ = of(archivedLots);
-
-                                    subscriber.unsubscribe();
-                                });
-                        }
-                    },
-                });
+                this.loadActiveLots();
+                this.loadUpcomingLots();
+                this.loadArchivedLots();
             }
         });
     }
