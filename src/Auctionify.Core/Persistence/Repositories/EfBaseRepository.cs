@@ -105,10 +105,7 @@ namespace Auctionify.Core.Persistence.Repositories
         {
             IQueryable<TEntity> queryable = existingQueryable ?? Query();
 
-            var str = queryable.ToQueryString();
-
 			queryable = queryable.ToDynamic(dynamic);
-			var str2 = queryable.ToQueryString();
 			if (!enableTracking)
                 queryable = queryable.AsNoTracking();
             if (include != null)
@@ -117,7 +114,6 @@ namespace Auctionify.Core.Persistence.Repositories
                 queryable = queryable.IgnoreQueryFilters();
             if (predicate != null)
                 queryable = queryable.Where(predicate);
-			var str3 = queryable.ToQueryString();
 
 			return await queryable.ToPaginateAsync(index, size, from: 0, cancellationToken);
         }
