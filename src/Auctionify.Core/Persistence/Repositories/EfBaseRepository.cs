@@ -94,7 +94,8 @@ namespace Auctionify.Core.Persistence.Repositories
 
         public async Task<IPaginate<TEntity>> GetListByDynamicAsync(
         DynamicQuery dynamic,
-        Expression<Func<TEntity, bool>>? predicate = null,
+		IQueryable<TEntity>? existingQueryable = null,
+		Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
         int index = 0,
         int size = 10,
@@ -102,8 +103,13 @@ namespace Auctionify.Core.Persistence.Repositories
         bool enableTracking = true,
         CancellationToken cancellationToken = default)
         {
-            IQueryable<TEntity> queryable = Query().ToDynamic(dynamic);
-            if (!enableTracking)
+            IQueryable<TEntity> queryable = existingQueryable ?? Query();
+
+            var str = queryable.ToQueryString();
+
+			queryable = queryable.ToDynamic(dynamic);
+			var str2 = queryable.ToQueryString();
+			if (!enableTracking)
                 queryable = queryable.AsNoTracking();
             if (include != null)
                 queryable = include(queryable);
@@ -111,7 +117,9 @@ namespace Auctionify.Core.Persistence.Repositories
                 queryable = queryable.IgnoreQueryFilters();
             if (predicate != null)
                 queryable = queryable.Where(predicate);
-            return await queryable.ToPaginateAsync(index, size, from: 0, cancellationToken);
+			var str3 = queryable.ToQueryString();
+
+			return await queryable.ToPaginateAsync(index, size, from: 0, cancellationToken);
         }
 
         public async Task<TEntity> UpdateAsync(TEntity entity)
