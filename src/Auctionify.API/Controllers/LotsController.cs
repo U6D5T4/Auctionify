@@ -119,20 +119,21 @@ namespace Auctionify.API.Controllers
 		}
 
 		[HttpPut("{id}/statuses")]
+		[Authorize]
 		public async Task<IActionResult> UpdateLotStatus(
 			[FromRoute] int id,
 			[FromQuery] AuctionStatus status
 		)
 		{
 			var result = await _mediator.Send(
-				new UpdateLotStatusCommand { Id = id, Name = status.ToString() }
+				new UpdateLotStatusCommand { LotId = id, Name = status.ToString() }
 			);
 
 			return Ok(
 				"Successfully updated lot status of lot with id: "
-					+ result.Id
+					+ result.LotId
 					+ " to "
-					+ status.ToString()
+					+ result.Name
 			);
 		}
 
