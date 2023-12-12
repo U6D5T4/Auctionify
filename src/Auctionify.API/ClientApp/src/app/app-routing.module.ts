@@ -16,6 +16,7 @@ const routes: Routes = [
             import('./components/general/general.module').then(
                 (m) => m.GeneralModule
             ),
+        data: { breadcrumb: { skip: true } }
     },
     {
         path: 'seller',

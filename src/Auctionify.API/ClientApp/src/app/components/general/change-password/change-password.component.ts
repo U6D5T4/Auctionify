@@ -1,5 +1,12 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  Validators,
+  AbstractControl,
+  ValidationErrors,
+  ValidatorFn
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { Dialog } from '@angular/cdk/dialog';
 
@@ -22,13 +29,14 @@ export interface ChangeUserPasswordFormModel {
 export class ChangePasswordComponent {
   userProfileData: BuyerModel | SellerModel | null = null;
   isLoading = false;
+  passwordHidden: boolean = true;
 
   constructor(
-    private authorizeService: AuthorizeService, 
-    private client: Client, 
+    private authorizeService: AuthorizeService,
+    private client: Client,
     private router: Router,
     public dialog: Dialog,
-    ) {}
+  ) { }
 
   ngOnInit(): void {
     this.fetchUserProfileData();
@@ -42,12 +50,20 @@ export class ChangePasswordComponent {
     newPassword: new FormControl<string>('', [
       Validators.required,
       Validators.minLength(8),
+      this.passwordValidator()
     ]),
     confirmNewPassword: new FormControl<string>('', [
       Validators.required,
       Validators.minLength(8),
+      this.passwordValidator()
     ]),
+  }, {
+    validators: this.passwordMatchValidator()
   });
+
+  togglePasswordVisibility() {
+    this.passwordHidden = !this.passwordHidden;
+  }
 
   OnSubmit() {
 
@@ -67,9 +83,33 @@ export class ChangePasswordComponent {
           this.router.navigate(['/profile'])
         },
         error: (error: ChangePasswordResponse) => {
-          this.openDialog(error.errors! || ['Something went wrong, please try later'], true);
+          this.openDialog(error.errors! || error.message, true);
         }
       })
+  }
+
+  passwordValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const password: string = control.value || '';
+
+      const hasNumber = /[0-9]/.test(password);
+      const hasUppercase = /[A-Z]/.test(password);
+      const hasLowercase = /[a-z]/.test(password);
+      const hasSpecialChar = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(password);
+
+      const isValid = hasNumber && hasUppercase && hasLowercase && hasSpecialChar && password.length >= 8;
+
+      return isValid ? null : { invalidPassword: true };
+    };
+  }
+
+  passwordMatchValidator(): ValidatorFn {
+    return (group: AbstractControl): ValidationErrors | null => {
+      const newPassword = group.get('newPassword')?.value;
+      const confirmNewPassword = group.get('confirmNewPassword')?.value;
+
+      return newPassword === confirmNewPassword ? null : { passwordMismatch: true };
+    };
   }
 
   openDialog(text: string[], error: boolean) {
@@ -93,7 +133,7 @@ export class ChangePasswordComponent {
             this.userProfileData = data;
           },
           (error) => {
-            // Handle error if needed
+            this.openDialog(error.errors! || ['Something went wrong, please try again later'], true);
           }
         );
       console.log('User is a buyer.');
@@ -104,7 +144,7 @@ export class ChangePasswordComponent {
             this.userProfileData = data;
           },
           (error) => {
-            // Handle error if needed
+            this.openDialog(error.errors! || ['Something went wrong, please try again later'], true);
           }
         );
       console.log('User is a seller.');

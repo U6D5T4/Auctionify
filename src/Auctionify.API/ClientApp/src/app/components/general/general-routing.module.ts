@@ -9,6 +9,7 @@ const generalRoutes: Routes = [
   {
       path: 'update-profile',
       component: UpdateUserProfileComponent,
+      pathMatch: 'full',
   },
   {
       path: 'change-password',

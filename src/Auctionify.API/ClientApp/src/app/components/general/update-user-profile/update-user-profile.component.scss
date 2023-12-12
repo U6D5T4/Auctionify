@@ -70,6 +70,11 @@
         border-radius: 50%;
     }
 
+    &__photo img:hover {
+        cursor: pointer;
+        opacity: 0.8;
+    }
+
     &__photo button {
         width: 157px;
         height: 48px;
