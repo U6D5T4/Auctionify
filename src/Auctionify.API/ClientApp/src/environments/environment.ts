@@ -5,9 +5,7 @@
 export const environment = {
     production: false,
     apiUrl: 'https://localhost:7230/',
-    clientId:
-        '629833860040-frm7f4h72gg5mlg5bcjsj30qhrugbk6n.apps.googleusercontent.com',
-    appId: 'auctionify',
+    clientId: '',
 };
 
 /*
