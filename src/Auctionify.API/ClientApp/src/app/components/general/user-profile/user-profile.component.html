@@ -3,12 +3,13 @@
         <h1>My profile</h1>
     </div>
     <div class="profile__top-container">
-        <img [src]="userProfileData && userProfileData.profilePictureUrl ? 
+        <img 
+        [src]="userProfileData && userProfileData.profilePictureUrl ? 
         userProfileData.profilePictureUrl : '../../../../../assets/images/Image_not_available.png'" 
         alt="User-profile-image" 
         width="100"
+        height="100"
         >
-
         <div class="profile__container-left-info">
             <p>Welcome Back, {{ userProfileData?.firstName }}!</p>
             <div class="profile__rate-lots">
@@ -25,8 +26,12 @@
         <div class="main">
             <div class="main__profile">
                 <div class="main__photo">
-                    <img [src]="userProfileData && userProfileData.profilePictureUrl ? userProfileData.profilePictureUrl : '../../../../../assets/images/Image_not_available.png'" alt="User-profile-image" width="100">
-
+                    <img [src]="userProfileData && userProfileData.profilePictureUrl ? 
+                    userProfileData.profilePictureUrl : '../../../../../assets/images/Image_not_available.png'" 
+                    alt="User-profile-image" 
+                    width="200"
+                    height="200"
+                    >
                 </div>
                 <div class="main__name-date">
                     <h1>{{ userProfileData?.firstName }} {{ userProfileData?.lastName }}</h1>

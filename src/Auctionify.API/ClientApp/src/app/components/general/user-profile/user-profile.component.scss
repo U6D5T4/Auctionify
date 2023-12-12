@@ -50,8 +50,7 @@
     &__profile {
         display: flex;
         align-items: center;
-        width: 585px;
-        justify-content: space-between;
+        gap: 80px;
     }
 
     &__photo {

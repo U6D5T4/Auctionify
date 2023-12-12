@@ -3,8 +3,13 @@
         <h1>My profile</h1>
     </div>
     <div class="profile__top-container">
-        <img [src]="userProfileData && userProfileData.profilePictureUrl ? userProfileData.profilePictureUrl : '../../../../../assets/images/Image_not_available.png'" alt="User-profile-image" width="100">
-
+        <img 
+        [src]="userProfileData && userProfileData.profilePictureUrl ? 
+        userProfileData.profilePictureUrl : '../../../../../assets/images/Image_not_available.png'" 
+        alt="User-profile-image" 
+        width="100"
+        height="100"
+        >
         <div class="profile__container-left-info">
             <p>Welcome Back, {{ userProfileData?.firstName }}!</p>
             <div class="profile__rate-lots">
@@ -26,12 +31,14 @@
                             src="{{ profileForm.controls.deleteProfilePicture.value ? '/../../../../../assets/images/Image_not_available.png' : userProfileData?.profilePictureUrl }}"
                             alt="User-photo"
                             width="200"
+                            height="200"
                             (click)="toggleDeleteProfilePicture()"
                         />
                         <button mat-button (click)="fileInput.click()">Change picture</button>
                         <input
                             type="file"
                             #fileInput
+                            accept=".jpg, .jpeg, .png"
                             style="display: none"
                             (change)="onFileChange($event)"
                         />

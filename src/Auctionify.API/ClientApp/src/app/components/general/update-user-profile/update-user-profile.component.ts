@@ -70,22 +70,26 @@ export class UpdateUserProfileComponent {
   }
 
   onFileChange(event: any) {
-      const fileInput = event.target;
+    const fileInput = event.target;
 
-      if (fileInput.files && fileInput.files.length > 0) {
-          const file = fileInput.files[0];
+    if (fileInput.files && fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
 
-          const fileModel: FileModel = {
-              name: file.name,
-              file,
-              fileUrl: URL.createObjectURL(file),
-          };
+        if (allowedTypes.includes(file.type)) {
+            const fileModel: FileModel = {
+                name: file.name,
+                file,
+                fileUrl: URL.createObjectURL(file),
+            };
 
-          this.profileForm.controls.profilePicture.setValue(fileModel);
-
-          this.profileForm.controls.deleteProfilePicture.setValue(true);
-      }
-  }
+            this.profileForm.controls.profilePicture.setValue(fileModel);
+            this.profileForm.controls.deleteProfilePicture.setValue(true);
+        } else {
+            this.openDialog(['Something went wrong, please try again later'], true);
+        }
+    }
+}
 
   openDialog(text: string[], error: boolean) {
     const dialogRef = this.dialog.open<string>(DialogPopupComponent, {
@@ -104,7 +108,7 @@ export class UpdateUserProfileComponent {
       this.client.getBuyer()
         .subscribe(
           (data: BuyerModel) => {
-            this.userProfileData = data;
+            this.setFormControlData(data);
           },
           (error) => {
             this.openDialog(error.errors! || ['Something went wrong, please try again later'], true);
@@ -114,7 +118,7 @@ export class UpdateUserProfileComponent {
       this.client.getSeller()
         .subscribe(
           (data: SellerModel) => {
-            this.userProfileData = data;
+            this.setFormControlData(data);
           },
           (error) => {
             this.openDialog(error.errors! || ['Something went wrong, please try again later'], true);
