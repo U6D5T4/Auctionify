@@ -35,7 +35,7 @@ namespace Auctionify.Application.Scheduler.Jobs
 				include: x =>
 							x.Include(l => l.LotStatus)
 							.Include(l => l.Bids));
-			
+
 			if (lot == null) { return; }
 
 			Enum.TryParse(lot.LotStatus.Name, out AuctionStatus lotStatus);
@@ -47,7 +47,7 @@ namespace Auctionify.Application.Scheduler.Jobs
 				futureStatus = AuctionStatus.Sold;
 			}
 
-			var result = await mediator.Send(new UpdateLotStatusCommand { Id = lotId, Name = futureStatus.ToString() });
+			var result = await mediator.Send(new UpdateLotStatusCommand { LotId = lotId, Name = futureStatus.ToString() });
 
 			if (result != null)
 			{
