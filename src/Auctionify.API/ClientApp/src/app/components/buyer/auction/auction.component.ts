@@ -53,6 +53,14 @@ export class AuctionComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.filterData = {
+            minimumPrice: null,
+            maximumPrice: null,
+            categoryId: null,
+            lotStatuses: null,
+            location: null,
+        };
+
         this.isUserSeller = this.authService.isUserSeller();
         this.apiClient.getAllLotStatuses().subscribe({
             next: (res) => {
@@ -77,7 +85,20 @@ export class AuctionComponent implements OnInit {
             pageSize: this.initialActiveLotsCount,
         };
 
-        filterLot.lotStatuses = [activeStatus.id];
+        if (
+            filterLot.lotStatuses === null ||
+            filterLot.lotStatuses?.length! === 0 ||
+            filterLot.lotStatuses?.some(
+                (x) =>
+                    x === this.lotStatuses.find((y) => y.name == 'Active')?.id
+            )
+        ) {
+            filterLot.lotStatuses = [activeStatus.id];
+        } else {
+            this.activeLots$ = of([]);
+            this.noMoreActiveLotsToLoad = false;
+            return;
+        }
 
         this.apiClient.filterLots(filterLot).subscribe((filterResult) => {
             this.noMoreActiveLotsToLoad = filterResult.hasNext;
@@ -100,7 +121,20 @@ export class AuctionComponent implements OnInit {
             pageSize: this.initialUpcomingLotsCount,
         };
 
-        filterLot.lotStatuses = [upcomingStatus.id];
+        if (
+            filterLot.lotStatuses === null ||
+            filterLot.lotStatuses?.length! === 0 ||
+            filterLot.lotStatuses?.some(
+                (x) =>
+                    x === this.lotStatuses.find((y) => y.name == 'Upcoming')?.id
+            )
+        ) {
+            filterLot.lotStatuses = [upcomingStatus.id];
+        } else {
+            this.upcomingLots$ = of([]);
+            this.noMoreUpcomingLotsToLoad = false;
+            return;
+        }
 
         this.apiClient.filterLots(filterLot).subscribe((filterResult) => {
             this.noMoreUpcomingLotsToLoad = filterResult.hasNext;
@@ -128,7 +162,26 @@ export class AuctionComponent implements OnInit {
             pageSize: this.initialArchivedLotsCount,
         };
 
-        filterLot.lotStatuses = cancelledStatuses;
+        if (
+            filterLot.lotStatuses === null ||
+            filterLot.lotStatuses?.length! === 0 ||
+            filterLot.lotStatuses?.some(
+                (x) =>
+                    x ===
+                    this.lotStatuses.find(
+                        (y) =>
+                            y.name === 'Cancelled' ||
+                            y.name === 'Sold' ||
+                            y.name === 'NotSold'
+                    )?.id
+            )
+        ) {
+            filterLot.lotStatuses = cancelledStatuses;
+        } else {
+            this.archivedLots$ = of([]);
+            this.noMoreArchivedLotsToLoad = false;
+            return;
+        }
 
         this.apiClient.filterLots(filterLot).subscribe((filterResult) => {
             this.noMoreArchivedLotsToLoad = filterResult.hasNext;
@@ -147,10 +200,7 @@ export class AuctionComponent implements OnInit {
     }
 
     loadMoreArchivedLots(): void {
-        console.log('HERE');
         this.initialArchivedLotsCount += this.additionalArchivedLotsCount;
-        console.log(this.initialArchivedLotsCount);
-        console.log(this.additionalArchivedLotsCount);
 
         this.loadArchivedLots();
     }
