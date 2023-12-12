@@ -106,62 +106,6 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 			yield return new object[] { registerViewModels };
 		}
 
-		public static IEnumerable<object[]> GetChangeUserPasswordAsyncTestData()
-		{
-			var users = new List<User>
-			{
-				new User
-				{
-					Id = 1,
-					UserName = "test@email.com",
-					NormalizedUserName = "TEST@EMAIL.COM",
-					Email = "test@email.com",
-					NormalizedEmail = "TEST@EMAIL.COM",
-					EmailConfirmed = true, // email is confirmed
-					PasswordHash = "TestPassword",
-					SecurityStamp = "testsecuritystamp",
-					ConcurrencyStamp = "testconcurrencystamp",
-					PhoneNumber = "123456789",
-					FirstName = "TestFirstName",
-					LastName = "TestLastName",
-				},
-				new User
-				{
-					Id = 1,
-					UserName = "biba@email.com",
-					NormalizedUserName = "TEST@EMAIL.COM",
-					Email = "test@email.com",
-					NormalizedEmail = "TEST@EMAIL.COM",
-					EmailConfirmed = true, // email is confirmed
-					PasswordHash = "testpasswordhash",
-					SecurityStamp = "testsecuritystamp",
-					ConcurrencyStamp = "testconcurrencystamp",
-					PhoneNumber = "123456789",
-					FirstName = "TestFirstName",
-					LastName = "TestLastName",
-				},
-			};
-
-			var registerViewModels = new List<ChangePasswordViewModel>
-			{
-				new ChangePasswordViewModel
-				{
-					OldPassword = "TestPassword",
-					NewPassword = "testpassword1",
-					ConfirmNewPassword = "testpassword1"
-
-				},
-				new ChangePasswordViewModel
-				{
-					OldPassword = "TestPassword",
-					NewPassword = "testpassword1",
-					ConfirmNewPassword = "wrongconfirmtestpassword"
-				}
-			};
-
-			yield return new object[] { users, registerViewModels };
-		}
-
 		public static IEnumerable<object[]> GetConfirmUserEmailAsyncTestData()
 		{
 			var userId = "1";
