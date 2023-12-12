@@ -3,13 +3,13 @@ using FluentValidation;
 
 namespace Auctionify.Application.Features.Lots.Commands.UpdateLotStatus
 {
-    public class UpdateLotStatusCommandValidator : AbstractValidator<UpdateLotStatusCommand>
-    {
-        private readonly ILotStatusRepository _lotStatusRepository;
+	public class UpdateLotStatusCommandValidator : AbstractValidator<UpdateLotStatusCommand>
+	{
+		private readonly ILotStatusRepository _lotStatusRepository;
 
-        public UpdateLotStatusCommandValidator(ILotStatusRepository lotStatusRepository)
-        {
-            _lotStatusRepository = lotStatusRepository;
+		public UpdateLotStatusCommandValidator(ILotStatusRepository lotStatusRepository)
+		{
+			_lotStatusRepository = lotStatusRepository;
 
 			RuleFor(x => x.Name)
 				.MustAsync(
@@ -24,6 +24,6 @@ namespace Auctionify.Application.Features.Lots.Commands.UpdateLotStatus
 					}
 				)
 				.WithMessage("Lot status with this name does not exist");
-        }
-    }
+		}
+	}
 }

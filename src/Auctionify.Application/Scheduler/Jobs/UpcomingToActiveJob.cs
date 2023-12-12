@@ -37,7 +37,7 @@ namespace Auctionify.Application.Scheduler.Jobs
 
 			if (lot == null) { return; }
 
-			var result = await mediator.Send(new UpdateLotStatusCommand { Id = lotId, Name = AuctionStatus.Active.ToString() });
+			var result = await mediator.Send(new UpdateLotStatusCommand { LotId = lotId, Name = AuctionStatus.Active.ToString() });
 
 			if (result != null)
 			{
