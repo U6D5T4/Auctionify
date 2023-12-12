@@ -9,7 +9,6 @@ import { UserProfileComponent } from './components/general/user-profile/user-pro
 const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: 'home', component: HomeComponent },
-    { path: 'profile', component: UserProfileComponent },
     {
         path: 'profile',
         loadChildren: () =>

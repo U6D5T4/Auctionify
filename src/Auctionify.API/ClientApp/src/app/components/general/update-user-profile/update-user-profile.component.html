@@ -3,7 +3,8 @@
         <h1>My profile</h1>
     </div>
     <div class="profile__top-container">
-        <img src="{{ userProfileData?.profilePictureUrl }}" alt="User-prodile-image" width="100">
+        <img [src]="userProfileData && userProfileData.profilePictureUrl ? userProfileData.profilePictureUrl : '../../../../../assets/images/Image_not_available.png'" alt="User-profile-image" width="100">
+
         <div class="profile__container-left-info">
             <p>Welcome Back, {{ userProfileData?.firstName }}!</p>
             <div class="profile__rate-lots">

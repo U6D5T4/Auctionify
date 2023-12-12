@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Dialog } from '@angular/cdk/dialog';
 
+
+import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 import { FileModel } from 'src/app/models/fileModel';
 import { BuyerModel, SellerModel, UpdateUserProfileModel } from 'src/app/models/users/user-models';
@@ -29,7 +32,8 @@ export class UpdateUserProfileComponent {
   constructor(
     private authorizeService: AuthorizeService, 
     private client: Client, 
-    private router: Router
+    private router: Router,
+    public dialog: Dialog,
     ) {}
 
   ngOnInit(): void {
@@ -83,27 +87,39 @@ export class UpdateUserProfileComponent {
       }
   }
 
+  openDialog(text: string[], error: boolean) {
+    const dialogRef = this.dialog.open<string>(DialogPopupComponent, {
+      data: {
+        text,
+        isError: error
+      },
+    });
+
+    dialogRef.closed.subscribe((res) => {
+    })
+  }
+
   private fetchUserProfileData() {
     if (this.isUserBuyer()) {
       this.client.getBuyer()
         .subscribe(
           (data: BuyerModel) => {
-            this.setFormControlData(data);
+            this.userProfileData = data;
           },
           (error) => {
+            this.openDialog(error.errors! || ['Something went wrong, please try again later'], true);
           }
         );
-      console.log('User is a buyer.');
     } else if (this.isUserSeller()) {
       this.client.getSeller()
         .subscribe(
           (data: SellerModel) => {
-            this.setFormControlData(data);
+            this.userProfileData = data;
           },
           (error) => {
+            this.openDialog(error.errors! || ['Something went wrong, please try again later'], true);
           }
         );
-      console.log('User is a seller.');
     }
   }
 

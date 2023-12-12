@@ -7,6 +7,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { DialogModule } from '@angular/cdk/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { ProfileNavbarComponent } from './profile-navbar/profile-navbar.component';
@@ -24,6 +25,7 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
     GeneralRoutingModule,
     ReactiveFormsModule,
     MatInputModule,
+    MatDialogModule,
     MatProgressSpinnerModule,
     DialogModule,
   ],

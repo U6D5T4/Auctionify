@@ -449,6 +449,5 @@ namespace Auctionify.Infrastructure.Identity
 				Errors = result.Errors.Select(e => e.Description)
 			};
 		}
-
 	}
 }

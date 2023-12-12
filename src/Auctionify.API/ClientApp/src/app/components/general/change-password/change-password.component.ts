@@ -136,7 +136,6 @@ export class ChangePasswordComponent {
             this.openDialog(error.errors! || ['Something went wrong, please try again later'], true);
           }
         );
-      console.log('User is a buyer.');
     } else if (this.isUserSeller()) {
       this.client.getSeller()
         .subscribe(
@@ -147,7 +146,6 @@ export class ChangePasswordComponent {
             this.openDialog(error.errors! || ['Something went wrong, please try again later'], true);
           }
         );
-      console.log('User is a seller.');
     }
   }
 

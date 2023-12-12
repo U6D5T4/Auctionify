@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Dialog } from '@angular/cdk/dialog';
 
+import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 import { BuyerModel, SellerModel } from 'src/app/models/users/user-models';
 import { Client } from 'src/app/web-api-client';
@@ -12,7 +14,11 @@ import { Client } from 'src/app/web-api-client';
 export class UserProfileComponent {
   userProfileData: BuyerModel | SellerModel | null = null;
 
-  constructor(private authorizeService: AuthorizeService, private client: Client) {}
+  constructor(
+    private authorizeService: AuthorizeService, 
+    private client: Client,
+    public dialog: Dialog
+    ) {}
 
   ngOnInit(): void {
     this.fetchUserProfileData();
@@ -20,16 +26,38 @@ export class UserProfileComponent {
 
   private fetchUserProfileData() {
     if (this.isUserBuyer()) {
-      this.client.getBuyer().subscribe((data: BuyerModel) => {
-        this.userProfileData = data;
-      });
-      console.log('User is a buyer.');
+      this.client.getBuyer()
+        .subscribe(
+          (data: BuyerModel) => {
+            this.userProfileData = data;
+          },
+          (error) => {
+            this.openDialog(error.errors! || ['Something went wrong, please try again later'], true);
+          }
+        );
     } else if (this.isUserSeller()) {
-      this.client.getSeller().subscribe((data: SellerModel) => {
-        this.userProfileData = data;
-      });
-      console.log('User is a seller.');
+      this.client.getSeller()
+        .subscribe(
+          (data: SellerModel) => {
+            this.userProfileData = data;
+          },
+          (error) => {
+            this.openDialog(error.errors! || ['Something went wrong, please try again later'], true);
+          }
+        );
     }
+  }
+
+  openDialog(text: string[], error: boolean) {
+    const dialogRef = this.dialog.open<string>(DialogPopupComponent, {
+      data: {
+        text,
+        isError: error
+      },
+    });
+
+    dialogRef.closed.subscribe((res) => {
+    })
   }
   
   isUserSeller(): boolean {
