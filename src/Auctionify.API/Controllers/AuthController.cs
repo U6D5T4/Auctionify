@@ -132,5 +132,11 @@ namespace Auctionify.API.Controllers
 
 			return Ok(result);
 		}
+
+		[HttpGet("google-client-id")]
+		public IActionResult GetGoogleClientId()
+		{
+			return Ok(_signInWithGoogleOptions.ClientId);
+		}
 	}
 }

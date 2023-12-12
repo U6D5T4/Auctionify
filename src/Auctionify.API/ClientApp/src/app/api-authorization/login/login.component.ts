@@ -6,7 +6,6 @@ import { CredentialResponse, PromptMomentNotification } from 'google-one-tap';
 
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import { LoginResponse } from 'src/app/web-api-client';
-import { environment } from 'src/environments/environment';
 import { AuthorizeService } from '../authorize.service';
 
 @Injectable({
@@ -18,16 +17,14 @@ import { AuthorizeService } from '../authorize.service';
     styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
+    clientId!: string;
     passwordHidden: boolean = true;
     isLoading = false;
-
-    private clientId = environment.clientId;
 
     constructor(
         private authService: AuthorizeService,
         public dialog: Dialog,
         private router: Router,
-        private service: AuthorizeService,
         private _ngZone: NgZone
     ) {}
     loginForm = new FormGroup({
@@ -42,38 +39,44 @@ export class LoginComponent {
         this.passwordHidden = !this.passwordHidden;
     }
 
-    ngOnInit(): void {
-        // @ts-ignore
-        window.onGoogleLibraryLoad = () => {
+    async ngOnInit(): Promise<void> {
+        try {
+            this.clientId = await this.authService.fetchGoogleClientId();
             // @ts-ignore
-            google.accounts.id.initialize({
-                client_id: this.clientId,
-                callback: this.handleCredentialResponse.bind(this),
-                auto_select: false,
-                cancel_on_tap_outside: true,
-            });
-
-            // @ts-ignore
-            google.accounts.id.renderButton(
+            window.onGoogleLibraryLoad = () => {
                 // @ts-ignore
-                document.getElementsByClassName('google-link__label')[0],
-                { size: 'large', width: '100%' }
-            );
-            // @ts-ignore
-            google.accounts.id.prompt(
-                (notification: PromptMomentNotification) => {}
-            );
-        };
+                google.accounts.id.initialize({
+                    client_id: this.clientId,
+                    callback: this.handleCredentialResponse.bind(this),
+                    auto_select: false,
+                    cancel_on_tap_outside: true,
+                });
+
+                // @ts-ignore
+                google.accounts.id.renderButton(
+                    // @ts-ignore
+                    document.getElementsByClassName('google-link__label')[0],
+                    { size: 'large', width: '100%' }
+                );
+
+                // @ts-ignore
+                google.accounts.id.prompt(
+                    (notification: PromptMomentNotification) => {}
+                );
+            };
+        } catch (error) {
+            console.error('Error fetching Google Client ID:', error);
+        }
     }
 
     handleCredentialResponse(response: CredentialResponse) {
-        this.service.loginWithGoogle(response.credential).subscribe({
+        this.authService.loginWithGoogle(response.credential).subscribe({
             next: (x: any) => {
                 this._ngZone.run(() => {
-                    if (this.service.isUserLoggedIn()) {
+                    if (this.authService.isUserLoggedIn()) {
                         if (
-                            this.service.isUserBuyer() ||
-                            this.service.isUserSeller()
+                            this.authService.isUserBuyer() ||
+                            this.authService.isUserSeller()
                         ) {
                             this.router.navigate(['/home']);
                         } else {

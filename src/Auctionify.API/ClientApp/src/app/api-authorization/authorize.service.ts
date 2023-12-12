@@ -1,5 +1,13 @@
 import { Injectable, WritableSignal, computed, signal } from '@angular/core';
-import { Observable, Subject, catchError, map, of, throwError } from 'rxjs';
+import {
+    Observable,
+    Subject,
+    catchError,
+    firstValueFrom,
+    map,
+    of,
+    throwError,
+} from 'rxjs';
 import {
     AssignRoleResponse,
     AssignRoleViewModel,
@@ -140,6 +148,17 @@ export class AuthorizeService {
                     }
                 )
             );
+    }
+
+    async fetchGoogleClientId(): Promise<string> {
+        try {
+            const clientId = await firstValueFrom(
+                this.client.getGoogleClientId()
+            );
+            return clientId as string;
+        } catch (error) {
+            throw new Error('Unable to fetch Google Client ID');
+        }
     }
 
     register(

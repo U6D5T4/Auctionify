@@ -6,7 +6,6 @@ import { CredentialResponse, PromptMomentNotification } from 'google-one-tap';
 
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import { RegisterResponse } from 'src/app/web-api-client';
-import { environment } from 'src/environments/environment';
 import { AuthorizeService } from '../authorize.service';
 
 @Component({
@@ -15,6 +14,7 @@ import { AuthorizeService } from '../authorize.service';
     styleUrls: ['./register.component.scss'],
 })
 export class RegisterComponent {
+    clientId!: string;
     passwordHidden: boolean = true;
     isLoading = false;
 
@@ -25,8 +25,6 @@ export class RegisterComponent {
         private service: AuthorizeService,
         private _ngZone: NgZone
     ) {}
-
-    private clientId = environment.clientId;
 
     registerForm = new FormGroup({
         email: new FormControl<string>('', [
@@ -41,28 +39,34 @@ export class RegisterComponent {
         this.passwordHidden = !this.passwordHidden;
     }
 
-    ngOnInit(): void {
-        // @ts-ignore
-        window.onGoogleLibraryLoad = () => {
+    async ngOnInit(): Promise<void> {
+        try {
+            this.clientId = await this.authService.fetchGoogleClientId();
             // @ts-ignore
-            google.accounts.id.initialize({
-                client_id: this.clientId,
-                callback: this.handleCredentialResponse.bind(this),
-                auto_select: false,
-                cancel_on_tap_outside: true,
-            });
-
-            // @ts-ignore
-            google.accounts.id.renderButton(
+            window.onGoogleLibraryLoad = () => {
                 // @ts-ignore
-                document.getElementsByClassName('google-link__label')[0],
-                { size: 'large', width: '100%' }
-            );
-            // @ts-ignore
-            google.accounts.id.prompt(
-                (notification: PromptMomentNotification) => {}
-            );
-        };
+                google.accounts.id.initialize({
+                    client_id: this.clientId,
+                    callback: this.handleCredentialResponse.bind(this),
+                    auto_select: false,
+                    cancel_on_tap_outside: true,
+                });
+
+                // @ts-ignore
+                google.accounts.id.renderButton(
+                    // @ts-ignore
+                    document.getElementsByClassName('google-link__label')[0],
+                    { size: 'large', width: '100%' }
+                );
+
+                // @ts-ignore
+                google.accounts.id.prompt(
+                    (notification: PromptMomentNotification) => {}
+                );
+            };
+        } catch (error) {
+            console.error('Error fetching Google Client ID:', error);
+        }
     }
 
     handleCredentialResponse(response: CredentialResponse) {

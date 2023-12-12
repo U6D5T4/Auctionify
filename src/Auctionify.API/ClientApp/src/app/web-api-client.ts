@@ -112,17 +112,25 @@ export class Client {
             );
     }
 
-    signUpWithGoogle(userData: any): Observable<any> {
-        const header = new HttpHeaders().set(
-            'Content-type',
-            'application/json'
-        );
-        let url_ = this.baseUrl + 'api/auth/sign-up-with-google';
+    getGoogleClientId(): Observable<string> {
+        let url_ = this.baseUrl + '/api/auth/google-client-id';
 
-        return this.http.post(url_, JSON.stringify(userData), {
-            headers: header,
-            withCredentials: true,
-        });
+        let options_: any = {
+            responseType: 'text',
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/plain',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<string> => {
+                if (response.body !== null) {
+                    return of(response.body as string);
+                } else return throwError(() => new Error('data is empty!'));
+            })
+        );
     }
 
     loginWithGoogle(credentials: string): Observable<any> {
