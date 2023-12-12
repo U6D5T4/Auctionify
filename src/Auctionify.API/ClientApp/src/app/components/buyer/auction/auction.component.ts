@@ -32,6 +32,8 @@ export class AuctionComponent implements OnInit {
     upcomingLots$!: Observable<LotModel[]>;
     archivedLots$!: Observable<LotModel[]>;
 
+    sortDir: string | null = null;
+
     private filterData: FilterResult | null = null;
 
     constructor(
@@ -55,7 +57,7 @@ export class AuctionComponent implements OnInit {
             categoryId: null,
             location: null,
             lotStatuses: [5],
-            sortDir: null,
+            sortDir: this.sortDir,
             sortField: null,
             pageIndex: 0,
             pageSize: this.initialActiveLotsCount,
@@ -76,7 +78,7 @@ export class AuctionComponent implements OnInit {
             categoryId: null,
             location: null,
             lotStatuses: [4],
-            sortDir: null,
+            sortDir: this.sortDir,
             sortField: null,
             pageIndex: 0,
             pageSize: this.initialUpcomingLotsCount,
@@ -97,7 +99,7 @@ export class AuctionComponent implements OnInit {
             categoryId: null,
             location: null,
             lotStatuses: [10],
-            sortDir: null,
+            sortDir: this.sortDir,
             sortField: null,
             pageIndex: 0,
             pageSize: this.initialArchivedLotsCount,
@@ -249,5 +251,13 @@ export class AuctionComponent implements OnInit {
                 return of(statuses);
             })
         );
+    }
+
+    toggleSort(): void {
+        this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+
+        this.loadActiveLots();
+        this.loadUpcomingLots();
+        this.loadArchivedLots();
     }
 }

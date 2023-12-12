@@ -1,5 +1,10 @@
 <div class="menu">
   <div class="menu__btns-right">
+    <button class="menu__sort-btn" (click)="toggleSort()">
+      <p>Sort by price</p>
+      <mat-icon *ngIf="sortDir === 'asc'">arrow_upward</mat-icon>
+      <mat-icon *ngIf="sortDir === 'desc'">arrow_downward</mat-icon>
+    </button>
     <button type="button" (click)="callFilter()" class="menu__filter-btn">
       <mat-icon>tune</mat-icon>
       <p>Filter</p>
@@ -35,8 +40,8 @@
           </div>
           <div class="lot__price-bid">
             <div class="lot_price">
-              <p class="lot__price-p">
-                {{ lot.startingPrice }} {{ lot.currency.code }}
+              <p class="lot__price-p" *ngIf="lot.bids && lot.bids.length > 0">
+                {{ lot.bids[lot.bids.length - 1].newPrice }} {{ lot.currency.code }}
               </p>
             </div>
             <div class="lot__bid">
@@ -103,7 +108,9 @@
           </div>
           <div class="lot__price-bid">
             <div class="lot_price">
-              <p class="lot__price-p">{{ lot.startingPrice }} {{ lot.currency.code }}</p>
+              <p class="lot__price-p" *ngIf="lot.bids && lot.bids.length > 0">
+                {{ lot.bids[lot.bids.length - 1].newPrice }} {{ lot.currency.code }}
+              </p>
             </div>
             <div class="lot__bid">
               <p class="lot__bids-p">{{ lot.bidCount }} bids</p>
@@ -167,7 +174,9 @@
           </div>
           <div class="lot__price-bid">
             <div class="lot_price">
-              <p class="lot__price-p">{{ lot.startingPrice }} {{ lot.currency.code }}</p>
+              <p class="lot__price-p" *ngIf="lot.bids && lot.bids.length > 0">
+                {{ lot.bids[lot.bids.length - 1].newPrice }} {{ lot.currency.code }}
+              </p>
             </div>
             <div class="lot__bid">
               <p class="lot__bids-p">{{ lot.bidCount }} bids</p>
