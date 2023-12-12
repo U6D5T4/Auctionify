@@ -48,6 +48,12 @@
     padding-left: 200px;
     padding-right: 200px;
 
+    &__container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
     &__auction-active {
         display: flex;
         flex-wrap: wrap;

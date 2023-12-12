@@ -13,7 +13,7 @@
 </div>
 
 <div class="main">
-  <div class="main__container-active">
+  <div class="main__container">
     <div class="main__auction-active">
       <div class="lot" *ngFor="let lot of activeLots$ | async">
         <div class="lot__image">
@@ -56,18 +56,19 @@
         </div>
       </div>
     </div>
+    <div class="main__btn" *ngIf="noMoreActiveLotsToLoad">
+      <p>
+        Want to see more items?
+      </p>
+      <button mat-flat-button type="button" class="main__show-more-btn" color="primary" (click)="loadMoreActiveLots()">
+        <p>Show more</p>
+      </button>
+    </div>
   </div>
 
-  <div class="main__btn" *ngIf="noMoreActiveLotsToLoad">
-    <p>
-      Want to see more items?
-    </p>
-    <button mat-flat-button type="button" class="main__show-more-btn" color="primary" (click)="loadMoreActiveLots()">
-      <p>Show more</p>
-    </button>
-  </div>
 
-  <div class="main__container-upcoming" *ngIf="upcomingLots$ | async as upcomingLots">
+
+  <div class="main__container" *ngIf="upcomingLots$ | async as upcomingLots">
     <div class="main__auction-upcoming-title" *ngIf="upcomingLots && upcomingLots.length > 0">
       <h2>Future auctions</h2>
     </div>
@@ -122,7 +123,7 @@
     </div>
   </div>
 
-  <div class="main__container-archived" *ngIf="archivedLots$ | async as archivedLots">
+  <div class="main__container" *ngIf="archivedLots$ | async as archivedLots">
     <div class="main__auction-archived-title" *ngIf="archivedLots && archivedLots.length > 0">
       <h2>Archived auctions</h2>
     </div>
