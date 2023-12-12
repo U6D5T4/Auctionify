@@ -28,23 +28,6 @@ export class HomeComponent {
 
         effect(() => {
             if (this.authService.isUserBuyer()) {
-                const dialogSubscriber = this.dialog.open(FilterComponent);
-
-                dialogSubscriber.closed.subscribe((res: any) => {
-                    if (res) {
-                        const data = JSON.parse(res) as FilterResult;
-
-                        const filterData: FilterLot = {
-                            ...data,
-                            sortDir: null,
-                            sortField: null,
-                        };
-
-                        this.client
-                            .filterLots(filterData)
-                            .subscribe((res) => {});
-                    }
-                });
             }
         });
     }

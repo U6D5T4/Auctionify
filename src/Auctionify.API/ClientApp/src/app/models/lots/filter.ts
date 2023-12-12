@@ -6,4 +6,6 @@ export interface FilterLot {
     lotStatuses: number[] | null;
     sortDir: string | null;
     sortField: string | null;
+    pageIndex: number | null;
+    pageSize: number | null;
 }
