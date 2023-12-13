@@ -17,7 +17,7 @@
     <div class="main__auction-active">
       <div class="lot" *ngFor="let lot of activeLots$ | async">
         <div class="lot__image">
-          <a [routerLink]="'get-lot/' + lot.id">
+          <a [routerLink]="['../get-lot', lot.id,]">
             <img [src]="lot.mainPhotoUrl ? lot.mainPhotoUrl : 
             '../../../../assets/icons/NoImage.svg'" height="294px" width="294px" alt="Main Photo">
           </a>
@@ -27,7 +27,7 @@
         </div>
         <div class="lot__info">
           <div class="lot__title">
-            <a [routerLink]="'get-lot/' + lot.id">
+            <a [routerLink]="['../get-lot', lot.id,]">
               <p>{{ lot.title }}</p>
             </a>
             <br>
@@ -76,7 +76,7 @@
     <div class="main__auction-upcoming">
       <div class="lot" *ngFor="let lot of upcomingLots$ | async">
         <div class="lot__image">
-          <a [routerLink]="'get-lot/' + lot.id">
+          <a [routerLink]="['../get-lot', lot.id,]">
             <img [src]="lot.mainPhotoUrl ? lot.mainPhotoUrl : 
             '../../../../assets/icons/NoImage.svg'" height="294px" width="294px" alt="Main Photo">
           </a>
@@ -86,7 +86,7 @@
         </div>
         <div class="lot__info">
           <div class="lot__title">
-            <a [routerLink]="'get-lot/' + lot.id">
+            <a [routerLink]="['../get-lot', lot.id,]">
               <p>{{ lot.title }}</p>
             </a>
             <br>
@@ -131,7 +131,7 @@
     <div class="main__auction-archived">
       <div class="lot" *ngFor="let lot of archivedLots$ | async">
         <div class="lot__image">
-          <a [routerLink]="'get-lot/' + lot.id">
+          <a [routerLink]="['../get-lot', lot.id,]">
             <img [src]="lot.mainPhotoUrl ? lot.mainPhotoUrl : 
             '../../../../assets/icons/NoImage.svg'" height="294px" width="294px" alt="Main Photo">
           </a>
@@ -141,7 +141,7 @@
         </div>
         <div class="lot__info">
           <div class="lot__title">
-            <a [routerLink]="'get-lot/' + lot.id">
+            <a [routerLink]="['../get-lot', lot.id,]">
               <p>
                 {{ lot.title }}
               </p>
