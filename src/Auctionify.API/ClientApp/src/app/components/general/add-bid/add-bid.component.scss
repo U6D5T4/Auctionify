@@ -14,6 +14,19 @@
         gap: 24px;
         border-radius: 24px;
         background-color: #f8f8f8;
+
+        .close-button {
+            position: absolute;
+            color: var(--color-error);
+            top: 0;
+            right: 0;
+            margin: 10px;
+        }
+        .close-button:hover {
+            cursor: pointer;
+            color: red;
+            background-color: white;
+        }
     }
 
     &-operation__title {

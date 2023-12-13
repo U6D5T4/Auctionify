@@ -1,7 +1,7 @@
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { formatDate } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, effect } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
@@ -20,6 +20,7 @@ import {
 } from 'src/app/web-api-client';
 import { ImagePopupComponent } from '../image-popup/image-popup.component';
 import { AddBidComponent } from '../add-bid/add-bid.component';
+import { WithdrawBidComponent } from '../withdraw-bid/withdraw-bid.component';
 
 @Component({
     selector: 'app-lot-profile',
@@ -35,6 +36,8 @@ export class LotProfileComponent implements OnInit {
     selectedMainPhotoIndex: number = 0;
     parentCategoryName: string = '';
     isDeleteLoading = false;
+    recentBidOfCurrentBuyer: number = 0;
+    currentUserId: number = 0;
 
     private isSignalrConnected = false;
 
@@ -47,7 +50,11 @@ export class LotProfileComponent implements OnInit {
         private dialog: Dialog,
         private snackBar: MatSnackBar,
         private sanitizer: DomSanitizer
-    ) {}
+    ) {
+        effect(() => {
+            this.currentUserId = this.authService.getUserId()!;
+        });
+    }
 
     ngOnInit() {
         this.getLotFromRoute();
@@ -174,6 +181,24 @@ export class LotProfileComponent implements OnInit {
                 currentHighestBid: this.getHighestBidPrice(this.lotData),
             },
         });
+
+        dialog.closed.subscribe({
+            next: () => {
+                this.getLotFromRoute();
+            },
+        });
+    }
+
+    openWithdrawBidModal(): void {
+        if (this.lotData?.bids && this.lotData.bids.length > 0) {
+            if (this.lotData?.bids[0].buyerId === this.currentUserId) {
+                const dialog = this.dialog.open(WithdrawBidComponent, {
+                    data: {
+                        bidId: this.lotData?.bids[0].id,
+                    },
+                });
+            }
+        }
     }
 
     formatBidDate(date: Date): string {
