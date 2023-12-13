@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { isLoggedInGuard } from 'src/app/guards/is-logged-in.guard';
 
 const generalRoutes: Routes = [
   {
@@ -8,7 +9,8 @@ const generalRoutes: Routes = [
       import('./profile/profile.module').then(
         (m) => m.ProfileModule
       ),
-    data: { breadcrumb: { skip: true } }
+    data: { breadcrumb: { skip: true } },
+    canActivate: [isLoggedInGuard],
   },
 ];
 

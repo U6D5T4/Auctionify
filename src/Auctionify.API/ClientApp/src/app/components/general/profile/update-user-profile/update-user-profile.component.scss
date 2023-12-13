@@ -41,9 +41,7 @@
     flex-direction: column;
     border-radius: 16px;
     border: 1px solid #E0E0E0;
-    min-width: 800px;
-    width: 1136px;
-    max-width: 1136px;
+    min-width: 700px;
 
     &__profile-form {
         display: flex;
@@ -99,14 +97,12 @@
         flex-direction: column;
         gap: 24px;
         min-width: 500px;
-        width: 1056px;
     }
 
     &__personal-info {
         display: flex;
         flex-direction: column;
         gap: 24px;
-        width: 300px;
     }
 
     &__number-email {
