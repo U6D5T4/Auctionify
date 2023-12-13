@@ -15,7 +15,7 @@ import { FilterComponent } from './filter/filter.component';
 import { AuctionComponent } from './auction/auction.component';
 
 @NgModule({
-    declarations: [FilterComponent],
+    declarations: [FilterComponent, AuctionComponent],
     imports: [
         CommonModule,
         MatIconModule,
@@ -29,6 +29,6 @@ import { AuctionComponent } from './auction/auction.component';
         MatDialogModule,
         ReactiveFormsModule,
     ],
-    exports: [FilterComponent],
+    exports: [FilterComponent, AuctionComponent],
 })
 export class BuyerModule {}

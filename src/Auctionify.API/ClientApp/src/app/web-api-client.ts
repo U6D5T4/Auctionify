@@ -612,7 +612,8 @@ export class Client {
             })
         );
     }
-    filterLots(params: FilterLot): Observable<FilterResponse[]> {
+
+    filterLots(params: FilterLot): Observable<FilterResponse> {
         let url_ = this.baseUrl + `/api/lots/filtered-lots`;
 
         let queryParams = new HttpParams();
@@ -654,6 +655,7 @@ export class Client {
             })
         );
     }
+
     getHighestLotPrice(): Observable<number> {
         let url_ = this.baseUrl + `/api/lots/highest-price`;
 
