@@ -10,8 +10,6 @@ import { AddBidComponent } from './add-bid/add-bid.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { ProfileModule } from './profile/profile.module';
-import { GeneralRoutingModule } from './general-routing.module';
 
 @NgModule({
     declarations: [LotProfileComponent, ImagePopupComponent, AddBidComponent],
@@ -24,10 +22,9 @@ import { GeneralRoutingModule } from './general-routing.module';
         ReactiveFormsModule,
         MatFormFieldModule,
         MatInputModule,
-        ProfileModule,
-        GeneralRoutingModule,
     ],
 
+    exports: [LotProfileComponent],
     exports: [ProfileModule, LotProfileComponent],
 })
 export class GeneralModule {}
