@@ -62,12 +62,18 @@
             <div class="main__btns">
                 <div class="main__btns-edit">
                     <div class="main__edit-btn">
-                        <button mat-flat-button routerLink="/update-profile">
+                        <button
+                            mat-flat-button
+                            [routerLink]="['./update-profile']"
+                        >
                             <mat-icon>edit</mat-icon> Change Info
                         </button>
                     </div>
                     <div class="main__change-password-btn">
-                        <button mat-flat-button routerLink="/change-password">
+                        <button
+                            mat-flat-button
+                            [routerLink]="['./change-password']"
+                        >
                             <mat-icon>lock</mat-icon> Change Password
                         </button>
                     </div>

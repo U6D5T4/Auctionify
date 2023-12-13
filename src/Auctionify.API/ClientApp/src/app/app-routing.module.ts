@@ -11,12 +11,13 @@ const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: 'home', component: HomeComponent },
     {
-        path: 'general',
+        path: 'profile',
         loadChildren: () =>
-            import('./components/general/general.module').then(
-                (m) => m.GeneralModule
+            import('./components/general/profile/profile.module').then(
+                (m) => m.ProfileModule
             ),
         data: { breadcrumb: { skip: true } },
+        canActivate: [isLoggedInGuard],
     },
     {
         path: 'seller',
