@@ -15,6 +15,7 @@ import { FilterComponent } from './home/filter/filter.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { WithdrawBidComponent } from './withdraw-bid/withdraw-bid.component';
 
 @NgModule({
     declarations: [
@@ -23,6 +24,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
         AddBidComponent,
         AuctionComponent,
         FilterComponent,
+        WithdrawBidComponent,
     ],
     imports: [
         CommonModule,

@@ -520,6 +520,23 @@ export class Client {
         );
     }
 
+    removeBid(bidId: number): Observable<string> {
+        let url_ = this.baseUrl + `/api/users/bids/${bidId}`;
+
+        let options_: any = {
+            responseType: 'text',
+        };
+
+        return this.http.request('delete', url_, options_).pipe(
+            map((response: any) => {
+                return response;
+            }),
+            catchError((error) => {
+                return throwError(() => error.error);
+            })
+        );
+    }
+
     addToWatchlist(lotId: number): Observable<any> {
         let url_ = this.baseUrl + `/api/users/watchlists/lots`;
 
@@ -872,6 +889,7 @@ export interface TokenModel {
     accessToken: string;
     expireDate: string;
     role: UserRole;
+    userId: number;
 }
 
 export interface RegisterResponse {

@@ -10,8 +10,7 @@ import {
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
-import { BidDto, Client } from 'src/app/web-api-client';
+import { BidDto, Client } from '../../../web-api-client';
 
 /** Error when invalid control is dirty, touched, or submitted. */
 export class CustomErrorStateMatcher implements ErrorStateMatcher {
@@ -78,7 +77,6 @@ export class AddBidComponent implements OnInit {
         this.apiClient.getAllBidsOfUserForLot(this.lotId, 0, 3).subscribe({
             next: (bids) => {
                 this.bids = bids;
-                console.log('Bids for lot:', this.bids);
             },
             error: (error) => {
                 console.error('Failed to fetch bids:', error);

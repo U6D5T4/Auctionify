@@ -108,7 +108,7 @@ namespace Auctionify.Application.Features.Users.Commands.AddBidForLot
 						if (lot is not null)
 						{
 							var currentLotBids = await _bidRepository.GetListAsync(
-								predicate: x => x.LotId == request.LotId,
+								predicate: x => x.LotId == request.LotId && !x.BidRemoved,
 								orderBy: x => x.OrderByDescending(x => x.TimeStamp),
 								cancellationToken: cancellationToken
 							);
