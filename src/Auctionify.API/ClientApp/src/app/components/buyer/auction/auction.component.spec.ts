@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { GetLotComponent } from './get-lot.component';
+import { AuctionComponent } from './auction.component';
 
-describe('GetLotComponent', () => {
-  let component: GetLotComponent;
-  let fixture: ComponentFixture<GetLotComponent>;
+describe('AuctionComponent', () => {
+  let component: AuctionComponent;
+  let fixture: ComponentFixture<AuctionComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [GetLotComponent]
+      declarations: [AuctionComponent]
     });
-    fixture = TestBed.createComponent(GetLotComponent);
+    fixture = TestBed.createComponent(AuctionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

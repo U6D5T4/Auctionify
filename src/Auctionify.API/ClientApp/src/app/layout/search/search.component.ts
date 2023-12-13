@@ -88,14 +88,6 @@ export class SearchComponent {
         this.isResult = true;
     }
 
-    elementSelect(event: MatAutocompleteSelectedEvent) {
-        const lotId = event.option.value;
-
-        this.router.navigate([`/view-lot/${lotId}`]);
-        this.searchInput.setValue('');
-        this.resetSearchResults();
-    }
-
     resetSearchResults() {
         this.searchNameResult = [];
         this.searchLocationResult = [];

@@ -62,7 +62,8 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer
 						.Include(x => x.Currency)
 						.Include(x => x.Location)
 						.Include(x => x.LotStatus)
-						.Include(x => x.Bids),
+						.Include(x => x.Bids)
+						.Include(x => x.Seller),
 				cancellationToken: cancellationToken
 			);
 

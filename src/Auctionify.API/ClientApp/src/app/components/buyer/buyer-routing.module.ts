@@ -1,7 +1,7 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
-import { GetLotComponent } from './get-lot/get-lot.component';
 import { FilterComponent } from './filter/filter.component';
+import { AuctionComponent } from './auction/auction.component';
 
 const BUYER_ROUTES: Routes = [
     {
@@ -11,12 +11,7 @@ const BUYER_ROUTES: Routes = [
     },
     {
         path: 'home',
-        component: FilterComponent,
-    },
-    {
-        path: 'get-lot/:id',
-        component: GetLotComponent,
-        pathMatch: 'full',
+        component: AuctionComponent,
     },
 ];
 
