@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -26,7 +26,7 @@ export interface ChangeUserPasswordFormModel {
   templateUrl: './change-password.component.html',
   styleUrls: ['./change-password.component.scss']
 })
-export class ChangePasswordComponent {
+export class ChangePasswordComponent implements OnInit  {
   userProfileData: BuyerModel | SellerModel | null = null;
   isLoading = false;
   passwordHidden: boolean = true;
