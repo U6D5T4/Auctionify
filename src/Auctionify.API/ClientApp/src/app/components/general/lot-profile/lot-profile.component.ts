@@ -190,32 +190,15 @@ export class LotProfileComponent implements OnInit {
     }
 
     openWithdrawBidModal(): void {
-        this.getBuyerRecentBidForLot().then((bidId) => {
-            const dialog = this.dialog.open(WithdrawBidComponent, {
-                data: {
-                    bidId: bidId,
-                },
-            });
-        });
-    }
-
-    getBuyerRecentBidForLot(): Promise<number> {
-        return new Promise<number>((resolve, reject) => {
-            this.client.getAllBidsOfUserForLot(this.lotId, 0, 1).subscribe({
-                next: (bids) => {
-                    if (bids.length > 0) {
-                        this.recentBidOfCurrentBuyer = bids[0].newPrice;
-                        resolve(bids[0].id);
-                    } else {
-                        resolve(0);
-                    }
-                },
-                error: (error) => {
-                    console.error('Failed to fetch bids:', error);
-                    reject(error);
-                },
-            });
-        });
+        if (this.lotData?.bids && this.lotData.bids.length > 0) {
+            if (this.lotData?.bids[0].buyerId === this.currentUserId) {
+                const dialog = this.dialog.open(WithdrawBidComponent, {
+                    data: {
+                        bidId: this.lotData?.bids[0].id,
+                    },
+                });
+            }
+        }
     }
 
     formatBidDate(date: Date): string {
