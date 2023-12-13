@@ -3,13 +3,16 @@
         <h1>My profile</h1>
     </div>
     <div class="profile__top-container">
-        <img 
-        [src]="userProfileData && userProfileData.profilePictureUrl ? 
-        userProfileData.profilePictureUrl : '../../../../../assets/images/User.png'" 
-        alt="User-profile-image" 
-        width="100"
-        height="100"
-        >
+        <img
+            [src]="
+                userProfileData && userProfileData.profilePictureUrl
+                    ? userProfileData.profilePictureUrl
+                    : '../../../../../assets/images/User.png'
+            "
+            alt="User-profile-image"
+            width="100"
+            height="100"
+        />
         <div class="profile__container-left-info">
             <p>Welcome Back, {{ userProfileData?.firstName }}!</p>
             <div class="profile__rate-lots">
@@ -17,7 +20,8 @@
                     <!-- Div for rates -->
                 </div>
                 <div class="profile__lots-count" *ngIf="isUserSeller()">
-                    Lots created {{ userProfileData?.createdLotsCount }} | Lots finished {{ userProfileData?.finishedLotsCount }}
+                    Lots created {{ userProfileData?.createdLotsCount }} | Lots
+                    finished {{ userProfileData?.finishedLotsCount }}
                 </div>
             </div>
         </div>
@@ -26,20 +30,27 @@
         <div class="main">
             <div class="main__profile">
                 <div class="main__photo">
-                    <img [src]="userProfileData && userProfileData.profilePictureUrl ? 
-                    userProfileData.profilePictureUrl : '../../../../../assets/images/User.png'" 
-                    alt="User-profile-image" 
-                    width="200"
-                    height="200"
-                    >
+                    <img
+                        [src]="
+                            userProfileData && userProfileData.profilePictureUrl
+                                ? userProfileData.profilePictureUrl
+                                : '../../../../../assets/images/User.png'
+                        "
+                        alt="User-profile-image"
+                        width="200"
+                        height="200"
+                    />
                 </div>
                 <div class="main__name-date">
-                    <h1>{{ userProfileData?.firstName }} {{ userProfileData?.lastName }}</h1>
+                    <h1>
+                        {{ userProfileData?.firstName }}
+                        {{ userProfileData?.lastName }}
+                    </h1>
                 </div>
             </div>
             <div class="main__about-me">
                 <h2>About me</h2>
-                <p>{{ userProfileData?.aboutMe}}</p>
+                <p>{{ userProfileData?.aboutMe }}</p>
             </div>
             <div class="main__personal-info">
                 <h2>Presonal info</h2>

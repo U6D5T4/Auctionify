@@ -15,29 +15,29 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
 import { ProfileRoutingModule } from './profile-routing.module';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    MatButtonModule,
-    MatIconModule,
-    MatFormFieldModule,
-    ReactiveFormsModule,
-    MatInputModule,
-    MatProgressSpinnerModule,
-    DialogModule,
-    ProfileRoutingModule,
-  ],
+    imports: [
+        CommonModule,
+        MatButtonModule,
+        MatIconModule,
+        MatFormFieldModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        MatProgressSpinnerModule,
+        DialogModule,
+        ProfileRoutingModule,
+    ],
 
-  declarations: [
-    UserProfileComponent,
-    ProfileNavbarComponent,
-    UpdateUserProfileComponent,
-    ChangePasswordComponent,
-  ],
+    declarations: [
+        UserProfileComponent,
+        ProfileNavbarComponent,
+        UpdateUserProfileComponent,
+        ChangePasswordComponent,
+    ],
 
-  exports: [
-    UserProfileComponent,
-    UpdateUserProfileComponent,
-    ChangePasswordComponent,
-  ]
+    exports: [
+        UserProfileComponent,
+        UpdateUserProfileComponent,
+        ChangePasswordComponent,
+    ],
 })
-export class ProfileModule { }
+export class ProfileModule {}

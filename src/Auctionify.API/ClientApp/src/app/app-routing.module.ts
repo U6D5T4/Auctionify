@@ -16,7 +16,7 @@ const routes: Routes = [
             import('./components/general/general.module').then(
                 (m) => m.GeneralModule
             ),
-        data: { breadcrumb: { skip: true } }
+        data: { breadcrumb: { skip: true } },
     },
     {
         path: 'seller',
@@ -47,4 +47,4 @@ const routes: Routes = [
     imports: [RouterModule.forRoot(routes)],
     exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

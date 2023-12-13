@@ -4,7 +4,6 @@ import { UpdateUserProfileComponent } from './update-user-profile/update-user-pr
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 
-
 const profileRoutes: Routes = [
     {
         path: 'profile',
@@ -27,4 +26,4 @@ const profileRoutes: Routes = [
     imports: [RouterModule.forChild(profileRoutes)],
     exports: [RouterModule],
 })
-export class ProfileRoutingModule { }
+export class ProfileRoutingModule {}

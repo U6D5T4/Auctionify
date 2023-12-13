@@ -13,25 +13,21 @@ import { MatInputModule } from '@angular/material/input';
 import { ProfileModule } from './profile/profile.module';
 import { GeneralRoutingModule } from './general-routing.module';
 
-
 @NgModule({
-	declarations: [LotProfileComponent, ImagePopupComponent, AddBidComponent],
-	imports: [
-		CommonModule,
-		RouterModule,
-		MatButtonModule,
-		MatIconModule,
-		MatProgressSpinnerModule,
-		ReactiveFormsModule,
-		MatFormFieldModule,
-		MatInputModule,
-		ProfileModule,
-		GeneralRoutingModule,
-	],
+    declarations: [LotProfileComponent, ImagePopupComponent, AddBidComponent],
+    imports: [
+        CommonModule,
+        RouterModule,
+        MatButtonModule,
+        MatIconModule,
+        MatProgressSpinnerModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        ProfileModule,
+        GeneralRoutingModule,
+    ],
 
-	exports: [
-		ProfileModule,
-		LotProfileComponent
-	]
+    exports: [ProfileModule, LotProfileComponent],
 })
-export class GeneralModule { }
+export class GeneralModule {}
