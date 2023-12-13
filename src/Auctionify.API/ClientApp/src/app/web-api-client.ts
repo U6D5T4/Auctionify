@@ -23,7 +23,11 @@ import { UserRole } from './api-authorization/authorize.service';
 import { CreateLotModel, UpdateLotModel } from './models/lots/lot-models';
 import { AddBidModel } from './models/bids/bid-models';
 import { FilterLot } from './models/lots/filter';
-import { BuyerModel, SellerModel, UpdateUserProfileModel } from './models/users/user-models';
+import {
+    BuyerModel,
+    SellerModel,
+    UpdateUserProfileModel,
+} from './models/users/user-models';
 
 export const API_BASE_URL = new InjectionToken('API_BASE_URL');
 
@@ -604,8 +608,9 @@ export class Client {
     }
 
     forgetPassword(email: string): Observable<ForgetPasswordResponse> {
-        let url_ = `${this.baseUrl
-            }/api/auth/forget-password?email=${encodeURIComponent(email)}`;
+        let url_ = `${
+            this.baseUrl
+        }/api/auth/forget-password?email=${encodeURIComponent(email)}`;
 
         console.log(email);
 
@@ -649,7 +654,8 @@ export class Client {
                 if (value !== null) {
                     if (value !== null) {
                         queryParams = queryParams.append(
-                            `PageRequest.${key.charAt(0).toUpperCase() + key.slice(1)
+                            `PageRequest.${
+                                key.charAt(0).toUpperCase() + key.slice(1)
                             }`,
                             value.toString()
                         );
@@ -741,7 +747,10 @@ export class Client {
         formData.append('lastName', body.lastName ?? '');
         formData.append('phoneNumber', body.phoneNumber ?? '');
         formData.append('aboutMe', body.aboutMe ?? '');
-        formData.append('deleteProfilePicture', body.deleteProfilePicture.toString());
+        formData.append(
+            'deleteProfilePicture',
+            body.deleteProfilePicture.toString()
+        );
 
         if (body.profilePicture !== null) {
             formData.append('profilePicture', body.profilePicture);
