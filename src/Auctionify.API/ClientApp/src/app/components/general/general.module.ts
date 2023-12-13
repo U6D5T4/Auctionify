@@ -14,6 +14,7 @@ import { AuctionComponent } from './home/auction/auction.component';
 import { FilterComponent } from './home/filter/filter.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
     declarations: [
@@ -34,6 +35,7 @@ import { MatSliderModule } from '@angular/material/slider';
         ReactiveFormsModule,
         MatFormFieldModule,
         MatInputModule,
+        MatCheckboxModule,
     ],
     exports: [LotProfileComponent],
 })
