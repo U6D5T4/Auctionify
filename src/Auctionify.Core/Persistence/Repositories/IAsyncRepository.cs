@@ -54,6 +54,7 @@ namespace Auctionify.Core.Persistence.Repositories
 
         Task<IPaginate<TEntity>> GetListByDynamicAsync(
         DynamicQuery dynamic,
+        IQueryable<TEntity>? existingQueryable = null,
         Expression<Func<TEntity, bool>>? predicate = null,
         Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, object>>? include = null,
         int index = 0,
