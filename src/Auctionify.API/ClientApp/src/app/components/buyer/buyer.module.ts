@@ -11,13 +11,11 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { BuyerRoutingModule } from './buyer-routing.module';
-import { GetLotComponent } from './get-lot/get-lot.component';
-import { AddBidComponent } from './add-bid/add-bid.component';
 import { FilterComponent } from './filter/filter.component';
 import { AuctionComponent } from './auction/auction.component';
 
 @NgModule({
-    declarations: [GetLotComponent, AddBidComponent, FilterComponent, AuctionComponent],
+    declarations: [FilterComponent, AuctionComponent],
     imports: [
         CommonModule,
         MatIconModule,
@@ -31,6 +29,6 @@ import { AuctionComponent } from './auction/auction.component';
         MatDialogModule,
         ReactiveFormsModule,
     ],
-    exports: [AddBidComponent, FilterComponent, AuctionComponent],
+    exports: [FilterComponent, AuctionComponent],
 })
 export class BuyerModule {}

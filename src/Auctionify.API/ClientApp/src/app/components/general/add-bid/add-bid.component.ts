@@ -53,7 +53,7 @@ export class AddBidComponent implements OnInit {
     ) {
         this.lotId = this.data?.lotId;
         this.bidCount = this.data?.bidCount;
-        this.currency = this.data?.currency;
+        this.currency = this.data?.currency.code;
         this.startingPrice = this.data?.startingPrice;
         this.currentHighestBid = this.data?.currentHighestBid;
     }
@@ -78,19 +78,6 @@ export class AddBidComponent implements OnInit {
         this.apiClient.getAllBidsOfUserForLot(this.lotId, 0, 3).subscribe({
             next: (bids) => {
                 this.bids = bids;
-                this.bids.forEach((bid) => {
-                    const date = new Date(bid.timeStamp);
-                    const day = date.getDate();
-                    const month = date.toLocaleString('default', {
-                        month: 'long',
-                    });
-                    const hours = date.getHours();
-                    const minutes = date.getMinutes();
-
-                    bid.timeStamp = `${day} ${month}, ${hours}:${
-                        minutes < 10 ? '0' + minutes : minutes
-                    }`;
-                });
                 console.log('Bids for lot:', this.bids);
             },
             error: (error) => {

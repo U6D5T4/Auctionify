@@ -33,5 +33,7 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer
 		public bool IsInWatchlist { get; set; }
 
 		public int BidCount { get; set; }
+
+		public string SellerEmail { get; set; }
 	}
 }

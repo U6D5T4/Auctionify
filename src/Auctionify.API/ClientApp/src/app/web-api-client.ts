@@ -519,6 +519,43 @@ export class Client {
             })
         );
     }
+
+    addToWatchlist(lotId: number): Observable<any> {
+        let url_ = this.baseUrl + `/api/users/watchlists/lots`;
+
+        const formData = new FormData();
+        formData.append('LotId', lotId.toString());
+
+        const options_: any = {
+            body: formData,
+            headers: new HttpHeaders({
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('post', url_, options_).pipe(
+            mergeMap((response): Observable<any> => {
+                return of(response);
+            })
+        );
+    }
+
+    removeFromWatchList(lotId: number) {
+        let url_ = this.baseUrl + `/api/users/watchlists/lots/${lotId}`;
+
+        const options_: any = {
+            headers: new HttpHeaders({
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('delete', url_, options_).pipe(
+            mergeMap((response): Observable<any> => {
+                return of(response);
+            })
+        );
+    }
+
     resetPassword(
         body: ResetPasswordViewModel | undefined
     ): Observable<ResetPasswordResponse> {
@@ -547,6 +584,7 @@ export class Client {
             })
         );
     }
+
     forgetPassword(email: string): Observable<ForgetPasswordResponse> {
         let url_ = `${
             this.baseUrl
@@ -571,19 +609,6 @@ export class Client {
                 }
 
                 return of(data);
-            })
-        );
-    }
-    getAllLots(pageIndex: number, pageSize: number): Observable<LotModel[]> {
-        let url_ = this.baseUrl + `/api/lots`;
-
-        const params = new HttpParams()
-            .set('pageIndex', pageIndex.toString())
-            .set('pageSize', pageSize.toString());
-
-        return this.http.get(url_, { params }).pipe(
-            mergeMap((response: any): Observable<LotModel[]> => {
-                return of(response.items);
             })
         );
     }
@@ -630,6 +655,7 @@ export class Client {
             })
         );
     }
+
     getHighestLotPrice(): Observable<number> {
         let url_ = this.baseUrl + `/api/lots/highest-price`;
 
@@ -640,6 +666,10 @@ export class Client {
                 } else return throwError(() => new Error('data is empty!'));
             })
         );
+    }
+
+    downloadDocument(documentUrl: string): Observable<any> {
+        return this.http.get(documentUrl, { responseType: 'blob' });
     }
 }
 
@@ -715,7 +745,7 @@ export interface BidDto {
     id: number;
     buyerId: number;
     newPrice: number;
-    timeStamp: string;
+    timeStamp: Date;
     currency: string;
     buyer: UserDto;
     bidRemoved: boolean;
@@ -764,6 +794,7 @@ export interface BuyerGetLotResponse {
     bids: BidDto[];
     isInWatchlist: boolean;
     bidCount: number | null;
+    sellerEmail: string;
 }
 
 export interface SellerGetLotResponse {
@@ -780,7 +811,7 @@ export interface SellerGetLotResponse {
     location: LocationDto;
     currency: CurrencyDto;
     bids: BidDto[];
-    bidCount: number | null;
+    bidCount: number;
 }
 
 export interface CreateLotResponse {
