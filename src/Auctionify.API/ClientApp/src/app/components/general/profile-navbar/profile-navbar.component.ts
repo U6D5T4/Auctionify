@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 
 import { ChoicePopupComponent } from 'src/app/ui-elements/choice-popup/choice-popup.component';
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
+import { Dialog } from '@angular/cdk/dialog';
 
 @Component({
   selector: 'app-profile-navbar',
@@ -12,10 +13,10 @@ import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 })
 export class ProfileNavbarComponent {
   constructor(
-    private authService: AuthorizeService, 
+    private authService: AuthorizeService,
     private router: Router,
-    private dialog: MatDialog
-    ) {}
+    private dialog: Dialog
+  ) { }
 
   logOut() {
     const dialogRef = this.dialog.open(ChoicePopupComponent, {
@@ -29,7 +30,7 @@ export class ProfileNavbarComponent {
         breakBtnColor: 'warn',
       },
     });
-    dialogRef.afterClosed().subscribe((result) => {
+    dialogRef.closed.subscribe((result) => {
       if (result === 'true') {
         this.authService.logout();
         this.router.navigate(['/home']);

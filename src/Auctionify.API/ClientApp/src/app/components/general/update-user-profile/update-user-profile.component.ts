@@ -45,11 +45,13 @@ export class UpdateUserProfileComponent {
       Validators.required, 
       Validators.pattern(/^[a-zA-Z]*$/),
       Validators.maxLength(30),
+      this.noSpaceValidator.bind(this),
     ]),
     lastName: new FormControl<string>('', [
       Validators.required, 
       Validators.pattern(/^[a-zA-Z]*$/),
       Validators.maxLength(30),
+      this.noSpaceValidator.bind(this),
     ]),
     aboutMe: new FormControl<string>('', [
       Validators.required,
@@ -82,14 +84,29 @@ export class UpdateUserProfileComponent {
                 file,
                 fileUrl: URL.createObjectURL(file),
             };
-
+            if (this.userProfileData) {
+              this.userProfileData.profilePictureUrl = null;
+            }
             this.profileForm.controls.profilePicture.setValue(fileModel);
-            this.profileForm.controls.deleteProfilePicture.setValue(true);
+            this.profileForm.controls.deleteProfilePicture.setValue(false);
         } else {
             this.openDialog(['Something went wrong, please try again later'], true);
         }
+    } else {
+        this.profileForm.controls.profilePicture.setValue(null);
     }
-}
+  }
+
+  noSpaceValidator(control: FormControl): { [key: string]: any } | null {
+    if (this.hasSpace(control.value)) {
+      return { 'noSpace': true };
+    }
+    return null;
+  }
+
+  hasSpace(value: string | null): boolean {
+    return value !== null && /\s/.test(value);
+  }
 
   openDialog(text: string[], error: boolean) {
     const dialogRef = this.dialog.open<string>(DialogPopupComponent, {

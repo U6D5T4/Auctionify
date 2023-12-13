@@ -5,7 +5,7 @@
     <div class="profile__top-container">
         <img 
         [src]="userProfileData && userProfileData.profilePictureUrl ? 
-        userProfileData.profilePictureUrl : '../../../../../assets/images/Image_not_available.png'" 
+        userProfileData.profilePictureUrl : '../../../../../assets/images/User.png'" 
         alt="User-profile-image" 
         width="100"
         height="100"
@@ -27,22 +27,35 @@
             <form [formGroup]="profileForm" class="main__profile-form" action="">
                 <div class="main__profile">
                     <div class="main__photo">
-                        <img
-                            src="{{ profileForm.controls.deleteProfilePicture.value ? '/../../../../../assets/images/Image_not_available.png' : userProfileData?.profilePictureUrl }}"
-                            alt="User-photo"
-                            width="200"
-                            height="200"
-                            (click)="toggleDeleteProfilePicture()"
-                        />
-                        <button mat-button (click)="fileInput.click()">Change picture</button>
-                        <input
-                            type="file"
-                            #fileInput
-                            accept=".jpg, .jpeg, .png"
-                            style="display: none"
-                            (change)="onFileChange($event)"
-                        />
-                    </div>
+						<img
+							*ngIf="userProfileData?.profilePictureUrl && !profileForm.controls.deleteProfilePicture.value"
+							src="{{ userProfileData?.profilePictureUrl }}"
+							alt="User-photo"
+							width="200"
+							height="200"
+							(click)="toggleDeleteProfilePicture()"
+							title="Click to delete profile picture"
+						/>
+						<img
+							*ngIf="profileForm.controls.profilePicture.value && !profileForm.controls.deleteProfilePicture.value"
+							[src]="profileForm.controls.profilePicture.value.fileUrl"
+							alt="User-photo"
+							width="200"
+							height="200"
+							(click)="toggleDeleteProfilePicture()"
+							title="Click to delete profile picture"
+						/>
+						<button mat-button (click)="fileInput.click()">
+							{{ userProfileData?.profilePictureUrl ? 'Change picture' : 'Add picture' }}
+						</button>
+						<input
+							type="file"
+							#fileInput
+							accept=".jpg, .jpeg, .png"
+							style="display: none"
+							(change)="onFileChange($event)"
+						/>
+					</div>
                     <div class="main__name">
                         <mat-form-field color="primary" appearance="outline">
                             <mat-label>Name</mat-label>
@@ -57,6 +70,9 @@
                             <mat-error *ngIf="profileForm.controls.firstName.hasError('maxlength')">
                                 Maximum 30 characters allowed
                             </mat-error>
+							<mat-error *ngIf="profileForm.controls.firstName.hasError('noSpace')">
+								Spaces are not allowed
+							  </mat-error>
                         </mat-form-field>
                         <mat-form-field color="primary" appearance="outline">
                             <mat-label>Surename</mat-label>
@@ -71,6 +87,9 @@
                             <mat-error *ngIf="profileForm.controls.lastName.hasError('maxlength')">
                                 Maximum 30 characters allowed
                             </mat-error>
+							<mat-error *ngIf="profileForm.controls.lastName.hasError('noSpace')">
+								Spaces are not allowed
+							  </mat-error>
                         </mat-form-field>
                     </div>
                 </div>
@@ -105,7 +124,6 @@
                                 Invalid phone number format. Use the format: <strong>+123456789012345</strong>
                             </mat-error>
                         </mat-form-field>
-                        <p>{{ userProfileData?.email }}</p>
                     </div>
                 </div>
                 <div class="main__btns">

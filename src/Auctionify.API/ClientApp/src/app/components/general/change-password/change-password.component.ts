@@ -83,7 +83,7 @@ export class ChangePasswordComponent {
           this.router.navigate(['/profile'])
         },
         error: (error: ChangePasswordResponse) => {
-          this.openDialog(error.errors! || error.message, true);
+          this.openDialog(error.errors! || ['Something went wrong, please try again later'], true);
         }
       })
   }
