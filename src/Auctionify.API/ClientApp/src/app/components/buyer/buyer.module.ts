@@ -12,6 +12,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { BuyerRoutingModule } from './buyer-routing.module';
 import { FilterComponent } from './filter/filter.component';
+import { AuctionComponent } from './auction/auction.component';
 
 @NgModule({
     declarations: [FilterComponent],

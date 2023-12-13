@@ -612,8 +612,7 @@ export class Client {
             })
         );
     }
-
-    filterLots(params: FilterLot): Observable<FilteredLotModel[]> {
+    filterLots(params: FilterLot): Observable<FilterResponse[]> {
         let url_ = this.baseUrl + `/api/lots/filtered-lots`;
 
         let queryParams = new HttpParams();
@@ -628,6 +627,17 @@ export class Client {
                         );
                     }
                 }
+            } else if (key == 'pageIndex' || key == 'pageSize') {
+                if (value !== null) {
+                    if (value !== null) {
+                        queryParams = queryParams.append(
+                            `PageRequest.${
+                                key.charAt(0).toUpperCase() + key.slice(1)
+                            }`,
+                            value.toString()
+                        );
+                    }
+                }
             } else {
                 if (value !== null) {
                     queryParams = queryParams.set(
@@ -639,14 +649,8 @@ export class Client {
         }
 
         return this.http.get(url_, { params: queryParams }).pipe(
-            mergeMap((response: any): Observable<FilteredLotModel[]> => {
-                let data: FilteredLotModel[] = [];
-
-                if (response.body !== null) {
-                    data = response.body;
-                }
-
-                return of(data);
+            mergeMap((response: any): Observable<FilterResponse> => {
+                return of(response);
             })
         );
     }
@@ -667,6 +671,16 @@ export class Client {
     }
 }
 
+export interface FilterResponse {
+    count: number;
+    hasNext: boolean;
+    hasPrevious: boolean;
+    index: number;
+    items: FilteredLotModel[];
+    pages: number;
+    size: number;
+}
+
 export interface FilteredLotModel {
     id: number;
     title: string;
@@ -679,6 +693,24 @@ export interface FilteredLotModel {
     location: LocationDto;
     currency: CurrencyDto;
     bids: BidDto[];
+    bidCount: number;
+    mainPhotoUrl: string | null;
+    isInWatchList: boolean;
+}
+
+export interface LotModel {
+    id: number;
+    title: string;
+    description: string;
+    startingPrice: number | null;
+    startDate: Date | null;
+    endDate: Date | null;
+    category: CategoryDto;
+    lotStatus: LotStatusDto;
+    location: LocationDto;
+    currency: CurrencyDto;
+    bids: BidDto[];
+    bidCount: number;
     mainPhotoUrl: string | null;
     isInWatchList: boolean;
 }

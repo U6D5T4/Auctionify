@@ -1,6 +1,8 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { Observable, forkJoin, map } from 'rxjs';
+
 import { AppLocation, Category, Client, Status } from 'src/app/web-api-client';
 
 export interface FilterResult {
@@ -46,15 +48,65 @@ export class FilterComponent implements OnInit {
 
     constructor(
         public dialogRef: DialogRef<string>,
-        @Inject(DIALOG_DATA) public data: any,
+        @Inject(DIALOG_DATA) public data: FilterResult | null,
         private client: Client
     ) {}
 
     ngOnInit(): void {
-        this.populateCategorySelector();
-        this.populateLocations();
-        this.populateLotStatuses();
-        this.populateHighestLotPrice();
+        const observablesTasks = forkJoin({
+            category: this.populateCategorySelector(),
+            location: this.populateLocations(),
+            statuses: this.populateLotStatuses(),
+            highestlotPrice: this.populateHighestLotPrice(),
+        });
+
+        observablesTasks.subscribe({
+            next: () => {
+                this.assignExistingFilterResult();
+            },
+        });
+    }
+
+    assignExistingFilterResult() {
+        if (this.data) {
+            this.filterForm.controls.minimumPrice.setValue(
+                this.data.minimumPrice
+            );
+            this.filterForm.controls.maximumPrice.setValue(
+                this.data.maximumPrice
+            );
+            this.filterForm.controls.categoryId.setValue(this.data.categoryId);
+            this.filterForm.controls.location.setValue(this.data.location);
+
+            if (this.data.lotStatuses) {
+                const data = Object.entries(this.checkboxValues.value);
+
+                for (const [key, value] of data) {
+                    let statusesToSearch: Status[];
+                    if (key === 'Closed') {
+                        statusesToSearch = this.lotStatuses.filter(
+                            (x) =>
+                                x.name === 'Sold' ||
+                                x.name === 'NotSold' ||
+                                x.name === 'Cancelled'
+                        );
+                    } else {
+                        statusesToSearch = this.lotStatuses.filter(
+                            (x) => x.name == key
+                        );
+                    }
+
+                    const statusResults = this.data.lotStatuses.find((x) => {
+                        const result = statusesToSearch.some((s) => s.id === x);
+                        return result;
+                    });
+
+                    if (statusResults) {
+                        this.checkboxValues.get(key)?.setValue(true);
+                    }
+                }
+            }
+        }
     }
 
     filterClick() {
@@ -91,36 +143,40 @@ export class FilterComponent implements OnInit {
         this.dialogRef.close(data);
     }
 
-    populateCategorySelector() {
-        this.client.getAllCategories().subscribe({
-            next: (result: Category[]) => {
+    populateCategorySelector(): Observable<boolean> {
+        return this.client.getAllCategories().pipe(
+            map((result: Category[]) => {
                 this.categories = result;
-            },
-        });
+                return true;
+            })
+        );
     }
 
-    populateLotStatuses() {
-        this.client.getAllLotStatuses().subscribe({
-            next: (result: Status[]) => {
+    populateLotStatuses(): Observable<boolean> {
+        return this.client.getAllLotStatuses().pipe(
+            map((result: Status[]) => {
                 this.lotStatuses = result;
-            },
-        });
+                return true;
+            })
+        );
     }
 
-    populateLocations() {
-        this.client.getAllLocations().subscribe({
-            next: (result: AppLocation[]) => {
+    populateLocations(): Observable<boolean> {
+        return this.client.getAllLocations().pipe(
+            map((result: AppLocation[]) => {
                 this.locations = result;
-            },
-        });
+                return true;
+            })
+        );
     }
 
-    populateHighestLotPrice() {
-        this.client.getHighestLotPrice().subscribe({
-            next: (result: number) => {
+    populateHighestLotPrice(): Observable<boolean> {
+        return this.client.getHighestLotPrice().pipe(
+            map((result: number) => {
                 this.highestLotPrice = result;
-            },
-        });
+                return true;
+            })
+        );
     }
 
     clickClose() {
