@@ -697,7 +697,7 @@ export interface FilteredLotModel {
     bids: BidDto[];
     bidCount: number;
     mainPhotoUrl: string | null;
-    isInWatchList: boolean;
+    isInWatchlist: boolean;
 }
 
 export interface LotModel {
@@ -714,7 +714,7 @@ export interface LotModel {
     bids: BidDto[];
     bidCount: number;
     mainPhotoUrl: string | null;
-    isInWatchList: boolean;
+    isInWatchlist: boolean;
 }
 
 export interface CategoryDto {

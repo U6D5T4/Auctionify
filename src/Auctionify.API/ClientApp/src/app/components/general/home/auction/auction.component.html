@@ -11,7 +11,9 @@
     </button>
   </div>
 </div>
-
+<ng-template #not_in_watchlist>
+  <mat-icon class="primary">favorite_border</mat-icon>
+</ng-template>
 <div class="main">
   <div class="main__container">
     <div class="main__auction-active">
@@ -21,8 +23,8 @@
             <img [src]="lot.mainPhotoUrl ? lot.mainPhotoUrl : 
             '../../../../assets/icons/NoImage.svg'" height="294px" width="294px" alt="Main Photo">
           </a>
-          <button class="lot__like-btn" *ngIf="!isUserSeller">
-            <mat-icon class="primary">favorite_border</mat-icon>
+          <button (click)="handleLotWatchlist(lot)" type="button" class="lot__like-btn" *ngIf="isUserBuyer">
+            <mat-icon *ngIf="lot.isInWatchlist; else not_in_watchlist" class="primary">favorite</mat-icon>
           </button>
         </div>
         <div class="lot__info">
@@ -80,8 +82,8 @@
             <img [src]="lot.mainPhotoUrl ? lot.mainPhotoUrl : 
             '../../../../assets/icons/NoImage.svg'" height="294px" width="294px" alt="Main Photo">
           </a>
-          <button class="lot__like-btn" *ngIf="!isUserSeller">
-            <mat-icon class="primary">favorite_border</mat-icon>
+          <button (click)="handleLotWatchlist(lot)" type="button" class="lot__like-btn" *ngIf="isUserBuyer">
+            <mat-icon *ngIf="lot.isInWatchlist; else not_in_watchlist" class="primary">favorite</mat-icon>
           </button>
         </div>
         <div class="lot__info">
@@ -135,8 +137,8 @@
             <img [src]="lot.mainPhotoUrl ? lot.mainPhotoUrl : 
             '../../../../assets/icons/NoImage.svg'" height="294px" width="294px" alt="Main Photo">
           </a>
-          <button class="lot__like-btn" *ngIf="!isUserSeller">
-            <mat-icon class="primary">favorite_border</mat-icon>
+          <button (click)="handleLotWatchlist(lot)" type="button" class="lot__like-btn" *ngIf="isUserBuyer">
+            <mat-icon *ngIf="lot.isInWatchlist; else not_in_watchlist" class="primary">favorite</mat-icon>
           </button>
         </div>
         <div class="lot__info">

@@ -10,14 +10,26 @@ import { AddBidComponent } from './add-bid/add-bid.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { AuctionComponent } from './home/auction/auction.component';
+import { FilterComponent } from './home/filter/filter.component';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSliderModule } from '@angular/material/slider';
 
 @NgModule({
-    declarations: [LotProfileComponent, ImagePopupComponent, AddBidComponent],
+    declarations: [
+        LotProfileComponent,
+        ImagePopupComponent,
+        AddBidComponent,
+        AuctionComponent,
+        FilterComponent,
+    ],
     imports: [
         CommonModule,
         RouterModule,
         MatButtonModule,
         MatIconModule,
+        MatSelectModule,
+        MatSliderModule,
         MatProgressSpinnerModule,
         ReactiveFormsModule,
         MatFormFieldModule,
