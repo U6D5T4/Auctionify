@@ -11,11 +11,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { BuyerRoutingModule } from './buyer-routing.module';
-import { FilterComponent } from './filter/filter.component';
-import { AuctionComponent } from './auction/auction.component';
 
 @NgModule({
-    declarations: [FilterComponent, AuctionComponent],
+    declarations: [],
     imports: [
         CommonModule,
         MatIconModule,
@@ -29,6 +27,6 @@ import { AuctionComponent } from './auction/auction.component';
         MatDialogModule,
         ReactiveFormsModule,
     ],
-    exports: [FilterComponent, AuctionComponent],
+    exports: [],
 })
 export class BuyerModule {}

@@ -10,6 +10,11 @@ import { AddBidComponent } from './add-bid/add-bid.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { AuctionComponent } from './home/auction/auction.component';
+import { FilterComponent } from './home/filter/filter.component';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { WithdrawBidComponent } from './withdraw-bid/withdraw-bid.component';
 
 @NgModule({
@@ -17,6 +22,8 @@ import { WithdrawBidComponent } from './withdraw-bid/withdraw-bid.component';
         LotProfileComponent,
         ImagePopupComponent,
         AddBidComponent,
+        AuctionComponent,
+        FilterComponent,
         WithdrawBidComponent,
     ],
     imports: [
@@ -24,10 +31,13 @@ import { WithdrawBidComponent } from './withdraw-bid/withdraw-bid.component';
         RouterModule,
         MatButtonModule,
         MatIconModule,
+        MatSelectModule,
+        MatSliderModule,
         MatProgressSpinnerModule,
         ReactiveFormsModule,
         MatFormFieldModule,
         MatInputModule,
+        MatCheckboxModule,
     ],
     exports: [LotProfileComponent],
 })
