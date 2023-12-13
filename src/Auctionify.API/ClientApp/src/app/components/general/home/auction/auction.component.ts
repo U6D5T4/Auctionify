@@ -4,10 +4,17 @@ import { Router } from '@angular/router';
 
 import { Observable, mergeMap, of } from 'rxjs';
 
-import { Client, LotModel, Status } from 'src/app/web-api-client';
+import {
+    BuyerGetLotResponse,
+    Client,
+    LotModel,
+    Status,
+} from 'src/app/web-api-client';
 import { FilterLot } from 'src/app/models/lots/filter';
 import { FilterComponent, FilterResult } from '../filter/filter.component';
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'app-auction',
@@ -22,7 +29,7 @@ export class AuctionComponent implements OnInit {
     initialArchivedLotsCount: number = 5;
     additionalArchivedLotsCount: number = 5;
 
-    isUserSeller: boolean = false;
+    isUserBuyer: boolean = false;
 
     noMoreActiveLotsToLoad: boolean = false;
     noMoreUpcomingLotsToLoad: boolean = false;
@@ -41,7 +48,8 @@ export class AuctionComponent implements OnInit {
         private apiClient: Client,
         private dialog: Dialog,
         private router: Router,
-        private authService: AuthorizeService
+        private authService: AuthorizeService,
+        private snackBar: MatSnackBar
     ) {
         this.filterData = {
             minimumPrice: null,
@@ -61,7 +69,7 @@ export class AuctionComponent implements OnInit {
             location: null,
         };
 
-        this.isUserSeller = this.authService.isUserSeller();
+        this.isUserBuyer = this.authService.isUserBuyer();
         this.apiClient.getAllLotStatuses().subscribe({
             next: (res) => {
                 this.lotStatuses = res;
@@ -102,6 +110,7 @@ export class AuctionComponent implements OnInit {
 
         this.apiClient.filterLots(filterLot).subscribe((filterResult) => {
             this.noMoreActiveLotsToLoad = filterResult.hasNext;
+            console.log(filterResult.items);
             this.activeLots$ = of(filterResult.items);
         });
     }
@@ -275,5 +284,53 @@ export class AuctionComponent implements OnInit {
         this.loadActiveLots();
         this.loadUpcomingLots();
         this.loadArchivedLots();
+    }
+
+    handleLotWatchlist(lotData: LotModel) {
+        if (!lotData.isInWatchlist) {
+            this.apiClient.addToWatchlist(lotData.id).subscribe({
+                next: (result) => {
+                    this.snackBar.open(result, 'Ok', {
+                        horizontalPosition: 'right',
+                        verticalPosition: 'top',
+                        duration: 5000,
+                    });
+                    lotData.isInWatchlist = true;
+                },
+                error: (result: HttpErrorResponse) => {
+                    this.snackBar.open(
+                        result.error.errors[0].ErrorMessage,
+                        'Ok',
+                        {
+                            horizontalPosition: 'right',
+                            verticalPosition: 'top',
+                            duration: 5000,
+                        }
+                    );
+                },
+            });
+        } else {
+            this.apiClient.removeFromWatchList(lotData.id).subscribe({
+                next: (result) => {
+                    this.snackBar.open(result, 'Ok', {
+                        horizontalPosition: 'right',
+                        verticalPosition: 'top',
+                        duration: 5000,
+                    });
+                    lotData.isInWatchlist = false;
+                },
+                error: (result: HttpErrorResponse) => {
+                    this.snackBar.open(
+                        result.error.errors[0].ErrorMessage,
+                        'Ok',
+                        {
+                            horizontalPosition: 'right',
+                            verticalPosition: 'top',
+                            duration: 5000,
+                        }
+                    );
+                },
+            });
+        }
     }
 }

@@ -54,7 +54,7 @@ namespace Auctionify.Application.Features.Users.Queries.GetAllBidsOfUserForLot
 			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
 
 			var bids = await _bidRepository.GetListAsync(
-				predicate: x => x.LotId == request.LotId && x.BuyerId == user!.Id,
+				predicate: x => x.LotId == request.LotId && x.BuyerId == user!.Id && !x.BidRemoved,
 				orderBy: x => x.OrderByDescending(x => x.TimeStamp),
 				enableTracking: false,
 				size: request.PageRequest.PageSize,
