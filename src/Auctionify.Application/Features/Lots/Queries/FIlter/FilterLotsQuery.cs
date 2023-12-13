@@ -51,7 +51,10 @@ namespace Auctionify.Application.Features.Lots.Queries.Filter
 			{
 				AuctionStatus.Active.ToString(),
 				AuctionStatus.Upcoming.ToString(),
-				AuctionStatus.Archive.ToString()
+				AuctionStatus.Archive.ToString(),
+				AuctionStatus.Cancelled.ToString(),
+				AuctionStatus.Sold.ToString(),
+				AuctionStatus.NotSold.ToString(),
 			};
 
 		public FilterLotsQueryHandler(
@@ -94,14 +97,18 @@ namespace Auctionify.Application.Features.Lots.Queries.Filter
 				filterBase.Filters.Add(statusFiltersBase);
 			}
 
+			IQueryable<Lot>? queryableForLotPrice = null;
+
 			if (request.MinimumPrice != null || request.MaximumPrice != null)
 			{
-				var priceBaseFilter = CreatePriceFilter(
+				queryableForLotPrice = _lotRepository.Query();
+
+				queryableForLotPrice = CreatePriceFilter(
+					queryableForLotPrice,
 					request.MinimumPrice,
 					request.MaximumPrice,
 					startingPriceField
 				);
-				filterBase.Filters.Add(priceBaseFilter);
 			}
 
 			if (request.CategoryId != null)
@@ -153,6 +160,7 @@ namespace Auctionify.Application.Features.Lots.Queries.Filter
 				request.PageRequest != null
 					? _lotRepository.GetListByDynamicAsync(
 						dynamicQuery,
+						existingQueryable: queryableForLotPrice,
 						predicate: l => validStatuses.Contains(l.LotStatus.Name),
 						include: x =>
 							x.Include(l => l.Location)
@@ -165,6 +173,7 @@ namespace Auctionify.Application.Features.Lots.Queries.Filter
 					)
 					: _lotRepository.GetListByDynamicAsync(
 						dynamicQuery,
+						existingQueryable: queryableForLotPrice,
 						predicate: l => validStatuses.Contains(l.LotStatus.Name),
 						include: x =>
 							x.Include(l => l.Category)
@@ -239,45 +248,29 @@ namespace Auctionify.Application.Features.Lots.Queries.Filter
 			return statusFiltersBase;
 		}
 
-		private Core.Persistence.Dynamic.Filter CreatePriceFilter(decimal? minPrice, decimal? maxPrice, string field)
+		private IQueryable<Lot> CreatePriceFilter(IQueryable<Lot> queryable, decimal? minPrice, decimal? maxPrice, string field)
 		{
-			var priceBaseFilter = new Core.Persistence.Dynamic.Filter
-			{
-				Field = field,
-				Operator = "isnotnull",
-				Logic = "and",
-				Filters = new List<Core.Persistence.Dynamic.Filter>()
-			};
+			queryable = queryable.Include(l => l.Bids);
 
 			if (minPrice != null)
 			{
-				priceBaseFilter.Filters.Add(
-					new Core.Persistence.Dynamic.Filter
-					{
-						Field = field,
-						Value = minPrice.ToString(),
-						Operator = "gte",
-						Logic = "and",
-						Filters = new List<Core.Persistence.Dynamic.Filter>()
-					}
+				queryable = queryable.Where(lot => 
+					(lot.Bids.Count() > 0 && lot.Bids.OrderByDescending(b => b.NewPrice).First().NewPrice >= minPrice) ||
+					(lot.Bids.Count() == 0 && lot.StartingPrice >= minPrice)
 				);
 			}
 
 			if (maxPrice != null)
 			{
-				priceBaseFilter.Filters.Add(
-					new Core.Persistence.Dynamic.Filter
-					{
-						Field = field,
-						Value = maxPrice.ToString(),
-						Operator = "lte",
-						Logic = "and",
-						Filters = new List<Core.Persistence.Dynamic.Filter>()
-					}
+				queryable = queryable.Where(lot =>
+					(lot.Bids.Count() > 0 && lot.Bids.OrderByDescending(b => b.NewPrice).First().NewPrice <= maxPrice) ||
+					(lot.Bids.Count() == 0 && lot.StartingPrice <= maxPrice)
 				);
 			}
 
-			return priceBaseFilter;
+			var str = queryable.ToQueryString();
+
+			return queryable;
 		}
 	}
 }
