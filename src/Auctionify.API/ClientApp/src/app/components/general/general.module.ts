@@ -25,6 +25,5 @@ import { MatInputModule } from '@angular/material/input';
     ],
 
     exports: [LotProfileComponent],
-    exports: [ProfileModule, LotProfileComponent],
 })
 export class GeneralModule {}
