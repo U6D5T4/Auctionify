@@ -1,6 +1,5 @@
 ﻿using Auctionify.Application.Features.LotStatuses.Queries.GetLotStatusesForBuyerFiltration;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Auctionify.API.Controllers
@@ -17,7 +16,6 @@ namespace Auctionify.API.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public async Task<ActionResult<IList<GetLotStatusesForBuyerFiltrationResponse>>> GetAll()
         {
             var result = await _mediator.Send(new GetLotStatusesForBuyerFiltrationQuery());

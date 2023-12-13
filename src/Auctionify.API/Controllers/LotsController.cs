@@ -163,7 +163,6 @@ namespace Auctionify.API.Controllers
 		}
 
 		[HttpGet("highest-price")]
-		[Authorize]
 		public async Task<ActionResult<decimal>> GetHighestLotPriceValue()
 		{
 			var result = await _mediator.Send(new GetHighestLotPriceQuery());
