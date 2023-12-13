@@ -520,6 +520,43 @@ export class Client {
             })
         );
     }
+
+    addToWatchlist(lotId: number): Observable<any> {
+        let url_ = this.baseUrl + `/api/users/watchlists/lots`;
+
+        const formData = new FormData();
+        formData.append('LotId', lotId.toString());
+
+        const options_: any = {
+            body: formData,
+            headers: new HttpHeaders({
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('post', url_, options_).pipe(
+            mergeMap((response): Observable<any> => {
+                return of(response);
+            })
+        );
+    }
+
+    removeFromWatchList(lotId: number) {
+        let url_ = this.baseUrl + `/api/users/watchlists/lots/${lotId}`;
+
+        const options_: any = {
+            headers: new HttpHeaders({
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('delete', url_, options_).pipe(
+            mergeMap((response): Observable<any> => {
+                return of(response);
+            })
+        );
+    }
+
     resetPassword(
         body: ResetPasswordViewModel | undefined
     ): Observable<ResetPasswordResponse> {
@@ -548,10 +585,10 @@ export class Client {
             })
         );
     }
+
     forgetPassword(email: string): Observable<ForgetPasswordResponse> {
-        let url_ = `${
-            this.baseUrl
-        }/api/auth/forget-password?email=${encodeURIComponent(email)}`;
+        let url_ = `${this.baseUrl
+            }/api/auth/forget-password?email=${encodeURIComponent(email)}`;
 
         console.log(email);
 
@@ -575,7 +612,8 @@ export class Client {
             })
         );
     }
-    filterLots(params: FilterLot): Observable<FilteredLotModel[]> {
+
+    filterLots(params: FilterLot): Observable<FilterResponse> {
         let url_ = this.baseUrl + `/api/lots/filtered-lots`;
 
         let queryParams = new HttpParams();
@@ -590,6 +628,16 @@ export class Client {
                         );
                     }
                 }
+            } else if (key == 'pageIndex' || key == 'pageSize') {
+                if (value !== null) {
+                    if (value !== null) {
+                        queryParams = queryParams.append(
+                            `PageRequest.${key.charAt(0).toUpperCase() + key.slice(1)
+                            }`,
+                            value.toString()
+                        );
+                    }
+                }
             } else {
                 if (value !== null) {
                     queryParams = queryParams.set(
@@ -601,17 +649,12 @@ export class Client {
         }
 
         return this.http.get(url_, { params: queryParams }).pipe(
-            mergeMap((response: any): Observable<FilteredLotModel[]> => {
-                let data: FilteredLotModel[] = [];
-
-                if (response.body !== null) {
-                    data = response.body;
-                }
-
-                return of(data);
+            mergeMap((response: any): Observable<FilterResponse> => {
+                return of(response);
             })
         );
     }
+
     getHighestLotPrice(): Observable<number> {
         let url_ = this.baseUrl + `/api/lots/highest-price`;
 
@@ -626,7 +669,7 @@ export class Client {
 
     getSeller(): Observable<SellerModel> {
         let url_ = this.baseUrl + `/api/users/sellers`;
-        
+
         let options_: any = {
             observe: 'response',
             headers: new HttpHeaders({
@@ -650,7 +693,7 @@ export class Client {
 
     getBuyer(): Observable<BuyerModel> {
         let url_ = this.baseUrl + `/api/users/buyers`;
-        
+
         let options_: any = {
             observe: 'response',
             headers: new HttpHeaders({
@@ -674,23 +717,23 @@ export class Client {
 
     updateProfile(body: UpdateUserProfileModel): Observable<any> {
         let url_ = this.baseUrl + `/api/users/`;
-    
+
         const formData = new FormData();
-    
+
         formData.append('firstName', body.firstName ?? '');
         formData.append('lastName', body.lastName ?? '');
         formData.append('phoneNumber', body.phoneNumber ?? '');
         formData.append('aboutMe', body.aboutMe ?? '');
         formData.append('deleteProfilePicture', body.deleteProfilePicture.toString());
-    
+
         if (body.profilePicture !== null) {
-          formData.append('profilePicture', body.profilePicture);
+            formData.append('profilePicture', body.profilePicture);
         }
 
         let options_: any = {
             body: formData,
         };
-    
+
         return this.http.request('put', url_, options_).pipe(
             catchError((error) => {
                 return throwError(() => error.error);
@@ -700,9 +743,9 @@ export class Client {
 
     changePassword(body: ChangeUserPasswordModel): Observable<any> {
         let url_ = this.baseUrl + `/api/auth/change-password`;
-    
+
         const formData = new FormData();
-    
+
         formData.append('oldPassword', body.oldPassword ?? '');
         formData.append('newPassword', body.newPassword ?? '');
         formData.append('confirmNewPassword', body.confirmNewPassword ?? '');
@@ -710,13 +753,27 @@ export class Client {
         let options_: any = {
             body: formData,
         };
-    
+
         return this.http.request('put', url_, options_).pipe(
             catchError((error) => {
                 return throwError(() => error.error);
             })
         );
     }
+
+    downloadDocument(documentUrl: string): Observable<any> {
+        return this.http.get(documentUrl, { responseType: 'blob' });
+    }
+}
+
+export interface FilterResponse {
+    count: number;
+    hasNext: boolean;
+    hasPrevious: boolean;
+    index: number;
+    items: FilteredLotModel[];
+    pages: number;
+    size: number;
 }
 
 export interface FilteredLotModel {
@@ -731,6 +788,24 @@ export interface FilteredLotModel {
     location: LocationDto;
     currency: CurrencyDto;
     bids: BidDto[];
+    bidCount: number;
+    mainPhotoUrl: string | null;
+    isInWatchList: boolean;
+}
+
+export interface LotModel {
+    id: number;
+    title: string;
+    description: string;
+    startingPrice: number | null;
+    startDate: Date | null;
+    endDate: Date | null;
+    category: CategoryDto;
+    lotStatus: LotStatusDto;
+    location: LocationDto;
+    currency: CurrencyDto;
+    bids: BidDto[];
+    bidCount: number;
     mainPhotoUrl: string | null;
     isInWatchList: boolean;
 }
@@ -763,7 +838,7 @@ export interface BidDto {
     id: number;
     buyerId: number;
     newPrice: number;
-    timeStamp: string;
+    timeStamp: Date;
     currency: string;
     buyer: UserDto;
     bidRemoved: boolean;
@@ -812,6 +887,7 @@ export interface BuyerGetLotResponse {
     bids: BidDto[];
     isInWatchlist: boolean;
     bidCount: number | null;
+    sellerEmail: string;
 }
 
 export interface SellerGetLotResponse {
@@ -828,7 +904,7 @@ export interface SellerGetLotResponse {
     location: LocationDto;
     currency: CurrencyDto;
     bids: BidDto[];
-    bidCount: number | null;
+    bidCount: number;
 }
 
 export interface CreateLotResponse {

@@ -35,7 +35,6 @@ export class SignalRService {
     private async startConnection(): Promise<void> {
         try {
             await this.connection.start();
-            console.log('SignalR connected');
         } catch (err: any) {
             console.error(err.toString());
         }
@@ -45,9 +44,7 @@ export class SignalRService {
         await this.connectionEstablished;
         this.connection
             .invoke('JoinLotGroup', lotId)
-            .then(() => {
-                console.log(`Joined group for Lot ID: ${lotId}`);
-            })
+            .then(() => {})
             .catch((err) => {
                 console.error(
                     `Error joining group for Lot ID: ${lotId}`,
@@ -60,9 +57,7 @@ export class SignalRService {
         await this.connectionEstablished;
         this.connection
             .invoke('LeaveLotGroup', lotId)
-            .then(() => {
-                console.log(`Left group for Lot ID: ${lotId}`);
-            })
+            .then(() => {})
             .catch((err) => {
                 console.error(
                     `Error leaving group for Lot ID: ${lotId}`,
@@ -73,7 +68,6 @@ export class SignalRService {
 
     public onReceiveBidNotification(callback: () => void, lotId: number) {
         this.connection.on(SignalRActions.ReceiveBidNotification, () => {
-            console.log(`Bid received for Lot ID: ${lotId}`);
             callback();
         });
     }
@@ -85,7 +79,6 @@ export class SignalRService {
         this.connection.on(
             SignalRActions.ReceiveWithdrawBidNotification,
             () => {
-                console.log(`Withdraw bid received for Lot ID: ${lotId}`);
                 callback();
             }
         );

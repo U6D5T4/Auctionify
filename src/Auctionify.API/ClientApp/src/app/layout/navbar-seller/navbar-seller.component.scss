@@ -85,11 +85,7 @@
     }
 }
 
-.header {
-    &__container {}
-}
-
 .content-container {
+    min-width: 0;
     width: 100%;
-    padding-right: 30px;
 }

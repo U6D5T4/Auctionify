@@ -22,7 +22,8 @@ namespace Auctionify.Application.Features.Lots.Profiles
 			CreateMap<Lot, GetAllLotsResponse>().ReverseMap();
 			CreateMap<Lot, CreatedLotResponse>().ReverseMap();
 			CreateMap<Lot, GetByIdForSellerLotResponse>().ReverseMap();
-			CreateMap<Lot, GetByIdForBuyerLotResponse>().ReverseMap();
+			CreateMap<Lot, GetByIdForBuyerLotResponse>().ReverseMap()
+				.ForPath(l => l.Seller.Email, cd => cd.MapFrom(l => l.SellerEmail));
 			CreateMap<Lot, DeletedLotResponse>().ReverseMap();
 			CreateMap<Lot, GetAllLotsByNameResponse>().ReverseMap();
 			CreateMap<Lot, UpdatedLotResponse>().ReverseMap();
