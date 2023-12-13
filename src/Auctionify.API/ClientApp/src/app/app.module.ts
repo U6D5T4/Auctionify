@@ -13,6 +13,7 @@ import { BuyerModule } from './components/buyer/buyer.module';
 import { DashboardComponent } from './components/seller/dashboard/dashboard.component';
 import { LayoutModule } from './layout/layout.module';
 import { GeneralModule } from './components/general/general.module';
+import { ProfileModule } from './components/general/profile/profile.module';
 
 @NgModule({
     declarations: [AppComponent, HomeComponent, DashboardComponent],
