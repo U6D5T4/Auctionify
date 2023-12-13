@@ -855,6 +855,7 @@ export interface TokenModel {
     accessToken: string;
     expireDate: string;
     role: UserRole;
+    userId: number;
 }
 
 export interface RegisterResponse {

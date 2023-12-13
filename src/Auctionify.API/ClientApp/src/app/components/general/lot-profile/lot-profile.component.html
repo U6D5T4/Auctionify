@@ -200,6 +200,11 @@
                             type="button"
                             (click)="openWithdrawBidModal()"
                             color="primary"
+                            [disabled]="
+                                lotData.bids.length == 0 ||
+                                lotData.bids.at(0)?.buyerId !==
+                                    this.currentUserId
+                            "
                         >
                             Withdraw
                         </button>
