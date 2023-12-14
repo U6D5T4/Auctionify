@@ -106,6 +106,7 @@ namespace Auctionify.Infrastructure.Identity
 			var token = await GenerateJWTTokenWithUserClaimsAsync(user);
 
 			token.Role = (await _userManager.GetRolesAsync(user)).FirstOrDefault()!;
+			token.UserId = user.Id;
 
 			return new LoginResponse { IsSuccess = true, Result = token };
 		}
@@ -382,8 +383,64 @@ namespace Auctionify.Infrastructure.Identity
 			var token = await GenerateJWTTokenWithUserClaimsAsync(user);
 
 			token.Role = (await _userManager.GetRolesAsync(user)).FirstOrDefault()!;
+			token.UserId = user.Id;
 
 			return new LoginResponse { IsSuccess = true, Result = token };
+		}
+
+		public async Task<ChangePasswordResponse> ChangeUserPasswordAsync(string email, ChangePasswordViewModel model)
+		{
+			var user = await _userManager.FindByEmailAsync(email);
+
+			if (user is null)
+			{
+				return new ChangePasswordResponse
+				{
+					IsSuccess = false,
+					Message = "No user associated with the provided email"
+				};
+			}
+
+			var isOldPasswordValid = await _userManager.CheckPasswordAsync(user, model.OldPassword);
+			if (!isOldPasswordValid)
+			{
+				return new ChangePasswordResponse
+				{
+					IsSuccess = false,
+					Message = "Invalid old password"
+				};
+			}
+
+			if (model.NewPassword != model.ConfirmNewPassword)
+			{
+				return new ChangePasswordResponse
+				{
+					IsSuccess = false,
+					Message = "New password does not match its confirmation"
+				};
+			}
+
+			var result = await _userManager.ChangePasswordAsync(
+				user,
+				model.OldPassword,
+				model.NewPassword
+			);
+
+			if (result.Succeeded)
+			{
+				return new ChangePasswordResponse
+				{
+					IsSuccess = true,
+					Message = "Password has been changed successfully!"
+				};
+			}
+
+			return new ChangePasswordResponse
+			{
+				IsSuccess = false,
+				Message = "Something went wrong",
+				Errors = result.Errors.Select(e => e.Description)
+			};
 		}
 	}
 }

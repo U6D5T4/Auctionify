@@ -11,6 +11,8 @@ import {
 import {
     AssignRoleResponse,
     AssignRoleViewModel,
+    ChangePasswordResponse,
+    ChangeUserPasswordModel,
     Client,
     ForgetPasswordResponse,
     ForgetPasswordViewModel,
@@ -38,6 +40,7 @@ export interface IUser {
     userToken: string | null;
     role: WritableSignal<UserRole | null>;
     expireDate: string | null;
+    userId: WritableSignal<number | null>;
 }
 
 @Injectable({
@@ -47,6 +50,7 @@ export class AuthorizeService {
     private tokenString: string = 'token';
     private expireString: string = 'expires_at';
     private roleString: string = 'role';
+    private userIdString: string = 'userId';
     private user: IUser | null = null;
 
     constructor(private client: Client, private httpClient: HttpClient) {
@@ -57,11 +61,13 @@ export class AuthorizeService {
         const token = localStorage.getItem(this.tokenString);
         const tokenExpireDate = localStorage.getItem(this.expireString);
         const role = localStorage.getItem(this.roleString);
+        const userId = Number(localStorage.getItem(this.userIdString));
         if (token === null && tokenExpireDate === null && role === null) {
             this.user = {
                 userToken: null,
                 expireDate: null,
                 role: signal(null),
+                userId: signal(null),
             };
         } else {
             const roleEnum: UserRole = role as UserRole;
@@ -70,6 +76,7 @@ export class AuthorizeService {
                 userToken: token!,
                 expireDate: tokenExpireDate!,
                 role: signal(roleEnum),
+                userId: signal(userId),
             };
 
             this.user = user;
@@ -121,13 +128,18 @@ export class AuthorizeService {
         localStorage.setItem(this.tokenString, response.result.accessToken);
         localStorage.setItem(this.expireString, response.result.expireDate);
         localStorage.setItem(this.roleString, response.result.role);
+        localStorage.setItem(
+            this.userIdString,
+            response.result.userId.toString()
+        );
 
         if (this.user == null) return false;
 
         this.user.userToken = response.result.accessToken;
         this.user.expireDate = response.result.expireDate;
 
-        this.user.role!.set(response.result?.role as UserRole);
+        this.user.role.set(response.result?.role as UserRole);
+        this.user.userId.set(response.result.userId);
 
         return true;
     }
@@ -209,11 +221,31 @@ export class AuthorizeService {
         );
     }
 
+    changePassword(
+        oldPassword: string,
+        newPassword: string,
+        confirmNewPassword: string
+    ): Observable<ChangePasswordResponse | undefined> {
+        const changePasswordData: ChangeUserPasswordModel = {
+            oldPassword,
+            newPassword,
+            confirmNewPassword,
+        };
+
+        return this.client.changePassword(changePasswordData).pipe(
+            map((result) => {
+                return result;
+            })
+        );
+    }
+
     logout(): boolean {
         localStorage.removeItem(this.tokenString);
         localStorage.removeItem(this.expireString);
         localStorage.removeItem(this.roleString);
+        localStorage.removeItem(this.userIdString);
         this.user?.role.set(null);
+        this.user?.userId.set(null);
         this.user!.expireDate = null;
         this.user!.userToken = null;
 
@@ -235,6 +267,8 @@ export class AuthorizeService {
     isUserSeller = computed(() => {
         return this.user?.role() == UserRole.Seller;
     });
+
+    getUserId = computed(() => this.user?.userId());
 
     isUserLoggedIn(): boolean {
         return this.user?.userToken !== null && this.getAccessToken() !== null;

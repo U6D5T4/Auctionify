@@ -1,0 +1,21 @@
+.menu{
+    display: flex;
+    flex-direction: column;
+    width: 368px;
+    border-radius: 16px;
+    border: 1px solid #E0E0E0;
+    padding: 20px;
+
+    &__items {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+
+.button-content {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+}

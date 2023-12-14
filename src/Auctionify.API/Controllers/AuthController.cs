@@ -14,14 +14,17 @@ namespace Auctionify.API.Controllers
 	{
 		private readonly IIdentityService _identityService;
 		private readonly SignInWithGoogleOptions _signInWithGoogleOptions;
+		private readonly ICurrentUserService _currentUserService;
 
 		public AuthController(
 			IIdentityService identityService,
-			IOptions<SignInWithGoogleOptions> signInWithGoogleOptions
+			IOptions<SignInWithGoogleOptions> signInWithGoogleOptions,
+			ICurrentUserService currentUserService
 		)
 		{
 			_identityService = identityService;
 			_signInWithGoogleOptions = signInWithGoogleOptions.Value;
+			_currentUserService = currentUserService;
 		}
 
 		[HttpPost]
@@ -131,6 +134,26 @@ namespace Auctionify.API.Controllers
 			}
 
 			return Ok(result);
+		}
+
+		[HttpPut("change-password")]
+		public async Task<IActionResult> ChangePassword([FromForm] ChangePasswordViewModel model)
+		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest("Some properties are not valid.");
+			}
+
+			var email = _currentUserService.UserEmail;
+
+			var result = await _identityService.ChangeUserPasswordAsync(email, model);
+
+			if (!result.IsSuccess)
+			{
+				return BadRequest(result);
+			}
+
+			return Ok();
 		}
 
 		[HttpGet("google-client-id")]
