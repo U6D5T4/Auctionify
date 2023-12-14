@@ -42,8 +42,6 @@ export class LoginComponent {
     async ngOnInit(): Promise<void> {
         try {
             this.clientId = await this.authService.fetchGoogleClientId();
-            // @ts-ignore
-            window.onGoogleLibraryLoad = () => {
                 // @ts-ignore
                 google.accounts.id.initialize({
                     client_id: this.clientId,
@@ -56,14 +54,13 @@ export class LoginComponent {
                 google.accounts.id.renderButton(
                     // @ts-ignore
                     document.getElementsByClassName('google-link__label')[0],
-                    { size: 'large', width: '100%' }
+                    { size: 'large', width: '100' }
                 );
 
                 // @ts-ignore
                 google.accounts.id.prompt(
                     (notification: PromptMomentNotification) => {}
                 );
-            };
         } catch (error) {
             console.error('Error fetching Google Client ID:', error);
         }
