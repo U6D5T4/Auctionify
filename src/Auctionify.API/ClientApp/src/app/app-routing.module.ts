@@ -11,6 +11,15 @@ const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: 'home', component: AuctionComponent },
     {
+        path: 'profile',
+        loadChildren: () =>
+            import('./components/general/profile/profile.module').then(
+                (m) => m.ProfileModule
+            ),
+        data: { breadcrumb: { skip: true } },
+        canActivate: [isLoggedInGuard],
+    },
+    {
         path: 'seller',
         loadChildren: () =>
             import('./components/seller/seller.module').then(

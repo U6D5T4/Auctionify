@@ -23,6 +23,11 @@ import { UserRole } from './api-authorization/authorize.service';
 import { CreateLotModel, UpdateLotModel } from './models/lots/lot-models';
 import { AddBidModel } from './models/bids/bid-models';
 import { FilterLot } from './models/lots/filter';
+import {
+    BuyerModel,
+    SellerModel,
+    UpdateUserProfileModel,
+} from './models/users/user-models';
 
 export const API_BASE_URL = new InjectionToken('API_BASE_URL');
 
@@ -685,6 +690,103 @@ export class Client {
         );
     }
 
+    getSeller(): Observable<SellerModel> {
+        let url_ = this.baseUrl + `/api/users/sellers`;
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<SellerModel> => {
+                let data!: SellerModel;
+
+                if (response.body !== null) {
+                    data = response.body;
+                }
+
+                return of(data);
+            })
+        );
+    }
+
+    getBuyer(): Observable<BuyerModel> {
+        let url_ = this.baseUrl + `/api/users/buyers`;
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<BuyerModel> => {
+                let data!: BuyerModel;
+
+                if (response.body !== null) {
+                    data = response.body;
+                }
+
+                return of(data);
+            })
+        );
+    }
+
+    updateProfile(body: UpdateUserProfileModel): Observable<any> {
+        let url_ = this.baseUrl + `/api/users/`;
+
+        const formData = new FormData();
+
+        formData.append('firstName', body.firstName ?? '');
+        formData.append('lastName', body.lastName ?? '');
+        formData.append('phoneNumber', body.phoneNumber ?? '');
+        formData.append('aboutMe', body.aboutMe ?? '');
+        formData.append(
+            'deleteProfilePicture',
+            body.deleteProfilePicture.toString()
+        );
+
+        if (body.profilePicture !== null) {
+            formData.append('profilePicture', body.profilePicture);
+        }
+
+        let options_: any = {
+            body: formData,
+        };
+
+        return this.http.request('put', url_, options_).pipe(
+            catchError((error) => {
+                return throwError(() => error.error);
+            })
+        );
+    }
+
+    changePassword(body: ChangeUserPasswordModel): Observable<any> {
+        let url_ = this.baseUrl + `/api/auth/change-password`;
+
+        const formData = new FormData();
+
+        formData.append('oldPassword', body.oldPassword ?? '');
+        formData.append('newPassword', body.newPassword ?? '');
+        formData.append('confirmNewPassword', body.confirmNewPassword ?? '');
+
+        let options_: any = {
+            body: formData,
+        };
+
+        return this.http.request('put', url_, options_).pipe(
+            catchError((error) => {
+                return throwError(() => error.error);
+            })
+        );
+    }
+
     downloadDocument(documentUrl: string): Observable<any> {
         return this.http.get(documentUrl, { responseType: 'blob' });
     }
@@ -898,6 +1000,12 @@ export interface RegisterResponse {
     errors?: string[] | undefined;
 }
 
+export interface ChangePasswordResponse {
+    message?: string | undefined;
+    isSuccess?: boolean;
+    errors?: string[] | undefined;
+}
+
 export interface ForgetPasswordResponse {
     message?: string | undefined;
     isSuccess?: boolean;
@@ -935,6 +1043,12 @@ export interface ResetPasswordViewModel {
 export interface FileParameter {
     data: any;
     fileName: string;
+}
+
+export interface ChangeUserPasswordModel {
+    oldPassword: string | null;
+    newPassword: string | null;
+    confirmNewPassword: string | null;
 }
 
 export class ApiException extends Error {

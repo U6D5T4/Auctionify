@@ -35,4 +35,4 @@ import { GeneralModule } from './components/general/general.module';
     ],
     bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

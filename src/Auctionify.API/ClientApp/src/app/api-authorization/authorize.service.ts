@@ -3,6 +3,8 @@ import { Observable, catchError, map, of, throwError } from 'rxjs';
 import {
     AssignRoleResponse,
     AssignRoleViewModel,
+    ChangePasswordResponse,
+    ChangeUserPasswordModel,
     Client,
     ForgetPasswordResponse,
     ForgetPasswordViewModel,
@@ -199,11 +201,31 @@ export class AuthorizeService {
         );
     }
 
+    changePassword(
+        oldPassword: string,
+        newPassword: string,
+        confirmNewPassword: string
+    ): Observable<ChangePasswordResponse | undefined> {
+        const changePasswordData: ChangeUserPasswordModel = {
+            oldPassword,
+            newPassword,
+            confirmNewPassword,
+        };
+
+        return this.client.changePassword(changePasswordData).pipe(
+            map((result) => {
+                return result;
+            })
+        );
+    }
+
     logout(): boolean {
         localStorage.removeItem(this.tokenString);
         localStorage.removeItem(this.expireString);
         localStorage.removeItem(this.roleString);
+        localStorage.removeItem(this.userIdString);
         this.user?.role.set(null);
+        this.user?.userId.set(null);
         this.user!.expireDate = null;
         this.user!.userToken = null;
 

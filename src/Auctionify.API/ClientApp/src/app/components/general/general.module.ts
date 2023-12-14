@@ -39,6 +39,7 @@ import { WithdrawBidComponent } from './withdraw-bid/withdraw-bid.component';
         MatInputModule,
         MatCheckboxModule,
     ],
+
     exports: [LotProfileComponent],
 })
 export class GeneralModule {}

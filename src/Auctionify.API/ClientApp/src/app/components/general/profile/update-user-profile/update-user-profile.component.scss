@@ -1,0 +1,125 @@
+.profile {
+    display: flex;
+    padding: 40px;
+    flex-direction: column;
+    gap: 32px;
+
+    &__top-container {
+        height: 148px;
+        border-radius: 16px;
+        border: 1px solid #E0E0E0;
+        display: flex;
+        gap: 40px;
+        align-items: center;
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+
+    &__top-container img {
+        border-radius: 50%;
+    }
+
+    &__container-left-info {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    &__rate-lots {
+        display: flex;
+        gap: 16px;
+    }
+}
+
+.main-container {
+    display: flex;
+    gap: 16px;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;
+    border: 1px solid #E0E0E0;
+    min-width: 700px;
+
+    &__profile-form {
+        display: flex;
+        flex-direction: column;
+        padding: 40px;
+        gap: 32px;
+    }
+
+    &__profile {
+        display: flex;
+        align-items: center;
+        gap: 40px;
+    }
+
+    &__photo {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 4px;
+    }
+
+    &__photo img {
+        border-radius: 50%;
+    }
+
+    &__photo img:hover {
+        cursor: pointer;
+        opacity: 0.8;
+    }
+
+    &__photo button {
+        width: 157px;
+        height: 48px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 8px;
+        background-color: transparent;
+        border: none;
+    }
+
+    &__name {
+        width: 300px;
+        padding-left: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    &__about-me {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        min-width: 500px;
+    }
+
+    &__personal-info {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    &__number-email {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    &__btns {
+        display: flex;
+        justify-content: space-between;
+        width: 180px;
+    }
+
+    &__btn {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+}

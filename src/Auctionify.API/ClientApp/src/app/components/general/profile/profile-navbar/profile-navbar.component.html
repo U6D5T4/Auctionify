@@ -1,0 +1,21 @@
+<div class="menu">
+    <div class="menu__items">
+        <button
+            routerLink="/profile"
+            routerLinkActive="mat-primary"
+            mat-flat-button
+            color="white"
+        >
+            <div class="button-content">
+                <mat-icon>person_outline</mat-icon>
+                My profile
+            </div>
+        </button>
+        <button type="button" (click)="logOut()" mat-flat-button color="white">
+            <div class="button-content">
+                <mat-icon color="warn">logout</mat-icon>
+                Log out
+            </div>
+        </button>
+    </div>
+</div>
