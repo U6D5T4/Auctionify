@@ -420,7 +420,7 @@ export class CreateLotComponent implements OnInit {
             if (this.imagesToUpload.find((x) => x.name == element.name)) {
                 this.openDialog(
                     [
-                        `You tried to add existing images, so it will not be added again:`,
+                        `These images already exist and won't be added again:`,
                         element.name!,
                     ],
                     true,

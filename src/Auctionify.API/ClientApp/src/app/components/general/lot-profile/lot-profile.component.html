@@ -225,6 +225,7 @@
                             type="button"
                             color="primary"
                             (click)="deleteLot()"
+                            [disabled]="isSellerOwnsLot(lotData)"
                         >
                             <mat-spinner
                                 *ngIf="isDeleteLoading"
@@ -242,6 +243,7 @@
                             mat-flat-button
                             type="button"
                             color="primary"
+                            [disabled]="isSellerOwnsLot(lotData)"
                         >
                             <mat-icon>edit</mat-icon>
                             Edit lot

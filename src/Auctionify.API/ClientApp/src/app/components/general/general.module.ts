@@ -10,6 +10,7 @@ import { AddBidComponent } from './add-bid/add-bid.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AuctionComponent } from './home/auction/auction.component';
 import { FilterComponent } from './home/filter/filter.component';
 import { MatSelectModule } from '@angular/material/select';
@@ -38,6 +39,7 @@ import { WithdrawBidComponent } from './withdraw-bid/withdraw-bid.component';
         MatFormFieldModule,
         MatInputModule,
         MatCheckboxModule,
+        MatSnackBarModule,
     ],
 
     exports: [LotProfileComponent],

@@ -1,5 +1,13 @@
 import { Injectable, WritableSignal, computed, signal } from '@angular/core';
-import { Observable, catchError, map, of, throwError } from 'rxjs';
+import {
+    Observable,
+    Subject,
+    catchError,
+    firstValueFrom,
+    map,
+    of,
+    throwError,
+} from 'rxjs';
 import {
     AssignRoleResponse,
     AssignRoleViewModel,
@@ -108,14 +116,15 @@ export class AuthorizeService {
 
         return this.client.assignRoleToUser(roleAssignmentData).pipe(
             map((result) => {
+                this.processLoginResponse(result);
                 return result;
             })
         );
     }
 
-    processLoginResponse(response: LoginResponse) {
+    processLoginResponse(response: LoginResponse | AssignRoleResponse) {
         if (response.result === undefined) throw new Error('user not found');
-
+        console.log(response);
         localStorage.setItem(this.tokenString, response.result.accessToken);
         localStorage.setItem(this.expireString, response.result.expireDate);
         localStorage.setItem(this.roleString, response.result.role);
@@ -151,6 +160,17 @@ export class AuthorizeService {
                     }
                 )
             );
+    }
+
+    async fetchGoogleClientId(): Promise<string> {
+        try {
+            const clientId = await firstValueFrom(
+                this.client.getGoogleClientId()
+            );
+            return clientId as string;
+        } catch (error) {
+            throw new Error('Unable to fetch Google Client ID');
+        }
     }
 
     register(

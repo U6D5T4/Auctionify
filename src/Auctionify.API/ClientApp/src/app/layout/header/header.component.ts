@@ -1,10 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, effect } from '@angular/core';
 import { Router } from '@angular/router';
 
-@Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss']
-})
+import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 
-export class HeaderComponent {}
+@Component({
+    selector: 'app-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.scss'],
+})
+export class HeaderComponent {
+    isUserBuyer: boolean = false;
+
+    private isBuyerEffect = effect(() => {
+        this.isUserBuyer = this.authService.isUserBuyer();
+    });
+
+    constructor(private authService: AuthorizeService) {}
+
+    logout() {
+        this.authService.logout();
+    }
+}

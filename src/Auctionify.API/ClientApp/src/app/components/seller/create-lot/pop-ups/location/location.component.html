@@ -1,15 +1,24 @@
 <div class="dialog-container">
-    <form [formGroup]="locationGroup" class="location-form"><mat-form-field color="primary" appearance="outline">
+    <div class="header">
+        <h2>Location Info</h2>
+        <button mat-icon-button (click)="closePopup()" class="close-button">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+    <form [formGroup]="locationGroup" class="location-form">
+        <mat-form-field color="primary" appearance="outline">
             <mat-label>Country</mat-label>
-            <input formControlName="country" matInput>
-            <mat-error *ngIf="locationGroup.controls.country.hasError('required')">
+            <input formControlName="country" matInput />
+            <mat-error
+                *ngIf="locationGroup.controls.country.hasError('required')"
+            >
                 Country is
                 <strong>required</strong>
             </mat-error>
         </mat-form-field>
         <mat-form-field color="primary" appearance="outline">
             <mat-label>City</mat-label>
-            <input formControlName="city" matInput>
+            <input formControlName="city" matInput />
             <mat-error *ngIf="locationGroup.controls.city.hasError('required')">
                 City is
                 <strong>required</strong>
@@ -17,13 +26,18 @@
         </mat-form-field>
         <mat-form-field color="primary" appearance="outline">
             <mat-label>Address</mat-label>
-            <input formControlName="address" matInput>
+            <input formControlName="address" matInput />
             <mat-error *ngIf="locationGroup.controls.city.hasError('required')">
                 address is
                 <strong>required</strong>
             </mat-error>
         </mat-form-field>
-        <button type="button" (click)="submit()" mat-flat-button color="primary">
+        <button
+            type="button"
+            (click)="submit()"
+            mat-flat-button
+            color="primary"
+        >
             Save
         </button>
     </form>

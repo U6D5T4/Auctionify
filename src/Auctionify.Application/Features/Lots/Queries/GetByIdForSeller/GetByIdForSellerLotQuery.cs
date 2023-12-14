@@ -55,7 +55,7 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForSeller
 			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
 
 			var lot = await _lotRepository.GetAsync(
-				predicate: x => x.Id == request.Id && x.SellerId == user!.Id,
+				predicate: x => x.Id == request.Id,
 				include: x =>
 					x.Include(x => x.Category)
 						.Include(x => x.Currency)

@@ -9,7 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '@angular/cdk/dialog';
-import { MatButtonToggleModule } from '@angular/material/button-toggle'
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { FormsModule } from '@angular/forms';
 
 import { ApplicationPaths } from '../api-authorization/api-authorization.constants';
@@ -20,47 +20,59 @@ import { RegisterRoleComponent } from './register-role/register-role.component';
 import { UiElementsModule } from '../ui-elements/ui-elements.module';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { isLoggedInGuard } from '../guards/is-logged-in.guard';
+import { EmailSentComponent } from './email-sent/email-sent.component';
 
 @NgModule({
-    declarations: [LoginComponent, RegisterComponent, ForgetPasswordComponent, RegisterRoleComponent, ResetPasswordComponent],
-  imports: [
-    CommonModule,
-    HttpClientModule,
-    RouterModule.forChild([
-      {
-        path: ApplicationPaths.Login,
-        component: LoginComponent,
-        canActivate: [isLoggedInGuard],
-      },
-      {
-        path: ApplicationPaths.Register,
-        component: RegisterComponent,
-        canActivate: [isLoggedInGuard],
-      },
-      {
-        path: ApplicationPaths.ForgetPassword,
-        component: ForgetPasswordComponent,
-      },
-      {
-          path: ApplicationPaths.ResetPassword,
-          component: ResetPasswordComponent
-      },
-      {
-        path: ApplicationPaths.RegisterRole,
-        component: RegisterRoleComponent,
-      }
-    ]),
-    UiElementsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    ReactiveFormsModule,
-    DialogModule,
-    MatButtonModule,
-    MatProgressSpinnerModule,
-    MatButtonToggleModule,
-    FormsModule
-  ],
-  exports: []
+    declarations: [
+        LoginComponent,
+        RegisterComponent,
+        ForgetPasswordComponent,
+        RegisterRoleComponent,
+        ResetPasswordComponent,
+        EmailSentComponent,
+    ],
+    imports: [
+        CommonModule,
+        HttpClientModule,
+        RouterModule.forChild([
+            {
+                path: ApplicationPaths.Login,
+                component: LoginComponent,
+                canActivate: [isLoggedInGuard],
+            },
+            {
+                path: ApplicationPaths.Register,
+                component: RegisterComponent,
+                canActivate: [isLoggedInGuard],
+            },
+            {
+                path: ApplicationPaths.ForgetPassword,
+                component: ForgetPasswordComponent,
+            },
+            {
+                path: ApplicationPaths.ResetPassword,
+                component: ResetPasswordComponent,
+            },
+            {
+                path: ApplicationPaths.RegisterRole,
+                component: RegisterRoleComponent,
+            },
+            {
+                path: ApplicationPaths.EmailSent,
+                component: EmailSentComponent,
+            },
+        ]),
+        UiElementsModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatIconModule,
+        ReactiveFormsModule,
+        DialogModule,
+        MatButtonModule,
+        MatProgressSpinnerModule,
+        MatButtonToggleModule,
+        FormsModule,
+    ],
+    exports: [],
 })
 export class ApiAuthorizationModule {}

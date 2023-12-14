@@ -26,6 +26,7 @@ namespace Auctionify.Infrastructure.Identity
 		private readonly RoleManager<Role> _roleManager;
 		private readonly AuthSettingsOptions _authSettingsOptions;
 		private readonly AppOptions _appOptions;
+		private readonly ICurrentUserService _currentUserService;
 
 		public IdentityService(
 			UserManager<User> userManager,
@@ -34,7 +35,8 @@ namespace Auctionify.Infrastructure.Identity
 			IEmailService emailService,
 			RoleManager<Role> roleManager,
 			IOptions<AuthSettingsOptions> authSettingsOptions,
-			IOptions<AppOptions> appOptions
+			IOptions<AppOptions> appOptions,
+			ICurrentUserService currentUserService
 		)
 		{
 			_userManager = userManager;
@@ -44,6 +46,7 @@ namespace Auctionify.Infrastructure.Identity
 			_roleManager = roleManager;
 			_authSettingsOptions = authSettingsOptions.Value;
 			_appOptions = appOptions.Value;
+			_currentUserService = currentUserService;
 		}
 
 		public async Task<LoginResponse> LoginUserAsync(LoginViewModel userModel)
@@ -155,10 +158,15 @@ namespace Auctionify.Infrastructure.Identity
 			var encodedToken = Encoding.UTF8.GetBytes(token);
 			var validToken = WebEncoders.Base64UrlEncode(encodedToken);
 
-			string url = $"{_appOptions.ClientApp}/auth/reset-password?email={email}&token={validToken}";
+			string url =
+				$"{_appOptions.ClientApp}/auth/reset-password?email={email}&token={validToken}";
 
-			await _emailService.SendEmailAsync(email, "Reset Password", "<h1>Follow the instructions to reset your password</h1>" +
-				$"<p>To reset your password <a href='{url}'>Click here</a></p>");
+			await _emailService.SendEmailAsync(
+				email,
+				"Reset Password",
+				"<h1>Follow the instructions to reset your password</h1>"
+					+ $"<p>To reset your password <a href='{url}'>Click here</a></p>"
+			);
 
 			return new ResetPasswordResponse
 			{
@@ -285,20 +293,29 @@ namespace Auctionify.Infrastructure.Identity
 			};
 		}
 
-		public async Task<AssignRoleToUserResponse> AssignRoleToUserAsync(string email, string role)
+		public async Task<LoginResponse> AssignRoleToUserAsync(string role)
 		{
-			if (string.IsNullOrWhiteSpace(email))
+			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+
+			if (user == null)
 			{
-				return new AssignRoleToUserResponse
+				return new LoginResponse { IsSuccess = false, Message = "User not found" };
+			}
+
+			var userRoleList = await _userManager.GetRolesAsync(user);
+
+			if (userRoleList.Any())
+			{
+				return new LoginResponse
 				{
 					IsSuccess = false,
-					Message = "Email is not defined"
+					Message = "User already has a role"
 				};
 			}
 
 			if (string.IsNullOrWhiteSpace(role))
 			{
-				return new AssignRoleToUserResponse
+				return new LoginResponse
 				{
 					IsSuccess = false,
 					Message = "Role name is not provided"
@@ -309,48 +326,27 @@ namespace Auctionify.Infrastructure.Identity
 
 			if (!roleExists)
 			{
-				return new AssignRoleToUserResponse
-				{
-					IsSuccess = false,
-					Message = "Role not found"
-				};
-			}
-
-			var user = await _userManager.FindByEmailAsync(email);
-
-			if (user == null)
-			{
-				return new AssignRoleToUserResponse
-				{
-					IsSuccess = false,
-					Message = "User not found"
-				};
-			}
-
-			var userHasRole = await _userManager.IsInRoleAsync(user, role);
-
-			if (userHasRole)
-			{
-				return new AssignRoleToUserResponse
-				{
-					IsSuccess = false,
-					Message = "User already has the specified role"
-				};
+				return new LoginResponse { IsSuccess = false, Message = "Role not found" };
 			}
 
 			var result = await _userManager.AddToRoleAsync(user, role);
 
 			if (result.Succeeded)
 			{
-				return new AssignRoleToUserResponse
+				var token = await GenerateJWTTokenWithUserClaimsAsync(user);
+
+				token.Role = (await _userManager.GetRolesAsync(user)).FirstOrDefault()!;
+
+				return new LoginResponse
 				{
 					IsSuccess = true,
+					Result = token,
 					Message = $"Role '{role}' assigned to the user successfully"
 				};
 			}
 			else
 			{
-				return new AssignRoleToUserResponse
+				return new LoginResponse
 				{
 					IsSuccess = false,
 					Message = "Failed to assign role",
@@ -386,12 +382,8 @@ namespace Auctionify.Infrastructure.Identity
 
 			var token = await GenerateJWTTokenWithUserClaimsAsync(user);
 
-			var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
-
-			if (role == null)
-			{
-				token.Role = string.Empty;
-			}
+			token.Role = (await _userManager.GetRolesAsync(user)).FirstOrDefault()!;
+			token.UserId = user.Id;
 
 			return new LoginResponse { IsSuccess = true, Result = token };
 		}

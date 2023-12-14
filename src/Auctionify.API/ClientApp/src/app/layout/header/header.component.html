@@ -1,6 +1,6 @@
 <div class="header">
     <a [routerLink]="['/home']">
-        <img src="assets/icons/AuctionifyLogo.svg" title="AuctionifyLogo">
+        <img src="assets/icons/AuctionifyLogo.svg" title="AuctionifyLogo" />
     </a>
 
     <div class="header__search">
@@ -9,25 +9,28 @@
 
     <ul class="navigation">
         <li>
-            <img src="assets/icons/DashboardIcon.svg" alt="Dashboard Icon">
+            <img src="assets/icons/DashboardIcon.svg" alt="Dashboard Icon" />
             <a routerLink="/dashboard">Dashboard</a>
         </li>
         <li>
-            <img src="assets/icons/NotificationIcon.svg" alt="Notification Icon">
-            <a routerLink="/notification">Notification</a>
-        </li>
-        <li>
-            <img src="assets/icons/WishlistIcon.svg" alt="Wishlist Icon">
+            <img src="assets/icons/WishlistIcon.svg" alt="Wishlist Icon" />
             <a routerLink="/wishlist">Wishlist</a>
         </li>
-        <li>
-            <img src="assets/icons/MessagesIcon.svg" alt="Message Icon">
-            <a routerLink="/messages">Messages</a>
-        </li>
-        <li>
-            <img src="assets/icons/ProfileIcon.svg" alt="Profile Icon">
-            <a routerLink="/profile">My Profile</a>
-        </li>
+        <ng-container *ngIf="isUserBuyer">
+            <li>
+                <img src="assets/icons/ProfileIcon.svg" alt="Profile Icon" />
+                <a routerLink="/profile">My Profile</a>
+            </li>
+            <li>
+                <img src="assets/icons/LogoutIcon.svg" alt="Logout Icon" />
+                <a (click)="logout()" class="logout-button">Logout</a>
+            </li>
+        </ng-container>
+        <ng-container *ngIf="!isUserBuyer">
+            <li>
+                <img src="assets/icons/ProfileIcon.svg" alt="Profile Icon" />
+                <a [routerLink]="['/auth/login']">Login</a>
+            </li>
+        </ng-container>
     </ul>
-
 </div>

@@ -27,6 +27,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 		private readonly Mock<IOptions<AppOptions>> _appOptionsMock;
 		private readonly Mock<IEmailService> _emailServiceMock;
 		private readonly Mock<RoleManager<Role>> _roleManagerMock;
+		private readonly Mock<ICurrentUserService> _currentUserServiceMock;
 
 		public IdentityServiceUnitTests()
 		{
@@ -41,6 +42,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				null,
 				null
 			);
+			_currentUserServiceMock = new Mock<ICurrentUserService>();
+			_currentUserServiceMock.Setup(x => x.UserEmail).Returns(It.IsAny<string>());
 			_signInManagerMock = new Mock<SignInManager<User>>(
 				_userManagerMock.Object,
 				Mock.Of<IHttpContextAccessor>(),
@@ -100,7 +103,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_emailServiceMock.Object,
 				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -145,7 +149,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_emailServiceMock.Object,
 				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -191,7 +196,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_emailServiceMock.Object,
 				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -237,7 +243,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_emailServiceMock.Object,
 				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -263,7 +270,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_emailServiceMock.Object,
 				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -291,7 +299,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_emailServiceMock.Object,
 				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -336,7 +345,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_emailServiceMock.Object,
 				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -383,7 +393,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_emailServiceMock.Object,
 				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -415,7 +426,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_emailServiceMock.Object,
 				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -457,7 +469,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_emailServiceMock.Object,
 				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -502,7 +515,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_emailServiceMock.Object,
 				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -527,7 +541,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_emailServiceMock.Object,
 				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -559,7 +574,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_emailServiceMock.Object,
 				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -611,7 +627,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_emailServiceMock.Object,
 				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -659,7 +676,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_emailServiceMock.Object,
 				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -691,7 +709,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_emailServiceMock.Object,
 				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -725,7 +744,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_emailServiceMock.Object,
 				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -761,7 +781,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_emailServiceMock.Object,
 				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -798,7 +819,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_emailServiceMock.Object,
 				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -832,7 +854,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_emailServiceMock.Object,
 				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -871,7 +894,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_emailServiceMock.Object,
 				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -909,7 +933,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_emailServiceMock.Object, // not used in this test
 				_roleManagerMock.Object, // not used in this test
 				_authSettingsOptionsMock.Object, // not used in this test
-				_appOptionsMock.Object // not used in this test
+				_appOptionsMock.Object, // not used in this test
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -948,7 +973,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_emailServiceMock.Object, // not used in this test
 				_roleManagerMock.Object, // not used in this test
 				_authSettingsOptionsMock.Object, // not used in this test
-				_appOptionsMock.Object // not used in this test
+				_appOptionsMock.Object, // not used in this test
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -987,7 +1013,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_emailServiceMock.Object, // not used in this test
 				_roleManagerMock.Object, // not used in this test
 				_authSettingsOptionsMock.Object, // not used in this test
-				_appOptionsMock.Object // not used in this test
+				_appOptionsMock.Object, // not used in this test
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -1036,7 +1063,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_emailServiceMock.Object, // not used in this test
 				_roleManagerMock.Object, // not used in this test
 				_authSettingsOptionsMock.Object, // not used in this test
-				_appOptionsMock.Object // not used in this test
+				_appOptionsMock.Object, // not used in this test
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -1070,6 +1098,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_authSettingsOptionsMock.Reset();
 				_appOptionsMock.Reset();
 				_emailServiceMock.Reset();
+				_roleManagerMock.Reset();
+				_currentUserServiceMock.Reset();
 			}
 		}
 

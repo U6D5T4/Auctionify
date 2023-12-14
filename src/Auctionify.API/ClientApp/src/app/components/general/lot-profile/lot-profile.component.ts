@@ -322,6 +322,10 @@ export class LotProfileComponent implements OnInit {
         });
     }
 
+    isSellerOwnsLot(response: any): response is SellerGetLotResponse {
+        return response['sellerId'] !== this.currentUserId;
+    }
+
     isResponseForBuyer(response: any): response is BuyerGetLotResponse {
         return 'isInWatchlist' in response;
     }

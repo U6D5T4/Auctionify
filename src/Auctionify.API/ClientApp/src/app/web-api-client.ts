@@ -85,17 +85,17 @@ export class Client {
     assignRoleToUser(
         body: AssignRoleViewModel
     ): Observable<AssignRoleResponse> {
-        let url_ = this.baseUrl + '/api/auth/assign-role';
+        let url_ = this.baseUrl + `/api/auth/assign-role`;
 
-        const content_ = JSON.stringify(body);
+        const params = new HttpParams().set('role', body.role);
 
         let options_: Object = {
-            body: content_,
             observe: 'response',
             headers: new HttpHeaders({
                 'Content-Type': 'application/json',
                 Accept: 'text/json',
             }),
+            params,
         };
 
         return this.http
@@ -118,6 +118,26 @@ export class Client {
             );
     }
 
+    getGoogleClientId(): Observable<string> {
+        let url_ = this.baseUrl + '/api/auth/google-client-id';
+
+        let options_: any = {
+            responseType: 'text',
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/plain',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<string> => {
+                if (response.body !== null) {
+                    return of(response.body as string);
+                } else return throwError(() => new Error('data is empty!'));
+            })
+        );
+    }
     signUpWithGoogle(userData: any): Observable<any> {
         const header = new HttpHeaders().set(
             'Content-type',
@@ -931,6 +951,7 @@ export interface SellerGetLotResponse {
     currency: CurrencyDto;
     bids: BidDto[];
     bidCount: number;
+    sellerId: number;
 }
 
 export interface CreateLotResponse {
@@ -985,6 +1006,7 @@ export interface AssignRoleResponse {
     message?: string | undefined;
     isSuccess?: boolean;
     errors?: string[] | undefined;
+    result?: TokenModel;
 }
 
 export interface TokenModel {

@@ -3,50 +3,34 @@
         <div class="register__container-inner">
             <div class="register__header">
                 <h1>Sign Up</h1>
-                <p>Your one-stop shop for <br>
-                    bidding and buying</p>
+                <p>
+                    Your one-stop shop for <br />
+                    bidding and buying
+                </p>
             </div>
 
-            <form 
-            [formGroup]="registerForm" 
-            (ngSubmit)="onSubmit()" 
-            action="submit" 
-            class="register__form form"
+            <form
+                [formGroup]="registerForm"
+                (ngSubmit)="onSubmit()"
+                action="submit"
+                class="register__form form"
             >
-
                 <mat-form-field color="primary" appearance="outline">
                     <mat-label>Email</mat-label>
                     <mat-error>Email required</mat-error>
-                    <input formControlName="email" matInput>
+                    <input formControlName="email" matInput />
                 </mat-form-field>
 
                 <mat-form-field color="primary" appearance="outline">
                     <mat-label>Password</mat-label>
-                    <input 
-                    formControlName="password" 
-                    matInput
-                    [type]="passwordHidden ? 'password' : 'text'"
-                    ><button 
-                    mat-icon-button 
-                    matSuffix 
-                    (click)="togglePasswordVisibility()"
-                    aria-label="Toggle password visibility"
-                    >
-                    <mat-icon>remove_red_eye</mat-icon>
-                </button>
-                    <mat-error>Password required</mat-error>
-                </mat-form-field>
-
-                <mat-form-field color="primary" appearance="outline">
-                    <mat-label>Confirm Password</mat-label>
-                    <input 
-                    formControlName="confirmPassword" 
-                    matInput
-                    [type]="passwordHidden ? 'password' : 'text'"
-                    >
-                    <button 
-                        mat-icon-button 
-                        matSuffix 
+                    <input
+                        formControlName="password"
+                        matInput
+                        [type]="passwordHidden ? 'password' : 'text'"
+                    /><button
+                        type="button"
+                        mat-icon-button
+                        matSuffix
                         (click)="togglePasswordVisibility()"
                         aria-label="Toggle password visibility"
                     >
@@ -55,39 +39,61 @@
                     <mat-error>Password required</mat-error>
                 </mat-form-field>
 
-                <button 
-                type="submit" 
-                disabled="{{isLoading}}" 
-                mat-raised-button color="primary"
+                <mat-form-field color="primary" appearance="outline">
+                    <mat-label>Confirm Password</mat-label>
+                    <input
+                        formControlName="confirmPassword"
+                        matInput
+                        [type]="passwordHidden ? 'password' : 'text'"
+                    />
+                    <button
+                        type="button"
+                        mat-icon-button
+                        matSuffix
+                        (click)="togglePasswordVisibility()"
+                        aria-label="Toggle password visibility"
+                    >
+                        <mat-icon>remove_red_eye</mat-icon>
+                    </button>
+                    <mat-error>Password required</mat-error>
+                </mat-form-field>
+
+                <button
+                    type="submit"
+                    disabled="{{ isLoading }}"
+                    mat-raised-button
+                    color="primary"
                 >
                     <mat-spinner *ngIf="isLoading" diameter="25"></mat-spinner>
                     <div *ngIf="!isLoading">Sign up</div>
                 </button>
 
-                <p class="form__paragraph">Already have an account? <a [routerLink]="['/auth/login']" class="form__link">Sign in</a></p>
+                <p class="form__paragraph">
+                    Already have an account?
+                    <a [routerLink]="['/auth/login']" class="form__link"
+                        >Sign in</a
+                    >
+                </p>
             </form>
 
             <div class="register__border">
-
+                <a href="" class="register__google-link">
+                    <button type="submit" class="google-link__button">
+                        <div class="google-link__label">
+                            <img
+                                width="24px"
+                                src="../../../assets/icons/google-logo.svg"
+                                alt=""
+                            />
+                            Sign up with Google
+                        </div>
+                    </button>
+                </a>
             </div>
-
-            <a href="" class="register__google-link">
-                <button mat-stroked-button>
-                  <div class="google-link__label">
-                    <img
-                      width="24px"
-                      src="../../../assets/icons/google-logo.svg"
-                      alt=""
-                    />
-                    Sign up with Google
-                  </div>
-                </button>
-              </a>
-
-            <p class="register__policy">By signing up to create an account I accept <br>
-                Company’s Terms of Use and Privacy Policy
+            <p class="register__policy">
+                By signing up to create an account I accept <br />
+                Company's Terms of Use and Privacy Policy
             </p>
-
         </div>
     </div>
 </div>
