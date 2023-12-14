@@ -951,6 +951,7 @@ export interface SellerGetLotResponse {
     currency: CurrencyDto;
     bids: BidDto[];
     bidCount: number;
+    sellerId: number;
 }
 
 export interface CreateLotResponse {
