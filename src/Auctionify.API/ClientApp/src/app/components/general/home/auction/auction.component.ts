@@ -15,6 +15,7 @@ import { FilterComponent, FilterResult } from '../filter/filter.component';
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpErrorResponse } from '@angular/common/http';
+import { RemoveFromWatchlistComponent } from '../../remove-from-watchlist/remove-from-watchlist.component';
 
 @Component({
     selector: 'app-auction',
@@ -290,45 +291,41 @@ export class AuctionComponent implements OnInit {
         if (!lotData.isInWatchlist) {
             this.apiClient.addToWatchlist(lotData.id).subscribe({
                 next: (result) => {
-                    this.snackBar.open(result, 'Ok', {
-                        horizontalPosition: 'right',
-                        verticalPosition: 'top',
-                        duration: 5000,
-                    });
+                    this.snackBar.open(
+                        'Successfully added the lot to watchlist',
+                        'Close',
+                        {
+                            horizontalPosition: 'center',
+                            verticalPosition: 'bottom',
+                            duration: 5000,
+                            panelClass: ['success-snackbar'],
+                        }
+                    );
                     lotData.isInWatchlist = true;
                 },
                 error: (result: HttpErrorResponse) => {
                     this.snackBar.open(
                         result.error.errors[0].ErrorMessage,
-                        'Ok',
+                        'Close',
                         {
-                            horizontalPosition: 'right',
-                            verticalPosition: 'top',
+                            horizontalPosition: 'center',
+                            verticalPosition: 'bottom',
                             duration: 5000,
+                            panelClass: ['error-snackbar'],
                         }
                     );
                 },
             });
         } else {
-            this.apiClient.removeFromWatchList(lotData.id).subscribe({
-                next: (result) => {
-                    this.snackBar.open(result, 'Ok', {
-                        horizontalPosition: 'right',
-                        verticalPosition: 'top',
-                        duration: 5000,
-                    });
-                    lotData.isInWatchlist = false;
+            const dialog = this.dialog.open(RemoveFromWatchlistComponent, {
+                data: {
+                    lotId: lotData.id,
                 },
-                error: (result: HttpErrorResponse) => {
-                    this.snackBar.open(
-                        result.error.errors[0].ErrorMessage,
-                        'Ok',
-                        {
-                            horizontalPosition: 'right',
-                            verticalPosition: 'top',
-                            duration: 5000,
-                        }
-                    );
+            });
+
+            dialog.closed.subscribe({
+                next: () => {
+                    lotData.isInWatchlist = false;
                 },
             });
         }
