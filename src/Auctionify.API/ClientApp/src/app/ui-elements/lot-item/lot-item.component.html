@@ -1,0 +1,41 @@
+<div class="lot__image">
+    <a [routerLink]="['/get-lot', lot.id,]">
+        <img [src]="lot.mainPhotoUrl ? lot.mainPhotoUrl : 
+            '../../../../assets/icons/NoImage.svg'" height="294px" width="294px" alt="Main Photo">
+    </a>
+    <button (click)="handleLotWatchlist(lot)" type="button" class="lot__like-btn" *ngIf="isUserBuyer">
+        <mat-icon *ngIf="lot.isInWatchlist; else not_in_watchlist" class="primary">favorite</mat-icon>
+        <ng-template #not_in_watchlist>
+            <mat-icon class="primary">favorite_border</mat-icon>
+        </ng-template>
+    </button>
+</div>
+<div class="lot__info">
+    <div class="lot__title">
+        <a [routerLink]="['../get-lot', lot.id,]">
+            <p>{{ lot.title }}</p>
+        </a>
+        <br>
+        <p>{{ calculateDaysLeft(lot.startDate, lot.endDate) }} Days</p>
+    </div>
+    <div class="lot__price-bid">
+        <div class="lot_price">
+            <div *ngIf="lot.bids && lot.bids.length > 0; then bids_price; else starting_price"></div>
+            <ng-template #bids_price>
+                <p class="lot__price-p">
+                    {{ lot.bids[0].newPrice }} {{ lot.currency.code }}
+                </p>
+            </ng-template>
+            <ng-template #starting_price>
+                <p class="lot__price-p">
+                    {{ lot.startingPrice }} {{ lot.currency.code }}
+                </p>
+            </ng-template>
+        </div>
+        <div class="lot__bid">
+            <p class="lot__bids-p">
+                {{ lot.bidCount }} bids
+            </p>
+        </div>
+    </div>
+</div>
