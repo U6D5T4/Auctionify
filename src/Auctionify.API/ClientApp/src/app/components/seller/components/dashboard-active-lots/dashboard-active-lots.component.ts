@@ -30,7 +30,6 @@ export class DashboardActiveLotsComponent implements OnInit {
         const swiper = this.swiperEl.nativeElement as SwiperContainer;
         const swiperParams = {
             slidesPerView: 'auto',
-            spaceBetween: 16,
         };
 
         Object.assign(swiper, swiperParams);
