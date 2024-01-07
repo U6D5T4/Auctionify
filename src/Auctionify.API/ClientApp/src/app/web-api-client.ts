@@ -598,6 +598,29 @@ export class Client {
         );
     }
 
+    getLotsInWatchlist(): Observable<LotModel[]> {
+        let url_ = this.baseUrl + `/api/users/watchlists/lots`;
+
+        let params = new HttpParams().set('pageIndex', 0).set('pageSize', 100);
+
+        const options_: any = {
+            headers: new HttpHeaders({
+                Accept: 'text/json',
+            }),
+            params,
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<LotModel[]> => {
+                if (response && response.items) {
+                    return of(response.items as LotModel[]);
+                } else {
+                    throw new Error('Invalid response structure');
+                }
+            })
+        );
+    }
+
     resetPassword(
         body: ResetPasswordViewModel | undefined
     ): Observable<ResetPasswordResponse> {

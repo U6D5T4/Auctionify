@@ -98,6 +98,8 @@ namespace Auctionify.Application.Features.Users.Queries.GetByUserWatchlist
 				lot.BidCount = bids.Items.Count;
 
 				lot.Bids = _mapper.Map<List<BidDto>>(bids.Items);
+
+				lot.IsInWatchlist = true;
 			}
 
 			return response;

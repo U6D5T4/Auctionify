@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { Observable, mergeMap, of } from 'rxjs';
 
@@ -11,10 +13,8 @@ import {
     Status,
 } from 'src/app/web-api-client';
 import { FilterLot } from 'src/app/models/lots/filter';
-import { FilterComponent, FilterResult } from '../filter/filter.component';
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { HttpErrorResponse } from '@angular/common/http';
+import { FilterComponent, FilterResult } from '../filter/filter.component';
 import { RemoveFromWatchlistComponent } from '../../remove-from-watchlist/remove-from-watchlist.component';
 
 @Component({
@@ -287,9 +287,9 @@ export class AuctionComponent implements OnInit {
         this.loadArchivedLots();
     }
 
-    handleLotWatchlist(lotData: LotModel) {
-        if (!lotData.isInWatchlist) {
-            this.apiClient.addToWatchlist(lotData.id).subscribe({
+    handleLotWatchlist(lot: LotModel) {
+        if (!lot.isInWatchlist) {
+            this.apiClient.addToWatchlist(lot.id).subscribe({
                 next: (result) => {
                     this.snackBar.open(
                         'Successfully added the lot to watchlist',
@@ -301,7 +301,7 @@ export class AuctionComponent implements OnInit {
                             panelClass: ['success-snackbar'],
                         }
                     );
-                    lotData.isInWatchlist = true;
+                    lot.isInWatchlist = true;
                 },
                 error: (result: HttpErrorResponse) => {
                     this.snackBar.open(
@@ -319,13 +319,15 @@ export class AuctionComponent implements OnInit {
         } else {
             const dialog = this.dialog.open(RemoveFromWatchlistComponent, {
                 data: {
-                    lotId: lotData.id,
+                    lotId: lot.id,
                 },
             });
 
             dialog.closed.subscribe({
                 next: () => {
-                    lotData.isInWatchlist = false;
+                    this.loadActiveLots();
+                    this.loadUpcomingLots();
+                    this.loadArchivedLots();
                 },
             });
         }
