@@ -8,10 +8,24 @@
     </div>
 
     <ul class="navigation">
-        <li>
-            <img src="assets/icons/DashboardIcon.svg" alt="Dashboard Icon" />
-            <a routerLink="buyer/dashboard">Dashboard</a>
-        </li>
+        <ng-container *ngIf="isUserBuyer">
+            <li>
+                <img
+                    src="assets/icons/DashboardIcon.svg"
+                    alt="Dashboard Icon"
+                />
+                <a routerLink="/buyer/dashboard">Dashboard</a>
+            </li>
+        </ng-container>
+        <ng-container *ngIf="!isUserBuyer">
+            <li>
+                <img
+                    src="assets/icons/DashboardIcon.svg"
+                    alt="Dashboard Icon"
+                />
+                <a [routerLink]="['/auth/login']">Dashboard</a>
+            </li>
+        </ng-container>
         <li>
             <img src="assets/icons/WishlistIcon.svg" alt="Wishlist Icon" />
             <a routerLink="/wishlist">Wishlist</a>
