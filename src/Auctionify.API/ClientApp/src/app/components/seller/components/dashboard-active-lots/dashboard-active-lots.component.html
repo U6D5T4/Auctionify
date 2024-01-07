@@ -1,22 +1,5 @@
-<p>dashboard-active-lots works!</p>
-
-<swiper-container slides-per-view="5" speed="500" mousewheel="true" navigation="true">
-    <swiper-slide>
-        <app-lot-item [lot]="lot" [isUserBuyer]="false"></app-lot-item>
-    </swiper-slide>
-    <swiper-slide>
-        <app-lot-item [lot]="lot" [isUserBuyer]="false"></app-lot-item>
-    </swiper-slide>
-    <swiper-slide>
-        <app-lot-item [lot]="lot" [isUserBuyer]="false"></app-lot-item>
-    </swiper-slide>
-    <swiper-slide>
-        <app-lot-item [lot]="lot" [isUserBuyer]="false"></app-lot-item>
-    </swiper-slide>
-    <swiper-slide>
-        <app-lot-item [lot]="lot" [isUserBuyer]="false"></app-lot-item>
-    </swiper-slide>
-    <swiper-slide>
-        <app-lot-item [lot]="lot" [isUserBuyer]="false"></app-lot-item>
+<swiper-container #swiper slides-per-view="auto" mousewheel="true" navigation="true" free-mode="true">
+    <swiper-slide class="slide" *ngFor=" let item of activeLots">
+        <app-lot-item [lot]="item" [isUserBuyer]="false"></app-lot-item>
     </swiper-slide>
 </swiper-container>
