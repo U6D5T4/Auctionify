@@ -117,9 +117,10 @@ namespace Auctionify.API.Controllers
 
 		[HttpGet("sellers")]
 		[Authorize(Roles = "Seller")]
-		public async Task<IActionResult> GetSeller()
+		public async Task<IActionResult> GetSeller([FromQuery] PageRequest pageRequest)
 		{
-			var result = await _mediator.Send(new GetSellerQuery());
+			var query = new GetSellerQuery { PageRequest = pageRequest };
+			var result = await _mediator.Send(query);
 			return Ok(result);
 		}
 

@@ -1,4 +1,6 @@
-﻿namespace Auctionify.Application.Features.Users.Queries.GetSeller
+﻿using Auctionify.Application.Common.DTOs;
+
+namespace Auctionify.Application.Features.Users.Queries.GetSeller
 {
 	public class GetSellerResponse
 	{
@@ -17,5 +19,7 @@
 		public int CreatedLotsCount { get; set; }
 
 		public int FinishedLotsCount { get; set; }
+
+		public ICollection<RateDto> SenderRates { get; set; }
 	}
 }

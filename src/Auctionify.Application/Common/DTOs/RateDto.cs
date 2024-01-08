@@ -8,7 +8,7 @@ namespace Auctionify.Application.Common.DTOs
 
         public int SenderId { get; set; }
 
-        public virtual User Sender { get; set; }
+        public UserDto Sender { get; set; }
 
         public byte RatingValue { get; set; }
 
