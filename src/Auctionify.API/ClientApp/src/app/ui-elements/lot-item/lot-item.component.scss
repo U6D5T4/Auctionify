@@ -1,0 +1,78 @@
+.lot {
+    width: 294px;
+    height: 446px;
+
+    &__image {
+        position: relative;
+    }
+
+    &__image img {
+        border-radius: 20px;
+    }
+
+    &__like-btn {
+        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+    }
+
+    &__like-btn {
+        background-color: #F0F3FE;
+        border: none;
+        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 1;
+    }
+
+    &__info {
+        padding-left: 8px;
+        padding-right: 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    &__title a {
+        text-decoration: none;
+        color: black;
+    }
+
+    &__title {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    &__price-bid {
+        align-items: center;
+        display: flex;
+        justify-content: flex-start;
+        gap: 30px;
+    }
+
+    &__bids-p {
+        font-size: 16px;
+        color: #e0e0e0;
+    }
+
+    &__price-p {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    &:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s ease;
+        border-radius: 16px;
+    }
+
+    &__title a:hover {
+        color: #2B5293;
+    }
+}
