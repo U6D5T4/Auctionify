@@ -110,17 +110,20 @@ export class LotProfileComponent implements OnInit {
             );
         }
 
-        if (this.lotData.category.parentCategoryId) {
-            this.client.getAllCategories().subscribe({
-                next: (result) => {
-                    const parentCategory = result.find(
-                        (x) => x.id === this.lotData?.category.parentCategoryId
-                    );
+        if (this.lotData.category) {
+            if (this.lotData.category.parentCategoryId) {
+                this.client.getAllCategories().subscribe({
+                    next: (result) => {
+                        const parentCategory = result.find(
+                            (x) =>
+                                x.id === this.lotData?.category.parentCategoryId
+                        );
 
-                    if (!parentCategory) return;
-                    this.parentCategoryName = parentCategory?.name;
-                },
-            });
+                        if (!parentCategory) return;
+                        this.parentCategoryName = parentCategory?.name;
+                    },
+                });
+            }
         }
 
         if (this.lotData.bids.length > 0) {

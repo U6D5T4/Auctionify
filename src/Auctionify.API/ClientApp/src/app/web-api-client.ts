@@ -819,6 +819,14 @@ export class Client {
         return this.handleGetAllLotsWithStatusForSeller(url_, pageRequest);
     }
 
+    getAllDraftLotsForSeller(
+        pageRequest: PageRequest
+    ): Observable<FilterResponse> {
+        let url_ = this.baseUrl + `/api/lots/sellers/draft`;
+
+        return this.handleGetAllLotsWithStatusForSeller(url_, pageRequest);
+    }
+
     private handleGetAllLotsWithStatusForSeller(
         url: string,
         pageRequest: PageRequest
