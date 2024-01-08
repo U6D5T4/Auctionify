@@ -18,12 +18,12 @@ namespace Auctionify.Application.Features.Users.Queries.GetBuyerAuctions
 		: IRequestHandler<GetBuyerAuctionsQuery, GetListResponseDto<GetBuyerAuctionsResponse>>
 	{
 		private readonly ILotRepository _lotRepository;
+		private readonly IBidRepository _bidRepository;
 		private readonly IMapper _mapper;
 		private readonly IPhotoService _photoService;
+		private readonly IWatchlistService _watchlistService;
 		private readonly ICurrentUserService _currentUserService;
 		private readonly UserManager<User> _userManager;
-		private readonly IWatchlistService _watchlistService;
-		private readonly IBidRepository _bidRepository;
 
 		public GetBuyerAuctionsQueryHandler(
 			ILotRepository lotRepository,
