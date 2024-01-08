@@ -130,6 +130,37 @@ namespace Auctionify.UnitTests
 			};
 		}
 
+		public static List<Rate> GetRates()
+		{
+			return new List<Rate>
+			{
+				new Rate
+				{
+					RecieverId = 2,
+					SenderId = 1,
+					RatingValue = 5,
+					Comment = "Some comment",
+					LotId = 2
+				},
+				new Rate
+				{
+					RecieverId = 1,
+					SenderId = 3,
+					RatingValue = 5,
+					Comment = "Some comment 2",
+					LotId = 1
+				},
+				new Rate
+				{
+					RecieverId = 3,
+					SenderId = 2,
+					RatingValue = 5,
+					Comment = "Some comment 3",
+					LotId = 3
+				}
+			};
+		}
+
 		public static List<LotStatus> GetLotStatuses()
 		{
 			return new List<LotStatus>
