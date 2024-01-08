@@ -598,10 +598,15 @@ export class Client {
         );
     }
 
-    getLotsInWatchlist(): Observable<LotModel[]> {
+    getLotsInWatchlist(
+        pageIndex: number,
+        pageSize: number
+    ): Observable<LotModel[]> {
         let url_ = this.baseUrl + `/api/users/watchlists/lots`;
 
-        let params = new HttpParams().set('pageIndex', 0).set('pageSize', 100);
+        let params = new HttpParams()
+            .set('pageIndex', pageIndex.toString())
+            .set('pageSize', pageSize.toString());
 
         const options_: any = {
             headers: new HttpHeaders({

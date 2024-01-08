@@ -1,22 +1,8 @@
-<div class="dashboard__container">
-    <div class="dashboard__section">
-        <h2 class="dashboard__wishlist-title">Wishlist</h2>
-        <a [routerLink]="['/buyer/wishlist']">
-            <button
-                mat-flat-button
-                type="button"
-                class="dashboard__show-all-btn"
-            >
-                <p class="dashboard__show-all">Show all</p>
-                <mat-icon class="dashboard__arrow-icon" iconPositionEnd
-                    >arrow_forward</mat-icon
-                >
-            </button>
-        </a>
-    </div>
-    <div *ngIf="lots.length > 0; else noLots" class="dashboard__wishlist-lots">
-        <ul class="dashboard__wishlist-list">
-            <li *ngFor="let lot of lots" class="dashboard__wishlist-list-lot">
+<div class="wishlist__container">
+    <h2 class="wishlist__title">Wishlist</h2>
+    <div *ngIf="lots.length > 0; else noLots" class="wishlist__lots">
+        <ul class="wishlist__list">
+            <li *ngFor="let lot of lots" class="wishlist__lot">
                 <div class="lot__image">
                     <a [routerLink]="['/get-lot', lot.id]">
                         <img
@@ -91,8 +77,6 @@
         </ul>
     </div>
     <ng-template #noLots>
-        <p class="dashboard__wishlist-empty">
-            No lots available in your wishlist.
-        </p>
+        <p class="wishlist__empty">No lots available in your wishlist.</p>
     </ng-template>
 </div>

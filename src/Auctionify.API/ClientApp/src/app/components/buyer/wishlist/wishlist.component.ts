@@ -7,11 +7,11 @@ import { Client, LotModel } from 'src/app/web-api-client';
 import { RemoveFromWatchlistComponent } from '../../general/remove-from-watchlist/remove-from-watchlist.component';
 
 @Component({
-    selector: 'app-dashboard',
-    templateUrl: './dashboard.component.html',
-    styleUrls: ['./dashboard.component.scss'],
+    selector: 'app-wishlist',
+    templateUrl: './wishlist.component.html',
+    styleUrls: ['./wishlist.component.scss'],
 })
-export class DashboardComponent implements OnInit {
+export class WishlistComponent implements OnInit {
     lots: LotModel[] = [];
     constructor(
         private apiClient: Client,
@@ -24,7 +24,7 @@ export class DashboardComponent implements OnInit {
     }
 
     loadLotsInWatchlist() {
-        this.apiClient.getLotsInWatchlist(0, 5).subscribe((lots) => {
+        this.apiClient.getLotsInWatchlist(0, 100).subscribe((lots) => {
             this.lots = lots;
         });
     }

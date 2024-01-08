@@ -1,4 +1,4 @@
-.dashboard {
+.wishlist {
     &__container {
         display: flex;
         flex-direction: column;
@@ -9,17 +9,7 @@
         padding: 40px 200px;
     }
 
-    &__section {
-        display: flex;
-        justify-content: flex-start;
-        gap: 1180px;
-    }
-
-    &__show-all {
-        font-weight: bold;
-    }
-
-    &__wishlist-list {
+    &__list {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
         gap: 10px;
@@ -28,7 +18,7 @@
         margin: 0;
     }
 
-    &__wishlist-list-lot {
+    &__lot {
         width: 250px;
         height: 400px;
         display: flex;
@@ -39,13 +29,13 @@
         padding-right: 10px;
     }
 
-    &__wishlist-list-lot:hover {
+    &__lot:hover {
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
         transition: box-shadow 0.3s ease;
         border-radius: 16px;
     }
 
-    &__wishlist-empty {
+    &__empty {
         gap: 20px;
         font-size: 18px;
         padding-left: 20px;
