@@ -11,9 +11,14 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { BuyerRoutingModule } from './buyer-routing.module';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { WishlistComponent } from './wishlist/wishlist.component';
 
 @NgModule({
-    declarations: [],
+    declarations: [
+    DashboardComponent,
+    WishlistComponent
+  ],
     imports: [
         CommonModule,
         MatIconModule,

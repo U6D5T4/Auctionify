@@ -21,6 +21,7 @@ import {
 import { ImagePopupComponent } from '../image-popup/image-popup.component';
 import { AddBidComponent } from '../add-bid/add-bid.component';
 import { WithdrawBidComponent } from '../withdraw-bid/withdraw-bid.component';
+import { RemoveFromWatchlistComponent } from '../remove-from-watchlist/remove-from-watchlist.component';
 
 @Component({
     selector: 'app-lot-profile',
@@ -218,45 +219,41 @@ export class LotProfileComponent implements OnInit {
         if (!lotData.isInWatchlist) {
             this.client.addToWatchlist(this.lotId).subscribe({
                 next: (result) => {
-                    this.snackBar.open(result, 'Ok', {
-                        horizontalPosition: 'right',
-                        verticalPosition: 'top',
-                        duration: 5000,
-                    });
+                    this.snackBar.open(
+                        'Successfully added the lot to watchlist',
+                        'Close',
+                        {
+                            horizontalPosition: 'center',
+                            verticalPosition: 'bottom',
+                            duration: 5000,
+                            panelClass: ['success-snackbar'],
+                        }
+                    );
                     this.getLotFromRoute();
                 },
                 error: (result: HttpErrorResponse) => {
                     this.snackBar.open(
                         result.error.errors[0].ErrorMessage,
-                        'Ok',
+                        'Close',
                         {
-                            horizontalPosition: 'right',
-                            verticalPosition: 'top',
+                            horizontalPosition: 'center',
+                            verticalPosition: 'bottom',
                             duration: 5000,
+                            panelClass: ['error-snackbar'],
                         }
                     );
                 },
             });
         } else {
-            this.client.removeFromWatchList(this.lotId).subscribe({
-                next: (result) => {
-                    this.snackBar.open(result, 'Ok', {
-                        horizontalPosition: 'right',
-                        verticalPosition: 'top',
-                        duration: 5000,
-                    });
-                    this.getLotFromRoute();
+            const dialog = this.dialog.open(RemoveFromWatchlistComponent, {
+                data: {
+                    lotId: this.lotId,
                 },
-                error: (result: HttpErrorResponse) => {
-                    this.snackBar.open(
-                        result.error.errors[0].ErrorMessage,
-                        'Ok',
-                        {
-                            horizontalPosition: 'right',
-                            verticalPosition: 'top',
-                            duration: 5000,
-                        }
-                    );
+            });
+
+            dialog.closed.subscribe({
+                next: () => {
+                    this.getLotFromRoute();
                 },
             });
         }

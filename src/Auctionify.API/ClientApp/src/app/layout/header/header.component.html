@@ -8,14 +8,36 @@
     </div>
 
     <ul class="navigation">
-        <li>
-            <img src="assets/icons/DashboardIcon.svg" alt="Dashboard Icon" />
-            <a routerLink="/dashboard">Dashboard</a>
-        </li>
-        <li>
-            <img src="assets/icons/WishlistIcon.svg" alt="Wishlist Icon" />
-            <a routerLink="/wishlist">Wishlist</a>
-        </li>
+        <ng-container *ngIf="isUserBuyer">
+            <li>
+                <img
+                    src="assets/icons/DashboardIcon.svg"
+                    alt="Dashboard Icon"
+                />
+                <a routerLink="/buyer/dashboard">Dashboard</a>
+            </li>
+        </ng-container>
+        <ng-container *ngIf="!isUserBuyer">
+            <li>
+                <img
+                    src="assets/icons/DashboardIcon.svg"
+                    alt="Dashboard Icon"
+                />
+                <a [routerLink]="['/auth/login']">Dashboard</a>
+            </li>
+        </ng-container>
+        <ng-container *ngIf="isUserBuyer">
+            <li>
+                <img src="assets/icons/WishlistIcon.svg" alt="Wishlist Icon" />
+                <a [routerLink]="['/buyer/wishlist']">Wishlist</a>
+            </li>
+        </ng-container>
+        <ng-container *ngIf="!isUserBuyer">
+            <li>
+                <img src="assets/icons/WishlistIcon.svg" alt="Wishlist Icon" />
+                <a [routerLink]="['/auth/login']">Wishlist</a>
+            </li>
+        </ng-container>
         <ng-container *ngIf="isUserBuyer">
             <li>
                 <img src="assets/icons/ProfileIcon.svg" alt="Profile Icon" />
