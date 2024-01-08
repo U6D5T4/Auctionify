@@ -1,4 +1,6 @@
-﻿namespace Auctionify.Application.Features.Users.Queries.GetBuyer
+﻿using Auctionify.Application.Common.DTOs;
+
+namespace Auctionify.Application.Features.Users.Queries.GetBuyer
 {
 	public class GetBuyerResponse
 	{
@@ -13,5 +15,7 @@
 		public string AboutMe { get; set; }
 
 		public string ProfilePictureUrl { get; set; }
+
+		public ICollection<RateDto> SenderRates { get; set; }
 	}
 }

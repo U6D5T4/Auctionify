@@ -1,4 +1,7 @@
-﻿using Auctionify.Application.Common.Interfaces;
+﻿using Auctionify.Application.Common.DTOs;
+using Auctionify.Application.Common.Interfaces;
+using Auctionify.Application.Common.Interfaces.Repositories;
+using Auctionify.Application.Common.Models.Requests;
 using Auctionify.Application.Common.Options;
 using Auctionify.Core.Entities;
 using AutoMapper;
@@ -8,7 +11,10 @@ using Microsoft.Extensions.Options;
 
 namespace Auctionify.Application.Features.Users.Queries.GetBuyer
 {
-	public class GetBuyerQuery : IRequest<GetBuyerResponse> { }
+	public class GetBuyerQuery : IRequest<GetBuyerResponse> 
+	{
+		public PageRequest PageRequest { get; set; }
+	}
 
 	public class GetBuyerQueryHandler
 		: IRequestHandler<GetBuyerQuery, GetBuyerResponse>
@@ -18,13 +24,16 @@ namespace Auctionify.Application.Features.Users.Queries.GetBuyer
 		private readonly IBlobService _blobService;
 		private readonly AzureBlobStorageOptions _azureBlobStorageOptions;
 		private readonly IMapper _mapper;
+		private readonly IRateRepository _rateRepository;
 
 		public GetBuyerQueryHandler(
 			ICurrentUserService currentUserService,
 			UserManager<User> userManager,
 			IBlobService blobService,
 			IOptions<AzureBlobStorageOptions> azureBlobStorageOptions,
-			IMapper mapper
+			IMapper mapper,
+			IRateRepository rateRepository
+
 		)
 		{
 			_currentUserService = currentUserService;
@@ -32,6 +41,7 @@ namespace Auctionify.Application.Features.Users.Queries.GetBuyer
 			_blobService = blobService;
 			_azureBlobStorageOptions = azureBlobStorageOptions.Value;
 			_mapper = mapper;
+			_rateRepository = rateRepository;
 		}
 
 		public async Task<GetBuyerResponse> Handle(
@@ -54,6 +64,15 @@ namespace Auctionify.Application.Features.Users.Queries.GetBuyer
 
 				response.ProfilePictureUrl = profilePictureUrl;
 			}
+
+			var ratesForUser = await _rateRepository.GetListAsync(predicate: r => r.SenderId == user.Id,
+				enableTracking: false,
+				size: request.PageRequest.PageSize,
+				index: request.PageRequest.PageIndex,
+				cancellationToken: cancellationToken);
+
+			response.SenderRates = _mapper.Map<List<RateDto>>(ratesForUser.Items);
+
 
 			return response;
 		}

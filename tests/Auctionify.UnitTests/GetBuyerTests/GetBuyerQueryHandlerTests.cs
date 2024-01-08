@@ -1,4 +1,5 @@
 ﻿using Auctionify.Application.Common.Interfaces;
+using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Common.Options;
 using Auctionify.Application.Features.Users.Queries.GetBuyer;
 using Auctionify.Core.Entities;
@@ -17,6 +18,7 @@ namespace Auctionify.UnitTests.GetBuyerTests
 		private readonly IMapper _mapper;
 		private readonly Mock<ICurrentUserService> _currentUserServiceMock;
 		private readonly UserManager<User> _userManager;
+		private readonly IRateRepository _rateRepository;
 
 		public GetBuyerQueryHandlerTests()
 		{
@@ -72,7 +74,8 @@ namespace Auctionify.UnitTests.GetBuyerTests
 				_userManager,
 				blobServiceMock.Object,
 				azureBlobStorageOptionsMock.Object,
-				_mapper
+				_mapper,
+				_rateRepository
 			);
 
 			// Act

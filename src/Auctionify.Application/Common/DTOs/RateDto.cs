@@ -13,5 +13,7 @@ namespace Auctionify.Application.Common.DTOs
         public byte RatingValue { get; set; }
 
         public string Comment { get; set; }
+
+        public DateTime CreationDate { get; set; }
     }
 }

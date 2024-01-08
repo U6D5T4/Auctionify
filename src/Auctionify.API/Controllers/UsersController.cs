@@ -1,4 +1,5 @@
 ﻿using Auctionify.Application.Common.Models.Requests;
+using Auctionify.Application.Features.Lots.Queries.GetAll;
 using Auctionify.Application.Features.Users.Commands.AddBidForLot;
 using Auctionify.Application.Features.Users.Commands.AddLotToWatchlist;
 using Auctionify.Application.Features.Users.Commands.RemoveBid;
@@ -107,9 +108,10 @@ namespace Auctionify.API.Controllers
 
 		[HttpGet("buyers")]
 		[Authorize(Roles = "Buyer")]
-		public async Task<IActionResult> GetBuyer()
+		public async Task<IActionResult> GetBuyer([FromQuery] PageRequest pageRequest)
 		{
-			var result = await _mediator.Send(new GetBuyerQuery());
+			var query = new GetBuyerQuery { PageRequest = pageRequest };
+			var result = await _mediator.Send(query);
 			return Ok(result);
 		}
 
