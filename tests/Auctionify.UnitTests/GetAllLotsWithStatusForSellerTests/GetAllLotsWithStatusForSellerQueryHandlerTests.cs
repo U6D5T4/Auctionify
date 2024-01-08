@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Moq;
 using Auctionify.Infrastructure.Persistence;
 using Auctionify.Infrastructure.Repositories;
-using Auctionify.Application.Features.Lots.Queries.GetAllActiveForSeller;
+using Auctionify.Application.Features.Lots.Queries.GetAllLotsWithStatusForSeller;
 using Auctionify.Application.Common.Models.Requests;
 using Auctionify.Application.Common.DTOs;
 using FluentAssertions;
@@ -22,6 +22,7 @@ namespace Auctionify.UnitTests.GetAllLotsWithStatusForSellerTests
 		private readonly ILotRepository _lotRepository;
 		private readonly Mock<ICurrentUserService> _currentUserServiceMock;
 		private readonly UserManager<User> _userManager;
+		private readonly Mock<IPhotoService> _photoServiceMock;
 
 		public GetAllLotsWithStatusForSellerQueryHandlerTests()
 		{
@@ -62,6 +63,10 @@ namespace Auctionify.UnitTests.GetAllLotsWithStatusForSellerTests
 			_currentUserServiceMock = new Mock<ICurrentUserService>();
 			_currentUserServiceMock.Setup(x => x.UserEmail).Returns(It.IsAny<string>());
 
+			_photoServiceMock = new Mock<IPhotoService>();
+			_photoServiceMock.Setup(x => x.GetMainPhotoUrlAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+				.ReturnsAsync(It.IsAny<string>());
+
 			_lotRepository = new LotRepository(mockDbContext.Object);
 		}
 
@@ -82,7 +87,8 @@ namespace Auctionify.UnitTests.GetAllLotsWithStatusForSellerTests
 				_lotRepository,
 				_mapper,
 				_currentUserServiceMock.Object,
-				_userManager);
+				_userManager,
+				_photoServiceMock.Object);
 
 			var result = await handler.Handle(query, default);
 
@@ -96,7 +102,7 @@ namespace Auctionify.UnitTests.GetAllLotsWithStatusForSellerTests
 		{
 			var query = new GetAllLotsWithStatusForSellerQuery
 			{
-				LotStatus = Core.Enums.AuctionStatus.Draft,
+				LotStatus = AuctionStatus.Draft,
 				PageRequest = new PageRequest { PageIndex = 0, PageSize = 10 }
 			};
 
@@ -104,7 +110,8 @@ namespace Auctionify.UnitTests.GetAllLotsWithStatusForSellerTests
 				_lotRepository,
 				_mapper,
 				_currentUserServiceMock.Object,
-				_userManager);
+				_userManager,
+				_photoServiceMock.Object);
 
 			var result = await handler.Handle(query, default);
 

@@ -9,7 +9,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace Auctionify.Application.Features.Lots.Queries.GetAllActiveForSeller
+namespace Auctionify.Application.Features.Lots.Queries.GetAllLotsWithStatusForSeller
 {
 	public class GetAllLotsWithStatusForSellerQuery :
 		IRequest<GetListResponseDto<GetAllLotsWithStatusForSellerResponse>>
@@ -25,18 +25,21 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAllActiveForSeller
 		private readonly IMapper _mapper;
 		private readonly ICurrentUserService _currentUserService;
 		private readonly UserManager<User> _userManager;
+		private readonly IPhotoService _photoService;
 
 		public GetAllLotsWithStatusForSellerQueryHandler(
 			ILotRepository lotRepository,
 			IMapper mapper,
 			ICurrentUserService currentUserService,
-			UserManager<User> userManager
+			UserManager<User> userManager,
+			IPhotoService photoService
 			)
 		{
 			_lotRepository = lotRepository;
 			_mapper = mapper;
 			_currentUserService = currentUserService;
 			_userManager = userManager;
+			_photoService = photoService;
 		}
 
 		public async Task<GetListResponseDto<GetAllLotsWithStatusForSellerResponse>> Handle(GetAllLotsWithStatusForSellerQuery request, CancellationToken cancellationToken)
@@ -67,6 +70,8 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAllActiveForSeller
 			foreach ( var lot in response.Items )
 			{
 				lot.BidCount = lot.Bids.Count;
+
+				lot.MainPhotoUrl = await _photoService.GetMainPhotoUrlAsync(lot.Id, cancellationToken);
 			}
 
 			return response;
