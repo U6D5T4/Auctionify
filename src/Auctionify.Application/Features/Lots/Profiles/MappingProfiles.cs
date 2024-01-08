@@ -6,6 +6,7 @@ using Auctionify.Application.Features.Lots.Commands.Update;
 using Auctionify.Application.Features.Lots.Commands.UpdateLotStatus;
 using Auctionify.Application.Features.Lots.Queries.Filter;
 using Auctionify.Application.Features.Lots.Queries.GetAll;
+using Auctionify.Application.Features.Lots.Queries.GetAllLotsWithStatusForSeller;
 using Auctionify.Application.Features.Lots.Queries.GetAllByName;
 using Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer;
 using Auctionify.Application.Features.Lots.Queries.GetByIdForSeller;
@@ -29,6 +30,7 @@ namespace Auctionify.Application.Features.Lots.Profiles
 			CreateMap<Lot, UpdatedLotResponse>().ReverseMap();
 			CreateMap<Lot, GetAllLotsByLocationResponse>().ReverseMap();
 			CreateMap<Lot, UpdatedLotStatusResponse>().ReverseMap();
+			CreateMap<Lot, GetAllLotsWithStatusForSellerResponse>().ReverseMap();
 
 			CreateMap<Lot, UpdateLotCommand>()
 				.ForMember(l => l.Address, cd => cd.MapFrom(ul => ul.Location!.Address))
@@ -43,6 +45,7 @@ namespace Auctionify.Application.Features.Lots.Profiles
 			CreateMap<Lot, FilterLotsResponse>().ReverseMap();
 			CreateMap<IPaginate<Lot>, GetListResponseDto<FilterLotsResponse>>().ReverseMap();
 			CreateMap<IPaginate<Lot>, GetListResponseDto<GetAllLotsByLocationResponse>>().ReverseMap();
+			CreateMap<IPaginate<Lot>, GetListResponseDto<GetAllLotsWithStatusForSellerResponse>>().ReverseMap();
 		}
 	}
 }

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CreateLotComponent } from './create-lot/create-lot.component';
 import { sellerRoutingModule } from './seller-routing.module';
@@ -16,6 +16,8 @@ import { CurrencyPopUpComponent } from './create-lot/pop-ups/currency/currency.c
 import { FilesPopUpComponent } from './create-lot/pop-ups/files/files.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { DashboardActiveLotsComponent } from './components/dashboard-active-lots/dashboard-active-lots.component';
+import { UiElementsModule } from 'src/app/ui-elements/ui-elements.module';
 
 @NgModule({
     declarations: [
@@ -24,6 +26,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
         CurrencyPopUpComponent,
         FilesPopUpComponent,
         DashboardComponent,
+        DashboardActiveLotsComponent,
     ],
     imports: [
         CommonModule,
@@ -38,7 +41,9 @@ import { DashboardComponent } from './dashboard/dashboard.component';
         MatNativeDateModule,
         MatProgressSpinnerModule,
         MatSnackBarModule,
+        UiElementsModule,
     ],
     exports: [CreateLotComponent, DashboardComponent],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class SellerModule {}
