@@ -6,6 +6,7 @@ using Auctionify.Application.Features.Users.Commands.RemoveLotFromWatchlist;
 using Auctionify.Application.Features.Users.Commands.Update;
 using Auctionify.Application.Features.Users.Queries.GetAllBidsOfUserForLot;
 using Auctionify.Application.Features.Users.Queries.GetBuyer;
+using Auctionify.Application.Features.Users.Queries.GetBuyerAuctions;
 using Auctionify.Application.Features.Users.Queries.GetById;
 using Auctionify.Application.Features.Users.Queries.GetByUserWatchlist;
 using Auctionify.Application.Features.Users.Queries.GetSeller;
@@ -30,7 +31,10 @@ namespace Auctionify.Application.Features.Users.Profiles
 			CreateMap<Bid, GetAllBidsOfUserForLotResponse>().ReverseMap();
 			CreateMap<Lot, GetWatchlistLotsResponse>().ReverseMap();
 			CreateMap<IPaginate<Lot>, GetListResponseDto<GetWatchlistLotsResponse>>().ReverseMap();
-			CreateMap<IPaginate<Bid>, GetListResponseDto<GetAllBidsOfUserForLotResponse>>().ReverseMap();
+			CreateMap<IPaginate<Bid>, GetListResponseDto<GetAllBidsOfUserForLotResponse>>()
+				.ReverseMap();
+			CreateMap<Lot, GetBuyerAuctionsResponse>().ReverseMap();
+			CreateMap<IPaginate<Lot>, GetListResponseDto<GetBuyerAuctionsResponse>>().ReverseMap();
 		}
 	}
 }

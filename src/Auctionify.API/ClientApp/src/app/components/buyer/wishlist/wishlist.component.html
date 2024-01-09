@@ -1,0 +1,82 @@
+<div class="wishlist__container">
+    <h2 class="wishlist__title">Wishlist</h2>
+    <div *ngIf="lots.length > 0; else noLots" class="wishlist__lots">
+        <ul class="wishlist__list">
+            <li *ngFor="let lot of lots" class="wishlist__lot">
+                <div class="lot__image">
+                    <a [routerLink]="['/get-lot', lot.id]">
+                        <img
+                            [src]="
+                                lot.mainPhotoUrl
+                                    ? lot.mainPhotoUrl
+                                    : '../../../../assets/icons/NoImage.svg'
+                            "
+                            height="270px"
+                            width="270px"
+                            alt="Main Photo"
+                        />
+                    </a>
+                    <button
+                        (click)="handleLotWatchlist(lot)"
+                        type="button"
+                        class="lot__like-btn"
+                    >
+                        <mat-icon
+                            *ngIf="lot.isInWatchlist; else not_in_watchlist"
+                            class="primary"
+                            >favorite</mat-icon
+                        >
+                    </button>
+                    <ng-template #not_in_watchlist>
+                        <mat-icon class="primary">favorite_border</mat-icon>
+                    </ng-template>
+                </div>
+                <div class="lot__info">
+                    <div class="lot__title">
+                        <a [routerLink]="['/get-lot', lot.id]">
+                            <p>{{ lot.title }}</p>
+                        </a>
+                    </div>
+                    <div class="lot__days-left">
+                        <p *ngIf="lot.lotStatus.name === 'Active'">
+                            {{
+                                calculateDaysLeftActive(
+                                    lot.startDate,
+                                    lot.endDate
+                                )
+                            }}
+                            days
+                        </p>
+                        <p *ngIf="lot.lotStatus.name === 'Upcoming'">
+                            {{ calculateDaysLeftUpcoming(lot.startDate) }} days
+                        </p>
+                    </div>
+                    <div class="lot__price">
+                        <div
+                            *ngIf="
+                                lot.bids && lot.bids.length > 0;
+                                then bids_price;
+                                else starting_price
+                            "
+                        ></div>
+                        <ng-template #bids_price>
+                            <p class="lot__price-p">
+                                {{ lot.bids[0].newPrice }}
+                                {{ lot.currency.code }}
+                            </p>
+                        </ng-template>
+                        <ng-template #starting_price>
+                            <p class="lot__price-p">
+                                {{ lot.startingPrice }} {{ lot.currency.code }}
+                            </p>
+                        </ng-template>
+                        <p class="lot__bid-count">{{ lot.bidCount }} Bids</p>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <ng-template #noLots>
+        <p class="wishlist__empty">No lots available in your wishlist.</p>
+    </ng-template>
+</div>

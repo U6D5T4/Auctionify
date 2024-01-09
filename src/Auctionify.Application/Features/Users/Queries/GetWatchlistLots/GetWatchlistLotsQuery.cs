@@ -10,17 +10,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Auctionify.Application.Features.Users.Queries.GetByUserWatchlist
 {
-	public class GetWatchlistLotsQuery
-		: IRequest<GetListResponseDto<GetWatchlistLotsResponse>>
+	public class GetWatchlistLotsQuery : IRequest<GetListResponseDto<GetWatchlistLotsResponse>>
 	{
 		public PageRequest PageRequest { get; set; }
 	}
 
 	public class GetWatchlistLotsQueryHandler
-		: IRequestHandler<
-			GetWatchlistLotsQuery,
-			GetListResponseDto<GetWatchlistLotsResponse>
-		>
+		: IRequestHandler<GetWatchlistLotsQuery, GetListResponseDto<GetWatchlistLotsResponse>>
 	{
 		private readonly IWatchlistRepository _watchlistRepository;
 		private readonly ILotRepository _lotRepository;
@@ -77,7 +73,8 @@ namespace Auctionify.Application.Features.Users.Queries.GetByUserWatchlist
 				enableTracking: false,
 				size: request.PageRequest.PageSize,
 				index: request.PageRequest.PageIndex,
-				cancellationToken: cancellationToken);
+				cancellationToken: cancellationToken
+			);
 
 			var response = _mapper.Map<GetListResponseDto<GetWatchlistLotsResponse>>(lots);
 
@@ -98,7 +95,16 @@ namespace Auctionify.Application.Features.Users.Queries.GetByUserWatchlist
 				lot.BidCount = bids.Items.Count;
 
 				lot.Bids = _mapper.Map<List<BidDto>>(bids.Items);
+
+				lot.IsInWatchlist = true;
+
+				lot.WatchlistId =
+					watchlist
+						.Items.FirstOrDefault(x => x.LotId == lot.Id && x.UserId == user!.Id)
+						?.Id ?? 0;
 			}
+
+			response.Items = response.Items.OrderByDescending(x => x.WatchlistId).ToList();
 
 			return response;
 		}
