@@ -2,21 +2,19 @@
     height: 80px;
     border-bottom: 1px solid var(--color-grey-5);
     display: flex;
-    justify-content: center;
+    align-items: center;
+    justify-content: space-between;
     gap: 64px;
+    padding-left: 200px;
+    padding-right: 200px;
 
     &__search {
-        width: 20%;
+        flex: 1 1;
     }
 }
 
 .header img {
     width: 160px;
-}
-
-.header {
-    display: flex;
-    align-items: center;
 }
 
 .navigation {
