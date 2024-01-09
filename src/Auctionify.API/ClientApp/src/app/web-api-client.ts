@@ -842,7 +842,7 @@ export class Client {
     getBuyerAuctions(
         pageIndex: number,
         pageSize: number
-    ): Observable<LotModel[]> {
+    ): Observable<AuctionModel[]> {
         let url_ = this.baseUrl + `/api/users/buyers/auctions`;
 
         let params = new HttpParams()
@@ -857,9 +857,9 @@ export class Client {
         };
 
         return this.http.request('get', url_, options_).pipe(
-            mergeMap((response: any): Observable<LotModel[]> => {
+            mergeMap((response: any): Observable<AuctionModel[]> => {
                 if (response && response.items) {
-                    return of(response.items as LotModel[]);
+                    return of(response.items as AuctionModel[]);
                 } else {
                     throw new Error('Invalid response structure');
                 }
@@ -910,6 +910,24 @@ export interface LotModel {
     bidCount: number;
     mainPhotoUrl: string | null;
     isInWatchlist: boolean;
+}
+
+export interface AuctionModel {
+    id: number;
+    title: string;
+    description: string;
+    startingPrice: number | null;
+    startDate: Date | null;
+    endDate: Date | null;
+    category: CategoryDto;
+    lotStatus: LotStatusDto;
+    location: LocationDto;
+    currency: CurrencyDto;
+    bids: BidDto[];
+    bidCount: number;
+    mainPhotoUrl: string | null;
+    isInWatchlist: boolean;
+    buyerId: number | null;
 }
 
 export interface CategoryDto {

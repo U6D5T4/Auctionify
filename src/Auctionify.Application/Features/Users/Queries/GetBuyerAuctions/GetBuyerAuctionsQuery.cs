@@ -3,6 +3,7 @@ using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Common.Models.Requests;
 using Auctionify.Core.Entities;
+using Auctionify.Core.Persistence.Paging;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -12,6 +13,11 @@ namespace Auctionify.Application.Features.Users.Queries.GetBuyerAuctions
 	public class GetBuyerAuctionsQuery : IRequest<GetListResponseDto<GetBuyerAuctionsResponse>>
 	{
 		public PageRequest PageRequest { get; set; }
+
+		public GetBuyerAuctionsQuery()
+		{
+			PageRequest = new PageRequest { PageIndex = 0, PageSize = 10 };
+		}
 	}
 
 	public class GetBuyerAuctionsQueryHandler
@@ -65,14 +71,13 @@ namespace Auctionify.Application.Features.Users.Queries.GetBuyerAuctions
 			var lots = await _lotRepository.GetListAsync(
 				predicate: x => lotIds.Contains(x.Id),
 				enableTracking: false,
-				index: request.PageRequest.PageIndex,
-				size: request.PageRequest.PageSize,
+				size: int.MaxValue,
 				cancellationToken: cancellationToken
 			);
 
-			var response = _mapper.Map<GetListResponseDto<GetBuyerAuctionsResponse>>(lots);
-
 			var sortedLots = new List<Lot>();
+
+			#region Sorting lots according to the order of bids (syncing) and removing duplicates
 
 			foreach (var bid in sortedBids)
 			{
@@ -84,9 +89,20 @@ namespace Auctionify.Application.Features.Users.Queries.GetBuyerAuctions
 				}
 			}
 
-			var distinctLots = sortedLots.GroupBy(x => x.Id).Select(x => x.First()).ToList();
+			var distinctLots = sortedLots.GroupBy(x => x.Id).Select(x => x.First());
 
-			response.Items = _mapper.Map<List<GetBuyerAuctionsResponse>>(distinctLots);
+			#endregion
+
+			#region Pagination of distinct and sorted lots
+
+			var paginatedLots = distinctLots.Paginate(
+				request.PageRequest.PageIndex,
+				request.PageRequest.PageSize
+			);
+
+			#endregion
+
+			var response = _mapper.Map<GetListResponseDto<GetBuyerAuctionsResponse>>(paginatedLots);
 
 			foreach (var lot in response.Items)
 			{

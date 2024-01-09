@@ -10,8 +10,8 @@
     }
 
     &__list {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
+        display: flex;
+        flex-wrap: wrap;
         gap: 10px;
         list-style: none;
         padding: 0;

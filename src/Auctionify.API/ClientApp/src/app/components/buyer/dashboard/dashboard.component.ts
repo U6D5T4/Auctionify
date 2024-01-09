@@ -3,7 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { Client, LotModel } from 'src/app/web-api-client';
+import { AuctionModel, Client, LotModel } from 'src/app/web-api-client';
 import { RemoveFromWatchlistComponent } from '../../general/remove-from-watchlist/remove-from-watchlist.component';
 
 @Component({
@@ -13,6 +13,7 @@ import { RemoveFromWatchlistComponent } from '../../general/remove-from-watchlis
 })
 export class DashboardComponent implements OnInit {
     lots: LotModel[] = [];
+    auctions: AuctionModel[] = [];
     constructor(
         private apiClient: Client,
         private snackBar: MatSnackBar,
@@ -20,7 +21,14 @@ export class DashboardComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
+        this.loadBuyerAuctions();
         this.loadLotsInWatchlist();
+    }
+
+    loadBuyerAuctions() {
+        this.apiClient.getBuyerAuctions(0, 100).subscribe((auctions) => {
+            this.auctions = auctions;
+        });
     }
 
     loadLotsInWatchlist() {
