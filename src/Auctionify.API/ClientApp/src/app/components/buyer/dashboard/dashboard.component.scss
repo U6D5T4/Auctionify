@@ -1,0 +1,123 @@
+.dashboard {
+    &__container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 40px;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 40px 200px;
+    }
+
+    &__section {
+        display: flex;
+        justify-content: flex-start;
+        gap: 1180px;
+    }
+
+    &__show-all {
+        font-weight: bold;
+    }
+
+    &__wishlist-list {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 10px;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    &__wishlist-list-lot {
+        width: 250px;
+        height: 400px;
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+        padding-bottom: 10px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    &__wishlist-list-lot:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s ease;
+        border-radius: 16px;
+    }
+
+    &__wishlist-empty {
+        gap: 20px;
+        font-size: 18px;
+        padding-left: 20px;
+    }
+}
+
+.lot {
+    &__image {
+        position: relative;
+        align-self: center;
+    }
+
+    &__image img {
+        border-radius: 16px;
+    }
+
+    &__like-btn {
+        background-color: var(--color-container);
+        border: none;
+        border-radius: 50%;
+        width: 45px;
+        height: 45px;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 1;
+    }
+
+    &__title {
+        display: flex;
+        font-size: 16px;
+        font-weight: bold;
+        height: 30px;
+        flex-direction: column;
+        text-align: left;
+        justify-content: left;
+        align-self: stretch;
+        padding-top: 10px;
+    }
+
+    &__title a {
+        text-decoration: none;
+        color: var(--color-text-primary);
+    }
+
+    &__title a:hover {
+        color: var(--color-main);
+    }
+
+    &__days-left {
+        font-size: 16px;
+        color: var(--color-placeholder);
+        font-style: normal;
+        font-weight: 500;
+        line-height: 24px;
+        height: 50px;
+    }
+
+    &__price {
+        align-items: center;
+        display: flex;
+        justify-content: flex-start;
+        gap: 30px;
+    }
+
+    &__price-p {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    &__bid-count {
+        font-size: 16px;
+        color: var(--color-placeholder);
+    }
+}

@@ -2,7 +2,7 @@
 using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Common.Models.Requests;
-using Auctionify.Application.Features.Lots.Queries.GetAllByName;
+using Auctionify.Application.Features.Users.Queries.GetByUserWatchlist;
 using Auctionify.Core.Entities;
 using Auctionify.Infrastructure.Persistence;
 using Auctionify.Infrastructure.Repositories;
@@ -11,39 +11,34 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Moq;
 
-namespace Auctionify.UnitTests.GetAllLotsByNameTests
+namespace Auctionify.UnitTests.GetWatshlistLotsTests
 {
-	public class GetAllLotsByNameTests : IDisposable
+	public class GetWatchlistLotsQueryHandlerTests : IDisposable
 	{
 		#region Initialization
 
-		private readonly IMapper _mapper;
+		private readonly IWatchlistRepository _watchlistRepository;
 		private readonly ILotRepository _lotRepository;
 		private readonly IBidRepository _bidRepository;
-		private readonly Mock<IWatchlistService> _watchListServiceMock;
+		private readonly IMapper _mapper;
 		private readonly Mock<ICurrentUserService> _currentUserServiceMock;
 		private readonly Mock<IPhotoService> _photoServiceMock;
 		private readonly UserManager<User> _userManager;
 
-		public GetAllLotsByNameTests()
+		public GetWatchlistLotsQueryHandlerTests()
 		{
 			var mockDbContext = DbContextMock.GetMock<Lot, ApplicationDbContext>(
 				EntitiesSeeding.GetLots(),
 				ctx => ctx.Lots
 			);
 			mockDbContext = DbContextMock.GetMock(
-				EntitiesSeeding.GetFiles(),
-				ctx => ctx.Files,
-				mockDbContext
-			);
-			mockDbContext = DbContextMock.GetMock(
-				EntitiesSeeding.GetLotStatuses(),
-				ctx => ctx.LotStatuses,
-				mockDbContext
-			);
-			mockDbContext = DbContextMock.GetMock(
 				EntitiesSeeding.GetBids(),
 				ctx => ctx.Bids,
+				mockDbContext
+			);
+			mockDbContext = DbContextMock.GetMock(
+				EntitiesSeeding.GetWatchlists(),
+				ctx => ctx.Watchlists,
 				mockDbContext
 			);
 
@@ -54,20 +49,21 @@ namespace Auctionify.UnitTests.GetAllLotsByNameTests
 						{
 							new Application.Common.Profiles.MappingProfiles(),
 							new Application.Features.Lots.Profiles.MappingProfiles(),
+							new Application.Features.Users.Profiles.MappingProfiles(),
 						}
 					)
 			);
 
-			_watchListServiceMock = new Mock<IWatchlistService>();
+			_mapper = new Mapper(configuration);
+
 			_photoServiceMock = new Mock<IPhotoService>();
 			_currentUserServiceMock = new Mock<ICurrentUserService>();
 
 			_lotRepository = new LotRepository(mockDbContext.Object);
 			_bidRepository = new BidRepository(mockDbContext.Object);
+			_watchlistRepository = new WatchlistRepository(mockDbContext.Object);
 
 			_userManager = EntitiesSeeding.GetUserManagerMock();
-
-			_mapper = new Mapper(configuration);
 		}
 
 		#endregion
@@ -75,22 +71,21 @@ namespace Auctionify.UnitTests.GetAllLotsByNameTests
 		#region Tests
 
 		[Fact]
-		public async Task GetAllLotsByNameQueryHandler_WhenNoLotsMatchName_ReturnsEmptyList()
+		public async Task Handle_ShouldReturnWatchlistLots()
 		{
 			// Arrange
-			var query = new GetAllLotsByNameQuery
+			var query = new GetWatchlistLotsQuery
 			{
-				PageRequest = new PageRequest { PageIndex = 0, PageSize = 10 },
-				Name = "NonExistentName"
+				PageRequest = new PageRequest { PageIndex = 1, PageSize = 10 }
 			};
 
-			var handler = new GetAllLotsByNameQueryHandler(
+			var handler = new GetWatchlistLotsQueryHandler(
+				_watchlistRepository,
 				_lotRepository,
+				_mapper,
+				_photoServiceMock.Object,
 				_currentUserServiceMock.Object,
 				_userManager,
-				_watchListServiceMock.Object,
-				_photoServiceMock.Object,
-				_mapper,
 				_bidRepository
 			);
 
@@ -98,42 +93,7 @@ namespace Auctionify.UnitTests.GetAllLotsByNameTests
 			var result = await handler.Handle(query, default);
 
 			// Assert
-			result.Should().BeOfType<GetListResponseDto<GetAllLotsByNameResponse>>();
-			result.Count.Should().Be(0);
-		}
-
-		[Fact]
-		public async Task GetAllLotsByNameQueryHandler_WhenThereIsNameMatch_ReturnsListWithLots()
-		{
-			// Arrange
-			var query = new GetAllLotsByNameQuery
-			{
-				PageRequest = new PageRequest { PageIndex = 0, PageSize = 10 },
-				Name = "Test"
-			};
-
-			var handler = new GetAllLotsByNameQueryHandler(
-				_lotRepository,
-				_currentUserServiceMock.Object,
-				_userManager,
-				_watchListServiceMock.Object,
-				_photoServiceMock.Object,
-				_mapper,
-				_bidRepository
-			);
-
-			// Act
-			var result = await handler.Handle(query, default);
-
-			// Assert
-			result.Should().BeOfType<GetListResponseDto<GetAllLotsByNameResponse>>();
-			result.Count.Should().Be(4); // There are 4 lots with "Test" in GetLots() in EntitiesSeeding
-			result
-				.Items[0]
-				.Description.Should()
-				.Be(
-					"Test lot with description and some moreeeeee DECSRIPTIOn mock data with long description and some other else"
-				);
+			result.Should().BeOfType<GetListResponseDto<GetWatchlistLotsResponse>>();
 		}
 
 		#endregion
@@ -150,7 +110,6 @@ namespace Auctionify.UnitTests.GetAllLotsByNameTests
 		{
 			if (disposing)
 			{
-				_watchListServiceMock.Reset();
 				_currentUserServiceMock.Reset();
 				_photoServiceMock.Reset();
 			}
