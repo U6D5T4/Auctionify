@@ -7,3 +7,8 @@ export interface Rate {
     comment: string | null;
     creationDate: Date | null;
 }
+
+export interface RatePaginationModel {
+    pageIndex: number | null;
+    pageSize: number | null;
+}

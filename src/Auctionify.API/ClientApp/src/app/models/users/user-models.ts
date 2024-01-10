@@ -11,6 +11,8 @@ export interface SellerModel {
     finishedLotsCount: number | null;
     senderRates: Rate[] | null;
     receiverRates: Rate[] | null;
+    averageRate: number | null;
+    ratesCount: number | null;
 }
 
 export interface BuyerModel {
@@ -24,6 +26,8 @@ export interface BuyerModel {
     finishedLotsCount: number | null;
     senderRates: Rate[] | null;
     receiverRates: Rate[] | null;
+    averageRate: number | null;
+    ratesCount: number | null;
 }
 
 export interface UpdateUserProfileModel {

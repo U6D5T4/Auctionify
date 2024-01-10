@@ -17,7 +17,10 @@
             <p>Welcome Back, {{ userProfileData?.firstName }}!</p>
             <div class="profile__rate-lots">
                 <div class="profile__rate">
-                    <!-- Div for rates -->
+                    <div class="profile__rate-stars">
+                        <mat-icon *ngFor="let star of getAverageStars(userProfileData?.ratesCount!)">{{ star }}</mat-icon>
+                    </div>
+                    <p>({{userProfileData?.ratesCount}})</p>
                 </div>
                 <div class="profile__lots-count" *ngIf="isUserSeller()">
                     Lots created {{ userProfileData?.createdLotsCount }} | Lots
@@ -32,8 +35,20 @@
                 <h1>Rating & Review</h1>
             </div>
             <div class="main__options">
-                <button class="main__rating-btn">My rating</button>
-                <button class="main__feedback-btn">My feedback</button>
+                <button 
+                    routerLink="/rating"
+                    class="main__rating-btn"
+                    mat-flat-button
+                    >
+                    My rating
+                </button>
+                <button 
+                    routerLink="/rating/feedback"
+                    class="main__feedback-btn"
+                    mat-flat-button
+                    >
+                    My feedback
+                </button>
             </div>
         
             <div class="main__container">
@@ -48,7 +63,7 @@
                                 <div class="main__progress-bar">
                                     <div class="main__progress" [style.width]="getPercentage(rating.value)"></div>
                                 </div>
-                                <span class="count">{{ rating.value }}</span>
+                                <span class="main__count">{{ rating.value }}</span>
                             </div>
                         </div>
                     </div>
@@ -56,14 +71,14 @@
                     <div class="main__average">
                         <div class="main__number-stars">
                             <h1 class="main__avarage-score">
-                                {{getAverageRate()}}
+                                {{userProfileData?.averageRate?.toFixed(1)}}
                             </h1>
                             <div class="main__stars">
-                                <mat-icon *ngFor="let star of getAverageStars()">{{ star }}</mat-icon>
+                                <mat-icon *ngFor="let star of getAverageStars(userProfileData?.ratesCount!)">{{ star }}</mat-icon>
                             </div>
                         </div>
                         <div class="main__rating-count">
-                            <p>Comments: {{userProfileData?.senderRates?.length}}</p>
+                            <p>Comments: {{userProfileData?.ratesCount}}</p>
                         </div>
                     </div>
                 </div>

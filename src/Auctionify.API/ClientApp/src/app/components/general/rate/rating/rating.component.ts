@@ -1,15 +1,16 @@
 import { Dialog } from '@angular/cdk/dialog';
 import { Component, OnInit } from '@angular/core';
 import { formatDate } from '@angular/common';
+import { Router } from '@angular/router';
 
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 import { BuyerModel, SellerModel } from 'src/app/models/users/user-models';
 import { Client } from 'src/app/web-api-client';
-import { Rate } from 'src/app/models/rates/rate-models';
+import { Rate, RatePaginationModel } from 'src/app/models/rates/rate-models';
 
 @Component({
-    selector: 'app-raiting',
+    selector: 'app-rating',
     templateUrl: './rating.component.html',
     styleUrls: ['./rating.component.scss'],
 })
@@ -20,6 +21,7 @@ export class RatingComponent implements OnInit {
     constructor(
         private authorizeService: AuthorizeService,
         private client: Client,
+        private router: Router,
         public dialog: Dialog
     ) {}
 
@@ -39,10 +41,16 @@ export class RatingComponent implements OnInit {
     }
 
     private fetchUserProfileData() {
+        const pagination: RatePaginationModel = {
+            pageIndex: 0,
+            pageSize: 20,
+        };
+
         if (this.isUserBuyer()) {
-            this.client.getBuyer().subscribe(
+            this.client.getBuyer(pagination).subscribe(
                 (data: BuyerModel) => {
                     this.userProfileData = data;
+                    this.validate();
                     this.addRates();
                     this.getRatingData();
                 },
@@ -56,9 +64,10 @@ export class RatingComponent implements OnInit {
                 }
             );
         } else if (this.isUserSeller()) {
-            this.client.getSeller().subscribe(
+            this.client.getSeller(pagination).subscribe(
                 (data: SellerModel) => {
                     this.userProfileData = data;
+                    this.validate();
                     this.addRates();
                     this.getRatingData();
                 },
@@ -71,6 +80,14 @@ export class RatingComponent implements OnInit {
                     );
                 }
             );
+        }
+    }
+
+    private validate() {
+        if (!this.userProfileData?.averageRate) {
+            this.userProfileData!.averageRate = 0;
+        } else if (!this.userProfileData?.ratesCount) {
+            this.userProfileData!.ratesCount = 0;
         }
     }
 
@@ -104,14 +121,6 @@ export class RatingComponent implements OnInit {
         '5': 0,
     };
 
-    getAverageRate(): number {
-        var average = 0;
-        for (let a of this.senderRates) {
-            average += a.ratingValue!;
-        }
-        return average / this.senderRates.length;
-    }
-
     getPercentage(count: number): string {
         const total = this.getTotalCount();
         return total > 0 ? `${(count / total) * 100}%` : '0%';
@@ -125,9 +134,10 @@ export class RatingComponent implements OnInit {
         return date ? formatDate(date, 'dd LLLL, h:mm', 'en-US') : '';
     }
 
-    getAverageStars(): string[] {
-        const averageRating = this.getAverageRate();
-        const roundedAverage = Math.round(averageRating);
+    getAverageStars(rate: number | null): string[] {
+        const averageRating = rate;
+
+        const roundedAverage = Math.round(averageRating!);
 
         const stars: string[] = [];
         for (let i = 1; i <= 5; i++) {

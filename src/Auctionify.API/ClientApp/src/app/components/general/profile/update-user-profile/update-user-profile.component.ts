@@ -12,6 +12,7 @@ import {
     UpdateUserProfileModel,
 } from 'src/app/models/users/user-models';
 import { Client } from 'src/app/web-api-client';
+import { RatePaginationModel } from 'src/app/models/rates/rate-models';
 
 export interface ProfileFormModel {
     firstName: FormControl<string | null>;
@@ -125,10 +126,16 @@ export class UpdateUserProfileComponent {
     }
 
     private fetchUserProfileData() {
+        const pagination: RatePaginationModel = {
+            pageIndex: 0,
+            pageSize: 10,
+        };
+
         if (this.isUserBuyer()) {
-            this.client.getBuyer().subscribe(
+            this.client.getBuyer(pagination).subscribe(
                 (data: BuyerModel) => {
                     this.setFormControlData(data);
+                    this.validate();
                 },
                 (error) => {
                     this.openDialog(
@@ -140,9 +147,10 @@ export class UpdateUserProfileComponent {
                 }
             );
         } else if (this.isUserSeller()) {
-            this.client.getSeller().subscribe(
+            this.client.getSeller(pagination).subscribe(
                 (data: SellerModel) => {
                     this.setFormControlData(data);
+                    this.validate();
                 },
                 (error) => {
                     this.openDialog(
@@ -153,6 +161,33 @@ export class UpdateUserProfileComponent {
                     );
                 }
             );
+        }
+    }
+
+    getAverageStars(rate: number | null): string[] {
+        const averageRating = rate;
+
+        const roundedAverage = Math.round(averageRating!);
+
+        const stars: string[] = [];
+        for (let i = 1; i <= 5; i++) {
+            if (i <= roundedAverage) {
+                stars.push('star');
+            } else if (i - roundedAverage === 0.5) {
+                stars.push('star_half');
+            } else {
+                stars.push('star_border');
+            }
+        }
+
+        return stars;
+    }
+
+    private validate() {
+        if (!this.userProfileData?.averageRate) {
+            this.userProfileData!.averageRate = 0;
+        } else if (!this.userProfileData?.ratesCount) {
+            this.userProfileData!.ratesCount = 0;
         }
     }
 

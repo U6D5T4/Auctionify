@@ -19,5 +19,9 @@ namespace Auctionify.Application.Features.Users.Queries.GetBuyer
 		public ICollection<RateDto> SenderRates { get; set; }
 
 		public ICollection<RateDto> ReceiverRates { get; set; }
+
+		public double AverageRate { get; set; }
+
+		public int RatesCount { get; set; }
 	}
 }

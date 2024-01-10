@@ -13,7 +13,6 @@ import { ProfileNavbarComponent } from './profile-navbar/profile-navbar.componen
 import { UpdateUserProfileComponent } from './update-user-profile/update-user-profile.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { ProfileRoutingModule } from './profile-routing.module';
-import { RatingComponent } from './rating/rating.component';
 
 @NgModule({
     imports: [
@@ -33,15 +32,13 @@ import { RatingComponent } from './rating/rating.component';
         ProfileNavbarComponent,
         UpdateUserProfileComponent,
         ChangePasswordComponent,
-        RatingComponent,
     ],
 
     exports: [
-        RatingComponent,
         UserProfileComponent,
         UpdateUserProfileComponent,
         ChangePasswordComponent,
-        RatingComponent
+        ProfileNavbarComponent,
     ],
 })
 export class ProfileModule {}

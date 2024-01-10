@@ -25,6 +25,21 @@
         gap: 16px;
     }
 
+    &__rate {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    &__rate-stars {
+        display: flex;
+        align-items: center;
+    }
+
+    &__rate-stars mat-icon {
+        color: #ffc72c;
+    }
+
     &__rate-lots {
         display: flex;
         gap: 16px;
@@ -59,93 +74,12 @@
         font-family: 'Onest', sans-serif;
     }
 
-    &__container {
-        border-radius: 16px;
-        border: 1px solid #e0e0e0;
-        padding: 40px;
-    }
-
     &__rating-btn {
         width: 130px;
     }
 
     &__feedback-btn {
         width: 160px;
-    }
-
-    &__container {
-        padding: 40px;
-        display: flex;
-        flex-direction: column;
-        gap: 40px;
-    }
-    
-    &__rating {
-        display: flex;
-        gap: 40px;
-        flex-wrap: nowrap;
-    }
-
-    &__progress-bar-container {
-        display: flex;
-        gap: 20px;
-    }
-
-    &__average-rating {
-        display: flex;
-        flex-direction: column;
-    }
-
-    &__rating-level {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-    }
-      
-    &__progress-bar {
-        width: 500px;
-        height: 8px;
-        border-radius: 500px;
-        background-color: #e0e0e0;
-        position: relative;
-    }
-      
-    &__progress {
-        height: 100%;
-        border-radius: 500px;
-        background-color: #FBBC04;
-    }
-
-    &__average {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-    }
-
-    &__stars mat-icon {
-        color: #ffc72c;
-    }
-
-    &__number-stars {
-        display: flex;
-        flex-direction: column;
-        gap: 1px;
-    }
-
-    &__avarage-score {
-        display: flex;
-        justify-content: center;
-        font-size: 40px;
-    }
-
-    &__rating-count {
-        color: #2B5293;
-    }
-    
-    &__review-number {
-        width: 3px;
-        align-items: center;
     }
 }
 
@@ -189,5 +123,3 @@
         color: #ffc72c;
     }
 }
-  
-
