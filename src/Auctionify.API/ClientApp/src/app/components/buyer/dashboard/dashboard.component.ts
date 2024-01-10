@@ -1,10 +1,16 @@
 import { Dialog } from '@angular/cdk/dialog';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, effect } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { AuctionModel, Client, LotModel } from 'src/app/web-api-client';
+import {
+    AuctionModel,
+    Client,
+    GeneralAuctionResponse,
+    LotModel,
+} from 'src/app/web-api-client';
 import { RemoveFromWatchlistComponent } from '../../general/remove-from-watchlist/remove-from-watchlist.component';
+import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 
 @Component({
     selector: 'app-dashboard',
@@ -12,23 +18,84 @@ import { RemoveFromWatchlistComponent } from '../../general/remove-from-watchlis
     styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
+    currentBuyerId: number = 0;
+
     lots: LotModel[] = [];
     auctions: AuctionModel[] = [];
+    generalAuctionResponse!: GeneralAuctionResponse;
+
+    inititalAuctionsCount: number = 5;
+    additionalAuctionsCount: number = 5;
+    noMoreAuctionsToLoad: boolean = false;
+    currentIndex: number = 0;
+
+    priceColor: string = 'black';
+
     constructor(
         private apiClient: Client,
         private snackBar: MatSnackBar,
-        private dialog: Dialog
-    ) {}
+        private dialog: Dialog,
+        private authService: AuthorizeService
+    ) {
+        effect(() => {
+            this.currentBuyerId = this.authService.getUserId()!;
+        });
+    }
 
     ngOnInit(): void {
         this.loadBuyerAuctions();
         this.loadLotsInWatchlist();
     }
 
+    getRecentUserBidForLot(lot: AuctionModel): number | null {
+        if (!lot.bids) {
+            return null;
+        }
+
+        const userBid = lot.bids.find(
+            (bid) => bid.buyerId === this.currentBuyerId
+        );
+
+        if (!userBid) {
+            return null;
+        }
+
+        return userBid.newPrice;
+    }
+
     loadBuyerAuctions() {
-        this.apiClient.getBuyerAuctions(0, 100).subscribe((auctions) => {
-            this.auctions = auctions;
-        });
+        this.apiClient
+            .getBuyerAuctions(0, this.inititalAuctionsCount)
+            .subscribe((response: GeneralAuctionResponse) => {
+                this.generalAuctionResponse = response;
+                this.auctions = response.items;
+                console.log(this.auctions);
+
+                if (!this.generalAuctionResponse.hasNext) {
+                    this.noMoreAuctionsToLoad = true;
+                }
+            });
+    }
+
+    loadMoreBuyerAuctions() {
+        if (!this.generalAuctionResponse.hasNext) {
+            this.noMoreAuctionsToLoad = true;
+            return;
+        }
+
+        this.currentIndex += 1;
+
+        this.apiClient
+            .getBuyerAuctions(this.currentIndex, this.additionalAuctionsCount)
+            .subscribe((response: GeneralAuctionResponse) => {
+                this.auctions = [...this.auctions, ...response.items];
+                this.generalAuctionResponse = response;
+                console.log(response);
+
+                if (!this.generalAuctionResponse.hasNext) {
+                    this.noMoreAuctionsToLoad = true;
+                }
+            });
     }
 
     loadLotsInWatchlist() {
@@ -81,6 +148,7 @@ export class DashboardComponent implements OnInit {
                         }
                     );
                     lot.isInWatchlist = true;
+                    this.loadLotsInWatchlist();
                 },
                 error: (result: HttpErrorResponse) => {
                     this.snackBar.open(
@@ -104,9 +172,32 @@ export class DashboardComponent implements OnInit {
 
             dialog.closed.subscribe({
                 next: () => {
+                    const updatedAuction = this.auctions.find(
+                        (auction) => auction.id === lot.id
+                    );
+                    if (updatedAuction) {
+                        updatedAuction.isInWatchlist = false;
+                        this.loadLotsInWatchlist();
+                    }
                     this.loadLotsInWatchlist();
                 },
             });
+        }
+    }
+
+    determinePriceColor(auction: any) {
+        if (auction.lotStatus.name === 'Active') {
+            if (this.currentBuyerId === auction.bids[0].buyerId) {
+                this.priceColor = '#2b5293';
+            } else {
+                this.priceColor = '#ab2d25';
+            }
+        } else {
+            if (auction.buyerId === this.currentBuyerId) {
+                this.priceColor = '#2b9355';
+            } else {
+                this.priceColor = '#ab2d25';
+            }
         }
     }
 }

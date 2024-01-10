@@ -1,7 +1,226 @@
 <div class="dashboard">
-    <div class="dashboard__auction-container">
-        <div class="dashboard__auction-section">
-            <h2 class="dashboard__auction-title">Active auctions</h2>
+    <div class="dashboard__auction-border-box">
+        <div class="dashboard__auction-container">
+            <div class="dashboard__auction-section">
+                <h2 class="dashboard__auction-title">Active auctions</h2>
+            </div>
+
+            <div
+                *ngIf="auctions.length > 0; else noAuctions"
+                class="dashboard__auction-lots"
+            >
+                <ul class="dashboard__auction-list">
+                    <li
+                        *ngFor="let auction of auctions"
+                        class="dashboard__auction-list-lot"
+                    >
+                        <div
+                            class=""
+                            [ngStyle]="{ color: determinePriceColor(auction) }"
+                        ></div>
+                        <div class="auction__image">
+                            <a [routerLink]="['/get-lot', auction.id]">
+                                <img
+                                    [src]="
+                                        auction.mainPhotoUrl
+                                            ? auction.mainPhotoUrl
+                                            : '../../../../assets/icons/NoImage.svg'
+                                    "
+                                    height="140px"
+                                    width="140px"
+                                    alt="Main Photo"
+                                />
+                            </a>
+                        </div>
+
+                        <div class="auction__info">
+                            <p class="auction__title">
+                                <a [routerLink]="['/get-lot', auction.id]">
+                                    {{ auction.title }}
+                                </a>
+                            </p>
+                            <p class="auction__description">
+                                {{ auction.description | slice : 0 : 100 }}
+                                {{
+                                    auction.description.length > 100
+                                        ? '...'
+                                        : ''
+                                }}
+                            </p>
+                        </div>
+                        <div class="auction__price">
+                            <div
+                                *ngIf="
+                                    auction.bids && auction.bids.length > 0;
+                                    then auction_bids_price;
+                                    else auction_starting_price
+                                "
+                            ></div>
+                            <ng-template #auction_bids_price>
+                                <p
+                                    class="auction__price-p"
+                                    [style.color]="priceColor"
+                                >
+                                    {{ auction.bids[0].newPrice }}
+                                    {{ auction.currency.code }}
+                                </p>
+                            </ng-template>
+                            <ng-template #auction_starting_price>
+                                <p
+                                    class="auction__price-p"
+                                    [style.color]="priceColor"
+                                >
+                                    {{ auction.startingPrice }}
+                                    {{ auction.currency.code }}
+                                </p>
+                            </ng-template>
+
+                            <ng-container
+                                *ngIf="auction.lotStatus.name === 'Active'"
+                            >
+                                <ng-container
+                                    *ngIf="
+                                        currentBuyerId ===
+                                        auction.bids[0].buyerId
+                                    "
+                                >
+                                    <p
+                                        class="auction__comment"
+                                        style="color: #2b5293"
+                                    >
+                                        You are the highest bidder
+                                    </p>
+                                    <a [routerLink]="['/get-lot', auction.id]">
+                                        <button
+                                            type="button"
+                                            class="auction__go-to-active-lot-btn"
+                                        >
+                                            <img
+                                                src="../../../../assets/icons/AuctionIcon.svg"
+                                                alt="Go to lot profile."
+                                            />
+                                        </button>
+                                    </a>
+                                </ng-container>
+                                <ng-container
+                                    *ngIf="
+                                        currentBuyerId !==
+                                        auction.bids[0].buyerId
+                                    "
+                                >
+                                    <p
+                                        class="auction__comment"
+                                        style="color: #ab2d25"
+                                    >
+                                        Your bid:
+                                        {{ getRecentUserBidForLot(auction) }}
+                                        {{ auction.currency.code }}
+                                    </p>
+                                    <a [routerLink]="['/get-lot', auction.id]">
+                                        <button
+                                            type="button"
+                                            class="auction__go-to-active-lot-btn"
+                                        >
+                                            <img
+                                                src="../../../../assets/icons/AuctionIcon.svg"
+                                                alt="Go to lot profile."
+                                            />
+                                        </button>
+                                    </a>
+                                </ng-container>
+                            </ng-container>
+                            <ng-container
+                                *ngIf="auction.lotStatus.name !== 'Active'"
+                            >
+                                <ng-container
+                                    *ngIf="auction.buyerId === currentBuyerId"
+                                >
+                                    <p
+                                        class="auction__comment"
+                                        style="color: #2b9355"
+                                    >
+                                        You won the auction!
+                                    </p>
+                                    <a [routerLink]="['/get-lot', auction.id]">
+                                        <button
+                                            type="button"
+                                            class="auction__go-to-won-lot-btn"
+                                        >
+                                            <img
+                                                src="../../../../assets/icons/ArrowNarrowRightIcon.svg"
+                                                alt="Go to lot profile."
+                                            />
+                                        </button>
+                                    </a>
+                                </ng-container>
+                                <ng-container
+                                    *ngIf="auction.buyerId !== currentBuyerId"
+                                >
+                                    <p
+                                        class="auction__comment"
+                                        style="color: #ab2d25"
+                                    >
+                                        You lost the auction!
+                                    </p>
+                                    <a [routerLink]="['/get-lot', auction.id]">
+                                        <button
+                                            type="button"
+                                            class="auction__go-to-lost-lot-btn"
+                                        >
+                                            <img
+                                                src="../../../../assets/icons/ArrowNarrowRightIcon.svg"
+                                                alt="Go to lot profile."
+                                            />
+                                        </button>
+                                    </a>
+                                </ng-container>
+                            </ng-container>
+                        </div>
+
+                        <button
+                            (click)="handleLotWatchlist(auction)"
+                            type="button"
+                            class="auction__like-btn"
+                        >
+                            <mat-icon
+                                *ngIf="
+                                    auction.isInWatchlist;
+                                    else not_in_watchlist
+                                "
+                                class="primary"
+                                >favorite</mat-icon
+                            >
+                        </button>
+
+                        <ng-template #not_in_watchlist>
+                            <mat-icon class="primary">favorite_border</mat-icon>
+                        </ng-template>
+                    </li>
+                </ul>
+            </div>
+
+            <button
+                *ngIf="!noMoreAuctionsToLoad"
+                (click)="loadMoreBuyerAuctions()"
+                class="show-more-button"
+            >
+                Show More
+            </button>
+
+            <p
+                *ngIf="
+                    noMoreAuctionsToLoad &&
+                    auctions.length > inititalAuctionsCount
+                "
+            >
+                No more auctions to load.
+            </p>
+
+            <ng-template #noAuctions>
+                <p class="dashboard__auction-empty">
+                    No active auctions available.
+                </p>
+            </ng-template>
         </div>
     </div>
 

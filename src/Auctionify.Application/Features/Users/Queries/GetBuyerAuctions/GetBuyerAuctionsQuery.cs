@@ -7,6 +7,7 @@ using Auctionify.Core.Persistence.Paging;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Auctionify.Application.Features.Users.Queries.GetBuyerAuctions
 {
@@ -70,6 +71,7 @@ namespace Auctionify.Application.Features.Users.Queries.GetBuyerAuctions
 
 			var lots = await _lotRepository.GetListAsync(
 				predicate: x => lotIds.Contains(x.Id),
+				include: x => x.Include(l => l.Currency).Include(l => l.LotStatus),
 				enableTracking: false,
 				size: int.MaxValue,
 				cancellationToken: cancellationToken

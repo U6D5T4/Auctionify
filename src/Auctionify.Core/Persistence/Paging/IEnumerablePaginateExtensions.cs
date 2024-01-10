@@ -15,10 +15,10 @@
 			{
 				Index = pageIndex,
 				Size = pageSize,
-				From = pageIndex * pageSize,
+				From = 0,
 				Count = count,
 				Items = items,
-				Pages = (int)Math.Ceiling(count / (double)pageSize)
+				Pages = (int)Math.Ceiling(count / (double)pageSize),
 			};
 		}
 	}

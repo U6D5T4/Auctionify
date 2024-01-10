@@ -1,12 +1,6 @@
 .dashboard {
-    &__wishlist-container {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 40px;
-        max-width: 1400px;
-        margin: 0 auto;
-        padding: 40px 200px;
+    &__auction-border-box {
+        padding-top: 40px;
     }
 
     &__auction-container {
@@ -14,9 +8,55 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 40px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 100px;
+        border-radius: 16px;
+        border: 1px solid var(--color-grey-5);
+    }
+
+    &__auction-section {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    &__auction-title {
+        display: flex;
+        align-items: center;
+        margin-left: -40px;
+    }
+
+    &__auction-list {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        gap: 10px;
+        list-style: none;
+        padding: 0;
+        margin-left: -40px;
+    }
+
+    &__auction-list-lot {
+        align-items: center;
+        display: flex;
+        justify-content: flex-start;
+    }
+
+    &__auction-empty {
+        gap: 20px;
+        font-size: 18px;
+        padding-left: 20px;
+    }
+
+    &__wishlist-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 40px;
         max-width: 1400px;
         margin: 0 auto;
-        padding: 40px 200px;
+        padding: 40px 5px;
     }
 
     &__wishlist-section {
@@ -64,6 +104,113 @@
         gap: 20px;
         font-size: 18px;
         padding-left: 20px;
+    }
+}
+
+.auction {
+    &__image {
+        position: relative;
+        align-self: center;
+        display: flex;
+    }
+
+    &__image img {
+        border-radius: 18.7px;
+        background: url(../../../../assets/icons/NoImage.svg),
+            lightgray 50% / cover no-repeat;
+    }
+
+    &__info {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        width: 100%;
+        margin-top: -5px;
+    }
+
+    &__title {
+        overflow: hidden;
+        color: var(--color-text-primary);
+        text-overflow: ellipsis;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 24px;
+
+        display: flex;
+        align-items: center;
+
+        flex-grow: 1;
+        padding-left: 48px;
+    }
+
+    &__title a {
+        text-decoration: none;
+        color: var(--color-text-primary);
+    }
+
+    &__title a:hover {
+        color: var(--color-main);
+    }
+
+    &__description {
+        display: block;
+        word-break: break-word;
+        padding-left: 48px;
+        max-width: 30ch;
+    }
+
+    &__price {
+        align-items: flex-start;
+        display: flex;
+        justify-content: flex-start;
+        gap: 8px;
+        flex-direction: column;
+        align-self: flex-end;
+    }
+
+    &__comment {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 16px;
+    }
+
+    &__like-btn {
+        background-color: var(--color-container);
+        border: 1px solid var(--color-grey-5);
+        border-radius: 8px;
+        padding: 9px;
+        background-color: #ffffff;
+    }
+
+    &__go-to-active-lot-btn {
+        background-color: var(--color-main);
+        padding: 12px;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        size: 16px;
+    }
+
+    &__go-to-won-lot-btn {
+        background: var(--green, #2b9355);
+        padding: 10px;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        size: 16px;
+    }
+    &__go-to-lost-lot-btn {
+        background: var(--red, #ab2d25);
+        padding: 10px;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        size: 16px;
     }
 }
 
