@@ -69,8 +69,6 @@ export class DashboardComponent implements OnInit {
             .subscribe((response: GeneralAuctionResponse) => {
                 this.generalAuctionResponse = response;
                 this.auctions = response.items;
-                console.log(this.auctions);
-
                 if (!this.generalAuctionResponse.hasNext) {
                     this.noMoreAuctionsToLoad = true;
                 }
@@ -90,8 +88,6 @@ export class DashboardComponent implements OnInit {
             .subscribe((response: GeneralAuctionResponse) => {
                 this.auctions = [...this.auctions, ...response.items];
                 this.generalAuctionResponse = response;
-                console.log(response);
-
                 if (!this.generalAuctionResponse.hasNext) {
                     this.noMoreAuctionsToLoad = true;
                 }
@@ -101,6 +97,7 @@ export class DashboardComponent implements OnInit {
     loadLotsInWatchlist() {
         this.apiClient.getLotsInWatchlist(0, 5).subscribe((lots) => {
             this.lots = lots;
+            console.log(this.lots);
         });
     }
 

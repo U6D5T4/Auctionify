@@ -7,7 +7,7 @@
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        gap: 40px;
+        gap: 20px;
         max-width: 1200px;
         margin: 0 auto;
         padding: 40px 100px;
@@ -31,16 +31,30 @@
         display: flex;
         flex-direction: column;
         flex-wrap: wrap;
-        gap: 10px;
+        gap: 16px;
         list-style: none;
         padding: 0;
-        margin-left: -40px;
+        margin-left: -10px;
     }
 
     &__auction-list-lot {
         align-items: center;
         display: flex;
         justify-content: flex-start;
+        height: 135px;
+        padding-top: 5px;
+        width: min-content;
+    }
+
+    &__auction-list-lot:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        border-radius: 16px;
+    }
+
+    &__auction-no-more {
+        font-size: 18px;
+        margin: 0 auto;
     }
 
     &__auction-empty {
@@ -133,7 +147,7 @@
         overflow: hidden;
         color: var(--color-text-primary);
         text-overflow: ellipsis;
-        font-size: 16px;
+        font-size: 17px;
         font-style: normal;
         font-weight: 600;
         line-height: 24px;
@@ -158,33 +172,61 @@
         display: block;
         word-break: break-word;
         padding-left: 48px;
-        max-width: 30ch;
+        max-width: 40ch;
+        color: var(--color-grey-3);
     }
 
     &__price {
-        align-items: flex-start;
         display: flex;
         justify-content: flex-start;
-        gap: 8px;
-        flex-direction: column;
+        width: 950px;
+        flex-wrap: wrap;
+        flex-direction: row;
+        height: initial;
+    }
+
+    &__price-p {
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 600;
+        padding-right: 30px;
+        margin-bottom: 15px;
         align-self: flex-end;
+        line-height: 0px;
+        transform: translateY(-15px);
+    }
+
+    &__go-to-lot {
+        padding-left: 130px;
+    }
+
+    &__price-p,
+    &___go-to-lot {
+        flex: 0 0 50%;
+        width: calc(100% - 100px);
     }
 
     &__comment {
-        overflow: hidden;
-        text-overflow: ellipsis;
         font-size: 14px;
         font-style: normal;
         font-weight: 600;
         line-height: 16px;
+        flex: 0 0 100%;
+        order: 1;
+        transform: translateY(-15px);
+    }
+
+    &__watchlist {
+        padding-right: 10px;
     }
 
     &__like-btn {
-        background-color: var(--color-container);
         border: 1px solid var(--color-grey-5);
         border-radius: 8px;
         padding: 9px;
         background-color: #ffffff;
+        margin-top: -14.5px;
+        margin-left: -130px;
     }
 
     &__go-to-active-lot-btn {
@@ -204,6 +246,7 @@
         border-radius: 8px;
         size: 16px;
     }
+
     &__go-to-lost-lot-btn {
         background: var(--red, #ab2d25);
         padding: 10px;

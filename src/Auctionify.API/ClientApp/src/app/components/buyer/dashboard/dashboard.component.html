@@ -40,9 +40,9 @@
                                 </a>
                             </p>
                             <p class="auction__description">
-                                {{ auction.description | slice : 0 : 100 }}
+                                {{ auction.description | slice : 0 : 150 }}
                                 {{
-                                    auction.description.length > 100
+                                    auction.description.length > 150
                                         ? '...'
                                         : ''
                                 }}
@@ -88,19 +88,26 @@
                                         class="auction__comment"
                                         style="color: #2b5293"
                                     >
-                                        Your bid is last
+                                        Your bid is last bid
                                     </p>
-                                    <a [routerLink]="['/get-lot', auction.id]">
-                                        <button
-                                            type="button"
-                                            class="auction__go-to-active-lot-btn"
+                                    <div class="auction__go-to-lot">
+                                        <a
+                                            [routerLink]="[
+                                                '/get-lot',
+                                                auction.id
+                                            ]"
                                         >
-                                            <img
-                                                src="../../../../assets/icons/AuctionIcon.svg"
-                                                alt="Go to lot profile."
-                                            />
-                                        </button>
-                                    </a>
+                                            <button
+                                                type="button"
+                                                class="auction__go-to-active-lot-btn"
+                                            >
+                                                <img
+                                                    src="../../../../assets/icons/AuctionIcon.svg"
+                                                    alt="Go to lot profile."
+                                                />
+                                            </button>
+                                        </a>
+                                    </div>
                                 </ng-container>
                                 <ng-container
                                     *ngIf="
@@ -116,17 +123,24 @@
                                         {{ getRecentUserBidForLot(auction) }}
                                         {{ auction.currency.code }}
                                     </p>
-                                    <a [routerLink]="['/get-lot', auction.id]">
-                                        <button
-                                            type="button"
-                                            class="auction__go-to-active-lot-btn"
+                                    <div class="auction__go-to-lot">
+                                        <a
+                                            [routerLink]="[
+                                                '/get-lot',
+                                                auction.id
+                                            ]"
                                         >
-                                            <img
-                                                src="../../../../assets/icons/AuctionIcon.svg"
-                                                alt="Go to lot profile."
-                                            />
-                                        </button>
-                                    </a>
+                                            <button
+                                                type="button"
+                                                class="auction__go-to-active-lot-btn"
+                                            >
+                                                <img
+                                                    src="../../../../assets/icons/AuctionIcon.svg"
+                                                    alt="Go to lot profile."
+                                                />
+                                            </button>
+                                        </a>
+                                    </div>
                                 </ng-container>
                             </ng-container>
                             <ng-container
@@ -141,17 +155,24 @@
                                     >
                                         You won the auction!
                                     </p>
-                                    <a [routerLink]="['/get-lot', auction.id]">
-                                        <button
-                                            type="button"
-                                            class="auction__go-to-won-lot-btn"
+                                    <div class="auction__go-to-lot">
+                                        <a
+                                            [routerLink]="[
+                                                '/get-lot',
+                                                auction.id
+                                            ]"
                                         >
-                                            <img
-                                                src="../../../../assets/icons/ArrowNarrowRightIcon.svg"
-                                                alt="Go to lot profile."
-                                            />
-                                        </button>
-                                    </a>
+                                            <button
+                                                type="button"
+                                                class="auction__go-to-won-lot-btn"
+                                            >
+                                                <img
+                                                    src="../../../../assets/icons/ArrowNarrowRightIcon.svg"
+                                                    alt="Go to lot profile."
+                                                />
+                                            </button>
+                                        </a>
+                                    </div>
                                 </ng-container>
                                 <ng-container
                                     *ngIf="auction.buyerId !== currentBuyerId"
@@ -162,43 +183,52 @@
                                     >
                                         You lost the auction!
                                     </p>
-                                    <a [routerLink]="['/get-lot', auction.id]">
-                                        <button
-                                            type="button"
-                                            class="auction__go-to-lost-lot-btn"
+                                    <div class="auction__go-to-lot">
+                                        <a
+                                            [routerLink]="[
+                                                '/get-lot',
+                                                auction.id
+                                            ]"
                                         >
-                                            <img
-                                                src="../../../../assets/icons/ArrowNarrowRightIcon.svg"
-                                                alt="Go to lot profile."
-                                            />
-                                        </button>
-                                    </a>
+                                            <button
+                                                type="button"
+                                                class="auction__go-to-lost-lot-btn"
+                                            >
+                                                <img
+                                                    src="../../../../assets/icons/ArrowNarrowRightIcon.svg"
+                                                    alt="Go to lot profile."
+                                                />
+                                            </button>
+                                        </a>
+                                    </div>
                                 </ng-container>
                             </ng-container>
                         </div>
-
-                        <button
-                            (click)="handleLotWatchlist(auction)"
-                            type="button"
-                            class="auction__like-btn"
-                        >
-                            <mat-icon
-                                *ngIf="
-                                    auction.isInWatchlist;
-                                    else not_in_watchlist
-                                "
-                                class="primary"
-                                >favorite</mat-icon
+                        <div class="auction__watchlist">
+                            <button
+                                (click)="handleLotWatchlist(auction)"
+                                type="button"
+                                class="auction__like-btn"
                             >
-                        </button>
+                                <mat-icon
+                                    *ngIf="
+                                        auction.isInWatchlist;
+                                        else not_in_watchlist
+                                    "
+                                    class="primary"
+                                    >favorite</mat-icon
+                                >
+                            </button>
 
-                        <ng-template #not_in_watchlist>
-                            <mat-icon class="primary">favorite_border</mat-icon>
-                        </ng-template>
+                            <ng-template #not_in_watchlist>
+                                <mat-icon class="primary"
+                                    >favorite_border</mat-icon
+                                >
+                            </ng-template>
+                        </div>
                     </li>
                 </ul>
             </div>
-
             <div class="show-more">
                 <button
                     mat-flat-button
@@ -214,6 +244,7 @@
                 </button>
             </div>
             <p
+                class="dashboard__auction-no-more"
                 *ngIf="
                     noMoreAuctionsToLoad &&
                     auctions.length > inititalAuctionsCount
