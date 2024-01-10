@@ -1,0 +1,10 @@
+.general-background {
+    background: url('../../../assets/images/bg.jpg') no-repeat center;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    left: 0;
+    top: 0;
+    z-index: -1;
+}

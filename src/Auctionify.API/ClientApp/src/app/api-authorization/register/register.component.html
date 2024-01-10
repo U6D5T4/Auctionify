@@ -1,4 +1,5 @@
 <div class="register">
+    <app-general-background />
     <div class="register__container">
         <div class="register__container-inner">
             <div class="register__header">
@@ -9,12 +10,7 @@
                 </p>
             </div>
 
-            <form
-                [formGroup]="registerForm"
-                (ngSubmit)="onSubmit()"
-                action="submit"
-                class="register__form form"
-            >
+            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" action="submit" class="register__form form">
                 <mat-form-field color="primary" appearance="outline">
                     <mat-label>Email</mat-label>
                     <mat-error>Email required</mat-error>
@@ -23,17 +19,9 @@
 
                 <mat-form-field color="primary" appearance="outline">
                     <mat-label>Password</mat-label>
-                    <input
-                        formControlName="password"
-                        matInput
-                        [type]="passwordHidden ? 'password' : 'text'"
-                    /><button
-                        type="button"
-                        mat-icon-button
-                        matSuffix
-                        (click)="togglePasswordVisibility()"
-                        aria-label="Toggle password visibility"
-                    >
+                    <input formControlName="password" matInput [type]="passwordHidden ? 'password' : 'text'" /><button
+                        type="button" mat-icon-button matSuffix (click)="togglePasswordVisibility()"
+                        aria-label="Toggle password visibility">
                         <mat-icon>remove_red_eye</mat-icon>
                     </button>
                     <mat-error>Password required</mat-error>
@@ -41,38 +29,22 @@
 
                 <mat-form-field color="primary" appearance="outline">
                     <mat-label>Confirm Password</mat-label>
-                    <input
-                        formControlName="confirmPassword"
-                        matInput
-                        [type]="passwordHidden ? 'password' : 'text'"
-                    />
-                    <button
-                        type="button"
-                        mat-icon-button
-                        matSuffix
-                        (click)="togglePasswordVisibility()"
-                        aria-label="Toggle password visibility"
-                    >
+                    <input formControlName="confirmPassword" matInput [type]="passwordHidden ? 'password' : 'text'" />
+                    <button type="button" mat-icon-button matSuffix (click)="togglePasswordVisibility()"
+                        aria-label="Toggle password visibility">
                         <mat-icon>remove_red_eye</mat-icon>
                     </button>
                     <mat-error>Password required</mat-error>
                 </mat-form-field>
 
-                <button
-                    type="submit"
-                    disabled="{{ isLoading }}"
-                    mat-raised-button
-                    color="primary"
-                >
+                <button type="submit" disabled="{{ isLoading }}" mat-raised-button color="primary">
                     <mat-spinner *ngIf="isLoading" diameter="25"></mat-spinner>
                     <div *ngIf="!isLoading">Sign up</div>
                 </button>
 
                 <p class="form__paragraph">
                     Already have an account?
-                    <a [routerLink]="['/auth/login']" class="form__link"
-                        >Sign in</a
-                    >
+                    <a [routerLink]="['/auth/login']" class="form__link">Sign in</a>
                 </p>
             </form>
 
@@ -80,11 +52,7 @@
                 <a href="" class="register__google-link">
                     <button type="submit" class="google-link__button">
                         <div class="google-link__label">
-                            <img
-                                width="24px"
-                                src="../../../assets/icons/google-logo.svg"
-                                alt=""
-                            />
+                            <img width="24px" src="../../../assets/icons/google-logo.svg" alt="" />
                             Sign up with Google
                         </div>
                     </button>

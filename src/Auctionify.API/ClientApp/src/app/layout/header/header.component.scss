@@ -1,6 +1,7 @@
 .header {
+    max-width: 1520px;
+    margin: 0 auto;
     height: 80px;
-    border-bottom: 1px solid var(--color-grey-5);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -10,6 +11,7 @@
 
     &__search {
         flex: 1 1;
+        min-width: 150px;
     }
 }
 
