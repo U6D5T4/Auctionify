@@ -2,7 +2,6 @@
 using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Common.Models.Requests;
 using Auctionify.Application.Common.Options;
-using Auctionify.Application.Features.Users.Queries.GetBuyer;
 using Auctionify.Application.Features.Users.Queries.GetSeller;
 using Auctionify.Core.Entities;
 using Auctionify.Infrastructure.Persistence;
