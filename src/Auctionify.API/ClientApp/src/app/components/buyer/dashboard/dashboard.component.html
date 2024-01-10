@@ -88,7 +88,7 @@
                                         class="auction__comment"
                                         style="color: #2b5293"
                                     >
-                                        You are the highest bidder
+                                        Your bid is last
                                     </p>
                                     <a [routerLink]="['/get-lot', auction.id]">
                                         <button
@@ -199,14 +199,20 @@
                 </ul>
             </div>
 
-            <button
-                *ngIf="!noMoreAuctionsToLoad"
-                (click)="loadMoreBuyerAuctions()"
-                class="show-more-button"
-            >
-                Show More
-            </button>
-
+            <div class="show-more">
+                <button
+                    mat-flat-button
+                    type="button"
+                    *ngIf="!noMoreAuctionsToLoad"
+                    (click)="loadMoreBuyerAuctions()"
+                    class="show-more-button"
+                >
+                    Show more
+                    <mat-icon class="dashboard__arrow-icon" iconPositionEnd
+                        >expand_more</mat-icon
+                    >
+                </button>
+            </div>
             <p
                 *ngIf="
                     noMoreAuctionsToLoad &&

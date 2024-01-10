@@ -126,7 +126,7 @@
         align-items: flex-start;
         gap: 10px;
         width: 100%;
-        margin-top: -5px;
+        margin-top: -12px;
     }
 
     &__title {
@@ -212,6 +212,19 @@
         border-radius: 8px;
         size: 16px;
     }
+}
+
+.show-more {
+    margin: 0 auto;
+}
+
+.show-more-button {
+    background-color: var(--color-main);
+    padding: 12px;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
 }
 
 .lot {
