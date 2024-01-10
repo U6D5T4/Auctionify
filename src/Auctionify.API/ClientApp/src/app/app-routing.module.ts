@@ -6,10 +6,12 @@ import { isBuyerGuard } from './guards/buyer/is-buyer.guard';
 import { LotProfileComponent } from './components/general/lot-profile/lot-profile.component';
 import { isLoggedInGuard } from './guards/is-logged-in.guard';
 import { AuctionComponent } from './components/general/home/auction/auction.component';
+import { RatingComponent } from './components/general/profile/rating/rating.component';
 
 const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: 'home', component: AuctionComponent },
+    { path: 'rating', component: RatingComponent },
     {
         path: 'profile',
         loadChildren: () =>

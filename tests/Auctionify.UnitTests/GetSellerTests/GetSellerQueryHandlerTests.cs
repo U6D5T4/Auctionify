@@ -28,9 +28,9 @@ namespace Auctionify.UnitTests.GetSellerTests
 
 		public GetSellerQueryHandlerTests()
 		{
-			var mockDbContext = DbContextMock.GetMock<Rate, ApplicationDbContext>(EntitiesSeeding.GetRates(), ctx => ctx.Rates);
-			mockDbContext = DbContextMock.GetMock(EntitiesSeeding.GetLots(), ctx => ctx.Lots, mockDbContext);
+			var mockDbContext = DbContextMock.GetMock<Lot, ApplicationDbContext>(EntitiesSeeding.GetLots(), ctx => ctx.Lots);
 			mockDbContext = DbContextMock.GetMock(EntitiesSeeding.GetLotStatuses(), ctx => ctx.LotStatuses, mockDbContext);
+			mockDbContext = DbContextMock.GetMock(EntitiesSeeding.GetRates(), ctx => ctx.Rates, mockDbContext);
 
 			var configuration = new MapperConfiguration(
 				cfg =>

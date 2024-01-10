@@ -1,0 +1,104 @@
+<div class="profile">
+    <div class="profile__title">
+        <h1>My profile</h1>
+    </div>
+    <div class="profile__top-container">
+        <img
+            [src]="
+                userProfileData && userProfileData.profilePictureUrl
+                    ? userProfileData.profilePictureUrl
+                    : '../../../../../assets/images/User.png'
+            "
+            alt="User-profile-image"
+            width="100"
+            height="100"
+        />
+        <div class="profile__container-left-info">
+            <p>Welcome Back, {{ userProfileData?.firstName }}!</p>
+            <div class="profile__rate-lots">
+                <div class="profile__rate">
+                    <!-- Div for rates -->
+                </div>
+                <div class="profile__lots-count" *ngIf="isUserSeller()">
+                    Lots created {{ userProfileData?.createdLotsCount }} | Lots
+                    finished {{ userProfileData?.finishedLotsCount }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="main-container">
+        <div class="main">
+            <div class="main__title">
+                <h1>Rating & Review</h1>
+            </div>
+            <div class="main__options">
+                <button class="main__rating-btn">My rating</button>
+                <button class="main__feedback-btn">My feedback</button>
+            </div>
+        
+            <div class="main__container">
+                <div class="main__container-title">
+                    <h2>Average rating</h2>
+                </div>
+                <div class="main__rating">
+                    <div class="main__progress-bar-container">
+                        <div class="main__average-rating">
+                            <div *ngFor="let rating of ratings | keyvalue" class="main__rating-level">
+                                <span class="main__review-number">{{rating.key}}</span>
+                                <div class="main__progress-bar">
+                                    <div class="main__progress" [style.width]="getPercentage(rating.value)"></div>
+                                </div>
+                                <span class="count">{{ rating.value }}</span>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="main__average">
+                        <div class="main__number-stars">
+                            <h1 class="main__avarage-score">
+                                {{getAverageRate()}}
+                            </h1>
+                            <div class="main__stars">
+                                <mat-icon *ngFor="let star of getAverageStars()">{{ star }}</mat-icon>
+                            </div>
+                        </div>
+                        <div class="main__rating-count">
+                            <p>Comments: {{userProfileData?.senderRates?.length}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="review" *ngFor="let rate of senderRates">
+                <div class="review__profile-img">
+                    <img [src]="
+                        rate.sender && rate.sender.profilePictureUrl
+                        ? rate.sender.profilePictureUrl
+                        : '../../../../../assets/images/User.png'
+                        " width="48" height="48" alt="rate-user-profile-pic">
+                </div>
+                <div class="review__data">
+                    <div class="review__name-date-value">
+                        <div class="review__name-date">
+                            <div class="review__name">
+                                <p>{{rate.sender?.firstName}} {{rate.sender?.lastName}}</p>
+                            </div>
+                            <div class="review__date">
+                                <p>{{formatDate(rate.creationDate)}}</p>
+                            </div>
+                        </div>
+                        <div class="review__stars">
+                            <mat-icon *ngFor="let star of getStars(rate.ratingValue!)">{{ star }}</mat-icon>
+                        </div>
+                    </div>
+                    <div class="review__comment">
+                        <p>{{rate.comment}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="nav">
+            <app-profile-navbar></app-profile-navbar>
+        </div>
+    </div>
+</div>
