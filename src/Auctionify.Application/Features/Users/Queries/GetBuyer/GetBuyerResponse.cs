@@ -17,5 +17,7 @@ namespace Auctionify.Application.Features.Users.Queries.GetBuyer
 		public string ProfilePictureUrl { get; set; }
 
 		public ICollection<RateDto> SenderRates { get; set; }
+
+		public ICollection<RateDto> ReceiverRates { get; set; }
 	}
 }

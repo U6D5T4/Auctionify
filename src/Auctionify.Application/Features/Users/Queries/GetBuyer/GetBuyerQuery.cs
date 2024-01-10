@@ -74,8 +74,16 @@ namespace Auctionify.Application.Features.Users.Queries.GetBuyer
 				index: request.PageRequest.PageIndex,
 				cancellationToken: cancellationToken);
 
-			response.SenderRates = _mapper.Map<List<RateDto>>(ratesForUser.Items);
+			var feedbacks = await _rateRepository.GetListAsync(predicate: r => r.SenderId == user.Id,
+				include: x =>
+					x.Include(u => u.Reciever),
+				enableTracking: false,
+				size: request.PageRequest.PageSize,
+				index: request.PageRequest.PageIndex,
+				cancellationToken: cancellationToken);
 
+			response.ReceiverRates = _mapper.Map<List<RateDto>>(feedbacks.Items);
+			response.SenderRates = _mapper.Map<List<RateDto>>(ratesForUser.Items);
 
 			return response;
 		}

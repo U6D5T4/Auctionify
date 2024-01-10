@@ -21,5 +21,7 @@ namespace Auctionify.Application.Features.Users.Queries.GetSeller
 		public int FinishedLotsCount { get; set; }
 
 		public ICollection<RateDto> SenderRates { get; set; }
+
+		public ICollection<RateDto> ReceiverRates { get; set; }
 	}
 }
