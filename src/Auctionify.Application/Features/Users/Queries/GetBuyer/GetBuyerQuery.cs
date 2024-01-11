@@ -66,7 +66,7 @@ namespace Auctionify.Application.Features.Users.Queries.GetBuyer
 				response.ProfilePictureUrl = profilePictureUrl;
 			}
 
-			var ratesForUser = await _rateRepository.GetListAsync(predicate: r => r.RecieverId == user.Id,
+			var ratesForUser = await _rateRepository.GetListAsync(predicate: r => r.ReceiverId == user.Id,
 				include: x =>
 					x.Include(u => u.Sender),
 				enableTracking: false,
@@ -76,7 +76,7 @@ namespace Auctionify.Application.Features.Users.Queries.GetBuyer
 
 			var feedbacks = await _rateRepository.GetListAsync(predicate: r => r.SenderId == user.Id,
 				include: x =>
-					x.Include(u => u.Reciever),
+					x.Include(u => u.Receiver),
 				enableTracking: false,
 				size: request.PageRequest.PageSize,
 				index: request.PageRequest.PageIndex,

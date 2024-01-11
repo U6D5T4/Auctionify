@@ -5,6 +5,6 @@ namespace Auctionify.Application.Features.Rates.Queries.GetReceiverRates
 {
     public class GetAllReceiverRatesResponse : GetAllRates
     {
-        public UserDto Reciever { get; set; }
+        public UserDto Receiver { get; set; }
     }
 }

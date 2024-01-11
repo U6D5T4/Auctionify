@@ -7,6 +7,8 @@ using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Auctionify.Application.Common.Options;
+using Microsoft.Extensions.Options;
 
 namespace Auctionify.Application.Features.Rates.Queries.GetSenderRates
 {
@@ -22,20 +24,26 @@ namespace Auctionify.Application.Features.Rates.Queries.GetSenderRates
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
         private readonly IRateRepository _rateRepository;
+		private readonly AzureBlobStorageOptions _azureBlobStorageOptions;
+		private readonly IBlobService _blobService;
 
-        public GetAllSenderRatesQueryHandler(
+		public GetAllSenderRatesQueryHandler(
             ICurrentUserService currentUserService,
             UserManager<User> userManager,
             IMapper mapper,
-            IRateRepository rateRepository
+            IRateRepository rateRepository,
+			IOptions<AzureBlobStorageOptions> azureBlobStorageOptions,
+			IBlobService blobService
 
-        )
+		)
         {
             _currentUserService = currentUserService;
             _userManager = userManager;
             _mapper = mapper;
             _rateRepository = rateRepository;
-        }
+			_azureBlobStorageOptions = azureBlobStorageOptions.Value;
+			_blobService = blobService;
+		}
 
         public async Task<GetListResponseDto<GetAllSenderRatesResponse>> Handle(
             GetAllSenderRatesQuery request,
@@ -44,7 +52,7 @@ namespace Auctionify.Application.Features.Rates.Queries.GetSenderRates
         {
             var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
 
-            var rate = await _rateRepository.GetListAsync(predicate: r => r.RecieverId == user.Id,
+            var userRate = await _rateRepository.GetListAsync(predicate: r => r.ReceiverId == user.Id,
             include: x =>
                     x.Include(u => u.Sender),
                 enableTracking: false,
@@ -52,9 +60,27 @@ namespace Auctionify.Application.Features.Rates.Queries.GetSenderRates
                 index: request.PageRequest.PageIndex,
                 cancellationToken: cancellationToken);
 
-            var response = _mapper.Map<GetListResponseDto<GetAllSenderRatesResponse>>(rate);
+            var response = _mapper.Map<GetListResponseDto<GetAllSenderRatesResponse>>(userRate);
 
-            return response;
+			foreach (var rate in response.Items)
+			{
+                if (rate.Sender != null)
+                {
+                    var sender = await _userManager.FindByIdAsync(rate.Sender.Id.ToString());
+
+                    if (sender != null && sender.ProfilePicture != null)
+                    {
+                        var profilePictureUrl = _blobService.GetBlobUrl(
+                            _azureBlobStorageOptions.UserProfilePhotosFolderName,
+                            sender.ProfilePicture
+                        );
+
+                        rate.Sender.ProfilePicture = profilePictureUrl;
+                    }
+                }
+			}
+
+			return response;
         }
     }
 }
