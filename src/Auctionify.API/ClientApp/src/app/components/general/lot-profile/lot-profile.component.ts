@@ -1,7 +1,7 @@
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { formatDate } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, effect } from '@angular/core';
+import { Component, Inject, LOCALE_ID, OnInit, effect } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
@@ -49,7 +49,8 @@ export class LotProfileComponent implements OnInit {
         private signalRService: SignalRService,
         private dialog: Dialog,
         private snackBar: MatSnackBar,
-        private sanitizer: DomSanitizer
+        private sanitizer: DomSanitizer,
+        @Inject(LOCALE_ID) public locale: string
     ) {
         effect(() => {
             this.currentUserId = this.authService.getUserId()!;
@@ -202,15 +203,27 @@ export class LotProfileComponent implements OnInit {
     }
 
     formatBidDate(date: Date): string {
-        return formatDate(date, 'd MMMM HH:mm', 'en-US');
+        return formatDate(new Date(date), 'd MMMM HH:mm', this.locale);
     }
 
     formatStartDate(date: Date | null): string {
-        return date ? formatDate(date, 'dd LLLL, h:mm (z)', 'en-US') : '';
+        return date
+            ? formatDate(
+                  new Date(date + 'Z'),
+                  'dd LLLL, HH:mm (z)',
+                  this.locale
+              )
+            : '';
     }
 
     formatEndDate(date: Date | null): string {
-        return date ? formatDate(date, 'dd LLLL, h:mm (z)', 'en-US') : '';
+        return date
+            ? formatDate(
+                  new Date(date + 'Z'),
+                  'dd LLLL, HH:mm (z)',
+                  this.locale
+              )
+            : '';
     }
 
     handleLotWatchlist() {
