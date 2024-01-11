@@ -1,7 +1,7 @@
 <div class="dashboard__container">
     <div class="dashboard__section">
         <h2 class="dashboard__wishlist-title">Wishlist</h2>
-        <a [routerLink]="['/buyer/wishlist']">
+        <a routerLink="/buyer/wishlist">
             <button
                 mat-flat-button
                 type="button"
@@ -18,7 +18,7 @@
         <ul class="dashboard__wishlist-list">
             <li *ngFor="let lot of lots" class="dashboard__wishlist-list-lot">
                 <div class="lot__image">
-                    <a [routerLink]="['/get-lot', lot.id]">
+                    <a routerLink="/get-lot/{{ lot.id }}">
                         <img
                             [src]="
                                 lot.mainPhotoUrl
@@ -47,7 +47,7 @@
                 </div>
                 <div class="lot__info">
                     <div class="lot__title">
-                        <a [routerLink]="['/get-lot', lot.id]">
+                        <a routerLink="/get-lot/{{ lot.id }}">
                             <p>{{ lot.title }}</p>
                         </a>
                     </div>
