@@ -18,6 +18,11 @@ export class RatingComponent implements OnInit {
     userProfileData: BuyerModel | SellerModel | null = null;
     senderRates: Rate[] = [];
 
+    initialRatesCount: number = 10;
+    addRatesCount: number = 10;
+
+    noMoreRates: boolean = false;
+
     constructor(
         private authorizeService: AuthorizeService,
         private client: Client,
@@ -27,6 +32,7 @@ export class RatingComponent implements OnInit {
 
     ngOnInit(): void {
         this.fetchUserProfileData();
+        this.fetchRatesData();
     }
 
     openDialog(text: string[], error: boolean) {
@@ -41,18 +47,11 @@ export class RatingComponent implements OnInit {
     }
 
     private fetchUserProfileData() {
-        const pagination: RatePaginationModel = {
-            pageIndex: 0,
-            pageSize: 20,
-        };
-
         if (this.isUserBuyer()) {
-            this.client.getBuyer(pagination).subscribe(
+            this.client.getBuyer().subscribe(
                 (data: BuyerModel) => {
                     this.userProfileData = data;
                     this.validate();
-                    this.addRates();
-                    this.getRatingData();
                 },
                 (error) => {
                     this.openDialog(
@@ -64,12 +63,10 @@ export class RatingComponent implements OnInit {
                 }
             );
         } else if (this.isUserSeller()) {
-            this.client.getSeller(pagination).subscribe(
+            this.client.getSeller().subscribe(
                 (data: SellerModel) => {
                     this.userProfileData = data;
                     this.validate();
-                    this.addRates();
-                    this.getRatingData();
                 },
                 (error) => {
                     this.openDialog(
@@ -83,16 +80,40 @@ export class RatingComponent implements OnInit {
         }
     }
 
+    private fetchRatesData() {
+        const pagination: RatePaginationModel = {
+            pageIndex: 0,
+            pageSize: this.initialRatesCount,
+        };
+
+        this.client.getRates(pagination).subscribe(
+            (userRate) => {
+                this.noMoreRates = userRate.hasNext;
+                this.senderRates = userRate.items;
+                this.getRatingData();
+            },
+            (error) => {
+                this.openDialog(
+                    error.errors! || [
+                        'Something went wrong, please try again later',
+                    ],
+                    true
+                );
+            }
+        );
+    }
+
+    loadMoreRates(): void {
+        this.initialRatesCount += this.addRatesCount;
+        this.fetchRatesData();
+    }
+
     private validate() {
         if (!this.userProfileData?.averageRate) {
             this.userProfileData!.averageRate = 0;
         } else if (!this.userProfileData?.ratesCount) {
             this.userProfileData!.ratesCount = 0;
         }
-    }
-
-    private addRates() {
-        this.senderRates = this.userProfileData?.senderRates!;
     }
 
     isUserSeller(): boolean {

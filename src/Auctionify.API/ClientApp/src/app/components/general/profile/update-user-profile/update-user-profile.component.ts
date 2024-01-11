@@ -126,13 +126,9 @@ export class UpdateUserProfileComponent {
     }
 
     private fetchUserProfileData() {
-        const pagination: RatePaginationModel = {
-            pageIndex: 0,
-            pageSize: 10,
-        };
 
         if (this.isUserBuyer()) {
-            this.client.getBuyer(pagination).subscribe(
+            this.client.getBuyer().subscribe(
                 (data: BuyerModel) => {
                     this.setFormControlData(data);
                     this.validate();
@@ -147,7 +143,7 @@ export class UpdateUserProfileComponent {
                 }
             );
         } else if (this.isUserSeller()) {
-            this.client.getSeller(pagination).subscribe(
+            this.client.getSeller().subscribe(
                 (data: SellerModel) => {
                     this.setFormControlData(data);
                     this.validate();

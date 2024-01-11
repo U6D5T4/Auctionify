@@ -28,7 +28,11 @@ import {
     SellerModel,
     UpdateUserProfileModel,
 } from './models/users/user-models';
-import { RatePaginationModel } from './models/rates/rate-models';
+import {
+    Rate,
+    RatePaginationModel,
+    RateResponse,
+} from './models/rates/rate-models';
 
 export const API_BASE_URL = new InjectionToken('API_BASE_URL');
 
@@ -711,24 +715,8 @@ export class Client {
         );
     }
 
-    getSeller(pagination: RatePaginationModel): Observable<SellerModel> {
+    getSeller(): Observable<SellerModel> {
         let url_ = this.baseUrl + `/api/users/sellers`;
-
-        let queryParams = new HttpParams();
-
-        if (pagination.pageIndex !== null) {
-            queryParams = queryParams.set(
-                'PageRequest.PageIndex',
-                pagination.pageIndex.toString()
-            );
-        }
-
-        if (pagination.pageSize !== null) {
-            queryParams = queryParams.set(
-                'PageRequest.PageSize',
-                pagination.pageSize.toString()
-            );
-        }
 
         let options_: any = {
             observe: 'response',
@@ -738,7 +726,7 @@ export class Client {
             }),
         };
 
-        return this.http.get(url_, { params: queryParams, ...options_ }).pipe(
+        return this.http.request('get', url_, options_).pipe(
             mergeMap((response: any): Observable<SellerModel> => {
                 let data!: SellerModel;
 
@@ -751,24 +739,8 @@ export class Client {
         );
     }
 
-    getBuyer(pagination: RatePaginationModel): Observable<BuyerModel> {
+    getBuyer(): Observable<BuyerModel> {
         let url_ = this.baseUrl + `/api/users/buyers`;
-
-        let queryParams = new HttpParams();
-
-        if (pagination.pageIndex !== null) {
-            queryParams = queryParams.set(
-                'PageRequest.PageIndex',
-                pagination.pageIndex.toString()
-            );
-        }
-
-        if (pagination.pageSize !== null) {
-            queryParams = queryParams.set(
-                'PageRequest.PageSize',
-                pagination.pageSize.toString()
-            );
-        }
 
         let options_: any = {
             observe: 'response',
@@ -778,7 +750,7 @@ export class Client {
             }),
         };
 
-        return this.http.get(url_, { params: queryParams, ...options_ }).pipe(
+        return this.http.request('get', url_, options_).pipe(
             mergeMap((response: any): Observable<BuyerModel> => {
                 let data!: BuyerModel;
 
@@ -842,6 +814,58 @@ export class Client {
 
     downloadDocument(documentUrl: string): Observable<any> {
         return this.http.get(documentUrl, { responseType: 'blob' });
+    }
+
+    getRates(params: RatePaginationModel): Observable<RateResponse> {
+        let url_ = this.baseUrl + `/api/rates/rates`;
+
+        let queryParams = new HttpParams();
+
+        if (params.pageIndex !== null) {
+            queryParams = queryParams.set(
+                'PageRequest.PageIndex',
+                params.pageIndex.toString()
+            );
+        }
+
+        if (params.pageSize !== null) {
+            queryParams = queryParams.set(
+                'PageRequest.PageSize',
+                params.pageSize.toString()
+            );
+        }
+
+        return this.http.get(url_, { params: queryParams }).pipe(
+            mergeMap((response: any): Observable<RateResponse> => {
+                return of(response);
+            })
+        );
+    }
+
+    getFeedbacks(params: RatePaginationModel): Observable<RateResponse> {
+        let url_ = this.baseUrl + `/api/rates/feedbacks`;
+
+        let queryParams = new HttpParams();
+
+        if (params.pageIndex !== null) {
+            queryParams = queryParams.set(
+                'PageRequest.PageIndex',
+                params.pageIndex.toString()
+            );
+        }
+
+        if (params.pageSize !== null) {
+            queryParams = queryParams.set(
+                'PageRequest.PageSize',
+                params.pageSize.toString()
+            );
+        }
+
+        return this.http.get(url_, { params: queryParams }).pipe(
+            mergeMap((response: any): Observable<RateResponse> => {
+                return of(response);
+            })
+        );
     }
 }
 

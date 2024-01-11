@@ -17,6 +17,11 @@ export class FeedbackComponent {
     userProfileData: BuyerModel | SellerModel | null = null;
     receiverRates: Rate[] = [];
 
+    initialRatesCount: number = 10;
+    addRatesCount: number = 10;
+
+    noMoreRates: boolean = false;
+
     constructor(
         private authorizeService: AuthorizeService,
         private client: Client,
@@ -25,6 +30,7 @@ export class FeedbackComponent {
 
     ngOnInit(): void {
         this.fetchUserProfileData();
+        this.fetchRatesData();
     }
 
     openDialog(text: string[], error: boolean) {
@@ -39,17 +45,11 @@ export class FeedbackComponent {
     }
 
     private fetchUserProfileData() {
-        const pagination: RatePaginationModel = {
-            pageIndex: 0,
-            pageSize: 20,
-        };
-
         if (this.isUserBuyer()) {
-            this.client.getBuyer(pagination).subscribe(
+            this.client.getBuyer().subscribe(
                 (data: BuyerModel) => {
                     this.userProfileData = data;
                     this.validate();
-                    this.addRates();
                 },
                 (error) => {
                     this.openDialog(
@@ -61,11 +61,10 @@ export class FeedbackComponent {
                 }
             );
         } else if (this.isUserSeller()) {
-            this.client.getSeller(pagination).subscribe(
+            this.client.getSeller().subscribe(
                 (data: SellerModel) => {
                     this.userProfileData = data;
                     this.validate();
-                    this.addRates();
                 },
                 (error) => {
                     this.openDialog(
@@ -77,6 +76,33 @@ export class FeedbackComponent {
                 }
             );
         }
+    }
+
+    private fetchRatesData() {
+        const pagination: RatePaginationModel = {
+            pageIndex: 0,
+            pageSize: 10,
+        };
+
+        this.client.getFeedbacks(pagination).subscribe(
+            (userRate) => {
+                this.noMoreRates = userRate.hasNext;
+                this.receiverRates = userRate.items;
+            },
+            (error) => {
+                this.openDialog(
+                    error.errors! || [
+                        'Something went wrong, please try again later',
+                    ],
+                    true
+                );
+            }
+        );
+    }
+
+    loadMoreRates(): void {
+        this.initialRatesCount += this.addRatesCount;
+        this.fetchRatesData();
     }
 
     getAverageStars(rate: number | null): string[] {
@@ -104,10 +130,6 @@ export class FeedbackComponent {
         } else if (!this.userProfileData?.ratesCount) {
             this.userProfileData!.ratesCount = 0;
         }
-    }
-
-    private addRates() {
-        this.receiverRates = this.userProfileData?.receiverRates!;
     }
 
     isUserSeller(): boolean {

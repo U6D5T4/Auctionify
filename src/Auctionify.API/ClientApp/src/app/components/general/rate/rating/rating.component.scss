@@ -167,6 +167,19 @@
         width: 3px;
         align-items: center;
     }
+
+    &__btn {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 24px;
+        padding-bottom: 20px;
+    }
+
+    &__show-more-btn {
+        max-width: 127px;
+    }
 }
 
 .review {

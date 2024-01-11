@@ -145,13 +145,8 @@ export class ChangePasswordComponent implements OnInit {
     }
 
     private fetchUserProfileData() {
-        const pagination: RatePaginationModel = {
-            pageIndex: 0,
-            pageSize: 10,
-        };
-
         if (this.isUserBuyer()) {
-            this.client.getBuyer(pagination).subscribe(
+            this.client.getBuyer().subscribe(
                 (data: BuyerModel) => {
                     this.userProfileData = data;
                     this.validate();
@@ -166,7 +161,7 @@ export class ChangePasswordComponent implements OnInit {
                 }
             );
         } else if (this.isUserSeller()) {
-            this.client.getSeller(pagination).subscribe(
+            this.client.getSeller().subscribe(
                 (data: SellerModel) => {
                     this.userProfileData = data;
                     this.validate();
