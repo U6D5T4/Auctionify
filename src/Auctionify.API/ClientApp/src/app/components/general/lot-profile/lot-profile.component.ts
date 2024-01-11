@@ -203,27 +203,15 @@ export class LotProfileComponent implements OnInit {
     }
 
     formatBidDate(date: Date): string {
-        return formatDate(new Date(date), 'd MMMM HH:mm', this.locale);
+        return formatDate(date, 'd MMMM HH:mm', this.locale);
     }
 
     formatStartDate(date: Date | null): string {
-        return date
-            ? formatDate(
-                  new Date(date + 'Z'),
-                  'dd LLLL, HH:mm (z)',
-                  this.locale
-              )
-            : '';
+        return date ? formatDate(date, 'dd LLLL, HH:mm (z)', this.locale) : '';
     }
 
     formatEndDate(date: Date | null): string {
-        return date
-            ? formatDate(
-                  new Date(date + 'Z'),
-                  'dd LLLL, HH:mm (z)',
-                  this.locale
-              )
-            : '';
+        return date ? formatDate(date, 'dd LLLL, HH:mm (z)', this.locale) : '';
     }
 
     handleLotWatchlist() {
