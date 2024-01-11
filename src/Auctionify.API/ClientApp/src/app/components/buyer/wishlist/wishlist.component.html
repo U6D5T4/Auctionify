@@ -4,7 +4,7 @@
         <ul class="wishlist__list">
             <li *ngFor="let lot of lots" class="wishlist__lot">
                 <div class="lot__image">
-                    <a [routerLink]="['/get-lot', lot.id]">
+                    <a routerLink="/get-lot/{{ lot.id }}">
                         <img
                             [src]="
                                 lot.mainPhotoUrl
@@ -33,7 +33,7 @@
                 </div>
                 <div class="lot__info">
                     <div class="lot__title">
-                        <a [routerLink]="['/get-lot', lot.id]">
+                        <a routerLink="/get-lot/{{ lot.id }}">
                             <p>{{ lot.title }}</p>
                         </a>
                     </div>
