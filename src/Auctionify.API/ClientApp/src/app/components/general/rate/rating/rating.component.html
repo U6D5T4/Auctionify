@@ -87,10 +87,13 @@
             <div class="review" *ngFor="let rate of senderRates">
                 <div class="review__profile-img">
                     <img [src]="
-                        rate.sender && rate.sender.profilePictureUrl
-                        ? rate.sender.profilePictureUrl
+                        rate.sender && rate.sender.profilePicture
+                        ? rate.sender.profilePicture
                         : '../../../../../assets/images/User.png'
-                        " width="48" height="48" alt="rate-user-profile-pic">
+                        "
+                        alt="rate-user-profile-pic"
+                        width="48"
+                        height="48">
                 </div>
                 <div class="review__data">
                     <div class="review__name-date-value">
@@ -111,12 +114,10 @@
                     </div>
                 </div>
             </div>
-            <div class="main__btn" *ngIf="">
+            <div class="main__btn" *ngIf="noMoreRates">
                 <p>Want to see more feedbacks?</p>
                 <button mat-flat-button type="button" class="main__show-more-btn" color="primary"
-                  >
-
-                  
+                (click)="loadMoreRates()">
                   <p>Show more</p>
                 </button>
               </div>

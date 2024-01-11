@@ -44,5 +44,5 @@ export interface UserDto {
     lastName: string | null;
     email: string;
     phoneNumber: string | null;
-    profilePictureUrl: string | null;
+    profilePicture: string | null;
 }

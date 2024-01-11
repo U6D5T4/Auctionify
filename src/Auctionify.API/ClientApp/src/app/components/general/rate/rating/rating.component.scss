@@ -17,6 +17,7 @@
 
     &__top-container img {
         border-radius: 50%;
+        object-fit: cover;
     }
 
     &__container-left-info {
@@ -186,7 +187,7 @@
     display: flex;
     gap: 16px;
 
-    &__profile-img {
+    &__profile-img img {
         border-radius: 500px;
         object-fit: cover;
     }
