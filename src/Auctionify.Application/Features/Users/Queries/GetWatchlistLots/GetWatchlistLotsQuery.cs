@@ -98,10 +98,8 @@ namespace Auctionify.Application.Features.Users.Queries.GetByUserWatchlist
 
 				lot.IsInWatchlist = true;
 
-				lot.WatchlistId =
-					watchlist
-						.Items.FirstOrDefault(x => x.LotId == lot.Id && x.UserId == user!.Id)
-						?.Id ?? 0;
+				lot.WatchlistId = watchlist.Items
+									.FirstOrDefault(x => x.LotId == lot.Id && x.UserId == user!.Id)?.Id ?? 0;
 			}
 
 			response.Items = response.Items.OrderByDescending(x => x.WatchlistId).ToList();
