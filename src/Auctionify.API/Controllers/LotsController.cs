@@ -6,6 +6,7 @@ using Auctionify.Application.Features.Lots.Commands.Update;
 using Auctionify.Application.Features.Lots.Commands.UpdateLotStatus;
 using Auctionify.Application.Features.Lots.Queries.Filter;
 using Auctionify.Application.Features.Lots.Queries.GetAll;
+using Auctionify.Application.Features.Lots.Queries.GetAllLotsWithStatusForSeller;
 using Auctionify.Application.Features.Lots.Queries.GetAllByName;
 using Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer;
 using Auctionify.Application.Features.Lots.Queries.GetByIdForSeller;
@@ -166,6 +167,15 @@ namespace Auctionify.API.Controllers
 		public async Task<ActionResult<decimal>> GetHighestLotPriceValue()
 		{
 			var result = await _mediator.Send(new GetHighestLotPriceQuery());
+
+			return Ok(result);
+		}
+
+		[HttpGet("sellers/active")]
+		[Authorize(Roles = "Seller")]
+		public async Task<IActionResult> GetAllActiveLotsForSeller([FromQuery] PageRequest pageRequest)
+		{
+			var result = await _mediator.Send(new GetAllLotsWithStatusForSellerQuery { LotStatus = AuctionStatus.Active, PageRequest = pageRequest });
 
 			return Ok(result);
 		}
