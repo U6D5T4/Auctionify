@@ -108,9 +108,6 @@ namespace Auctionify.Application.Features.Users.Queries.GetSeller
 				index: request.PageRequest.PageIndex,
 				cancellationToken: cancellationToken);
 
-			response.ReceiverRates = _mapper.Map<List<RateDto>>(feedbacks.Items);
-			response.SenderRates = _mapper.Map<List<RateDto>>(ratesForUser.Items);
-
 			response.AverageRate = ratesForUser.Items.Average(rate => rate.RatingValue);
 			response.RatesCount = ratesForUser.Items.Count();
 
