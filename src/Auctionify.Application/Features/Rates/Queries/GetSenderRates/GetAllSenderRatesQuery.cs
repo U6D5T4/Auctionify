@@ -62,22 +62,25 @@ namespace Auctionify.Application.Features.Rates.Queries.GetSenderRates
 
             var response = _mapper.Map<GetListResponseDto<GetAllSenderRatesResponse>>(userRate);
 
-			foreach (var rate in response.Items)
-			{
-                if (rate.Sender != null)
-                {
-                    var sender = await _userManager.FindByIdAsync(rate.Sender.Id.ToString());
+            if (userRate.Count > 0)
+            {
+				foreach (var rate in response.Items)
+				{
+					if (rate.Sender != null)
+					{
+						var sender = await _userManager.FindByIdAsync(rate.Sender.Id.ToString());
 
-                    if (sender != null && sender.ProfilePicture != null)
-                    {
-                        var profilePictureUrl = _blobService.GetBlobUrl(
-                            _azureBlobStorageOptions.UserProfilePhotosFolderName,
-                            sender.ProfilePicture
-                        );
+						if (sender != null && sender.ProfilePicture != null)
+						{
+							var profilePictureUrl = _blobService.GetBlobUrl(
+								_azureBlobStorageOptions.UserProfilePhotosFolderName,
+								sender.ProfilePicture
+							);
 
-                        rate.Sender.ProfilePicture = profilePictureUrl;
-                    }
-                }
+							rate.Sender.ProfilePicture = profilePictureUrl;
+						}
+					}
+				}
 			}
 
 			return response;
