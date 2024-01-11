@@ -9,7 +9,7 @@ namespace Auctionify.Infrastructure.Data.Config
 	{
 		public void Configure(EntityTypeBuilder<Rate> builder)
 		{
-			builder.HasOne(r => r.Reciever)
+			builder.HasOne(r => r.Receiver)
 				.WithMany(r => r.ReceiverRates)
 				.IsRequired(true)
 				.OnDelete(DeleteBehavior.NoAction);
