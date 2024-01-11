@@ -1,5 +1,4 @@
-import { Component, OnInit, effect } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, effect } from '@angular/core';
 
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 

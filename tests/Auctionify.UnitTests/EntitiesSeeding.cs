@@ -164,6 +164,16 @@ namespace Auctionify.UnitTests
 			};
 		}
 
+		public static List<Watchlist> GetWatchlists()
+		{
+			return new List<Watchlist>
+			{
+				new Watchlist { Id = 1, },
+				new Watchlist { Id = 2, },
+				new Watchlist { Id = 3, },
+			};
+		}
+
 		public static User GetUser()
 		{
 			return new User
