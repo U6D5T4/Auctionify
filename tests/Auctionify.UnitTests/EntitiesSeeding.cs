@@ -136,7 +136,7 @@ namespace Auctionify.UnitTests
 			{
 				new Rate
 				{
-					RecieverId = 2,
+					ReceiverId = 2,
 					SenderId = 1,
 					RatingValue = 5,
 					Comment = "Some comment",
@@ -144,7 +144,7 @@ namespace Auctionify.UnitTests
 				},
 				new Rate
 				{
-					RecieverId = 1,
+					ReceiverId = 1,
 					SenderId = 3,
 					RatingValue = 5,
 					Comment = "Some comment 2",
@@ -152,7 +152,7 @@ namespace Auctionify.UnitTests
 				},
 				new Rate
 				{
-					RecieverId = 3,
+					ReceiverId = 3,
 					SenderId = 2,
 					RatingValue = 5,
 					Comment = "Some comment 3",

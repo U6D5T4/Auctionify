@@ -10,6 +10,8 @@ using Auctionify.Application.Common.DTOs;
 using Auctionify.Application.Common.Models.Requests;
 using Auctionify.Application.Features.Rates.Queries.GetReceiverRates;
 using FluentAssertions;
+using Auctionify.Application.Common.Options;
+using Microsoft.Extensions.Options;
 
 namespace Auctionify.UnitTests.GetAllFeedbacksTests
 {
@@ -41,7 +43,6 @@ namespace Auctionify.UnitTests.GetAllFeedbacksTests
 			_rateRepository = new RateRepository(mockDbContext.Object);
 			_currentUserServiceMock = new Mock<ICurrentUserService>();
 			_userManager = EntitiesSeeding.GetUserManagerMock();
-			_currentUserServiceMock.Setup(x => x.UserEmail).Returns(It.IsAny<string>());
 			_mapper = new Mapper(configuration);
 		}
 
@@ -53,14 +54,35 @@ namespace Auctionify.UnitTests.GetAllFeedbacksTests
 			{
 				PageRequest = new PageRequest { PageIndex = 0, PageSize = 10 }
 			};
+			var testUrl = "test-url";
+			var blobServiceMock = new Mock<IBlobService>();
+			var azureBlobStorageOptionsMock = new Mock<IOptions<AzureBlobStorageOptions>>();
 
 			var user = new User { Id = 1, Email = "user@example.com" };
+
+			azureBlobStorageOptionsMock
+				.Setup(x => x.Value)
+				.Returns(
+					new AzureBlobStorageOptions
+					{
+						ContainerName = "auctionify-files",
+						PhotosFolderName = "photos",
+						AdditionalDocumentsFolderName = "additional-documents",
+						UserProfilePhotosFolderName = "user-profile-photos"
+					}
+				);
+
+			blobServiceMock
+				.Setup(x => x.GetBlobUrl(It.IsAny<string>(), It.IsAny<string>()))
+				.Returns(testUrl);
 
 			var handler = new GetAllReceiverRatesQueryHandler(
 				_currentUserServiceMock.Object,
 				_userManager,
 				_mapper,
-				_rateRepository
+				_rateRepository,
+				azureBlobStorageOptionsMock.Object,
+				blobServiceMock.Object
 			);
 
 			var result = await handler.Handle(query, default);
@@ -85,11 +107,33 @@ namespace Auctionify.UnitTests.GetAllFeedbacksTests
 				PageRequest = new PageRequest { PageIndex = 0, PageSize = 10 }
 			};
 
+			var testUrl = "test-url";
+			var blobServiceMock = new Mock<IBlobService>();
+			var azureBlobStorageOptionsMock = new Mock<IOptions<AzureBlobStorageOptions>>();
+
+			azureBlobStorageOptionsMock
+				.Setup(x => x.Value)
+				.Returns(
+					new AzureBlobStorageOptions
+					{
+						ContainerName = "auctionify-files",
+						PhotosFolderName = "photos",
+						AdditionalDocumentsFolderName = "additional-documents",
+						UserProfilePhotosFolderName = "user-profile-photos"
+					}
+				);
+
+			blobServiceMock
+				.Setup(x => x.GetBlobUrl(It.IsAny<string>(), It.IsAny<string>()))
+				.Returns(testUrl);
+
 			var handler = new GetAllReceiverRatesQueryHandler(
 				_currentUserServiceMock.Object,
 				_userManager,
 				_mapper,
-				rateRepository
+				rateRepository,
+				azureBlobStorageOptionsMock.Object,
+				blobServiceMock.Object
 			);
 
 			var result = await handler.Handle(query, default);
