@@ -18,7 +18,10 @@ namespace Auctionify.UnitTests.GetWatshlistLotsTests
 		#region Initialization
 
 		private readonly IWatchlistRepository _watchlistRepository;
-		private readonly ILotRepository _lotRepository;
+		private readonly ILocationRepository _locationRepository;
+		private readonly ICategoryRepository _categoryRepository;
+		private readonly ICurrencyRepository _currencyRepository;
+		private readonly ILotStatusRepository _lotStatusRepository;
 		private readonly IBidRepository _bidRepository;
 		private readonly IMapper _mapper;
 		private readonly Mock<ICurrentUserService> _currentUserServiceMock;
@@ -27,9 +30,9 @@ namespace Auctionify.UnitTests.GetWatshlistLotsTests
 
 		public GetWatchlistLotsQueryHandlerTests()
 		{
-			var mockDbContext = DbContextMock.GetMock<Lot, ApplicationDbContext>(
-				EntitiesSeeding.GetLots(),
-				ctx => ctx.Lots
+			var mockDbContext = DbContextMock.GetMock<Watchlist, ApplicationDbContext>(
+				EntitiesSeeding.GetWatchlists(),
+				ctx => ctx.Watchlists
 			);
 			mockDbContext = DbContextMock.GetMock(
 				EntitiesSeeding.GetBids(),
@@ -37,8 +40,23 @@ namespace Auctionify.UnitTests.GetWatshlistLotsTests
 				mockDbContext
 			);
 			mockDbContext = DbContextMock.GetMock(
-				EntitiesSeeding.GetWatchlists(),
-				ctx => ctx.Watchlists,
+				EntitiesSeeding.GetLotStatuses(),
+				ctx => ctx.LotStatuses,
+				mockDbContext
+			);
+			mockDbContext = DbContextMock.GetMock(
+				EntitiesSeeding.GetCategories(),
+				ctx => ctx.Categories,
+				mockDbContext
+			);
+			mockDbContext = DbContextMock.GetMock(
+				EntitiesSeeding.GetCurrencies(),
+				ctx => ctx.Currency,
+				mockDbContext
+			);
+			mockDbContext = DbContextMock.GetMock(
+				EntitiesSeeding.GetLocations(),
+				ctx => ctx.Locations,
 				mockDbContext
 			);
 
@@ -59,9 +77,12 @@ namespace Auctionify.UnitTests.GetWatshlistLotsTests
 			_photoServiceMock = new Mock<IPhotoService>();
 			_currentUserServiceMock = new Mock<ICurrentUserService>();
 
-			_lotRepository = new LotRepository(mockDbContext.Object);
 			_bidRepository = new BidRepository(mockDbContext.Object);
 			_watchlistRepository = new WatchlistRepository(mockDbContext.Object);
+			_locationRepository = new LocationRepository(mockDbContext.Object);
+			_categoryRepository = new CategoryRepository(mockDbContext.Object);
+			_currencyRepository = new CurrencyRepository(mockDbContext.Object);
+			_lotStatusRepository = new LotStatusRepository(mockDbContext.Object);
 
 			_userManager = EntitiesSeeding.GetUserManagerMock();
 		}
@@ -81,7 +102,10 @@ namespace Auctionify.UnitTests.GetWatshlistLotsTests
 
 			var handler = new GetWatchlistLotsQueryHandler(
 				_watchlistRepository,
-				_lotRepository,
+				_locationRepository,
+				_categoryRepository,
+				_currencyRepository,
+				_lotStatusRepository,
 				_mapper,
 				_photoServiceMock.Object,
 				_currentUserServiceMock.Object,

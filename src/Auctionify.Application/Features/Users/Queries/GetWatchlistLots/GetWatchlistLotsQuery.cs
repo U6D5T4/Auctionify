@@ -3,6 +3,7 @@ using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Common.Models.Requests;
 using Auctionify.Core.Entities;
+using Auctionify.Core.Persistence.Paging;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -19,7 +20,10 @@ namespace Auctionify.Application.Features.Users.Queries.GetByUserWatchlist
 		: IRequestHandler<GetWatchlistLotsQuery, GetListResponseDto<GetWatchlistLotsResponse>>
 	{
 		private readonly IWatchlistRepository _watchlistRepository;
-		private readonly ILotRepository _lotRepository;
+		private readonly ILocationRepository _locationRepository;
+		private readonly ICategoryRepository _categoryRepository;
+		private readonly ICurrencyRepository _currencyRepository;
+		private readonly ILotStatusRepository _lotStatusRepository;
 		private readonly IMapper _mapper;
 		private readonly IPhotoService _photoService;
 		private readonly ICurrentUserService _currentUserService;
@@ -28,7 +32,10 @@ namespace Auctionify.Application.Features.Users.Queries.GetByUserWatchlist
 
 		public GetWatchlistLotsQueryHandler(
 			IWatchlistRepository watchlistRepository,
-			ILotRepository lotRepository,
+			ILocationRepository locationRepository,
+			ICategoryRepository categoryRepository,
+			ICurrencyRepository currencyRepository,
+			ILotStatusRepository lotStatusRepository,
 			IMapper mapper,
 			IPhotoService photoService,
 			ICurrentUserService currentUserService,
@@ -37,7 +44,10 @@ namespace Auctionify.Application.Features.Users.Queries.GetByUserWatchlist
 		)
 		{
 			_watchlistRepository = watchlistRepository;
-			_lotRepository = lotRepository;
+			_locationRepository = locationRepository;
+			_categoryRepository = categoryRepository;
+			_currencyRepository = currencyRepository;
+			_lotStatusRepository = lotStatusRepository;
 			_mapper = mapper;
 			_photoService = photoService;
 			_currentUserService = currentUserService;
@@ -55,31 +65,55 @@ namespace Auctionify.Application.Features.Users.Queries.GetByUserWatchlist
 			var watchlist = await _watchlistRepository.GetListAsync(
 				predicate: x => x.UserId == user!.Id,
 				include: x => x.Include(x => x.Lot),
+				orderBy: x => x.OrderByDescending(x => x.Id),
 				enableTracking: false,
 				size: int.MaxValue,
 				cancellationToken: cancellationToken
 			);
 
-			var lotsId = watchlist.Items.Select(x => x.LotId).ToList();
+			var lots = watchlist.Items.Select(x => x.Lot).ToList();
 
-			var lots = await _lotRepository.GetListAsync(
-				predicate: x => lotsId.Contains(x.Id),
-				include: x =>
-					x.Include(l => l.Seller)
-						.Include(l => l.Location)
-						.Include(l => l.Category)
-						.Include(l => l.Currency)
-						.Include(l => l.LotStatus),
-				enableTracking: false,
-				size: request.PageRequest.PageSize,
-				index: request.PageRequest.PageIndex,
-				cancellationToken: cancellationToken
+			var paginatedLots = lots.Paginate(
+				request.PageRequest.PageIndex,
+				request.PageRequest.PageSize
 			);
 
-			var response = _mapper.Map<GetListResponseDto<GetWatchlistLotsResponse>>(lots);
+			var response = _mapper.Map<GetListResponseDto<GetWatchlistLotsResponse>>(paginatedLots);
 
 			foreach (var lot in response.Items)
 			{
+				var location = await _locationRepository.GetAsync(
+					predicate: x => x.Id == lot.LocationId,
+					enableTracking: false,
+					cancellationToken: cancellationToken
+				);
+
+				lot.Location = _mapper.Map<LocationDto>(location);
+
+				var category = await _categoryRepository.GetAsync(
+					predicate: x => x.Id == lot.CategoryId,
+					enableTracking: false,
+					cancellationToken: cancellationToken
+				);
+
+				lot.Category = _mapper.Map<CategoryDto>(category);
+
+				var currency = await _currencyRepository.GetAsync(
+					predicate: x => x.Id == lot.CurrencyId,
+					enableTracking: false,
+					cancellationToken: cancellationToken
+				);
+
+				lot.Currency = _mapper.Map<CurrencyDto>(currency);
+
+				var lotStatus = await _lotStatusRepository.GetAsync(
+					predicate: x => x.Id == lot.LotStatusId,
+					enableTracking: false,
+					cancellationToken: cancellationToken
+				);
+
+				lot.LotStatus = _mapper.Map<LotStatusDto>(lotStatus);
+
 				lot.MainPhotoUrl = await _photoService.GetMainPhotoUrlAsync(
 					lot.Id,
 					cancellationToken
@@ -103,8 +137,6 @@ namespace Auctionify.Application.Features.Users.Queries.GetByUserWatchlist
 						.Items.FirstOrDefault(x => x.LotId == lot.Id && x.UserId == user!.Id)
 						?.Id ?? 0;
 			}
-
-			response.Items = response.Items.OrderByDescending(x => x.WatchlistId).ToList();
 
 			return response;
 		}
