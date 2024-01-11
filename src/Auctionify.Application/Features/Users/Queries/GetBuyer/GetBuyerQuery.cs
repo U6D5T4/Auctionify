@@ -72,14 +72,11 @@ namespace Auctionify.Application.Features.Users.Queries.GetBuyer
 				index: request.PageRequest.PageIndex,
 				cancellationToken: cancellationToken);
 
-			var feedbacks = await _rateRepository.GetListAsync(predicate: r => r.SenderId == user.Id,
-				enableTracking: false,
-				size: request.PageRequest.PageSize,
-				index: request.PageRequest.PageIndex,
-				cancellationToken: cancellationToken);
-
-			response.AverageRate = ratesForUser.Items.Average(rate => rate.RatingValue);
-			response.RatesCount = ratesForUser.Items.Count();
+			if (ratesForUser.Items.Count > 0)
+			{
+				response.AverageRate = ratesForUser.Items.Average(rate => rate.RatingValue);
+			}
+			response.RatesCount = ratesForUser.Items.Count;
 
 			return response;
 		}
