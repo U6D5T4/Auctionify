@@ -1,5 +1,3 @@
-import { Rate } from '../rates/rate-models';
-
 export interface SellerModel {
     firstName: string | null;
     lastName: string | null;
@@ -9,8 +7,6 @@ export interface SellerModel {
     profilePictureUrl: string | null;
     createdLotsCount: number | null;
     finishedLotsCount: number | null;
-    senderRates: Rate[] | null;
-    receiverRates: Rate[] | null;
     averageRate: number | null;
     ratesCount: number | null;
 }
@@ -24,8 +20,6 @@ export interface BuyerModel {
     profilePictureUrl: string | null;
     createdLotsCount: number | null;
     finishedLotsCount: number | null;
-    senderRates: Rate[] | null;
-    receiverRates: Rate[] | null;
     averageRate: number | null;
     ratesCount: number | null;
 }
