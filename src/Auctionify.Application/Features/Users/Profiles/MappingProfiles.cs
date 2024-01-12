@@ -35,6 +35,8 @@ namespace Auctionify.Application.Features.Users.Profiles
 				.ReverseMap();
 			CreateMap<Lot, GetBuyerAuctionsResponse>().ReverseMap();
 			CreateMap<IPaginate<Lot>, GetListResponseDto<GetBuyerAuctionsResponse>>().ReverseMap();
+			//CreateMap<Lot, GetTransactionsUserResponse>().ReverseMap();
+			//CreateMap<IPaginate<Lot>, GetListResponseDto<GetTransactionsUserResponse>>().ReverseMap();
 		}
 	}
 }

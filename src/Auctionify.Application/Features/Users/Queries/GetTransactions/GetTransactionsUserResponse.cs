@@ -6,6 +6,6 @@ namespace Auctionify.Application.Features.Users.Queries.GetTransactions
 	{
 		public DateTime TransactionDate { get; set; }
 		public string TransactionStatus { get; set; }
-		public decimal TransactionAmount { get; set; }
+		public decimal? TransactionAmount { get; set; }
 	}
 }

@@ -14,6 +14,11 @@ namespace Auctionify.Application.Features.Users.Queries.GetByUserWatchlist
 	public class GetWatchlistLotsQuery : IRequest<GetListResponseDto<GetWatchlistLotsResponse>>
 	{
 		public PageRequest PageRequest { get; set; }
+
+		public GetWatchlistLotsQuery()
+		{
+			PageRequest = new PageRequest { PageIndex = 0, PageSize = 10 };
+		}
 	}
 
 	public class GetWatchlistLotsQueryHandler
