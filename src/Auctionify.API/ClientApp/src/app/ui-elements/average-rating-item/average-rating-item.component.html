@@ -1,0 +1,32 @@
+<div class="main__container-rate">
+    <div class="main__container-title">
+        <h2>Average rating</h2>
+    </div>
+    <div class="main__rating">
+        <div class="main__progress-bar-container">
+            <div class="main__average-rating">
+                <div *ngFor="let rating of userProfileData?.starCounts | keyvalue" class="main__rating-level">
+                    <span class="main__review-number">{{rating.key}}</span>
+                    <div class="main__progress-bar">
+                        <div class="main__progress" [style.width]="getPercentage(rating.value)"></div>
+                    </div>
+                    <span class="main__count">{{ rating.value }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main__average">
+            <div class="main__number-stars">
+                <h1 class="main__avarage-score">
+                    {{userProfileData?.averageRate?.toFixed(1)}}
+                </h1>
+                <div class="main__stars">
+                    <mat-icon *ngFor="let star of getAverageStars(userProfileData?.ratesCount!)">{{ star }}</mat-icon>
+                </div>
+            </div>
+            <div class="main__rating-count">
+                <p>Comments: {{userProfileData?.ratesCount}}</p>
+            </div>
+        </div>
+    </div>
+</div>

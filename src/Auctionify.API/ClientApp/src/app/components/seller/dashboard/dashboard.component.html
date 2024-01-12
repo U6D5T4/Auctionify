@@ -24,36 +24,7 @@
             </div>
             <div class="dashboard__rates">
                 <div class="dashboard__container-rate">
-                    <div class="dashboard__container-title">
-                        <h2>Average rating</h2>
-                    </div>
-                    <div class="dashboard__rating">
-                        <div class="dashboard__progress-bar-container">
-                            <div class="dashboard__average-rating">
-                                <div *ngFor="let rating of userProfileData?.starCounts| keyvalue" class="dashboard__rating-level">
-                                    <span class="dashboard__review-number">{{rating.key}}</span>
-                                    <div class="dashboard__progress-bar">
-                                        <div class="dashboard__progress" [style.width]="getPercentage(rating.value)"></div>
-                                    </div>
-                                    <span class="dashboard__count">{{ rating.value }}</span>
-                                </div>
-                            </div>
-                        </div>
-            
-                        <div class="dashboard__average">
-                            <div class="dashboard__number-stars">
-                                <h1 class="dashboard__avarage-score">
-                                    {{userProfileData?.averageRate?.toFixed(1)}}
-                                </h1>
-                                <div class="dashboard__stars">
-                                    <mat-icon *ngFor="let star of getAverageStars(userProfileData?.ratesCount!)">{{ star }}</mat-icon>
-                                </div>
-                            </div>
-                            <div class="dashboard__rating-count">
-                                <p>Comments: {{userProfileData?.ratesCount}}</p>
-                            </div>
-                        </div>
-                    </div>
+                    <app-average-rating-item [userProfileData]="userProfileData"></app-average-rating-item>
 
                     <div class="dashboard__see-more-comments-btn">
                         <button

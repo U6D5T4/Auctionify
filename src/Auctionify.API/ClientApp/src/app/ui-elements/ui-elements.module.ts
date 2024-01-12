@@ -9,6 +9,7 @@ import { ChoicePopupComponent } from './choice-popup/choice-popup.component';
 import { RateItemComponent } from './rate-item/rate-item.component';
 import { MatIconModule } from '@angular/material/icon';
 import { UserTopBarComponent } from './user-top-bar/user-top-bar.component';
+import { AverageRatingItemComponent } from './average-rating-item/average-rating-item.component';
 
 @NgModule({
     declarations: [
@@ -18,6 +19,7 @@ import { UserTopBarComponent } from './user-top-bar/user-top-bar.component';
         ChoicePopupComponent,
         RateItemComponent,
         UserTopBarComponent,
+        AverageRatingItemComponent,
     ],
     imports: [CommonModule, FormsModule, MatButtonModule, MatIconModule],
     exports: [
@@ -25,6 +27,7 @@ import { UserTopBarComponent } from './user-top-bar/user-top-bar.component';
         ButtonComponent,
         RateItemComponent,
         UserTopBarComponent,
+        AverageRatingItemComponent,
     ],
 })
 export class UiElementsModule {}
