@@ -31,7 +31,7 @@
                     <div class="dashboard__see-more-comments-btn">
                         <button
                         routerLink="/rating"
-                        class="main__rating-btn"
+                        class="dashboard__rating-btn"
                         mat-flat-button
                         >
                         <div class="dashboard__btn-content">
@@ -44,6 +44,9 @@
                 <div class="review">
                     <div class="single-review" *ngFor="let rate of senderRates">
                         <app-rate-item [rate]="rate"></app-rate-item>
+                    </div>
+                    <div class="dashboard__no-comments" *ngIf="senderRates && senderRates.length === 0">
+                        <h2>No comments yet.</h2>
                     </div>
                 </div>
             </div>

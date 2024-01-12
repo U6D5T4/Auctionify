@@ -43,6 +43,9 @@
                     <div class="single-review" *ngFor="let rate of senderRates">
                         <app-rate-item [rate]="rate"></app-rate-item>
                     </div>
+                    <div class="dashboard__no-comments" *ngIf="senderRates && senderRates.length === 0">
+                        <h2>No comments yet.</h2>
+                    </div>
                 </div>
             </div>
         </div>

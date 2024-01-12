@@ -63,6 +63,11 @@
             <div class="review" *ngFor="let rate of senderRates">
                 <app-rate-item [rate]="rate"></app-rate-item>
             </div>
+
+            <div class="main__btn" *ngIf="senderRates && senderRates.length === 0">
+                <h2>No comments yet.</h2>
+            </div>
+            
             <div class="main__btn" *ngIf="noMoreRates">
                 <p>Want to see more rates?</p>
                 <button mat-flat-button type="button" class="main__show-more-btn" color="primary"

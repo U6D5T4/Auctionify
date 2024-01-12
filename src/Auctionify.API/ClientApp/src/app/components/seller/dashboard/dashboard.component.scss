@@ -139,6 +139,11 @@
         gap: 8px;
         align-items: center;
     }
+
+    &__no-comments {
+        display: flex;
+        justify-content: center;
+    }
 }
 
 .review {

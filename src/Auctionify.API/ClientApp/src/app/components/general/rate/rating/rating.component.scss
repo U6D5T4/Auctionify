@@ -127,6 +127,11 @@
         align-items: center;
     }
 
+    &__no-comments {
+        display: flex;
+        justify-content: center;
+    }
+
     &__btn {
         display: flex;
         flex-direction: column;
