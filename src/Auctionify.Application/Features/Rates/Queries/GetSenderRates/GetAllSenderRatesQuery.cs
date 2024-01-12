@@ -62,7 +62,7 @@ namespace Auctionify.Application.Features.Rates.Queries.GetSenderRates
 
             var response = _mapper.Map<GetListResponseDto<GetAllSenderRatesResponse>>(userRate);
 
-            if (userRate.Count > 0)
+			if (userRate.Count > 0)
             {
 				foreach (var rate in response.Items)
 				{
@@ -81,7 +81,7 @@ namespace Auctionify.Application.Features.Rates.Queries.GetSenderRates
 						}
 					}
 				}
-			}
+			}		
 
 			return response;
         }
