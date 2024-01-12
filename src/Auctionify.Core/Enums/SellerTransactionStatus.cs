@@ -1,6 +1,6 @@
 ﻿namespace Auctionify.Core.Enums
 {
-	public enum SellerStatus
+	public enum SellerTransactionStatus
 	{
 		Sold,
 		Expired,

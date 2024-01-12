@@ -1,6 +1,6 @@
-﻿namespace Auctionify.Application.Features.Users.Queries.GetTransactions
+﻿namespace Auctionify.Application.Common.Models.Transaction
 {
-	public class GetTransactionsUserResponse
+	public class TransactionInfo
 	{
 		public string? LotMainPhotoUrl { get; set; }
 		public string? LotTitle { get; set; }
