@@ -3,6 +3,10 @@
         padding-top: 40px;
     }
 
+    &__auction-lots {
+        width: 100%;
+    }
+
     &__auction-container {
         display: flex;
         flex-direction: column;
@@ -24,7 +28,6 @@
     &__auction-title {
         display: flex;
         align-items: center;
-        margin-left: -40px;
     }
 
     &__auction-list {
@@ -34,16 +37,16 @@
         gap: 16px;
         list-style: none;
         padding: 0;
-        margin-left: -10px;
     }
 
     &__auction-list-lot {
         align-items: center;
+        justify-content: space-between;
         display: flex;
-        justify-content: flex-start;
         height: 135px;
         padding-top: 5px;
-        width: min-content;
+        width: 100%;
+        gap: 24px;
     }
 
     &__auction-list-lot:hover {
@@ -139,8 +142,7 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
-        width: 100%;
-        margin-top: -12px;
+        flex: 1 1;
     }
 
     &__title {
@@ -156,7 +158,6 @@
         align-items: center;
 
         flex-grow: 1;
-        padding-left: 48px;
     }
 
     &__title a {
@@ -171,39 +172,33 @@
     &__description {
         display: block;
         word-break: break-word;
-        padding-left: 48px;
         max-width: 40ch;
         color: var(--color-grey-3);
     }
 
     &__price {
         display: flex;
-        justify-content: flex-start;
-        width: 950px;
-        flex-wrap: wrap;
-        flex-direction: row;
+        flex-direction: column;
         height: initial;
+        row-gap: 7px;
+        position: relative;
+        flex: 1 1;
     }
 
     &__price-p {
         font-size: 20px;
         font-style: normal;
         font-weight: 600;
-        padding-right: 30px;
-        margin-bottom: 15px;
-        align-self: flex-end;
-        line-height: 0px;
-        transform: translateY(-15px);
     }
 
     &__go-to-lot {
-        padding-left: 130px;
+        position: absolute;
+        top: 0;
+        right: -115px;
     }
 
-    &__price-p,
-    &___go-to-lot {
+    &__price-p {
         flex: 0 0 50%;
-        width: calc(100% - 100px);
     }
 
     &__comment {
@@ -211,9 +206,7 @@
         font-style: normal;
         font-weight: 600;
         line-height: 16px;
-        flex: 0 0 100%;
         order: 1;
-        transform: translateY(-15px);
     }
 
     &__watchlist {
@@ -225,8 +218,6 @@
         border-radius: 8px;
         padding: 9px;
         background-color: #ffffff;
-        margin-top: -14.5px;
-        margin-left: -130px;
     }
 
     &__go-to-active-lot-btn {
