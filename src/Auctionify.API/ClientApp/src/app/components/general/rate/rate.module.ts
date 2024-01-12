@@ -7,6 +7,7 @@ import { FeedbackComponent } from './feedback/feedback.component';
 import { RateRoutingModule } from './rate-routing.module';
 import { ProfileModule } from '../profile/profile.module';
 import { MatButtonModule } from '@angular/material/button';
+import { UiElementsModule } from 'src/app/ui-elements/ui-elements.module';
 
 @NgModule({
     imports: [
@@ -15,6 +16,7 @@ import { MatButtonModule } from '@angular/material/button';
         RateRoutingModule,
         ProfileModule,
         MatButtonModule,
+        UiElementsModule,
     ],
 
     declarations: [RatingComponent, FeedbackComponent],

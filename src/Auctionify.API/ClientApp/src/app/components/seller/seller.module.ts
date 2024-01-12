@@ -16,6 +16,7 @@ import { CurrencyPopUpComponent } from './create-lot/pop-ups/currency/currency.c
 import { FilesPopUpComponent } from './create-lot/pop-ups/files/files.component';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { UiElementsModule } from 'src/app/ui-elements/ui-elements.module';
 
 @NgModule({
     declarations: [
@@ -38,6 +39,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
         MatNativeDateModule,
         MatProgressSpinnerModule,
         MatSnackBarModule,
+        UiElementsModule
     ],
     exports: [CreateLotComponent, DashboardComponent],
 })

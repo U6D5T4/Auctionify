@@ -51,31 +51,7 @@
                 </button>
             </div>
             <div class="review" *ngFor="let rate of receiverRates">
-                <div class="review__profile-img">
-                    <img [src]="
-                        rate.receiver && rate.receiver.profilePicture
-                        ? rate.receiver.profilePicture
-                        : '../../../../../assets/images/User.png'
-                        " width="48" height="48" alt="rate-user-profile-pic">
-                </div>
-                <div class="review__data">
-                    <div class="review__name-date-value">
-                        <div class="review__name-date">
-                            <div class="review__name">
-                                <p>{{rate.sender?.firstName}} {{rate.sender?.lastName}}</p>
-                            </div>
-                            <div class="review__date">
-                                <p>{{formatDate(rate.creationDate)}}</p>
-                            </div>
-                        </div>
-                        <div class="review__stars">
-                            <mat-icon *ngFor="let star of getStars(rate.ratingValue!)">{{ star }}</mat-icon>
-                        </div>
-                    </div>
-                    <div class="review__comment">
-                        <p>{{rate.comment}}</p>
-                    </div>
-                </div>
+                <app-rate-item [rate]="rate"></app-rate-item>
             </div>
             <div class="main__btn" *ngIf="noMoreRates">
                 <p>Want to see more comments?</p>

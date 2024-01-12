@@ -6,6 +6,7 @@ export interface Rate {
     ratingValue: number | null;
     comment: string | null;
     creationDate: Date | null;
+    starCounts?: { [key: number]: number };
 }
 
 export interface RatePaginationModel {

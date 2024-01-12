@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { Rate, RatePaginationModel } from 'src/app/models/rates/rate-models';
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import { Client } from 'src/app/web-api-client';
-import { SellerModel } from 'src/app/models/users/user-models';
+import { BuyerModel } from 'src/app/models/users/user-models';
 
 @Component({
     selector: 'app-dashboard',
@@ -12,7 +12,7 @@ import { SellerModel } from 'src/app/models/users/user-models';
     styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
-    userProfileData: SellerModel | null = null;
+    userProfileData: BuyerModel | null = null;
     senderRates: Rate[] = [];
 
     constructor(private client: Client, public dialog: Dialog) {}
@@ -23,8 +23,8 @@ export class DashboardComponent implements OnInit {
     }
 
     private fetchUserProfileData() {
-        this.client.getSeller().subscribe(
-            (data: SellerModel) => {
+        this.client.getBuyer().subscribe(
+            (data: BuyerModel) => {
                 this.userProfileData = data;
                 this.validate();
             },

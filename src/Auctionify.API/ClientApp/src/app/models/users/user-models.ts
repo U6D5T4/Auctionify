@@ -9,6 +9,7 @@ export interface SellerModel {
     finishedLotsCount: number | null;
     averageRate: number | null;
     ratesCount: number | null;
+    starCounts?: { [key: number]: number };
 }
 
 export interface BuyerModel {
@@ -22,6 +23,7 @@ export interface BuyerModel {
     finishedLotsCount: number | null;
     averageRate: number | null;
     ratesCount: number | null;
+    starCounts?: { [key: number]: number };
 }
 
 export interface UpdateUserProfileModel {

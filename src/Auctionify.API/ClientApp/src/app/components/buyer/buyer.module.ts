@@ -11,9 +11,11 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { BuyerRoutingModule } from './buyer-routing.module';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { UiElementsModule } from 'src/app/ui-elements/ui-elements.module';
 
 @NgModule({
-    declarations: [],
+    declarations: [DashboardComponent],
     imports: [
         CommonModule,
         MatIconModule,
@@ -26,6 +28,7 @@ import { BuyerRoutingModule } from './buyer-routing.module';
         MatCheckboxModule,
         MatDialogModule,
         ReactiveFormsModule,
+        UiElementsModule,
     ],
     exports: [],
 })

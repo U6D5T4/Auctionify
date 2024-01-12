@@ -90,7 +90,6 @@ export class RatingComponent implements OnInit {
             (userRate) => {
                 this.noMoreRates = userRate.hasNext;
                 this.senderRates = userRate.items;
-                this.getRatingData();
             },
             (error) => {
                 this.openDialog(
@@ -123,24 +122,6 @@ export class RatingComponent implements OnInit {
     isUserBuyer(): boolean {
         return this.authorizeService.isUserBuyer();
     }
-
-    getRatingData() {
-        for (let a of this.senderRates) {
-            if (a.ratingValue != null) {
-                this.ratings[
-                    a.ratingValue.toString() as '1' | '2' | '3' | '4' | '5'
-                ]++;
-            }
-        }
-    }
-
-    ratings = {
-        '1': 0,
-        '2': 0,
-        '3': 0,
-        '4': 0,
-        '5': 0,
-    };
 
     getPercentage(count: number): string {
         const total = this.getTotalCount();

@@ -58,7 +58,7 @@
                 <div class="main__rating">
                     <div class="main__progress-bar-container">
                         <div class="main__average-rating">
-                            <div *ngFor="let rating of ratings | keyvalue" class="main__rating-level">
+                            <div *ngFor="let rating of userProfileData?.starCounts| keyvalue" class="main__rating-level">
                                 <span class="main__review-number">{{rating.key}}</span>
                                 <div class="main__progress-bar">
                                     <div class="main__progress" [style.width]="getPercentage(rating.value)"></div>
@@ -85,37 +85,10 @@
             </div>
 
             <div class="review" *ngFor="let rate of senderRates">
-                <div class="review__profile-img">
-                    <img [src]="
-                        rate.sender && rate.sender.profilePicture
-                        ? rate.sender.profilePicture
-                        : '../../../../../assets/images/User.png'
-                        "
-                        alt="rate-user-profile-pic"
-                        width="48"
-                        height="48">
-                </div>
-                <div class="review__data">
-                    <div class="review__name-date-value">
-                        <div class="review__name-date">
-                            <div class="review__name">
-                                <p>{{rate.sender?.firstName}} {{rate.sender?.lastName}}</p>
-                            </div>
-                            <div class="review__date">
-                                <p>{{formatDate(rate.creationDate)}}</p>
-                            </div>
-                        </div>
-                        <div class="review__stars">
-                            <mat-icon *ngFor="let star of getStars(rate.ratingValue!)">{{ star }}</mat-icon>
-                        </div>
-                    </div>
-                    <div class="review__comment">
-                        <p>{{rate.comment}}</p>
-                    </div>
-                </div>
+                <app-rate-item [rate]="rate"></app-rate-item>
             </div>
             <div class="main__btn" *ngIf="noMoreRates">
-                <p>Want to see more feedbacks?</p>
+                <p>Want to see more rates?</p>
                 <button mat-flat-button type="button" class="main__show-more-btn" color="primary"
                 (click)="loadMoreRates()">
                   <p>Show more</p>
