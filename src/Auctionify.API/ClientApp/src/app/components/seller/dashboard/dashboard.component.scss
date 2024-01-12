@@ -56,7 +56,7 @@
     &__feedback-btn {
         width: 160px;
     }
-    
+
     &__rating {
         display: flex;
         gap: 40px;
@@ -79,7 +79,7 @@
         align-items: center;
         gap: 16px;
     }
-      
+
     &__progress-bar {
         width: 200px;
         height: 8px;
@@ -87,7 +87,7 @@
         background-color: #e0e0e0;
         position: relative;
     }
-      
+
     &__progress {
         height: 100%;
         border-radius: 500px;
@@ -143,6 +143,21 @@
     &__no-comments {
         display: flex;
         justify-content: center;
+    }
+
+    &-main {
+        padding: 40px;
+        padding-top: 24px;
+    }
+}
+
+.active-lots {
+    & h2 {
+        margin-bottom: 40px;
+        font-size: 32px;
+        font-weight: 700;
+        line-height: 40px;
+        text-align: left;
     }
 }
 

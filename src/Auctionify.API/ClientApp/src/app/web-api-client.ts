@@ -867,6 +867,36 @@ export class Client {
             })
         );
     }
+
+    getAllActiveLotsForSeller(
+        pageRequest: PageRequest
+    ): Observable<FilterResponse> {
+        let url_ = this.baseUrl + `/api/lots/sellers/active`;
+
+        return this.handleGetAllLotsWithStatusForSeller(url_, pageRequest);
+    }
+
+    private handleGetAllLotsWithStatusForSeller(
+        url: string,
+        pageRequest: PageRequest
+    ): Observable<FilterResponse> {
+        let queryParams = new HttpParams();
+
+        for (const [key, value] of Object.entries(pageRequest)) {
+            queryParams = queryParams.append(key, value);
+        }
+
+        return this.http.get(url, { params: queryParams }).pipe(
+            mergeMap((response: any): Observable<FilterResponse> => {
+                return of(response);
+            })
+        );
+    }
+}
+
+export interface PageRequest {
+    PageSize: number;
+    PageIndex: number;
 }
 
 export interface FilterResponse {
