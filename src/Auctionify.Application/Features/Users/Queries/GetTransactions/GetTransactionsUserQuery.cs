@@ -28,27 +28,27 @@ namespace Auctionify.Application.Features.Users.Queries.GetTransactions
 		: IRequestHandler<GetTransactionsUserQuery, GetListResponseDto<GetTransactionsUserResponse>>
 	{
 		private readonly ILotRepository _lotRepository;
+		private readonly IBidRepository _bidRepository;
 		private readonly IMapper _mapper;
 		private readonly IPhotoService _photoService;
 		private readonly ICurrentUserService _currentUserService;
 		private readonly UserManager<User> _userManager;
-		private readonly IBidRepository _bidRepository;
 
 		public GetTransactionsUserQueryHandler(
 			ILotRepository lotRepository,
+			IBidRepository bidRepository,
 			IMapper mapper,
 			IPhotoService photoService,
 			ICurrentUserService currentUserService,
-			UserManager<User> userManager,
-			IBidRepository bidRepository
+			UserManager<User> userManager
 		)
 		{
 			_lotRepository = lotRepository;
+			_bidRepository = bidRepository;
 			_mapper = mapper;
 			_photoService = photoService;
 			_currentUserService = currentUserService;
 			_userManager = userManager;
-			_bidRepository = bidRepository;
 		}
 
 		public async Task<GetListResponseDto<GetTransactionsUserResponse>> Handle(
