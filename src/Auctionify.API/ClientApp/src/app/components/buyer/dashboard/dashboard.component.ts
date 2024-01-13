@@ -99,7 +99,6 @@ export class DashboardComponent implements OnInit {
     loadLotsInWatchlist() {
         this.apiClient.getLotsInWatchlist(0, 5).subscribe((lots) => {
             this.lots = lots;
-            console.log(this.lots);
         });
     }
 

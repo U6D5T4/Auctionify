@@ -1,6 +1,15 @@
 .dashboard {
-    &__auction-border-box {
+    &__title {
+        display: flex;
         padding-top: 40px;
+        padding-bottom: 32px;
+        max-width: 1400px;
+        margin: 0 auto;
+        color: var(--color-text-primary);
+        font-size: 32px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 40px;
     }
 
     &__auction-lots {
@@ -253,7 +262,6 @@
 }
 
 .show-more-button {
-    background-color: var(--color-main);
     padding: 12px;
     color: white;
     border: none;
