@@ -67,16 +67,15 @@ namespace Auctionify.Application.Features.Users.Queries.GetByUserWatchlist
 		{
 			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
 
-			var watchlist = await _watchlistRepository.GetListAsync(
+			var watchlist = await _watchlistRepository.GetUnpaginatedListAsync(
 				predicate: x => x.UserId == user!.Id,
 				include: x => x.Include(x => x.Lot),
 				orderBy: x => x.OrderByDescending(x => x.Id),
 				enableTracking: false,
-				size: int.MaxValue,
 				cancellationToken: cancellationToken
 			);
 
-			var lots = watchlist.Items.Select(x => x.Lot).ToList();
+			var lots = watchlist.Select(x => x.Lot).ToList();
 
 			var paginatedLots = lots.Paginate(
 				request.PageRequest.PageIndex,
@@ -124,21 +123,22 @@ namespace Auctionify.Application.Features.Users.Queries.GetByUserWatchlist
 					cancellationToken
 				);
 
-				var bids = await _bidRepository.GetListAsync(
+				var bids = await _bidRepository.GetUnpaginatedListAsync(
 					predicate: x => x.LotId == lot.Id && !x.BidRemoved,
 					orderBy: x => x.OrderByDescending(x => x.TimeStamp),
 					enableTracking: false,
 					cancellationToken: cancellationToken
 				);
 
-				lot.BidCount = bids.Items.Count;
+				lot.BidCount = bids.Count;
 
-				lot.Bids = _mapper.Map<List<BidDto>>(bids.Items);
+				lot.Bids = _mapper.Map<List<BidDto>>(bids);
 
 				lot.IsInWatchlist = true;
 
-				lot.WatchlistId = watchlist.Items
-									.FirstOrDefault(x => x.LotId == lot.Id && x.UserId == user!.Id)?.Id ?? 0;
+				lot.WatchlistId =
+					watchlist.FirstOrDefault(x => x.LotId == lot.Id && x.UserId == user!.Id)?.Id
+					?? 0;
 			}
 
 			return response;
