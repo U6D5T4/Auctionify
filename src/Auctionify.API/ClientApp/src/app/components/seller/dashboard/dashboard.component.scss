@@ -3,6 +3,31 @@
         padding: 40px;
         padding-top: 24px;
     }
+
+    &__transactions-section {
+        display: flex;
+        justify-content: space-between;
+        max-width: 1400px;
+        padding-top: 40px;
+        width: 100%;
+    }
+
+    &__transactions-title {
+        display: flex;
+        align-items: center;
+        color: var(--color-text-primary);
+        font-size: 32px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 40px;
+    }
+
+    &__transactions-show-all {
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 24px;
+    }
 }
 
 .active-lots {
@@ -13,4 +38,9 @@
         line-height: 40px;
         text-align: left;
     }
+}
+
+.transactions {
+    padding-top: 32px;
+    width: 1400px;
 }

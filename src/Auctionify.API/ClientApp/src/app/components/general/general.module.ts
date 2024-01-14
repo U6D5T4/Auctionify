@@ -46,6 +46,6 @@ import { TransactionsComponent } from './transactions/transactions.component';
         MatSnackBarModule,
     ],
 
-    exports: [LotProfileComponent],
+    exports: [LotProfileComponent, TransactionsComponent],
 })
 export class GeneralModule {}

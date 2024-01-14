@@ -18,6 +18,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { DashboardActiveLotsComponent } from './components/dashboard-active-lots/dashboard-active-lots.component';
 import { UiElementsModule } from 'src/app/ui-elements/ui-elements.module';
+import { GeneralModule } from '../general/general.module';
 
 @NgModule({
     declarations: [
@@ -42,6 +43,7 @@ import { UiElementsModule } from 'src/app/ui-elements/ui-elements.module';
         MatProgressSpinnerModule,
         MatSnackBarModule,
         UiElementsModule,
+        GeneralModule,
     ],
     exports: [CreateLotComponent, DashboardComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],

@@ -13,7 +13,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { BuyerRoutingModule } from './buyer-routing.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { WishlistComponent } from './wishlist/wishlist.component';
-import { TransactionsComponent } from '../general/transactions/transactions.component';
+import { GeneralModule } from '../general/general.module';
 
 @NgModule({
     declarations: [DashboardComponent, WishlistComponent],
@@ -29,6 +29,7 @@ import { TransactionsComponent } from '../general/transactions/transactions.comp
         MatCheckboxModule,
         MatDialogModule,
         ReactiveFormsModule,
+        GeneralModule,
     ],
     exports: [],
 })

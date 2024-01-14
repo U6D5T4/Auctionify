@@ -262,10 +262,29 @@
         </div>
     </div>
 
-    <!-- <app-transactions
-        [transactionsCount]="3"
-        [showHeader]="false"
-    ></app-transactions> -->
+    <div class="dashboard__transactions-section">
+        <h2 class="dashboard__transactions-title">Transactions history</h2>
+        <a routerLink="/get-transactions">
+            <button
+                mat-flat-button
+                type="button"
+                class="dashboard__transactions-show-all-btn"
+            >
+                <p class="dashboard__transactions-show-all">Show all</p>
+                <mat-icon
+                    class="dashboard__transactions-arrow-icon"
+                    iconPositionEnd
+                    >arrow_forward</mat-icon
+                >
+            </button>
+        </a>
+    </div>
+    <section class="dashboard__transactions">
+        <app-transactions
+            [transactionsCount]="3"
+            [showHeader]="false"
+        ></app-transactions>
+    </section>
 
     <div class="dashboard__wishlist-container">
         <div class="dashboard__wishlist-section">
