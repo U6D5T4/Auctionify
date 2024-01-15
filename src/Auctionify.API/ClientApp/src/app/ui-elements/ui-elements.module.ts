@@ -6,24 +6,25 @@ import { DialogPopupComponent } from './dialog-popup/dialog-popup.component';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { ChoicePopupComponent } from './choice-popup/choice-popup.component';
-
-
+import { LotItemComponent } from './lot-item/lot-item.component';
+import { RouterModule } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
-  declarations: [
-    ButtonComponent,
-    InputComponent,
-    DialogPopupComponent,
-    ChoicePopupComponent
-  ],
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatButtonModule
-  ],
-  exports: [
-    InputComponent,
-    ButtonComponent
-  ]
+    declarations: [
+        ButtonComponent,
+        InputComponent,
+        DialogPopupComponent,
+        ChoicePopupComponent,
+        LotItemComponent,
+    ],
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatButtonModule,
+        RouterModule,
+        MatIconModule,
+    ],
+    exports: [InputComponent, ButtonComponent, LotItemComponent],
 })
-export class UiElementsModule { }
+export class UiElementsModule {}

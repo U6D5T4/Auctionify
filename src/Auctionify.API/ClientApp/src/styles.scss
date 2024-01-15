@@ -23,8 +23,7 @@ $main-palette: (
     A200: #2b5293,
     A400: #2b5293,
     A700: #2b5293,
-    contrast: (
-        50: #2b5293,
+    contrast: (50: #2b5293,
         100: #2b5293,
         200: #2b5293,
         300: #2b5293,
@@ -52,8 +51,7 @@ $main-accent: (
     700: #f2f5f7,
     800: #f2f5f7,
     900: #f2f5f7,
-    contrast: (
-        50: #f2f5f7,
+    contrast: (50: #f2f5f7,
         100: #f2f5f7,
         200: #f2f5f7,
         300: #f2f5f7,
@@ -77,8 +75,7 @@ $main-error: (
     700: #ab2d25,
     800: #ab2d25,
     900: #ab2d25,
-    contrast: (
-        50: #ab2d25,
+    contrast: (50: #ab2d25,
         100: #ab2d25,
         200: #ab2d25,
         300: #ab2d25,
@@ -102,15 +99,11 @@ $ClientApp-warn: mat.define-palette($main-error);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
-$ClientApp-theme: mat.define-light-theme(
-    (
-        color: (
-            primary: $ClientApp-primary,
-            accent: $ClientApp-accent,
-            warn: $ClientApp-warn,
-        ),
-    )
-);
+$ClientApp-theme: mat.define-light-theme((color: (primary: $ClientApp-primary,
+                accent: $ClientApp-accent,
+                warn: $ClientApp-warn,
+            ),
+        ));
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
@@ -162,12 +155,9 @@ button {
     --mdc-outlined-text-field-container-shape: 8px;
 }
 
-.mdc-text-field--outlined:not(.mdc-text-field--disabled)
-    .mdc-notched-outline__leading,
-.mdc-text-field--outlined:not(.mdc-text-field--disabled)
-    .mdc-notched-outline__notch,
-.mdc-text-field--outlined:not(.mdc-text-field--disabled)
-    .mdc-notched-outline__trailing {
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__leading,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__notch,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing {
     border-color: var(--color-grey-4);
 }
 
@@ -209,4 +199,28 @@ hr.color-grey-5 {
         --mat-mdc-snack-bar-button-color: #fff;
         --mdc-snackbar-supporting-text-color: #fff;
     }
+}
+
+:root {
+    --swiper-navigation-color: var(--color-main);
+}
+
+.slider-container {
+    height: 468px;
+}
+
+.slide {
+    max-width: fit-content;
+    margin-right: 8px;
+    margin-top: 7px;
+    margin-left: 8px;
+}
+
+swiper-container::part(button-prev),
+swiper-container::part(button-next) {
+    background-color: white;
+    padding: 10px;
+    width: 25px;
+    height: 25px;
+    border-radius: 100%;
 }

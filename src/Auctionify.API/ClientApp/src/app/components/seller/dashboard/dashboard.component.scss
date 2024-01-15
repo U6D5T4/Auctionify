@@ -1,0 +1,19 @@
+.dashboard {
+    &-main {
+        padding: 40px;
+        padding-top: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+    }
+}
+
+.lots-section {
+    & h2 {
+        margin-bottom: 40px;
+        font-size: 32px;
+        font-weight: 700;
+        line-height: 40px;
+        text-align: left;
+    }
+}
