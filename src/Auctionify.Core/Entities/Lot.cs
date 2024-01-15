@@ -40,7 +40,7 @@ namespace Auctionify.Core.Entities
 
 		public virtual ICollection<Watchlist> Watchlists { get; set; }
 
-		public virtual Rate? Rate { get; set; }
+		public virtual ICollection<Rate> Rates { get; set; }
 
 		public int? RateId { get; set; }
 
