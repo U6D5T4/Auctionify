@@ -18,9 +18,11 @@ namespace Auctionify.Core.Entities
 
 		public virtual ICollection<Watchlist> Watchlists { get; set; }
 
-		public virtual ICollection<ChatMessage> SenderChatMessages { get; set; }
+		public virtual ICollection<Conversation> SellerConversations { get; set; }
 
-		public virtual ICollection<ChatMessage> ReceiverChatMessages { get; set; }
+		public virtual ICollection<Conversation> BuyerConversations { get; set; }
+
+		public virtual ICollection<ChatMessage> ChatMessages { get; set; }
 
 		public virtual ICollection<Rate> SenderRates { get; set; }
 

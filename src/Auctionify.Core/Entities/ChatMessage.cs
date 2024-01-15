@@ -4,20 +4,18 @@ namespace Auctionify.Core.Entities
 {
 	public class ChatMessage : BaseAuditableEntity
 	{
-		public int SellerId { get; set; }
+		public int SenderId { get; set; }
 
-		public int BuyerId { get; set; }
-		
-		public virtual User Seller { get; set; }
-		
-		public virtual User Buyer { get; set; }
-		
-		public string Message { get; set; }
-		
-		public virtual DateTime TimeStamp { get; set; }
-		
-		public int LotId { get; set; }
-		
-		public virtual Lot Lot { get; set; }
+		public virtual User Sender { get; set; }
+
+		public int ConversationId { get; set; }
+
+		public virtual Conversation Conversation { get; set; }
+
+		public string Body { get; set; }
+
+		public bool IsRead { get; set; }
+
+		public DateTime TimeStamp { get; set; }
 	}
 }

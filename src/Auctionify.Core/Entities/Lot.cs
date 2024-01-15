@@ -33,10 +33,10 @@ namespace Auctionify.Core.Entities
 		public string? Description { get; set; }
 
 		public decimal? StartingPrice { get; set; }
-		
-		public virtual DateTime StartDate { get; set; }
 
-		public virtual DateTime EndDate { get; set; }
+		public DateTime StartDate { get; set; }
+
+		public DateTime EndDate { get; set; }
 
 		public virtual ICollection<Watchlist> Watchlists { get; set; }
 
