@@ -19,6 +19,12 @@ import { DateCalculationService } from 'src/app/services/date-calculation/date-c
     styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
+    private readonly MAIN_BLUE_COLOR: string = '#2b5293';
+    private readonly MAIN_RED_COLOR: string = '#ab2d25';
+    private readonly MAIN_GREEN_COLOR: string = '#2b9355';
+
+    priceColor: string = 'black';
+
     currentBuyerId: number = 0;
 
     lots: LotModel[] = [];
@@ -29,8 +35,6 @@ export class DashboardComponent implements OnInit {
     additionalAuctionsCount: number = 5;
     noMoreAuctionsToLoad: boolean = false;
     currentIndex: number = 0;
-
-    priceColor: string = 'black';
 
     constructor(
         private apiClient: Client,
@@ -99,7 +103,6 @@ export class DashboardComponent implements OnInit {
     loadLotsInWatchlist() {
         this.apiClient.getLotsInWatchlist(0, 5).subscribe((lots) => {
             this.lots = lots;
-            console.log(this.lots);
         });
     }
 
@@ -172,15 +175,15 @@ export class DashboardComponent implements OnInit {
     determinePriceColor(auction: any) {
         if (auction.lotStatus.name === 'Active') {
             if (this.currentBuyerId === auction.bids[0].buyerId) {
-                this.priceColor = '#2b5293';
+                this.priceColor = this.MAIN_BLUE_COLOR;
             } else {
-                this.priceColor = '#ab2d25';
+                this.priceColor = this.MAIN_RED_COLOR;
             }
         } else {
             if (auction.buyerId === this.currentBuyerId) {
-                this.priceColor = '#2b9355';
+                this.priceColor = this.MAIN_GREEN_COLOR;
             } else {
-                this.priceColor = '#ab2d25';
+                this.priceColor = this.MAIN_RED_COLOR;
             }
         }
     }
