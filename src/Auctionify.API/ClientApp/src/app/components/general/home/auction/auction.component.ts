@@ -111,7 +111,6 @@ export class AuctionComponent implements OnInit {
 
         this.apiClient.filterLots(filterLot).subscribe((filterResult) => {
             this.noMoreActiveLotsToLoad = filterResult.hasNext;
-            console.log(filterResult.items);
             this.activeLots$ = of(filterResult.items);
         });
     }
