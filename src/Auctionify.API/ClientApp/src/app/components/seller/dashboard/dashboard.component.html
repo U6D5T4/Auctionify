@@ -1,9 +1,8 @@
 <section class="dashboard-main">
-    <section class="active-lots">
+    <section class="lots-section">
         <h2>Active lots</h2>
         <app-dashboard-active-lots></app-dashboard-active-lots>
     </section>
-
     <div class="dashboard__transactions-section">
         <h2 class="dashboard__transactions-title">Transactions history</h2>
         <a routerLink="/get-transactions">
@@ -26,5 +25,9 @@
             [transactionsCount]="3"
             [showHeader]="false"
         ></app-transactions>
+    </section>
+    <section class="lots-section">
+        <h2>Saved drafts</h2>
+        <app-dashboard-draft-lots></app-dashboard-draft-lots>
     </section>
 </section>

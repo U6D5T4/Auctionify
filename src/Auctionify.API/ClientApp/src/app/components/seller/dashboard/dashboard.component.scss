@@ -2,6 +2,9 @@
     &-main {
         padding: 40px;
         padding-top: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
     }
 
     &__transactions-section {
@@ -30,7 +33,7 @@
     }
 }
 
-.active-lots {
+.lots-section {
     & h2 {
         margin-bottom: 40px;
         font-size: 32px;

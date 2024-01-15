@@ -19,6 +19,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { DashboardActiveLotsComponent } from './components/dashboard-active-lots/dashboard-active-lots.component';
 import { UiElementsModule } from 'src/app/ui-elements/ui-elements.module';
 import { GeneralModule } from '../general/general.module';
+import { DashboardDraftLotsComponent } from './components/dashboard-draft-lots/dashboard-draft-lots.component';
 
 @NgModule({
     declarations: [
@@ -28,6 +29,7 @@ import { GeneralModule } from '../general/general.module';
         FilesPopUpComponent,
         DashboardComponent,
         DashboardActiveLotsComponent,
+        DashboardDraftLotsComponent,
     ],
     imports: [
         CommonModule,

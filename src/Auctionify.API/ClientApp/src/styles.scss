@@ -214,3 +214,23 @@ hr.color-grey-5 {
 :root {
     --swiper-navigation-color: var(--color-main);
 }
+
+.slider-container {
+    height: 468px;
+}
+
+.slide {
+    max-width: fit-content;
+    margin-right: 8px;
+    margin-top: 7px;
+    margin-left: 8px;
+}
+
+swiper-container::part(button-prev),
+swiper-container::part(button-next) {
+    background-color: white;
+    padding: 10px;
+    width: 25px;
+    height: 25px;
+    border-radius: 100%;
+}

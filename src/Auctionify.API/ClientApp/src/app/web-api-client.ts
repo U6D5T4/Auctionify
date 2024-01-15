@@ -839,31 +839,6 @@ export class Client {
         return this.http.get(documentUrl, { responseType: 'blob' });
     }
 
-    getAllActiveLotsForSeller(
-        pageRequest: PageRequest
-    ): Observable<FilterResponse> {
-        let url_ = this.baseUrl + `/api/lots/sellers/active`;
-
-        return this.handleGetAllLotsWithStatusForSeller(url_, pageRequest);
-    }
-
-    private handleGetAllLotsWithStatusForSeller(
-        url: string,
-        pageRequest: PageRequest
-    ): Observable<FilterResponse> {
-        let queryParams = new HttpParams();
-
-        for (const [key, value] of Object.entries(pageRequest)) {
-            queryParams = queryParams.append(key, value);
-        }
-
-        return this.http.get(url, { params: queryParams }).pipe(
-            mergeMap((response: any): Observable<FilterResponse> => {
-                return of(response);
-            })
-        );
-    }
-
     getBuyerAuctions(
         pageIndex: number,
         pageSize: number
@@ -888,6 +863,38 @@ export class Client {
                 } else {
                     throw new Error('Invalid response structure');
                 }
+            })
+        );
+    }
+    getAllActiveLotsForSeller(
+        pageRequest: PageRequest
+    ): Observable<FilterResponse> {
+        let url_ = this.baseUrl + `/api/lots/sellers/active`;
+
+        return this.handleGetAllLotsWithStatusForSeller(url_, pageRequest);
+    }
+
+    getAllDraftLotsForSeller(
+        pageRequest: PageRequest
+    ): Observable<FilterResponse> {
+        let url_ = this.baseUrl + `/api/lots/sellers/draft`;
+
+        return this.handleGetAllLotsWithStatusForSeller(url_, pageRequest);
+    }
+
+    private handleGetAllLotsWithStatusForSeller(
+        url: string,
+        pageRequest: PageRequest
+    ): Observable<FilterResponse> {
+        let queryParams = new HttpParams();
+
+        for (const [key, value] of Object.entries(pageRequest)) {
+            queryParams = queryParams.append(key, value);
+        }
+
+        return this.http.get(url, { params: queryParams }).pipe(
+            mergeMap((response: any): Observable<FilterResponse> => {
+                return of(response);
             })
         );
     }

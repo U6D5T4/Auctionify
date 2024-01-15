@@ -3,6 +3,7 @@ using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Common.Models.Requests;
 using Auctionify.Core.Entities;
+using Auctionify.Core.Enums;
 using Auctionify.Core.Persistence.Paging;
 using AutoMapper;
 using MediatR;
@@ -129,6 +130,13 @@ namespace Auctionify.Application.Features.Users.Queries.GetBuyerAuctions
 
 				lot.Bids = _mapper.Map<List<BidDto>>(lotBids.Items);
 			}
+
+			response.Items = response
+				.Items.OrderByDescending(
+					x => x.LotStatus.Name == AuctionStatus.Active.ToString() ? 1 : 0
+				)
+				.ThenByDescending(x => x.LotStatus.Name == AuctionStatus.Sold.ToString() ? 1 : 0)
+				.ToList();
 
 			return response;
 		}
