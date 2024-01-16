@@ -18,6 +18,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { WithdrawBidComponent } from './withdraw-bid/withdraw-bid.component';
 import { RemoveFromWatchlistComponent } from './remove-from-watchlist/remove-from-watchlist.component';
+import { ChatPageComponent } from './chat-page/chat-page.component';
 
 @NgModule({
     declarations: [
@@ -28,6 +29,7 @@ import { RemoveFromWatchlistComponent } from './remove-from-watchlist/remove-fro
         FilterComponent,
         WithdrawBidComponent,
         RemoveFromWatchlistComponent,
+        ChatPageComponent,
     ],
     imports: [
         CommonModule,
