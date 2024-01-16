@@ -8,11 +8,22 @@ h2 {
     display: flex;
     gap: 40px;
     position: relative;
+    max-height: 100%;
 
     &__separator {
         width: 1px;
         min-height: 100%;
         background-color: var(--color-container);
+    }
+
+    &__conversations {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    &__window {
+        flex: 1 1;
     }
 }
 

@@ -8,6 +8,7 @@
             [unreadCount]="conversation.unreadMessagesCount"
             [messageDate]="conversation.lastMessage.timeStamp"
             class="chat-item"
+            [isActive]="conversation.isActive"
             (click)="conversationClick(conversation.id)"
         >
         </app-chat-item>

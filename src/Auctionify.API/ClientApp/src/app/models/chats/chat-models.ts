@@ -11,6 +11,7 @@ export interface Conversation {
     chatUser: ChatUser;
     lastMessage: ChatMessage;
     unreadMessagesCount: number;
+    isActive: boolean;
 }
 
 export interface ChatUser {
@@ -24,6 +25,6 @@ export interface ChatMessage {
     senderId: number;
     conversationId: number;
     body: string;
-    timeStamp: string;
+    timeStamp: Date;
     isRead: boolean;
 }

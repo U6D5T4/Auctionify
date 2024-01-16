@@ -12,5 +12,12 @@ export class ChatsComponent {
 
     conversationClick(id: number) {
         this.conversationChosen.emit(id);
+        this.conversations = this.conversations.map((v) => {
+            v.isActive = false;
+            if (v.id == id) {
+                v.isActive = true;
+            }
+            return v;
+        });
     }
 }

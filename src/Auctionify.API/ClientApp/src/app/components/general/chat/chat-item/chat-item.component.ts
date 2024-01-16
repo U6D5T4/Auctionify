@@ -9,8 +9,9 @@ export class ChatItemComponent {
     @Input() imageUrl!: string;
     @Input() userName!: string;
     @Input() messageText!: string;
-    @Input() messageDate!: string;
+    @Input() messageDate!: Date;
     @Input() unreadCount: number | undefined;
+    @Input() isActive!: boolean;
 
     constructor() {}
 }

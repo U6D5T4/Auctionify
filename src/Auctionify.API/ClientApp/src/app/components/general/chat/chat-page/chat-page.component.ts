@@ -23,13 +23,14 @@ export class ChatPageComponent {
                 senderId: 1,
                 conversationId: 1,
                 body: "Hi there! I'm interested in the a...",
-                timeStamp: '09:26 PM',
+                timeStamp: new Date(),
                 isRead: true,
             },
             unreadMessagesCount: 20,
+            isActive: false,
         },
         {
-            id: 1,
+            id: 2,
             lotId: 1,
             chatUser: {
                 id: 1,
@@ -42,13 +43,14 @@ export class ChatPageComponent {
                 senderId: 1,
                 conversationId: 1,
                 body: "Hi there! I'm interested in the a...",
-                timeStamp: '09:26 PM',
+                timeStamp: new Date(),
                 isRead: true,
             },
             unreadMessagesCount: 20,
+            isActive: false,
         },
         {
-            id: 1,
+            id: 3,
             lotId: 1,
             chatUser: {
                 id: 1,
@@ -61,13 +63,14 @@ export class ChatPageComponent {
                 senderId: 1,
                 conversationId: 1,
                 body: "Hi there! I'm interested in the a...",
-                timeStamp: '09:26 PM',
+                timeStamp: new Date(),
                 isRead: true,
             },
             unreadMessagesCount: 20,
+            isActive: false,
         },
         {
-            id: 1,
+            id: 4,
             lotId: 1,
             chatUser: {
                 id: 1,
@@ -80,10 +83,11 @@ export class ChatPageComponent {
                 senderId: 1,
                 conversationId: 1,
                 body: "Hi there! I'm interested in the a...",
-                timeStamp: '09:26 PM',
+                timeStamp: new Date(),
                 isRead: true,
             },
             unreadMessagesCount: 20,
+            isActive: false,
         },
     ];
 

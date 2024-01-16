@@ -1,5 +1,5 @@
 <div class="chat">
-    <div class="chat__inner">
+    <div class="chat__inner" [ngClass]="isActive ? 'active' : ''">
         <div class="chat__avatar">
             <img [src]="imageUrl" alt="avatar" />
         </div>
@@ -8,7 +8,9 @@
                 <h4 class="chat__top-nickname">
                     {{ userName }}
                 </h4>
-                <p class="chat__top-time">{{ messageDate }}</p>
+                <p class="chat__top-time">
+                    {{ messageDate | date : 'hh:mm aa' }}
+                </p>
             </div>
             <div class="chat__bottom">
                 <p class="chat__bottom-message-text">

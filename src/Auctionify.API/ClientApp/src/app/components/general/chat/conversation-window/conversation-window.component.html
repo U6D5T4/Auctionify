@@ -1,1 +1,42 @@
-<p>conversation-window works!</p>
+<div class="conversation-window">
+    <div class="conversation__profile-top">
+        <div class="profile-top__user">
+            <div class="user__avatar">
+                <img [src]="" alt="" />
+            </div>
+            <div class="user__fullname">Alex m</div>
+        </div>
+        <div class="profile-top__settings">
+            <button mat-fab>
+                <mat-icon>more_vert</mat-icon>
+            </button>
+        </div>
+    </div>
+    <div class="conversation__separator"></div>
+    <div class="conversation__main">
+        <div class="conversation__main-inner">
+            <div
+                class="conversation__main-group"
+                *ngFor="let group of groupMessagesByDate(messages)"
+            >
+                <div class="conversation__date">
+                    <span>{{ group.date }}</span>
+                </div>
+                <div class="conversation__messages-container">
+                    <div
+                        class="conversation__message"
+                        [ngClass]="generateMessageClass(message)"
+                        *ngFor="let message of group.messages"
+                    >
+                        <!-- Display your individual messages here -->
+                        <div class="conversation__message-inner">
+                            {{ message.body }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="conversation__separator"></div>
+    <div class="conversation__controls"></div>
+</div>

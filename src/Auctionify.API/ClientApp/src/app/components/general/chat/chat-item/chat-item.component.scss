@@ -4,6 +4,11 @@
         display: flex;
         gap: 16px;
         align-items: center;
+        border-radius: 12px;
+
+        &.active {
+            background-color: var(--color-container);
+        }
     }
 
     &__avatar {
@@ -31,10 +36,28 @@
     &__top {
         display: flex;
         justify-content: space-between;
+
+        &-time {
+            font-family: Onest;
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 24px;
+            color: rgba(43, 82, 147, 0.4);
+        }
     }
 
     &__bottom {
         display: flex;
         gap: 8px;
+
+        &-unread {
+            font-family: Onest;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            padding: 4px;
+            border-radius: 100%;
+            background-color: var(--color-main);
+        }
     }
 }
