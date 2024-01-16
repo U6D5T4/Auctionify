@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { Observable, mergeMap, of } from 'rxjs';
 
@@ -11,10 +13,9 @@ import {
     Status,
 } from 'src/app/web-api-client';
 import { FilterLot } from 'src/app/models/lots/filter';
-import { FilterComponent, FilterResult } from '../filter/filter.component';
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { HttpErrorResponse } from '@angular/common/http';
+import { FilterComponent, FilterResult } from '../filter/filter.component';
+import { RemoveFromWatchlistComponent } from '../../remove-from-watchlist/remove-from-watchlist.component';
 
 @Component({
     selector: 'app-auction',
@@ -110,7 +111,6 @@ export class AuctionComponent implements OnInit {
 
         this.apiClient.filterLots(filterLot).subscribe((filterResult) => {
             this.noMoreActiveLotsToLoad = filterResult.hasNext;
-            console.log(filterResult.items);
             this.activeLots$ = of(filterResult.items);
         });
     }
@@ -286,49 +286,47 @@ export class AuctionComponent implements OnInit {
         this.loadArchivedLots();
     }
 
-    handleLotWatchlist(lotData: LotModel) {
-        if (!lotData.isInWatchlist) {
-            this.apiClient.addToWatchlist(lotData.id).subscribe({
+    handleLotWatchlist(lot: LotModel) {
+        if (!lot.isInWatchlist) {
+            this.apiClient.addToWatchlist(lot.id).subscribe({
                 next: (result) => {
-                    this.snackBar.open(result, 'Ok', {
-                        horizontalPosition: 'right',
-                        verticalPosition: 'top',
-                        duration: 5000,
-                    });
-                    lotData.isInWatchlist = true;
+                    this.snackBar.open(
+                        'Successfully added the lot to watchlist',
+                        'Close',
+                        {
+                            horizontalPosition: 'center',
+                            verticalPosition: 'bottom',
+                            duration: 5000,
+                            panelClass: ['success-snackbar'],
+                        }
+                    );
+                    lot.isInWatchlist = true;
                 },
                 error: (result: HttpErrorResponse) => {
                     this.snackBar.open(
                         result.error.errors[0].ErrorMessage,
-                        'Ok',
+                        'Close',
                         {
-                            horizontalPosition: 'right',
-                            verticalPosition: 'top',
+                            horizontalPosition: 'center',
+                            verticalPosition: 'bottom',
                             duration: 5000,
+                            panelClass: ['error-snackbar'],
                         }
                     );
                 },
             });
         } else {
-            this.apiClient.removeFromWatchList(lotData.id).subscribe({
-                next: (result) => {
-                    this.snackBar.open(result, 'Ok', {
-                        horizontalPosition: 'right',
-                        verticalPosition: 'top',
-                        duration: 5000,
-                    });
-                    lotData.isInWatchlist = false;
+            const dialog = this.dialog.open(RemoveFromWatchlistComponent, {
+                data: {
+                    lotId: lot.id,
                 },
-                error: (result: HttpErrorResponse) => {
-                    this.snackBar.open(
-                        result.error.errors[0].ErrorMessage,
-                        'Ok',
-                        {
-                            horizontalPosition: 'right',
-                            verticalPosition: 'top',
-                            duration: 5000,
-                        }
-                    );
+            });
+
+            dialog.closed.subscribe({
+                next: () => {
+                    this.loadActiveLots();
+                    this.loadUpcomingLots();
+                    this.loadArchivedLots();
                 },
             });
         }

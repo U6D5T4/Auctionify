@@ -598,6 +598,34 @@ export class Client {
         );
     }
 
+    getLotsInWatchlist(
+        pageIndex: number,
+        pageSize: number
+    ): Observable<LotModel[]> {
+        let url_ = this.baseUrl + `/api/users/watchlists/lots`;
+
+        let params = new HttpParams()
+            .set('pageIndex', pageIndex.toString())
+            .set('pageSize', pageSize.toString());
+
+        const options_: any = {
+            headers: new HttpHeaders({
+                Accept: 'text/json',
+            }),
+            params,
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<LotModel[]> => {
+                if (response && response.items) {
+                    return of(response.items as LotModel[]);
+                } else {
+                    throw new Error('Invalid response structure');
+                }
+            })
+        );
+    }
+
     resetPassword(
         body: ResetPasswordViewModel | undefined
     ): Observable<ResetPasswordResponse> {
@@ -811,10 +839,45 @@ export class Client {
         return this.http.get(documentUrl, { responseType: 'blob' });
     }
 
+    getBuyerAuctions(
+        pageIndex: number,
+        pageSize: number
+    ): Observable<GeneralAuctionResponse> {
+        let url_ = this.baseUrl + `/api/users/buyers/auctions`;
+
+        let params = new HttpParams()
+            .set('pageIndex', pageIndex.toString())
+            .set('pageSize', pageSize.toString());
+
+        const options_: any = {
+            headers: new HttpHeaders({
+                Accept: 'text/json',
+            }),
+            params,
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<GeneralAuctionResponse> => {
+                if (response) {
+                    return of(response as GeneralAuctionResponse);
+                } else {
+                    throw new Error('Invalid response structure');
+                }
+            })
+        );
+    }
     getAllActiveLotsForSeller(
         pageRequest: PageRequest
     ): Observable<FilterResponse> {
         let url_ = this.baseUrl + `/api/lots/sellers/active`;
+
+        return this.handleGetAllLotsWithStatusForSeller(url_, pageRequest);
+    }
+
+    getAllDraftLotsForSeller(
+        pageRequest: PageRequest
+    ): Observable<FilterResponse> {
+        let url_ = this.baseUrl + `/api/lots/sellers/draft`;
 
         return this.handleGetAllLotsWithStatusForSeller(url_, pageRequest);
     }
@@ -852,6 +915,16 @@ export interface FilterResponse {
     size: number;
 }
 
+export interface GeneralAuctionResponse {
+    count: number;
+    hasNext: boolean;
+    hasPrevious: boolean;
+    index: number;
+    items: AuctionModel[];
+    pages: number;
+    size: number;
+}
+
 export interface FilteredLotModel {
     id: number;
     title: string;
@@ -884,6 +957,24 @@ export interface LotModel {
     bidCount: number;
     mainPhotoUrl: string | null;
     isInWatchlist: boolean;
+}
+
+export interface AuctionModel {
+    id: number;
+    title: string;
+    description: string;
+    startingPrice: number | null;
+    startDate: Date | null;
+    endDate: Date | null;
+    category: CategoryDto;
+    lotStatus: LotStatusDto;
+    location: LocationDto;
+    currency: CurrencyDto;
+    bids: BidDto[];
+    bidCount: number;
+    mainPhotoUrl: string | null;
+    isInWatchlist: boolean;
+    buyerId: number | null;
 }
 
 export interface CategoryDto {
