@@ -21,7 +21,6 @@ import { UiElementsModule } from '../ui-elements/ui-elements.module';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { isLoggedInGuard } from '../guards/is-logged-in.guard';
 import { EmailSentComponent } from './email-sent/email-sent.component';
-import { GeneralBackgroundComponent } from './general-background/general-background.component';
 
 @NgModule({
     declarations: [
@@ -31,7 +30,6 @@ import { GeneralBackgroundComponent } from './general-background/general-backgro
         RegisterRoleComponent,
         ResetPasswordComponent,
         EmailSentComponent,
-        GeneralBackgroundComponent,
     ],
     imports: [
         CommonModule,
