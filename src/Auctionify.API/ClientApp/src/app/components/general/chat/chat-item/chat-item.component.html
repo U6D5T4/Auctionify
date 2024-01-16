@@ -1,22 +1,20 @@
 <div class="chat">
-    <div class="chat-inner">
+    <div class="chat__inner">
         <div class="chat__avatar">
-
+            <img [src]="imageUrl" alt="avatar" />
         </div>
         <div class="chat__main">
             <div class="chat__top">
                 <h4 class="chat__top-nickname">
-                    Anastasia M
+                    {{ userName }}
                 </h4>
-                <p class="chat__top-time">09:26 PM</p>
+                <p class="chat__top-time">{{ messageDate }}</p>
             </div>
             <div class="chat__bottom">
                 <p class="chat__bottom-message-text">
-                    Hi there! I'm interested in the a...
+                    {{ messageText }}
                 </p>
-                <span class="chat__bottom-unread">
-                    42
-                </span>
+                <span class="chat__bottom-unread"> {{ unreadCount }} </span>
             </div>
         </div>
     </div>

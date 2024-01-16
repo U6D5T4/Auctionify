@@ -1,0 +1,15 @@
+<div class="chats">
+    <div class="chats__conversations">
+        <app-chat-item
+            *ngFor="let conversation of conversations"
+            [imageUrl]="conversation.chatUser.profilePhoto"
+            [userName]="conversation.chatUser.fullName"
+            [messageText]="conversation.lastMessage.body"
+            [unreadCount]="conversation.unreadMessagesCount"
+            [messageDate]="conversation.lastMessage.timeStamp"
+            class="chat-item"
+            (click)="conversationClick(conversation.id)"
+        >
+        </app-chat-item>
+    </div>
+</div>

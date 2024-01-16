@@ -18,7 +18,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { WithdrawBidComponent } from './withdraw-bid/withdraw-bid.component';
 import { RemoveFromWatchlistComponent } from './remove-from-watchlist/remove-from-watchlist.component';
-import { ChatPageComponent } from './chat-page/chat-page.component';
+import { ChatModule } from './chat/chat.module';
 
 @NgModule({
     declarations: [
@@ -29,7 +29,6 @@ import { ChatPageComponent } from './chat-page/chat-page.component';
         FilterComponent,
         WithdrawBidComponent,
         RemoveFromWatchlistComponent,
-        ChatPageComponent,
     ],
     imports: [
         CommonModule,
@@ -44,6 +43,7 @@ import { ChatPageComponent } from './chat-page/chat-page.component';
         MatInputModule,
         MatCheckboxModule,
         MatSnackBarModule,
+        ChatModule,
     ],
 
     exports: [LotProfileComponent],

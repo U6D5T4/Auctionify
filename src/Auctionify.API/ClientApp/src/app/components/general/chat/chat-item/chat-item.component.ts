@@ -9,7 +9,8 @@ export class ChatItemComponent {
     @Input() imageUrl!: string;
     @Input() userName!: string;
     @Input() messageText!: string;
-    @Input() unread: string | undefined;
+    @Input() messageDate!: string;
+    @Input() unreadCount: number | undefined;
 
     constructor() {}
 }

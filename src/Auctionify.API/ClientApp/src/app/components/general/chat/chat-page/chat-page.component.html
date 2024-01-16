@@ -1,1 +1,18 @@
-<p>chat-page works!</p>
+<div class="chat">
+    <div class="chat__conversations">
+        <h2>Messages</h2>
+        <div *ngIf="chatConversations != null && chatConversations.length > 0">
+            <app-chats
+                class="chats"
+                [conversations]="chatConversations"
+                (conversationChosen)="handleConversationChange($event)"
+            ></app-chats>
+        </div>
+    </div>
+    <div class="chat__separator"></div>
+    <div class="chat__window">
+        <div *ngIf="chosenConversationId > 0">
+            <app-conversation-window> </app-conversation-window>
+        </div>
+    </div>
+</div>

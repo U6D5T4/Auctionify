@@ -1,0 +1,22 @@
+h2 {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 40px;
+}
+
+.chat {
+    display: flex;
+    gap: 40px;
+    position: relative;
+
+    &__separator {
+        width: 1px;
+        min-height: 100%;
+        background-color: var(--color-container);
+    }
+}
+
+.chats {
+    max-width: 395px;
+    display: block;
+}
