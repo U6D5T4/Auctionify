@@ -21,7 +21,7 @@ namespace Auctionify.Infrastructure.Data.Config
 				.OnDelete(DeleteBehavior.NoAction);
 
 			builder.Property(s => s.Body).HasMaxLength(500).IsRequired(true);
-			builder.Property(s => s.TimeStamp).IsRequired(true);
+			builder.Property(s => s.TimeStamp).IsRequired(true).HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
 			builder.Property(s => s.IsRead).IsRequired(true);
 		}
 	}

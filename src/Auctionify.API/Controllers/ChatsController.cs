@@ -1,4 +1,5 @@
-﻿using Auctionify.Application.Features.Chats.Queries.GetAllUserConversations;
+﻿using Auctionify.Application.Features.Chats.Queries.GetAllChatMessages;
+using Auctionify.Application.Features.Chats.Queries.GetAllUserConversations;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,17 @@ namespace Auctionify.API.Controllers
 		public async Task<IActionResult> GetAllUserConversations()
 		{
 			var result = await _mediator.Send(new GetAllUserConversationsQuery());
+
+			return Ok(result);
+		}
+
+		[HttpGet("users/conversations/{conversationId}/messages")]
+		[Authorize(Roles = "Buyer, Seller")]
+		public async Task<IActionResult> GetAllConversationChatMessages(int conversationId)
+		{
+			var result = await _mediator.Send(
+				new GetAllChatMessagesQuery { ConversationId = conversationId }
+			);
 
 			return Ok(result);
 		}
