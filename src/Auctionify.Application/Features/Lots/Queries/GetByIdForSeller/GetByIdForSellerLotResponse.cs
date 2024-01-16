@@ -33,5 +33,7 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForSeller
 		public int BidCount { get; set; }
 
 		public int SellerId { get; set; }
+
+		public UserDto Seller { get; set; }
 	}
 }

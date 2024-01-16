@@ -49,7 +49,7 @@ namespace Auctionify.Application.Features.Rates.Commands.AddRateToSeller
 			var lot = await _lotRepository.GetAsync(
 				predicate: x => x.Id == request.LotId,
 				cancellationToken: cancellationToken
-				);
+			);
 
 			var rate = new Rate
 			{
@@ -60,9 +60,9 @@ namespace Auctionify.Application.Features.Rates.Commands.AddRateToSeller
 				RatingValue = request.RatingValue
 			};
 
-			var result = _rateRepository.AddAsync(rate);
+			var result = await _rateRepository.AddAsync(rate);
 
-			var response = _mapper.Map<AddRateToSellerResponse>(result);
+			var response =  _mapper.Map<AddRateToSellerResponse>(result);
 
 			return response;
 		}

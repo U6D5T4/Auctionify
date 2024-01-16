@@ -32,6 +32,23 @@ namespace Auctionify.Application.Features.Rates.Commands.AddRateToSeller
 							cancellationToken: cancellationToken
 						);
 
+						return lot != null;
+					}
+				)
+				.WithMessage("Lot with this Id does not exist")
+				.OverridePropertyName("LotId")
+				.WithName("Lot Id");
+
+			RuleFor(x => x.LotId)
+				.Cascade(CascadeMode.Stop)
+				.MustAsync(
+					async (lotId, cancellationToken) =>
+					{
+						var lot = await _lotRepository.GetAsync(
+							predicate: x => x.Id == lotId,
+							cancellationToken: cancellationToken
+						);
+
 						var lotStatus = await _lotStatusRepository.GetAsync(
 							predicate: x => x.Name == AuctionStatus.Sold.ToString(),
 							cancellationToken: cancellationToken
@@ -45,7 +62,7 @@ namespace Auctionify.Application.Features.Rates.Commands.AddRateToSeller
 						return false;
 					}
 				)
-				.WithMessage("You can rate if the lot is sold to you")
+				.WithMessage("You can rate while the lot is on status active")
 				.OverridePropertyName("LotId")
 				.WithName("Lot Id");
 
@@ -59,26 +76,23 @@ namespace Auctionify.Application.Features.Rates.Commands.AddRateToSeller
 							cancellationToken: cancellationToken
 						);
 
-						if (lot.BuyerId is not null)
+						if (lot != null && lot.BuyerId is not null)
 						{
 							var ratings = await _rateRepository.GetListAsync(
 								predicate: l => l.LotId == request.LotId,
 								cancellationToken: cancellationToken
 							);
 
-							if (ratings.Items.Count < 2)
+							if (ratings.Items.Count < 1 && !ratings.Items.Any(item => item.SenderId == lot.BuyerId))
 							{
-								if (!ratings.Items.Any(item => item.SenderId == lot.SellerId))
-								{
-									return true;
-								}
+								return true;
 							}
 						}
 
 						return false;
 					}
 				)
-				.WithMessage("You have already rate")
+				.WithMessage("You have already rated")
 				.OverridePropertyName("Rate")
 				.WithName("Rate");
 		}

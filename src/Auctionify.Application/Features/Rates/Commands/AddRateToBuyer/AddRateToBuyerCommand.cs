@@ -61,7 +61,7 @@ namespace Auctionify.Application.Features.Rates.Commands.AddRateToBuyer
                 RatingValue = request.RatingValue
             };
 
-            var result = _rateRepository.AddAsync(rate);
+            var result = await _rateRepository.AddAsync(rate);
 
             var response = _mapper.Map<AddRateToBuyerResponse>(result);
 

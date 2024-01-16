@@ -23,7 +23,7 @@ namespace Auctionify.API.Controllers
 		[HttpPost("buyers")]
 		[Authorize(Roles = "Seller")]
 		public async Task<IActionResult> RateBuyer(
-			[FromBody] AddRateToBuyerCommand addRateToBuyerCommand
+			[FromForm] AddRateToBuyerCommand addRateToBuyerCommand
 		)
 		{
 			var result = await _mediator.Send(addRateToBuyerCommand);
@@ -34,7 +34,7 @@ namespace Auctionify.API.Controllers
 		[HttpPost("sellers")]
 		[Authorize(Roles = "Buyer")]
 		public async Task<IActionResult> RateSeller(
-			[FromBody] AddRateToSellerCommand addRateToSellerCommand
+			[FromForm] AddRateToSellerCommand addRateToSellerCommand
 		)
 		{
 			var result = await _mediator.Send(addRateToSellerCommand);

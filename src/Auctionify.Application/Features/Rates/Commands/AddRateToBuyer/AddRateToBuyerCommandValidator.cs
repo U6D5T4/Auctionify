@@ -25,7 +25,24 @@ namespace Auctionify.Application.Features.Rates.Commands.AddRateToBuyer
 
             ClassLevelCascadeMode = CascadeMode.Stop;
 
-            RuleFor(x => x.LotId)
+			RuleFor(x => x.LotId)
+				.Cascade(CascadeMode.Stop)
+				.MustAsync(
+					async (lotId, cancellationToken) =>
+					{
+						var lot = await _lotRepository.GetAsync(
+							predicate: x => x.Id == lotId,
+							cancellationToken: cancellationToken
+						);
+
+						return lot != null;
+					}
+				)
+				.WithMessage("Lot with this Id does not exist")
+				.OverridePropertyName("LotId")
+				.WithName("Lot Id");
+
+			RuleFor(x => x.LotId)
                 .Cascade(CascadeMode.Stop)
                 .MustAsync(
                     async (lotId, cancellationToken) =>
@@ -48,7 +65,7 @@ namespace Auctionify.Application.Features.Rates.Commands.AddRateToBuyer
                         return false;
                     }
                 )
-                .WithMessage("You can rate if the lot is sold to you")
+                .WithMessage("You can rate if the lot will be sold to you")
                 .OverridePropertyName("LotId")
                 .WithName("Lot Id");
 
@@ -62,23 +79,17 @@ namespace Auctionify.Application.Features.Rates.Commands.AddRateToBuyer
                             cancellationToken: cancellationToken
                         );
 
-                        if (lot.BuyerId is not null)
-                        {
-                            var ratings = await _rateRepository.GetListAsync(
-                                predicate: l => l.LotId == request.LotId,
-                                cancellationToken: cancellationToken
-                            );
+						var ratings = await _rateRepository.GetListAsync(
+								predicate: l => l.LotId == request.LotId,
+								cancellationToken: cancellationToken
+						);
 
-                            if (ratings.Items.Count < 2)
-                            {
-                                if (!ratings.Items.Any(item => item.SenderId == lot.BuyerId))
-                                {
-                                    return true;
-                                }
-                            }
-                        }
+						if (ratings.Items.Count < 1 && !ratings.Items.Any(item => item.SenderId == lot.SellerId))
+						{
+                            return true;
+						}
 
-                        return false;
+						return false;
                     }
                 )
                 .WithMessage("You have already rate")

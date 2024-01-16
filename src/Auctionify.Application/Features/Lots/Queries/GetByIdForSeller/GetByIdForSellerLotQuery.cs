@@ -4,6 +4,7 @@ using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Common.Options;
 using Auctionify.Core.Entities;
 using AutoMapper;
+using Azure;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -61,7 +62,8 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForSeller
 						.Include(x => x.Currency)
 						.Include(x => x.Location)
 						.Include(x => x.LotStatus)
-						.Include(x => x.Bids),
+						.Include(x => x.Bids)
+						.Include(x => x.Seller),
 				cancellationToken: cancellationToken
 			);
 
@@ -113,6 +115,18 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForSeller
 
 				result.PhotosUrl = photoLinks;
 				result.AdditionalDocumentsUrl = additionalDocumentLinks;
+
+				var profilePictureName = user.ProfilePicture;
+
+				if (user.ProfilePicture != null)
+				{
+					var profilePictureUrl = _blobService.GetBlobUrl(
+						_azureBlobStorageOptions.UserProfilePhotosFolderName,
+						profilePictureName
+					);
+
+					result.Seller.ProfilePicture = profilePictureUrl;
+				}
 			}
 			else
 			{
