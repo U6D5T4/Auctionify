@@ -1,0 +1,49 @@
+<div class="profile">
+    <div class="profile__title">
+        <h1>My profile</h1>
+    </div>
+    <div class="profile__top-bar">
+        <app-user-top-bar [userProfileData]="userProfileData"></app-user-top-bar>
+    </div>
+    <div class="main-container">
+        <div class="main">
+            <div class="main__title">
+                <h1>Rating & Review</h1>
+            </div>
+            <div class="main__options">
+                <button 
+                    routerLink="/rating"
+                    class="main__rating-btn"
+                    mat-flat-button
+                    >
+                    My rating
+                </button>
+                <button 
+                    routerLink="/rating/feedback"
+                    class="main__feedback-btn"
+                    mat-flat-button
+                    >
+                    My feedback
+                </button>
+            </div>
+            <div class="review" *ngFor="let rate of receiverRates">
+                <app-rate-item [rate]="rate"></app-rate-item>
+            </div>
+
+            <div class="main__no-comments" *ngIf="receiverRates && receiverRates.length === 0">
+                <h2>No comments yet.</h2>
+            </div>
+
+            <div class="main__btn" *ngIf="noMoreRates">
+                <p>Want to see more comments?</p>
+                <button mat-flat-button type="button" class="main__show-more-btn" color="primary"
+                (click)="loadMoreRates()">
+                  <p>Show more</p>
+                </button>
+              </div>
+        </div>
+        <div class="nav">
+            <app-profile-navbar></app-profile-navbar>
+        </div>
+    </div>
+</div>

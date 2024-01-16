@@ -1,4 +1,6 @@
-﻿namespace Auctionify.Application.Features.Users.Queries.GetBuyer
+﻿using Auctionify.Application.Common.DTOs;
+
+namespace Auctionify.Application.Features.Users.Queries.GetBuyer
 {
 	public class GetBuyerResponse
 	{
@@ -13,5 +15,11 @@
 		public string AboutMe { get; set; }
 
 		public string ProfilePictureUrl { get; set; }
+
+		public double AverageRate { get; set; }
+
+		public int RatesCount { get; set; }
+
+		public Dictionary<byte, int> StarCounts { get; set; } = new Dictionary<byte, int>();
 	}
 }

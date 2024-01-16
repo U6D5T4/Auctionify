@@ -7,7 +7,7 @@ namespace Auctionify.Infrastructure.Repositories
 {
 	public class RateRepository : EfBaseRepository<Rate, ApplicationDbContext>, IRateRepository
 	{
-		public RateRepository(ApplicationDbContext dbContext) : base(dbContext)
+		public RateRepository(ApplicationDbContext context) : base(context)
 		{
 		}
 	}

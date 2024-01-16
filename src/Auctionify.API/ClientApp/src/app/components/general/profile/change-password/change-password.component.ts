@@ -14,6 +14,7 @@ import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-po
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 import { BuyerModel, SellerModel } from 'src/app/models/users/user-models';
 import { ChangePasswordResponse, Client } from 'src/app/web-api-client';
+import { RatePaginationModel } from 'src/app/models/rates/rate-models';
 
 export interface ChangeUserPasswordFormModel {
     oldPassword: FormControl<string | null>;
@@ -148,6 +149,7 @@ export class ChangePasswordComponent implements OnInit {
             this.client.getBuyer().subscribe(
                 (data: BuyerModel) => {
                     this.userProfileData = data;
+                    this.validate();
                 },
                 (error) => {
                     this.openDialog(
@@ -162,6 +164,7 @@ export class ChangePasswordComponent implements OnInit {
             this.client.getSeller().subscribe(
                 (data: SellerModel) => {
                     this.userProfileData = data;
+                    this.validate();
                 },
                 (error) => {
                     this.openDialog(
@@ -172,6 +175,33 @@ export class ChangePasswordComponent implements OnInit {
                     );
                 }
             );
+        }
+    }
+
+    getAverageStars(rate: number | null): string[] {
+        const averageRating = rate;
+
+        const roundedAverage = Math.round(averageRating!);
+
+        const stars: string[] = [];
+        for (let i = 1; i <= 5; i++) {
+            if (i <= roundedAverage) {
+                stars.push('star');
+            } else if (i - roundedAverage === 0.5) {
+                stars.push('star_half');
+            } else {
+                stars.push('star_border');
+            }
+        }
+
+        return stars;
+    }
+
+    private validate() {
+        if (!this.userProfileData?.averageRate) {
+            this.userProfileData!.averageRate = 0;
+        } else if (!this.userProfileData?.ratesCount) {
+            this.userProfileData!.ratesCount = 0;
         }
     }
 

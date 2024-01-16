@@ -3,7 +3,7 @@ using Auctionify.Core.Persistence.Repositories;
 
 namespace Auctionify.Application.Common.Interfaces.Repositories
 {
-    public interface IRateRepository : IAsyncRepository<Rate>
-    {
-    }
+	public interface IRateRepository : IAsyncRepository<Rate>
+	{
+	}
 }

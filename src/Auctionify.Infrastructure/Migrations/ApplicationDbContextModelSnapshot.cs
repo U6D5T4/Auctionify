@@ -345,7 +345,7 @@ namespace Auctionify.Infrastructure.Migrations
                     b.Property<byte>("RatingValue")
                         .HasColumnType("tinyint");
 
-                    b.Property<int>("RecieverId")
+                    b.Property<int>("ReceiverId")
                         .HasColumnType("int");
 
                     b.Property<int>("SenderId")
@@ -356,7 +356,7 @@ namespace Auctionify.Infrastructure.Migrations
                     b.HasIndex("LotId")
                         .IsUnique();
 
-                    b.HasIndex("RecieverId");
+                    b.HasIndex("ReceiverId");
 
                     b.HasIndex("SenderId");
 
@@ -769,9 +769,9 @@ namespace Auctionify.Infrastructure.Migrations
                         .WithOne("Rate")
                         .HasForeignKey("Auctionify.Core.Entities.Rate", "LotId");
 
-                    b.HasOne("Auctionify.Core.Entities.User", "Reciever")
+                    b.HasOne("Auctionify.Core.Entities.User", "Receiver")
                         .WithMany("ReceiverRates")
-                        .HasForeignKey("RecieverId")
+                        .HasForeignKey("ReceiverId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -783,7 +783,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.Navigation("Lot");
 
-                    b.Navigation("Reciever");
+                    b.Navigation("Receiver");
 
                     b.Navigation("Sender");
                 });
