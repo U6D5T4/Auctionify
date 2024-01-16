@@ -1,9 +1,6 @@
 .register-role {
     width: 100%;
     height: 100%;
-    background: url('../../../assets/images/bg.jpg') no-repeat center;
-    background-size: cover;
-    padding-top: 114px;
     padding-bottom: 194px;
 
     &__container {
@@ -43,12 +40,10 @@
 
     &__border {
         height: 1px;
-        background: linear-gradient(
-            90deg,
-            rgba(189, 189, 189, 0) 0%,
-            #bdbdbd 51.04%,
-            rgba(189, 189, 189, 0) 100%
-        );
+        background: linear-gradient(90deg,
+                rgba(189, 189, 189, 0) 0%,
+                #bdbdbd 51.04%,
+                rgba(189, 189, 189, 0) 100%);
     }
 
     &__policy {
@@ -108,15 +103,15 @@
     border-radius: 500px;
 }
 
-.form__single-option input:checked + .form__user-type-option {
+.form__single-option input:checked+.form__user-type-option {
     border-color: #2b5293;
 }
 
-.form__single-option input:checked + .form__user-type-option label {
+.form__single-option input:checked+.form__user-type-option label {
     color: #2b5293;
 }
 
-.form__single-option input:checked + .form__user-type-option .radio {
+.form__single-option input:checked+.form__user-type-option .radio {
     background-color: #c5d1ea80;
 }
 
