@@ -5,9 +5,11 @@ using Auctionify.Infrastructure.Persistence;
 
 namespace Auctionify.Infrastructure.Repositories
 {
-	public class BidRepository : EfBaseRepository<Bid, ApplicationDbContext>, IBidRepository
+	public class ConversationRepository
+		: EfBaseRepository<Conversation, ApplicationDbContext>,
+			IConversationRepository
 	{
-		public BidRepository(ApplicationDbContext dbContext)
+		public ConversationRepository(ApplicationDbContext dbContext)
 			: base(dbContext) { }
 	}
 }
