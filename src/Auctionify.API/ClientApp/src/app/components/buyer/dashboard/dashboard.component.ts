@@ -14,7 +14,6 @@ import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 import { DateCalculationService } from 'src/app/services/date-calculation/date-calculation.service';
 import { Rate, RatePaginationModel } from 'src/app/models/rates/rate-models';
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
-import { Client } from 'src/app/web-api-client';
 import { BuyerModel } from 'src/app/models/users/user-models';
 
 @Component({
@@ -62,7 +61,7 @@ export class DashboardComponent implements OnInit {
     }
 
     private fetchUserProfileData() {
-        this.client.getBuyer().subscribe(
+        this.apiClient.getBuyer().subscribe(
             (data: BuyerModel) => {
                 this.userProfileData = data;
                 this.validate();
@@ -84,7 +83,7 @@ export class DashboardComponent implements OnInit {
             pageSize: 2,
         };
 
-        this.client.getRates(pagination).subscribe(
+        this.apiClient.getRates(pagination).subscribe(
             (userRate) => {
                 this.senderRates = userRate.items;
             },

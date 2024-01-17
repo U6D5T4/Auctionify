@@ -2,7 +2,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { WishlistComponent } from './wishlist/wishlist.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
 
 const BUYER_ROUTES: Routes = [
     {

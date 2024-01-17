@@ -844,6 +844,34 @@ export class Client {
         return this.http.get(documentUrl, { responseType: 'blob' });
     }
 
+    getBuyerAuctions(
+        pageIndex: number,
+        pageSize: number
+    ): Observable<GeneralAuctionResponse> {
+        let url_ = this.baseUrl + `/api/users/buyers/auctions`;
+
+        let params = new HttpParams()
+            .set('pageIndex', pageIndex.toString())
+            .set('pageSize', pageSize.toString());
+
+        const options_: any = {
+            headers: new HttpHeaders({
+                Accept: 'text/json',
+            }),
+            params,
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<GeneralAuctionResponse> => {
+                if (response) {
+                    return of(response as GeneralAuctionResponse);
+                } else {
+                    throw new Error('Invalid response structure');
+                }
+            })
+        );
+    }
+
     getRates(params: RatePaginationModel): Observable<RateResponse> {
         let url_ = this.baseUrl + `/api/rates/rates`;
 
