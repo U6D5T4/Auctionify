@@ -11,8 +11,10 @@
     </div>
     <div class="chat__separator"></div>
     <div class="chat__window">
-        <div *ngIf="chosenConversationId > 0">
-            <app-conversation-window> </app-conversation-window>
-        </div>
+        <app-conversation-window
+            class="chat__window-conversation"
+            *ngIf="chosenConversationId > 0"
+        >
+        </app-conversation-window>
     </div>
 </div>

@@ -3,6 +3,7 @@
         display: flex;
         flex-direction: column;
         gap: 24px;
+        height: 100%;
     }
 
     &__profile-top {
@@ -17,8 +18,9 @@
     }
 
     &__main {
-        height: 100%;
+        max-height: inherit;
         min-height: 0;
+        flex: 1 1;
 
         &-inner {
             height: 100%;

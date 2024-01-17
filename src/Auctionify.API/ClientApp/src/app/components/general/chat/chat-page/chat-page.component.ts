@@ -89,6 +89,246 @@ export class ChatPageComponent {
             unreadMessagesCount: 20,
             isActive: false,
         },
+        {
+            id: 4,
+            lotId: 1,
+            chatUser: {
+                id: 1,
+                fullName: 'Anastasia M',
+                profilePhoto:
+                    'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
+            },
+            lastMessage: {
+                id: 23,
+                senderId: 1,
+                conversationId: 1,
+                body: "Hi there! I'm interested in the a...",
+                timeStamp: new Date(),
+                isRead: true,
+            },
+            unreadMessagesCount: 20,
+            isActive: false,
+        },
+        {
+            id: 4,
+            lotId: 1,
+            chatUser: {
+                id: 1,
+                fullName: 'Anastasia M',
+                profilePhoto:
+                    'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
+            },
+            lastMessage: {
+                id: 23,
+                senderId: 1,
+                conversationId: 1,
+                body: "Hi there! I'm interested in the a...",
+                timeStamp: new Date(),
+                isRead: true,
+            },
+            unreadMessagesCount: 20,
+            isActive: false,
+        },
+        {
+            id: 4,
+            lotId: 1,
+            chatUser: {
+                id: 1,
+                fullName: 'Anastasia M',
+                profilePhoto:
+                    'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
+            },
+            lastMessage: {
+                id: 23,
+                senderId: 1,
+                conversationId: 1,
+                body: "Hi there! I'm interested in the a...",
+                timeStamp: new Date(),
+                isRead: true,
+            },
+            unreadMessagesCount: 20,
+            isActive: false,
+        },
+        {
+            id: 4,
+            lotId: 1,
+            chatUser: {
+                id: 1,
+                fullName: 'Anastasia M',
+                profilePhoto:
+                    'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
+            },
+            lastMessage: {
+                id: 23,
+                senderId: 1,
+                conversationId: 1,
+                body: "Hi there! I'm interested in the a...",
+                timeStamp: new Date(),
+                isRead: true,
+            },
+            unreadMessagesCount: 20,
+            isActive: false,
+        },
+        {
+            id: 4,
+            lotId: 1,
+            chatUser: {
+                id: 1,
+                fullName: 'Anastasia M',
+                profilePhoto:
+                    'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
+            },
+            lastMessage: {
+                id: 23,
+                senderId: 1,
+                conversationId: 1,
+                body: "Hi there! I'm interested in the a...",
+                timeStamp: new Date(),
+                isRead: true,
+            },
+            unreadMessagesCount: 20,
+            isActive: false,
+        },
+        {
+            id: 4,
+            lotId: 1,
+            chatUser: {
+                id: 1,
+                fullName: 'Anastasia M',
+                profilePhoto:
+                    'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
+            },
+            lastMessage: {
+                id: 23,
+                senderId: 1,
+                conversationId: 1,
+                body: "Hi there! I'm interested in the a...",
+                timeStamp: new Date(),
+                isRead: true,
+            },
+            unreadMessagesCount: 20,
+            isActive: false,
+        },
+        {
+            id: 4,
+            lotId: 1,
+            chatUser: {
+                id: 1,
+                fullName: 'Anastasia M',
+                profilePhoto:
+                    'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
+            },
+            lastMessage: {
+                id: 23,
+                senderId: 1,
+                conversationId: 1,
+                body: "Hi there! I'm interested in the a...",
+                timeStamp: new Date(),
+                isRead: true,
+            },
+            unreadMessagesCount: 20,
+            isActive: false,
+        },
+        {
+            id: 4,
+            lotId: 1,
+            chatUser: {
+                id: 1,
+                fullName: 'Anastasia M',
+                profilePhoto:
+                    'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
+            },
+            lastMessage: {
+                id: 23,
+                senderId: 1,
+                conversationId: 1,
+                body: "Hi there! I'm interested in the a...",
+                timeStamp: new Date(),
+                isRead: true,
+            },
+            unreadMessagesCount: 20,
+            isActive: false,
+        },
+        {
+            id: 4,
+            lotId: 1,
+            chatUser: {
+                id: 1,
+                fullName: 'Anastasia M',
+                profilePhoto:
+                    'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
+            },
+            lastMessage: {
+                id: 23,
+                senderId: 1,
+                conversationId: 1,
+                body: "Hi there! I'm interested in the a...",
+                timeStamp: new Date(),
+                isRead: true,
+            },
+            unreadMessagesCount: 20,
+            isActive: false,
+        },
+        {
+            id: 4,
+            lotId: 1,
+            chatUser: {
+                id: 1,
+                fullName: 'Anastasia M',
+                profilePhoto:
+                    'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
+            },
+            lastMessage: {
+                id: 23,
+                senderId: 1,
+                conversationId: 1,
+                body: "Hi there! I'm interested in the a...",
+                timeStamp: new Date(),
+                isRead: true,
+            },
+            unreadMessagesCount: 20,
+            isActive: false,
+        },
+        {
+            id: 4,
+            lotId: 1,
+            chatUser: {
+                id: 1,
+                fullName: 'Anastasia M',
+                profilePhoto:
+                    'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
+            },
+            lastMessage: {
+                id: 23,
+                senderId: 1,
+                conversationId: 1,
+                body: "Hi there! I'm interested in the a...",
+                timeStamp: new Date(),
+                isRead: true,
+            },
+            unreadMessagesCount: 20,
+            isActive: false,
+        },
+        {
+            id: 4,
+            lotId: 1,
+            chatUser: {
+                id: 1,
+                fullName: 'Anastasia M',
+                profilePhoto:
+                    'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
+            },
+            lastMessage: {
+                id: 23,
+                senderId: 1,
+                conversationId: 1,
+                body: "Hi there! I'm interested in the a...",
+                timeStamp: new Date(),
+                isRead: true,
+            },
+            unreadMessagesCount: 20,
+            isActive: false,
+        },
     ];
 
     handleConversationChange(id: number) {
