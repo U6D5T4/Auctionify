@@ -41,6 +41,7 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 		private readonly IBlobService _blobService;
 		private readonly IFileRepository _fileRepository;
 		private readonly AzureBlobStorageOptions _azureBlobStorageOptions;
+		private readonly IJobSchedulerService _jobSchedulerService;
 
 		public CreateLotCommandHandler(
 			ILotRepository lotRepository,
@@ -50,7 +51,8 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 			IMapper mapper,
 			IBlobService blobService,
 			IFileRepository fileRepository,
-			IOptions<AzureBlobStorageOptions> azureBlobStorageOptions
+			IOptions<AzureBlobStorageOptions> azureBlobStorageOptions,
+			IJobSchedulerService jobSchedulerService
 		)
 		{
 			_lotRepository = lotRepository;
@@ -61,6 +63,7 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 			_blobService = blobService;
 			_fileRepository = fileRepository;
 			_azureBlobStorageOptions = azureBlobStorageOptions.Value;
+			_jobSchedulerService = jobSchedulerService;
 		}
 
 		public async Task<CreatedLotResponse> Handle(
@@ -147,6 +150,11 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 
 			mappedLot.Photos = createdPhotos;
 			mappedLot.AdditionalDocuments = createdAdditionalDocuments;
+
+			if (!request.IsDraft)
+			{
+				await _jobSchedulerService.ScheduleUpcomingToActiveLotStatusJob(mappedLot.Id, mappedLot.StartDate);
+			}
 
 			return mappedLot;
 		}

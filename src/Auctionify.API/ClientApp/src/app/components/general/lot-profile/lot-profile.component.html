@@ -1,0 +1,317 @@
+<div *ngIf="lotData" class="lot-details">
+    <div class="left">
+        <div class="left__photos-div">
+            <div
+                *ngIf="
+                    lotData.photosUrl?.length! > 0;
+                    then photos_exist;
+                    else photos_dont_exist
+                "
+            ></div>
+            <ng-template #photos_dont_exist>
+                <div class="left__photos not-available">
+                    <div class="photo-element">
+                        <img
+                            src="../../../../assets/images/Image_not_available.png"
+                            alt="Photo"
+                        />
+                    </div>
+                    <div class="photo-element">
+                        <img
+                            src="../../../../assets/images/Image_not_available.png"
+                            alt="Photo"
+                        />
+                    </div>
+                    <div class="photo-element">
+                        <img
+                            src="../../../../assets/images/Image_not_available.png"
+                            alt="Photo"
+                        />
+                    </div>
+                </div>
+                <div class="left__main-photo not-available">
+                    <img
+                        src="../../../../assets/images/Image_not_available.png"
+                        alt="Main Photo"
+                    />
+                    <ng-container *ngTemplateOutlet="lot_status">
+                    </ng-container>
+                </div>
+            </ng-template>
+            <ng-template #photos_exist>
+                <div class="left__photos">
+                    <div
+                        class="photo-element"
+                        *ngFor="let photo of lotData.photosUrl; let i = index"
+                    >
+                        <img
+                            [src]="photo"
+                            alt="Photo"
+                            (click)="setMainPhoto(i)"
+                        />
+                    </div>
+                </div>
+                <div class="left__main-photo">
+                    <img
+                        [src]="lotData.photosUrl?.[selectedMainPhotoIndex]"
+                        alt="Main Photo"
+                        (click)="openMainPhoto(lotData.photosUrl?.[selectedMainPhotoIndex]!)"
+                    />
+                    <ng-container *ngTemplateOutlet="lot_status">
+                    </ng-container>
+                </div>
+            </ng-template>
+
+            <ng-template #lot_status>
+                <h4 class="left__main-status">{{ lotData.lotStatus.name }}</h4>
+            </ng-template>
+        </div>
+
+        <div class="left__description">
+            <h1>Description</h1>
+            <p>{{ lotData.description }}</p>
+        </div>
+
+        <div class="left__location">
+            <h1>Location</h1>
+            <iframe
+                class="left__location-map"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d366.4323639308003!2d69.28140568640073!3d41.297167709949846!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38ae8bf5210ab4a3%3A0x86209464b9b26bcd!2sTanuki!5e0!3m2!1sru!2s!4v1700680822796!5m2!1sru!2s"
+                style="border: 0"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+            <p class="left__address">
+                {{
+                    lotData.location.country +
+                        ', ' +
+                        lotData.location.city +
+                        ' ' +
+                        lotData.location.address
+                }}
+            </p>
+        </div>
+
+        <div class="left__docs">
+            <h1>Additional documents</h1>
+            <h3 *ngIf="!files || files.length <= 0">No documents!</h3>
+            <div class="left__docs-item" *ngFor="let file of files">
+                <div class="left__docs-line">
+                    <div class="line-left">
+                        <img
+                            src="../../../../assets/icons/FileIcon.svg"
+                            alt="documentIcon"
+                        />
+                        <p>{{ file.name }}</p>
+                    </div>
+                    <button
+                        color="primary"
+                        mat-stroked-button
+                        class="mat-mdc-outlined-button-custom left__download-btn"
+                        (click)="downloadDocument(file.fileUrl!)"
+                    >
+                        Download
+                    </button>
+                </div>
+                <hr class="color-grey-5" />
+            </div>
+        </div>
+    </div>
+
+    <div class="right">
+        <h1>{{ lotData.title }}</h1>
+        <div class="right__wishlist">
+            <ul class="right__category">
+                <div
+                    *ngIf="
+                        lotData.category.parentCategoryId;
+                        then category_main;
+                        else category_parent
+                    "
+                ></div>
+                <ng-template #category_main>
+                    <li>{{ parentCategoryName }}</li>
+                    <li class="right__category-circle"></li>
+                    <li>
+                        {{ lotData.category.name }}
+                    </li>
+                </ng-template>
+                <ng-template #category_parent>
+                    <li>{{ lotData.category.name }}</li>
+                </ng-template>
+            </ul>
+            <div
+                *ngIf="isResponseForBuyer(lotData)"
+                class="right__wishlist-btn"
+                (click)="handleLotWatchlist()"
+            >
+                <mat-icon
+                    class="color-grey-3"
+                    [ngClass]="{ 'color-grey-3': lotData.isInWatchlist }"
+                    >{{
+                        lotData.isInWatchlist ? 'favorite' : 'favorite_border'
+                    }}</mat-icon
+                >
+                <p>
+                    {{
+                        lotData.isInWatchlist
+                            ? 'Remove from wishlist'
+                            : 'Add to wishlist'
+                    }}
+                </p>
+            </div>
+        </div>
+
+        <div class="right__price">
+            <div class="right__price-container">
+                <div class="right__price-info">
+                    <div class="price-block">
+                        <b>Current price:</b>
+                        <h2>
+                            {{
+                                lotData.bids !== null
+                                    ? getHighestBidPrice(lotData)
+                                    : lotData.startingPrice
+                            }}
+                            {{ lotData.currency.code }}
+                        </h2>
+                    </div>
+                    <div class="price-block">
+                        <b>Starting price:</b>
+                        <h2>
+                            {{ lotData.startingPrice }}
+                            {{ lotData.currency.code }}
+                        </h2>
+                    </div>
+                </div>
+                <div class="right__price-buttons">
+                    <div
+                        *ngIf="
+                            isResponseForBuyer(lotData);
+                            then buyer_buttons;
+                            else seller_buttons
+                        "
+                    ></div>
+                    <ng-template #buyer_buttons>
+                        <button
+                            class="mat-mdc-outlined-button-custom price-button"
+                            mat-stroked-button
+                            type="button"
+                            (click)="openWithdrawBidModal()"
+                            color="primary"
+                            [disabled]="
+                                lotData.bids.length == 0 ||
+                                lotData.bids.at(0)?.buyerId !==
+                                    this.currentUserId
+                            "
+                        >
+                            Withdraw
+                        </button>
+                        <button
+                            class="mat-mdc-outlined-button-custom price-button"
+                            mat-flat-button
+                            type="button"
+                            (click)="openBidModal()"
+                            color="primary"
+                        >
+                            Place a bid
+                        </button>
+                    </ng-template>
+                    <ng-template #seller_buttons>
+                        <button
+                            class="mat-mdc-outlined-button-custom price-button"
+                            mat-stroked-button
+                            type="button"
+                            color="primary"
+                            (click)="deleteLot()"
+                            [disabled]="isSellerOwnsLot(lotData)"
+                        >
+                            <mat-spinner
+                                *ngIf="isDeleteLoading"
+                                diameter="25"
+                                color="warn"
+                            ></mat-spinner>
+                            <div *ngIf="!isDeleteLoading">Remove</div>
+                            <mat-icon *ngIf="!isDeleteLoading"
+                                >delete_forever</mat-icon
+                            >
+                        </button>
+                        <button
+                            [routerLink]="['/seller/update-lot', lotData.id]"
+                            class="mat-mdc-outlined-button-custom price-button"
+                            mat-flat-button
+                            type="button"
+                            color="primary"
+                            [disabled]="isSellerOwnsLot(lotData)"
+                        >
+                            <mat-icon>edit</mat-icon>
+                            Edit lot
+                        </button>
+                    </ng-template>
+                </div>
+            </div>
+        </div>
+
+        <div class="right__bids-history">
+            <div class="right__bids-history-title">
+                <div class="right__bids-history-title-left">
+                    <p>Bid number</p>
+                    <p>Date of bid</p>
+                </div>
+                <div class="right__bids-history-title-right">
+                    <p>Price</p>
+                </div>
+            </div>
+            <h3 *ngIf="!bidsToShow || bidsToShow.length <= 0">No bids yet!</h3>
+            <div class="right__all-bids">
+                <ng-container *ngFor="let bid of bidsToShow; let i = index">
+                    <div class="right__single-bid">
+                        <div class="right__bid-number-date">
+                            <div class="right__bid-number">
+                                <p>{{ lotData.bids.length - i }}</p>
+                            </div>
+                            <div class="right__bid-date">
+                                <p>{{ formatBidDate(bid.timeStamp) }}</p>
+                            </div>
+                        </div>
+                        <div class="right__bid-price">
+                            <p>
+                                {{ bid.newPrice }} {{ lotData.currency.code }}
+                            </p>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+            <div
+                class="right__show-more-bids"
+                *ngIf="lotData.bids && lotData.bids.length > 3"
+            >
+                <div (click)="showBidsClick()">
+                    {{ showAllBids ? 'Show less bids' : getBidsCountString() }}
+                </div>
+            </div>
+        </div>
+
+        <div class="right__lot-info">
+            <div class="right__parametrs">
+                <ul>
+                    <li>Item ID:</li>
+                    <li>Start date:</li>
+                    <li>End date:</li>
+                    <li *ngIf="isResponseForBuyer(lotData)">Seller email:</li>
+                </ul>
+            </div>
+            <div class="right__info">
+                <ul>
+                    <li>{{ lotData.id }}</li>
+                    <li>{{ formatStartDate(lotData.startDate) }}</li>
+                    <li>{{ formatEndDate(lotData.endDate) }}</li>
+                    <li *ngIf="isResponseForBuyer(lotData)">
+                        {{ lotData.sellerEmail }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

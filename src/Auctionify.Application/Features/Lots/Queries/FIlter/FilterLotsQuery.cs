@@ -10,7 +10,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace Auctionify.Application.Features.Lots.Queries.FIlter
+namespace Auctionify.Application.Features.Lots.Queries.Filter
 {
 	public class FilterLotsQuery : IRequest<GetListResponseDto<FilterLotsResponse>>
 	{
@@ -45,12 +45,16 @@ namespace Auctionify.Application.Features.Lots.Queries.FIlter
 		private readonly ICurrentUserService _currentUserService;
 		private readonly UserManager<User> _userManager;
 		private readonly IWatchlistService _watchlistService;
+		private readonly IBidRepository _bidRepository;
 		private readonly List<string> validStatuses =
 			new()
 			{
 				AuctionStatus.Active.ToString(),
 				AuctionStatus.Upcoming.ToString(),
-				AuctionStatus.Archive.ToString()
+				AuctionStatus.Archive.ToString(),
+				AuctionStatus.Cancelled.ToString(),
+				AuctionStatus.Sold.ToString(),
+				AuctionStatus.NotSold.ToString(),
 			};
 
 		public FilterLotsQueryHandler(
@@ -59,7 +63,8 @@ namespace Auctionify.Application.Features.Lots.Queries.FIlter
 			IPhotoService photoService,
 			ICurrentUserService currentUserService,
 			UserManager<User> userManager,
-			IWatchlistService watchlistService
+			IWatchlistService watchlistService,
+			IBidRepository bidRepository
 		)
 		{
 			_lotRepository = lotRepository;
@@ -68,6 +73,7 @@ namespace Auctionify.Application.Features.Lots.Queries.FIlter
 			_currentUserService = currentUserService;
 			_userManager = userManager;
 			_watchlistService = watchlistService;
+			_bidRepository = bidRepository;
 		}
 
 		public async Task<GetListResponseDto<FilterLotsResponse>> Handle(
@@ -75,14 +81,14 @@ namespace Auctionify.Application.Features.Lots.Queries.FIlter
 			CancellationToken cancellationToken
 		)
 		{
-			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail ?? "");
 
-			var filterBase = new Filter
+			var filterBase = new Core.Persistence.Dynamic.Filter
 			{
 				Field = "Id",
 				Operator = "isnotnull",
 				Logic = "and",
-				Filters = new List<Filter>()
+				Filters = new List<Core.Persistence.Dynamic.Filter>()
 			};
 
 			if (request.LotStatuses != null)
@@ -91,25 +97,29 @@ namespace Auctionify.Application.Features.Lots.Queries.FIlter
 				filterBase.Filters.Add(statusFiltersBase);
 			}
 
+			IQueryable<Lot>? queryableForLotPrice = null;
+
 			if (request.MinimumPrice != null || request.MaximumPrice != null)
 			{
-				var priceBaseFilter = CreatePriceFilter(
+				queryableForLotPrice = _lotRepository.Query();
+
+				queryableForLotPrice = CreatePriceFilter(
+					queryableForLotPrice,
 					request.MinimumPrice,
 					request.MaximumPrice,
 					startingPriceField
 				);
-				filterBase.Filters.Add(priceBaseFilter);
 			}
 
 			if (request.CategoryId != null)
 			{
-				var filterCategory = new Filter
+				var filterCategory = new Core.Persistence.Dynamic.Filter
 				{
 					Field = categoryField,
 					Value = request.CategoryId.ToString(),
 					Operator = "eq",
 					Logic = "and",
-					Filters = new List<Filter>()
+					Filters = new List<Core.Persistence.Dynamic.Filter>()
 				};
 
 				filterBase.Filters.Add(filterCategory);
@@ -117,13 +127,13 @@ namespace Auctionify.Application.Features.Lots.Queries.FIlter
 
 			if (request.Location != null)
 			{
-				var filterLocation = new Filter
+				var filterLocation = new Core.Persistence.Dynamic.Filter
 				{
 					Field = locationField,
 					Value = request.Location,
 					Operator = "contains",
 					Logic = "and",
-					Filters = new List<Filter>()
+					Filters = new List<Core.Persistence.Dynamic.Filter>()
 				};
 
 				filterBase.Filters.Add(filterLocation);
@@ -150,6 +160,7 @@ namespace Auctionify.Application.Features.Lots.Queries.FIlter
 				request.PageRequest != null
 					? _lotRepository.GetListByDynamicAsync(
 						dynamicQuery,
+						existingQueryable: queryableForLotPrice,
 						predicate: l => validStatuses.Contains(l.LotStatus.Name),
 						include: x =>
 							x.Include(l => l.Location)
@@ -162,6 +173,7 @@ namespace Auctionify.Application.Features.Lots.Queries.FIlter
 					)
 					: _lotRepository.GetListByDynamicAsync(
 						dynamicQuery,
+						existingQueryable: queryableForLotPrice,
 						predicate: l => validStatuses.Contains(l.LotStatus.Name),
 						include: x =>
 							x.Include(l => l.Category)
@@ -176,38 +188,52 @@ namespace Auctionify.Application.Features.Lots.Queries.FIlter
 
 			foreach (var lot in response.Items)
 			{
-				lot.IsInWatchlist = await _watchlistService.IsLotInUserWatchlist(
-					lot.Id,
-					user!.Id,
-					cancellationToken
-				);
+				if (user is not null)
+				{
+					lot.IsInWatchlist = await _watchlistService.IsLotInUserWatchlist(
+						lot.Id,
+						user!.Id,
+						cancellationToken
+					);
+				}
 
 				lot.MainPhotoUrl = await _photoService.GetMainPhotoUrlAsync(
 					lot.Id,
 					cancellationToken
 				);
+
+				var bids = await _bidRepository.GetListAsync(
+					predicate: x => x.LotId == lot.Id && !x.BidRemoved,
+					orderBy: x => x.OrderByDescending(x => x.TimeStamp),
+					enableTracking: false,
+					cancellationToken: cancellationToken
+				);
+
+				lot.BidCount = bids.Items.Count;
+
+				lot.Bids = _mapper.Map<List<BidDto>>(bids.Items);
 			}
 
 			return response;
 		}
 
-		private Filter CreateStatusFilter(IList<int> statuses, string field)
+		private Core.Persistence.Dynamic.Filter CreateStatusFilter(IList<int> statuses, string field)
 		{
-			var statusFiltersBase = new Filter
+			var statusFiltersBase = new Core.Persistence.Dynamic.Filter
 			{
 				Field = lotStatusField,
 				Logic = "and",
 				Operator = "isnotnull",
-				Filters = new List<Filter>(),
+				Filters = new List<Core.Persistence.Dynamic.Filter>(),
 			};
 
-			Filter? localFilter = null;
+			Core.Persistence.Dynamic.Filter? localFilter = null;
 
 			foreach (var status in statuses)
 			{
-				var statusFilter = new Filter
+				var statusFilter = new Core.Persistence.Dynamic.Filter
 				{
-					Filters = new List<Filter>(),
+					Filters = new List<Core.Persistence.Dynamic.Filter>(),
 					Field = lotStatusField,
 					Logic = "or",
 					Value = status.ToString(),
@@ -225,45 +251,29 @@ namespace Auctionify.Application.Features.Lots.Queries.FIlter
 			return statusFiltersBase;
 		}
 
-		private Filter CreatePriceFilter(decimal? minPrice, decimal? maxPrice, string field)
+		private IQueryable<Lot> CreatePriceFilter(IQueryable<Lot> queryable, decimal? minPrice, decimal? maxPrice, string field)
 		{
-			var priceBaseFilter = new Filter
-			{
-				Field = field,
-				Operator = "isnotnull",
-				Logic = "and",
-				Filters = new List<Filter>()
-			};
+			queryable = queryable.Include(l => l.Bids);
 
 			if (minPrice != null)
 			{
-				priceBaseFilter.Filters.Add(
-					new Filter
-					{
-						Field = field,
-						Value = minPrice.ToString(),
-						Operator = "gte",
-						Logic = "and",
-						Filters = new List<Filter>()
-					}
+				queryable = queryable.Where(lot => 
+					(lot.Bids.Count() > 0 && lot.Bids.OrderByDescending(b => b.NewPrice).First().NewPrice >= minPrice) ||
+					(lot.Bids.Count() == 0 && lot.StartingPrice >= minPrice)
 				);
 			}
 
 			if (maxPrice != null)
 			{
-				priceBaseFilter.Filters.Add(
-					new Filter
-					{
-						Field = field,
-						Value = maxPrice.ToString(),
-						Operator = "lte",
-						Logic = "and",
-						Filters = new List<Filter>()
-					}
+				queryable = queryable.Where(lot =>
+					(lot.Bids.Count() > 0 && lot.Bids.OrderByDescending(b => b.NewPrice).First().NewPrice <= maxPrice) ||
+					(lot.Bids.Count() == 0 && lot.StartingPrice <= maxPrice)
 				);
 			}
 
-			return priceBaseFilter;
+			var str = queryable.ToQueryString();
+
+			return queryable;
 		}
 	}
 }

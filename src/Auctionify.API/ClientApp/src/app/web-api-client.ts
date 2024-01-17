@@ -8,7 +8,7 @@
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 
-import { mergeMap, catchError } from 'rxjs/operators';
+import { mergeMap, catchError, map } from 'rxjs/operators';
 import { Observable, throwError, of } from 'rxjs';
 import { Injectable, Inject, Optional, InjectionToken } from '@angular/core';
 import {
@@ -21,7 +21,13 @@ import {
 } from '@angular/common/http';
 import { UserRole } from './api-authorization/authorize.service';
 import { CreateLotModel, UpdateLotModel } from './models/lots/lot-models';
+import { AddBidModel } from './models/bids/bid-models';
 import { FilterLot } from './models/lots/filter';
+import {
+    BuyerModel,
+    SellerModel,
+    UpdateUserProfileModel,
+} from './models/users/user-models';
 
 export const API_BASE_URL = new InjectionToken('API_BASE_URL');
 
@@ -74,6 +80,75 @@ export class Client {
                     return throwError(() => error);
                 })
             );
+    }
+
+    assignRoleToUser(
+        body: AssignRoleViewModel
+    ): Observable<AssignRoleResponse> {
+        let url_ = this.baseUrl + `/api/auth/assign-role`;
+
+        const params = new HttpParams().set('role', body.role);
+
+        let options_: Object = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+            params,
+        };
+
+        return this.http
+            .request('post', url_, options_)
+            .pipe(
+                mergeMap((response: any): Observable<AssignRoleResponse> => {
+                    let data: AssignRoleResponse = {};
+
+                    if (response.body !== null) {
+                        data = response.body;
+                    }
+
+                    return of(data);
+                })
+            )
+            .pipe(
+                catchError((error) => {
+                    return throwError(() => error);
+                })
+            );
+    }
+
+    getGoogleClientId(): Observable<string> {
+        let url_ = this.baseUrl + '/api/auth/google-client-id';
+
+        let options_: any = {
+            responseType: 'text',
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/plain',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<string> => {
+                if (response.body !== null) {
+                    return of(response.body as string);
+                } else return throwError(() => new Error('data is empty!'));
+            })
+        );
+    }
+    signUpWithGoogle(userData: any): Observable<any> {
+        const header = new HttpHeaders().set(
+            'Content-type',
+            'application/json'
+        );
+        let url_ = this.baseUrl + 'api/auth/sign-up-with-google';
+
+        return this.http.post(url_, JSON.stringify(userData), {
+            headers: header,
+            withCredentials: true,
+        });
     }
 
     loginWithGoogle(credentials: string): Observable<any> {
@@ -317,6 +392,28 @@ export class Client {
         );
     }
 
+    getOneLotForBuyer(id: number): Observable<BuyerGetLotResponse> {
+        let url_ = this.baseUrl + `/api/lots/${id}/buyers`;
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<BuyerGetLotResponse> => {
+                if (response.body !== null) {
+                    let data: BuyerGetLotResponse = response.body;
+
+                    return of(data);
+                } else return throwError(() => new Error('data is empty!'));
+            })
+        );
+    }
+
     deleteLotFile(id: number, url: string): Observable<any> {
         let url_ = this.baseUrl + `/api/lots/${id}/files`;
 
@@ -394,7 +491,171 @@ export class Client {
         );
     }
 
-    filterLots(params: FilterLot): Observable<FilteredLotModel[]> {
+    getAllBidsOfUserForLot(
+        lotId: number,
+        pageIndex: number,
+        pageSize: number
+    ): Observable<BidDto[]> {
+        const url = `${this.baseUrl}/api/users/lots/${lotId}/bids`;
+
+        const params = new HttpParams()
+            .set('pageIndex', pageIndex.toString())
+            .set('pageSize', pageSize.toString());
+
+        const headers = new HttpHeaders({
+            'Content-Type': 'application/json',
+            Accept: 'text/json',
+        });
+
+        return this.http.get<BidDto[]>(url, { params, headers }).pipe(
+            catchError((error: any) => {
+                console.error('Error fetching bids:', error);
+                return throwError(() => new Error('Failed to fetch bids'));
+            }),
+            map((response: any): BidDto[] => {
+                if (response && response.items) {
+                    return response.items as BidDto[];
+                } else {
+                    throw new Error('Invalid response structure');
+                }
+            })
+        );
+    }
+
+    addBidForLot(body: AddBidModel): Observable<string> {
+        let url_ = this.baseUrl + '/api/users/bids';
+
+        let formData = new FormData();
+
+        formData.append('lotId', body.lotId.toString());
+        formData.append('bid', body.bid.toString());
+
+        let options_: any = {
+            body: formData,
+            responseType: 'text',
+        };
+
+        return this.http.request('post', url_, options_).pipe(
+            map((response: any) => {
+                return response;
+            }),
+            catchError((error) => {
+                return throwError(() => error.error);
+            })
+        );
+    }
+
+    removeBid(bidId: number): Observable<string> {
+        let url_ = this.baseUrl + `/api/users/bids/${bidId}`;
+
+        let options_: any = {
+            responseType: 'text',
+        };
+
+        return this.http.request('delete', url_, options_).pipe(
+            map((response: any) => {
+                return response;
+            }),
+            catchError((error) => {
+                return throwError(() => error.error);
+            })
+        );
+    }
+
+    addToWatchlist(lotId: number): Observable<any> {
+        let url_ = this.baseUrl + `/api/users/watchlists/lots`;
+
+        const formData = new FormData();
+        formData.append('LotId', lotId.toString());
+
+        const options_: any = {
+            body: formData,
+            headers: new HttpHeaders({
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('post', url_, options_).pipe(
+            mergeMap((response): Observable<any> => {
+                return of(response);
+            })
+        );
+    }
+
+    removeFromWatchList(lotId: number) {
+        let url_ = this.baseUrl + `/api/users/watchlists/lots/${lotId}`;
+
+        const options_: any = {
+            headers: new HttpHeaders({
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('delete', url_, options_).pipe(
+            mergeMap((response): Observable<any> => {
+                return of(response);
+            })
+        );
+    }
+
+    resetPassword(
+        body: ResetPasswordViewModel | undefined
+    ): Observable<ResetPasswordResponse> {
+        let url_ = this.baseUrl + '/api/auth/reset-password';
+
+        const content_ = JSON.stringify(body);
+
+        let options_: any = {
+            body: content_,
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('post', url_, options_).pipe(
+            mergeMap((response: any): Observable<ResetPasswordResponse> => {
+                let data: ResetPasswordResponse = {};
+
+                if (response.body !== null) {
+                    data = response.body;
+                }
+
+                return of(data);
+            })
+        );
+    }
+
+    forgetPassword(email: string): Observable<ForgetPasswordResponse> {
+        let url_ = `${
+            this.baseUrl
+        }/api/auth/forget-password?email=${encodeURIComponent(email)}`;
+
+        console.log(email);
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('post', url_, options_).pipe(
+            mergeMap((response: any): Observable<ForgetPasswordResponse> => {
+                let data: ForgetPasswordResponse = {};
+
+                if (response.body !== null) {
+                    data = response.body;
+                }
+
+                return of(data);
+            })
+        );
+    }
+
+    filterLots(params: FilterLot): Observable<FilterResponse> {
         let url_ = this.baseUrl + `/api/lots/filtered-lots`;
 
         let queryParams = new HttpParams();
@@ -409,6 +670,17 @@ export class Client {
                         );
                     }
                 }
+            } else if (key == 'pageIndex' || key == 'pageSize') {
+                if (value !== null) {
+                    if (value !== null) {
+                        queryParams = queryParams.append(
+                            `PageRequest.${
+                                key.charAt(0).toUpperCase() + key.slice(1)
+                            }`,
+                            value.toString()
+                        );
+                    }
+                }
             } else {
                 if (value !== null) {
                     queryParams = queryParams.set(
@@ -420,14 +692,8 @@ export class Client {
         }
 
         return this.http.get(url_, { params: queryParams }).pipe(
-            mergeMap((response: any): Observable<FilteredLotModel[]> => {
-                let data: FilteredLotModel[] = [];
-
-                if (response.body !== null) {
-                    data = response.body;
-                }
-
-                return of(data);
+            mergeMap((response: any): Observable<FilterResponse> => {
+                return of(response);
             })
         );
     }
@@ -443,6 +709,117 @@ export class Client {
             })
         );
     }
+
+    getSeller(): Observable<SellerModel> {
+        let url_ = this.baseUrl + `/api/users/sellers`;
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<SellerModel> => {
+                let data!: SellerModel;
+
+                if (response.body !== null) {
+                    data = response.body;
+                }
+
+                return of(data);
+            })
+        );
+    }
+
+    getBuyer(): Observable<BuyerModel> {
+        let url_ = this.baseUrl + `/api/users/buyers`;
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<BuyerModel> => {
+                let data!: BuyerModel;
+
+                if (response.body !== null) {
+                    data = response.body;
+                }
+
+                return of(data);
+            })
+        );
+    }
+
+    updateProfile(body: UpdateUserProfileModel): Observable<any> {
+        let url_ = this.baseUrl + `/api/users/`;
+
+        const formData = new FormData();
+
+        formData.append('firstName', body.firstName ?? '');
+        formData.append('lastName', body.lastName ?? '');
+        formData.append('phoneNumber', body.phoneNumber ?? '');
+        formData.append('aboutMe', body.aboutMe ?? '');
+        formData.append(
+            'deleteProfilePicture',
+            body.deleteProfilePicture.toString()
+        );
+
+        if (body.profilePicture !== null) {
+            formData.append('profilePicture', body.profilePicture);
+        }
+
+        let options_: any = {
+            body: formData,
+        };
+
+        return this.http.request('put', url_, options_).pipe(
+            catchError((error) => {
+                return throwError(() => error.error);
+            })
+        );
+    }
+
+    changePassword(body: ChangeUserPasswordModel): Observable<any> {
+        let url_ = this.baseUrl + `/api/auth/change-password`;
+
+        const formData = new FormData();
+
+        formData.append('oldPassword', body.oldPassword ?? '');
+        formData.append('newPassword', body.newPassword ?? '');
+        formData.append('confirmNewPassword', body.confirmNewPassword ?? '');
+
+        let options_: any = {
+            body: formData,
+        };
+
+        return this.http.request('put', url_, options_).pipe(
+            catchError((error) => {
+                return throwError(() => error.error);
+            })
+        );
+    }
+
+    downloadDocument(documentUrl: string): Observable<any> {
+        return this.http.get(documentUrl, { responseType: 'blob' });
+    }
+}
+
+export interface FilterResponse {
+    count: number;
+    hasNext: boolean;
+    hasPrevious: boolean;
+    index: number;
+    items: FilteredLotModel[];
+    pages: number;
+    size: number;
 }
 
 export interface FilteredLotModel {
@@ -457,8 +834,26 @@ export interface FilteredLotModel {
     location: LocationDto;
     currency: CurrencyDto;
     bids: BidDto[];
+    bidCount: number;
     mainPhotoUrl: string | null;
-    isInWatchList: boolean;
+    isInWatchlist: boolean;
+}
+
+export interface LotModel {
+    id: number;
+    title: string;
+    description: string;
+    startingPrice: number | null;
+    startDate: Date | null;
+    endDate: Date | null;
+    category: CategoryDto;
+    lotStatus: LotStatusDto;
+    location: LocationDto;
+    currency: CurrencyDto;
+    bids: BidDto[];
+    bidCount: number;
+    mainPhotoUrl: string | null;
+    isInWatchlist: boolean;
 }
 
 export interface CategoryDto {
@@ -490,7 +885,9 @@ export interface BidDto {
     buyerId: number;
     newPrice: number;
     timeStamp: Date;
+    currency: string;
     buyer: UserDto;
+    bidRemoved: boolean;
 }
 
 export interface UserDto {
@@ -520,6 +917,25 @@ export interface SearchLotResponse {
     isInWatchList: boolean;
 }
 
+export interface BuyerGetLotResponse {
+    id: number;
+    title: string;
+    description: string;
+    startingPrice: number | null;
+    startDate: Date | null;
+    endDate: Date | null;
+    photosUrl: string[] | null;
+    additionalDocumentsUrl: string[] | null;
+    category: CategoryDto;
+    lotStatus: LotStatusDto;
+    location: LocationDto;
+    currency: CurrencyDto;
+    bids: BidDto[];
+    isInWatchlist: boolean;
+    bidCount: number | null;
+    sellerEmail: string;
+}
+
 export interface SellerGetLotResponse {
     id: number;
     title: string;
@@ -534,6 +950,8 @@ export interface SellerGetLotResponse {
     location: LocationDto;
     currency: CurrencyDto;
     bids: BidDto[];
+    bidCount: number;
+    sellerId: number;
 }
 
 export interface CreateLotResponse {
@@ -580,13 +998,43 @@ export interface LoginResponse {
     result?: TokenModel;
 }
 
+export interface AssignRoleViewModel {
+    role: UserRole;
+}
+
+export interface AssignRoleResponse {
+    message?: string | undefined;
+    isSuccess?: boolean;
+    errors?: string[] | undefined;
+    result?: TokenModel;
+}
+
 export interface TokenModel {
     accessToken: string;
     expireDate: string;
     role: UserRole;
+    userId: number;
 }
 
 export interface RegisterResponse {
+    message?: string | undefined;
+    isSuccess?: boolean;
+    errors?: string[] | undefined;
+}
+
+export interface ChangePasswordResponse {
+    message?: string | undefined;
+    isSuccess?: boolean;
+    errors?: string[] | undefined;
+}
+
+export interface ForgetPasswordResponse {
+    message?: string | undefined;
+    isSuccess?: boolean;
+    errors?: string[] | undefined;
+}
+
+export interface ResetPasswordResponse {
     message?: string | undefined;
     isSuccess?: boolean;
     errors?: string[] | undefined;
@@ -603,9 +1051,26 @@ export interface RegisterViewModel {
     confirmPassword: string;
 }
 
+export interface ForgetPasswordViewModel {
+    email: string;
+}
+
+export interface ResetPasswordViewModel {
+    token: string;
+    email: string;
+    newPassword: string;
+    confirmPassword: string;
+}
+
 export interface FileParameter {
     data: any;
     fileName: string;
+}
+
+export interface ChangeUserPasswordModel {
+    oldPassword: string | null;
+    newPassword: string | null;
+    confirmNewPassword: string | null;
 }
 
 export class ApiException extends Error {

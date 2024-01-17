@@ -1,4 +1,5 @@
-﻿using Auctionify.Application.Common.Interfaces;
+﻿using Auctionify.Application.Common.DTOs;
+using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Common.Options;
 using Auctionify.Core.Entities;
@@ -61,7 +62,8 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer
 						.Include(x => x.Currency)
 						.Include(x => x.Location)
 						.Include(x => x.LotStatus)
-						.Include(x => x.Bids),
+						.Include(x => x.Bids)
+						.Include(x => x.Seller),
 				cancellationToken: cancellationToken
 			);
 
@@ -76,6 +78,15 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer
 					user!.Id,
 					cancellationToken
 				);
+
+				if (lot.Bids.Count > 0)
+				{
+					var notRemovedBids = lot.Bids.Where(x => !x.BidRemoved).OrderByDescending(x => x.TimeStamp).ToList();
+
+					result.BidCount = notRemovedBids.Count;
+
+					result.Bids = _mapper.Map<List<BidDto>>(notRemovedBids);
+				}
 
 				var photos = await _fileRepository.GetListAsync(
 					predicate: x =>

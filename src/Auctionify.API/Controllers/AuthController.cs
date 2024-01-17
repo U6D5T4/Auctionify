@@ -1,6 +1,7 @@
 using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Models.Account;
 using Auctionify.Application.Common.Options;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
@@ -13,11 +14,17 @@ namespace Auctionify.API.Controllers
 	{
 		private readonly IIdentityService _identityService;
 		private readonly SignInWithGoogleOptions _signInWithGoogleOptions;
+		private readonly ICurrentUserService _currentUserService;
 
-		public AuthController(IIdentityService identityService, IOptions<SignInWithGoogleOptions> signInWithGoogleOptions)
+		public AuthController(
+			IIdentityService identityService,
+			IOptions<SignInWithGoogleOptions> signInWithGoogleOptions,
+			ICurrentUserService currentUserService
+		)
 		{
 			_identityService = identityService;
 			_signInWithGoogleOptions = signInWithGoogleOptions.Value;
+			_currentUserService = currentUserService;
 		}
 
 		[HttpPost]
@@ -67,7 +74,7 @@ namespace Auctionify.API.Controllers
 		}
 
 		[HttpPost("reset-password")]
-		public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordViewModel model)
+		public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordViewModel model)
 		{
 			if (!ModelState.IsValid)
 			{
@@ -80,13 +87,26 @@ namespace Auctionify.API.Controllers
 				return BadRequest(result);
 
 			return Ok(result);
-
 		}
 
 		[HttpPost("login")]
 		public async Task<IActionResult> Login(LoginViewModel loginModel)
 		{
 			var result = await _identityService.LoginUserAsync(loginModel);
+
+			if (!result.IsSuccess)
+			{
+				return BadRequest(result);
+			}
+
+			return Ok(result);
+		}
+
+		[HttpPost("assign-role")]
+		[Authorize]
+		public async Task<IActionResult> AssignRole(string role)
+		{
+			var result = await _identityService.AssignRoleToUserAsync(role);
 
 			if (!result.IsSuccess)
 			{
@@ -107,13 +127,39 @@ namespace Auctionify.API.Controllers
 			Payload payload = await ValidateAsync(credential, settings);
 
 			var result = await _identityService.LoginUserWithGoogleAsync(payload);
-			
+
 			if (!result.IsSuccess)
 			{
 				return BadRequest(result);
 			}
 
 			return Ok(result);
+		}
+
+		[HttpPut("change-password")]
+		public async Task<IActionResult> ChangePassword([FromForm] ChangePasswordViewModel model)
+		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest("Some properties are not valid.");
+			}
+
+			var email = _currentUserService.UserEmail;
+
+			var result = await _identityService.ChangeUserPasswordAsync(email, model);
+
+			if (!result.IsSuccess)
+			{
+				return BadRequest(result);
+			}
+
+			return Ok();
+		}
+
+		[HttpGet("google-client-id")]
+		public IActionResult GetGoogleClientId()
+		{
+			return Ok(_signInWithGoogleOptions.ClientId);
 		}
 	}
 }

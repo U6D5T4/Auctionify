@@ -4,7 +4,10 @@
             <div class="navbar__top">
                 <div class="navbar__top-header">
                     <a [routerLink]="['/home']">
-                        <img src="assets/icons/AuctionifyLogo.svg" title="AuctionifyLogo">
+                        <img
+                            src="assets/icons/AuctionifyLogo.svg"
+                            title="AuctionifyLogo"
+                        />
                     </a>
                     <button type="button" class="burger-menu">
                         <mat-icon>menu</mat-icon>
@@ -14,13 +17,21 @@
                     <app-search></app-search>
                 </div>
                 <div class="navbar__top-footer">
-                    <button [routerLink]="['/seller/dashboard']" routerLinkActive="mat-primary" mat-flat-button
-                        color="white">
+                    <button
+                        [routerLink]="['/seller/dashboard']"
+                        routerLinkActive="mat-primary"
+                        mat-flat-button
+                        color="white"
+                    >
                         <mat-icon>home</mat-icon>
                         Dashboard
                     </button>
-                    <button mat-flat-button [routerLink]="['/seller/create-lot']" routerLinkActive="mat-primary"
-                        color="white">
+                    <button
+                        mat-flat-button
+                        [routerLink]="['/seller/create-lot']"
+                        routerLinkActive="mat-primary"
+                        color="white"
+                    >
                         <mat-icon>add_circle_outline</mat-icon>
                         Create lot
                     </button>
@@ -28,29 +39,18 @@
                         <mat-icon>local_mall</mat-icon>
                         Active lots
                     </button>
-                    <button mat-flat-button color="white">
+                    <button mat-flat-button [routerLink]="['/profile']" color="white">
                         <mat-icon>account_circle</mat-icon>
-                        MyProfile</button>
+                        My Profile</button>
                 </div>
             </div>
             <div class="navbar__bottom">
-                <div class="navbar__bottom-header">
-                    <div class="header__container">
-                        <button mat-flat-button color="white">
-                            <mat-icon>chat_bubble_outline</mat-icon>
-                            Notifications
-                        </button>
-                        <button mat-flat-button color="white">
-                            <mat-icon>live_help</mat-icon>
-                            Support
-                        </button>
-                        <button mat-flat-button color="white">
-                            <mat-icon>settings</mat-icon>
-                            Settings
-                        </button>
-                    </div>
-                </div>
-                <button type="button" (click)="logOut()" mat-flat-button color="white">
+                <button
+                    type="button"
+                    (click)="logOut()"
+                    mat-flat-button
+                    color="white"
+                >
                     <mat-icon>logout</mat-icon>
                     Log out
                 </button>

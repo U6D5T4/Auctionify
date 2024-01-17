@@ -9,7 +9,7 @@ namespace Auctionify.Application.Features.Lots.Commands.UpdateLotStatus
 {
 	public class UpdateLotStatusCommand : IRequest<UpdatedLotStatusResponse>
 	{
-		public int Id { get; set; }
+		public int LotId { get; set; }
 
 		public string? Name { get; set; }
 	}
@@ -38,7 +38,7 @@ namespace Auctionify.Application.Features.Lots.Commands.UpdateLotStatus
 		)
 		{
 			var lot = await _lotRepository.GetAsync(
-				predicate: x => x.Id == request.Id,
+				predicate: x => x.Id == request.LotId,
 				include: x => x.Include(x => x.LotStatus),
 				cancellationToken: cancellationToken
 			);
@@ -110,12 +110,14 @@ namespace Auctionify.Application.Features.Lots.Commands.UpdateLotStatus
 			}
 			else
 			{
-				throw new ValidationException("Invalid status change");
+				throw new ValidationException("Invalid status change!");
 			}
 
 			await _lotRepository.UpdateAsync(lot);
 
 			var result = _mapper.Map<UpdatedLotStatusResponse>(lot);
+			result.LotId = lot.Id;
+			result.Name = lotStatus.Name;
 
 			return result;
 		}

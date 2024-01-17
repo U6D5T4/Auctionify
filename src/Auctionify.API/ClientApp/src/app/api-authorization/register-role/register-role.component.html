@@ -1,0 +1,48 @@
+<div class="register-role">
+    <div class="register-role__container">
+        <div class="register-role__container-inner">
+            <div class="register-role__header">
+                <h1>Sign Up</h1>
+                <p>Please choose your role</p>
+            </div>
+
+            <form [formGroup]="assignRoleForm" (ngSubmit)="onSubmit()" class="register-role__form form">
+                <div class="form__options">
+                    <div class="form__single-option" *ngFor="let role of roles">
+                        <label class="form__option-label">
+                            <input formControlName="role" type="radio" [id]="role.name" [value]="role.name" [checked]="
+                                    role.name ===
+                                    assignRoleForm.controls.role.value
+                                " required />
+                            <div class="form__user-type-option">
+                                <div class="radio">
+                                    <p>{{ role.name }}</p>
+                                </div>
+                                <label [for]="role.name">
+                                    <p class="form__option-desc">
+                                        {{ role.line1 }} <br />
+                                        {{ role.line2 }}
+                                    </p>
+                                </label>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" disabled="{{ isLoading }}" mat-raised-button color="primary">
+                    <mat-spinner *ngIf="isLoading; else notLoading" diameter="25"></mat-spinner>
+                    <ng-template #notLoading>
+                        <div>Continue</div>
+                    </ng-template>
+                </button>
+            </form>
+
+            <div class="register-role__border"></div>
+
+            <p class="register-role__policy">
+                By signing up to create an account I accept <br />
+                Company's Terms of Use and Privacy Policy
+            </p>
+        </div>
+    </div>
+</div>

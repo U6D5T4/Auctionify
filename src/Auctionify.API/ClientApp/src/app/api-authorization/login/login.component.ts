@@ -1,12 +1,12 @@
 import { Component, Injectable, NgZone } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AuthorizeService } from '../authorize.service';
+import { Router } from '@angular/router';
 import { Dialog } from '@angular/cdk/dialog';
+import { CredentialResponse, PromptMomentNotification } from 'google-one-tap';
+
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import { LoginResponse } from 'src/app/web-api-client';
-import { Router } from '@angular/router';
-import { CredentialResponse, PromptMomentNotification } from 'google-one-tap';
-import { environment } from 'src/environments/environment';
+import { AuthorizeService } from '../authorize.service';
 
 @Injectable({
     providedIn: 'root',
@@ -17,20 +17,14 @@ import { environment } from 'src/environments/environment';
     styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
+    clientId!: string;
     passwordHidden: boolean = true;
     isLoading = false;
-
-    togglePasswordVisibility() {
-        this.passwordHidden = !this.passwordHidden;
-    }
-
-    private clientId = environment.clientId;
 
     constructor(
         private authService: AuthorizeService,
         public dialog: Dialog,
         private router: Router,
-        private service: AuthorizeService,
         private _ngZone: NgZone
     ) {}
     loginForm = new FormGroup({
@@ -41,35 +35,51 @@ export class LoginComponent {
         password: new FormControl('', [Validators.required]),
     });
 
-    ngOnInit(): void {
-        // @ts-ignore
-        window.onGoogleLibraryLoad = () => {
-            // @ts-ignore
-            google.accounts.id.initialize({
-                client_id: this.clientId,
-                callback: this.handleCredentialResponse.bind(this),
-                auto_select: false,
-                cancel_on_tap_outside: true,
-            });
+    togglePasswordVisibility() {
+        this.passwordHidden = !this.passwordHidden;
+    }
 
-            // @ts-ignore
-            google.accounts.id.renderButton(
+    async ngOnInit(): Promise<void> {
+        try {
+            this.clientId = await this.authService.fetchGoogleClientId();
                 // @ts-ignore
-                document.getElementsByClassName('google-link__label')[0],
-                { size: 'large', width: '100%' }
-            );
-            // @ts-ignore
-            google.accounts.id.prompt(
-                (notification: PromptMomentNotification) => {}
-            );
-        };
+                google.accounts.id.initialize({
+                    client_id: this.clientId,
+                    callback: this.handleCredentialResponse.bind(this),
+                    auto_select: false,
+                    cancel_on_tap_outside: true,
+                });
+
+                // @ts-ignore
+                google.accounts.id.renderButton(
+                    // @ts-ignore
+                    document.getElementsByClassName('google-link__label')[0],
+                    { size: 'large', width: '100' }
+                );
+
+                // @ts-ignore
+                google.accounts.id.prompt(
+                    (notification: PromptMomentNotification) => {}
+                );
+        } catch (error) {
+            console.error('Error fetching Google Client ID:', error);
+        }
     }
 
     handleCredentialResponse(response: CredentialResponse) {
-        this.service.loginWithGoogle(response.credential).subscribe({
+        this.authService.loginWithGoogle(response.credential).subscribe({
             next: (x: any) => {
                 this._ngZone.run(() => {
-                    this.router.navigate(['/home']);
+                    if (this.authService.isUserLoggedIn()) {
+                        if (
+                            this.authService.isUserBuyer() ||
+                            this.authService.isUserSeller()
+                        ) {
+                            this.router.navigate(['/home']);
+                        } else {
+                            this.router.navigate(['/auth/register-role']);
+                        }
+                    }
                 });
             },
             error: (error: any) => {},
@@ -90,7 +100,16 @@ export class LoginComponent {
             )
             .subscribe({
                 next: (result) => {
-                    this.router.navigate(['/home']);
+                    if (this.authService.isUserLoggedIn()) {
+                        if (
+                            this.authService.isUserBuyer() ||
+                            this.authService.isUserSeller()
+                        ) {
+                            this.router.navigate(['/home']);
+                        } else {
+                            this.router.navigate(['/auth/register-role']);
+                        }
+                    }
                 },
                 error: (error: LoginResponse) => {
                     this.openDialog(error.errors!, true);

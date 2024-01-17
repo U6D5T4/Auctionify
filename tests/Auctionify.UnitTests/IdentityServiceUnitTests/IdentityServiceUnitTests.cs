@@ -26,6 +26,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 		private readonly Mock<IOptions<AuthSettingsOptions>> _authSettingsOptionsMock;
 		private readonly Mock<IOptions<AppOptions>> _appOptionsMock;
 		private readonly Mock<IEmailService> _emailServiceMock;
+		private readonly Mock<RoleManager<Role>> _roleManagerMock;
+		private readonly Mock<ICurrentUserService> _currentUserServiceMock;
 
 		public IdentityServiceUnitTests()
 		{
@@ -40,6 +42,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				null,
 				null
 			);
+			_currentUserServiceMock = new Mock<ICurrentUserService>();
+			_currentUserServiceMock.Setup(x => x.UserEmail).Returns(It.IsAny<string>());
 			_signInManagerMock = new Mock<SignInManager<User>>(
 				_userManagerMock.Object,
 				Mock.Of<IHttpContextAccessor>(),
@@ -53,6 +57,13 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 			_authSettingsOptionsMock = new Mock<IOptions<AuthSettingsOptions>>();
 			_appOptionsMock = new Mock<IOptions<AppOptions>>();
 			_emailServiceMock = new Mock<IEmailService>();
+			_roleManagerMock = new Mock<RoleManager<Role>>(
+				Mock.Of<IRoleStore<Role>>(),
+				null,
+				null,
+				null,
+				null
+			);
 		}
 
 		#endregion
@@ -90,8 +101,10 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -134,8 +147,10 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -179,8 +194,10 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -224,8 +241,10 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -249,8 +268,10 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -276,8 +297,10 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -313,15 +336,17 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 
 			_appOptionsMock
 				.Setup(options => options.Value)
-				.Returns(new AppOptions { Url = "https://testlocalhost:1234" });
+				.Returns(new AppOptions { ClientApp = "https://testlocalhost:1234" });
 
 			var sut = new IdentityService(
 				_userManagerMock.Object,
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -340,10 +365,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 						"Reset Password",
 						"<h1>Follow the instructions to reset your password</h1>"
 							+ "<p>To reset your password "
-							+ $"<a href='https://testlocalhost:1234/reset-password?email={email}&token={validToken}'>"
-							+ "Click here</p> "
-							+ "<br>"
-							+ $"<p> Token: {token}</p>"
+							+ $"<a href='https://testlocalhost:1234/auth/reset-password?email={email}&token={validToken}'>"
+							+ "Click here</a></p>"
 					),
 				Times.Once
 			);
@@ -368,8 +391,10 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -399,8 +424,10 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -440,8 +467,10 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -484,8 +513,10 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -508,8 +539,10 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -539,8 +572,10 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -590,8 +625,10 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -637,8 +674,10 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -668,8 +707,10 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -701,8 +742,10 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -736,8 +779,10 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -772,8 +817,10 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -805,8 +852,10 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -843,8 +892,10 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_signInManagerMock.Object,
 				_loggerMock.Object,
 				_emailServiceMock.Object,
+				_roleManagerMock.Object,
 				_authSettingsOptionsMock.Object,
-				_appOptionsMock.Object
+				_appOptionsMock.Object,
+				_currentUserServiceMock.Object
 			);
 
 			// Act
@@ -853,6 +904,178 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 			// Assert
 			result.IsSuccess.Should().BeFalse();
 			result.Errors.FirstOrDefault().Should().Be("testerror");
+		}
+
+		[Fact]
+		public async Task ChangeUserPasswordAsync_WhenUserIsNull_ReturnsFalseChangePasswordResponse()
+		{
+			// Arrange
+			_userManagerMock
+				.Setup(m => m.FindByEmailAsync(It.IsAny<string>()))
+				.ReturnsAsync((User?)null);
+			_userManagerMock
+				.Setup(m => m.CreateAsync(It.IsAny<User>()))
+				.ReturnsAsync(
+					IdentityResult.Failed(new IdentityError { Description = "testerror" })
+				);
+
+			var changePasswordViewModel = new ChangePasswordViewModel
+			{
+				OldPassword = "testoldpassword",
+				NewPassword = "testnewpassword",
+				ConfirmNewPassword = "testnewpassword"
+			};
+
+			var sut = new IdentityService(
+				_userManagerMock.Object,
+				_signInManagerMock.Object,
+				_loggerMock.Object,
+				_emailServiceMock.Object, // not used in this test
+				_roleManagerMock.Object, // not used in this test
+				_authSettingsOptionsMock.Object, // not used in this test
+				_appOptionsMock.Object, // not used in this test
+				_currentUserServiceMock.Object
+			);
+
+			// Act
+			var result = await sut.ChangeUserPasswordAsync(
+				It.IsAny<string>(),
+				changePasswordViewModel
+			);
+
+			// Assert
+			result.IsSuccess.Should().BeFalse();
+			result.Message.Should().Be("No user associated with the provided email");
+		}
+
+		[Fact]
+		public async Task ChangeUserPasswordAsync_WhenOldPasswordIsInvalid_ReturnsFalseChangePasswordResponse()
+		{
+			// Arrange
+			_userManagerMock
+				.Setup(m => m.FindByEmailAsync(It.IsAny<string>()))
+				.ReturnsAsync(new User());
+			_userManagerMock
+				.Setup(m => m.CheckPasswordAsync(It.IsAny<User>(), It.IsAny<string>()))
+				.ReturnsAsync(false);
+
+			var changePasswordViewModel = new ChangePasswordViewModel
+			{
+				OldPassword = "testoldpassword",
+				NewPassword = "testnewpassword",
+				ConfirmNewPassword = "testnewpassword"
+			};
+
+			var sut = new IdentityService(
+				_userManagerMock.Object,
+				_signInManagerMock.Object,
+				_loggerMock.Object,
+				_emailServiceMock.Object, // not used in this test
+				_roleManagerMock.Object, // not used in this test
+				_authSettingsOptionsMock.Object, // not used in this test
+				_appOptionsMock.Object, // not used in this test
+				_currentUserServiceMock.Object
+			);
+
+			// Act
+			var result = await sut.ChangeUserPasswordAsync(
+				It.IsAny<string>(),
+				changePasswordViewModel
+			);
+
+			// Assert
+			result.IsSuccess.Should().BeFalse();
+			result.Message.Should().Be("Invalid old password");
+		}
+
+		[Fact]
+		public async Task ChangeUserPasswordAsync_WhenNewPasswordDoesNotMatchItsConfirmation_ReturnsFalseChangePasswordResponse()
+		{
+			// Arrange
+			_userManagerMock
+				.Setup(m => m.FindByEmailAsync(It.IsAny<string>()))
+				.ReturnsAsync(new User());
+			_userManagerMock
+				.Setup(m => m.CheckPasswordAsync(It.IsAny<User>(), It.IsAny<string>()))
+				.ReturnsAsync(true);
+
+			var changePasswordViewModel = new ChangePasswordViewModel
+			{
+				OldPassword = "testoldpassword",
+				NewPassword = "testnewpassword",
+				ConfirmNewPassword = "testnewpassword1"
+			};
+
+			var sut = new IdentityService(
+				_userManagerMock.Object,
+				_signInManagerMock.Object,
+				_loggerMock.Object,
+				_emailServiceMock.Object, // not used in this test
+				_roleManagerMock.Object, // not used in this test
+				_authSettingsOptionsMock.Object, // not used in this test
+				_appOptionsMock.Object, // not used in this test
+				_currentUserServiceMock.Object
+			);
+
+			// Act
+			var result = await sut.ChangeUserPasswordAsync(
+				It.IsAny<string>(),
+				changePasswordViewModel
+			);
+
+			// Assert
+			result.IsSuccess.Should().BeFalse();
+			result.Message.Should().Be("New password does not match its confirmation");
+		}
+
+		[Fact]
+		public async Task ChangeUserPasswordAsync_WhenResultIsSucceeded_ReturnsTrueChangePasswordResponse()
+		{
+			// Arrange
+			_userManagerMock
+				.Setup(m => m.FindByEmailAsync(It.IsAny<string>()))
+				.ReturnsAsync(new User());
+			_userManagerMock
+				.Setup(m => m.CheckPasswordAsync(It.IsAny<User>(), It.IsAny<string>()))
+				.ReturnsAsync(true);
+			_userManagerMock
+				.Setup(
+					m =>
+						m.ChangePasswordAsync(
+							It.IsAny<User>(),
+							It.IsAny<string>(),
+							It.IsAny<string>()
+						)
+				)
+				.ReturnsAsync(IdentityResult.Success);
+
+			var changePasswordViewModel = new ChangePasswordViewModel
+			{
+				OldPassword = "testoldpassword",
+				NewPassword = "testnewpassword",
+				ConfirmNewPassword = "testnewpassword"
+			};
+
+			var sut = new IdentityService(
+				_userManagerMock.Object,
+				_signInManagerMock.Object,
+				_loggerMock.Object,
+				_emailServiceMock.Object, // not used in this test
+				_roleManagerMock.Object, // not used in this test
+				_authSettingsOptionsMock.Object, // not used in this test
+				_appOptionsMock.Object, // not used in this test
+				_currentUserServiceMock.Object
+			);
+
+			// Act
+			var result = await sut.ChangeUserPasswordAsync(
+				It.IsAny<string>(),
+				changePasswordViewModel
+			);
+
+			// Assert
+			result.IsSuccess.Should().BeTrue();
+			result.Message.Should().Be("Password has been changed successfully!");
 		}
 
 		#endregion
@@ -875,6 +1098,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				_authSettingsOptionsMock.Reset();
 				_appOptionsMock.Reset();
 				_emailServiceMock.Reset();
+				_roleManagerMock.Reset();
+				_currentUserServiceMock.Reset();
 			}
 		}
 

@@ -1,18 +1,19 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FilterComponent } from './filter/filter.component';
 import { MatIconModule } from '@angular/material/icon';
-import { BuyerRoutingModule } from './buyer-routing.module';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialogModule } from '@angular/material/dialog';
 import { ReactiveFormsModule } from '@angular/forms';
 
+import { BuyerRoutingModule } from './buyer-routing.module';
+
 @NgModule({
-    declarations: [FilterComponent],
+    declarations: [],
     imports: [
         CommonModule,
         MatIconModule,
@@ -23,8 +24,9 @@ import { ReactiveFormsModule } from '@angular/forms';
         MatInputModule,
         MatSliderModule,
         MatCheckboxModule,
+        MatDialogModule,
         ReactiveFormsModule,
     ],
-    exports: [FilterComponent],
+    exports: [],
 })
 export class BuyerModule {}

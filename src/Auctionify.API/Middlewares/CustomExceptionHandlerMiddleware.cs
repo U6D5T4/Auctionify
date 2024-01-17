@@ -9,7 +9,10 @@ namespace Auctionify.API.Middlewares
 		private readonly RequestDelegate _next;
 		private readonly ILogger<CustomExceptionHandlerMiddleware> _logger;
 
-		public CustomExceptionHandlerMiddleware(RequestDelegate next, ILogger<CustomExceptionHandlerMiddleware> logger)
+		public CustomExceptionHandlerMiddleware(
+			RequestDelegate next,
+			ILogger<CustomExceptionHandlerMiddleware> logger
+		)
 		{
 			_next = next;
 			_logger = logger;
@@ -23,7 +26,10 @@ namespace Auctionify.API.Middlewares
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError(ex, "An unhandled exception has occurred while executing the request");
+				_logger.LogError(
+					ex,
+					"An unhandled exception has occurred while executing the request"
+				);
 				await HandleExceptionAsync(context, ex);
 			}
 		}
@@ -51,18 +57,20 @@ namespace Auctionify.API.Middlewares
 			{
 				code = HttpStatusCode.BadRequest; // 400 if bad request
 			}
-			else if (exception is ValidationException)
+			else if (exception is ValidationException validationException)
 			{
 				code = HttpStatusCode.BadRequest;
 
-				errorObject = new { errors = ((ValidationException)exception).Errors };
+				errorObject = new { errors = validationException.Errors };
 			}
 			else if (exception is InvalidOperationException)
 			{
 				code = HttpStatusCode.BadRequest;
 			}
 
-			var result = JsonConvert.SerializeObject(errorObject ?? new { errors = exception.Message });
+			var result = JsonConvert.SerializeObject(
+				errorObject ?? new { errors = exception.Message }
+			);
 			context.Response.ContentType = "application/json";
 			context.Response.StatusCode = (int)code;
 			return context.Response.WriteAsync(result);
@@ -71,7 +79,9 @@ namespace Auctionify.API.Middlewares
 
 	public static class ExceptionMiddlewareExtensions
 	{
-		public static IApplicationBuilder UseCustomExceptionHandler(this IApplicationBuilder builder)
+		public static IApplicationBuilder UseCustomExceptionHandler(
+			this IApplicationBuilder builder
+		)
 		{
 			return builder.UseMiddleware<CustomExceptionHandlerMiddleware>();
 		}

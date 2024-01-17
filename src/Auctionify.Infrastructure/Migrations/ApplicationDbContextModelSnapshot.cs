@@ -30,6 +30,9 @@ namespace Auctionify.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("BidRemoved")
+                        .HasColumnType("bit");
+
                     b.Property<int>("BuyerId")
                         .HasColumnType("int");
 
@@ -43,7 +46,7 @@ namespace Auctionify.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("NewPrice")
-                        .HasColumnType("decimal(7,2)");
+                        .HasColumnType("decimal(28,2)");
 
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("datetime2");
@@ -460,6 +463,9 @@ namespace Auctionify.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AboutMe")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -489,6 +495,9 @@ namespace Auctionify.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProfilePicture")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")

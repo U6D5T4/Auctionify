@@ -1,11 +1,40 @@
 .dialog-container {
     background-color: #fff;
     border-radius: 24px;
-}
-
-.location-form {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding: 20px;
+    padding: 30px 15px 5px 15px;
+    position: relative;
+    width: 300px;
+
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        h2 {
+            margin: 0;
+            margin-left: 20px;
+        }
+
+        .close-button {
+            position: absolute;
+            color: red;
+            top: 0;
+            right: 0;
+            margin: 8px;
+            transform: scale(0.9);
+        }
+        .close-button:hover {
+            cursor: pointer;
+            transform: scale(0.8);
+        }
+    }
+
+    .location-form {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        padding: 20px;
+    }
 }

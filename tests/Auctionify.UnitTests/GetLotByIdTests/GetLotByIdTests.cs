@@ -15,36 +15,36 @@ using Moq;
 
 namespace Auctionify.UnitTests.GetLotByIdTests
 {
-    public class GetLotByIdTests
-    {
-        private readonly IMapper _mapper;
-        private readonly ILotRepository _lotRepository;
+	public class GetLotByIdTests
+	{
+		private readonly IMapper _mapper;
+		private readonly ILotRepository _lotRepository;
 		private readonly IFileRepository _fileRepository;
-        private readonly Mock<IWatchlistService> _watchListServiceMock;
+		private readonly Mock<IWatchlistService> _watchListServiceMock;
 		private readonly Mock<IBlobService> _blobServiceMock;
-        private readonly Mock<IOptions<AzureBlobStorageOptions>> _blobStorageOptionsMock;
-        private readonly Mock<ICurrentUserService> _currentUserServiceMock;
-        private readonly UserManager<User> _userManager;
+		private readonly Mock<IOptions<AzureBlobStorageOptions>> _blobStorageOptionsMock;
+		private readonly Mock<ICurrentUserService> _currentUserServiceMock;
+		private readonly UserManager<User> _userManager;
 
-        public GetLotByIdTests()
-        {
-            var mockDbContext = DbContextMock.GetMock<Lot, ApplicationDbContext>(EntitiesSeeding.GetLots(), ctx => ctx.Lots);
-            mockDbContext = DbContextMock.GetMock(EntitiesSeeding.GetFiles(), ctx => ctx.Files, mockDbContext);
-            var blobStorageOptionsMock = new Mock<IOptions<AzureBlobStorageOptions>>();
-            var configuration = new MapperConfiguration(cfg => cfg.AddProfiles(new List<Profile>
-            {
-                new Application.Common.Profiles.MappingProfiles(),
-                new Application.Features.Lots.Profiles.MappingProfiles(),
-            }));
+		public GetLotByIdTests()
+		{
+			var mockDbContext = DbContextMock.GetMock<Lot, ApplicationDbContext>(EntitiesSeeding.GetLots(), ctx => ctx.Lots);
+			mockDbContext = DbContextMock.GetMock(EntitiesSeeding.GetFiles(), ctx => ctx.Files, mockDbContext);
+			var blobStorageOptionsMock = new Mock<IOptions<AzureBlobStorageOptions>>();
+			var configuration = new MapperConfiguration(cfg => cfg.AddProfiles(new List<Profile>
+			{
+				new Application.Common.Profiles.MappingProfiles(),
+				new Application.Features.Lots.Profiles.MappingProfiles(),
+			}));
 
-            _lotRepository = new LotRepository(mockDbContext.Object);
-            _fileRepository = new FileRepository(mockDbContext.Object);
-            _watchListServiceMock = new Mock<IWatchlistService>();
-            _blobServiceMock = new Mock<IBlobService>();
-            _currentUserServiceMock = new Mock<ICurrentUserService>();
-            _userManager = EntitiesSeeding.GetUserManagerMock();
+			_lotRepository = new LotRepository(mockDbContext.Object);
+			_fileRepository = new FileRepository(mockDbContext.Object);
+			_watchListServiceMock = new Mock<IWatchlistService>();
+			_blobServiceMock = new Mock<IBlobService>();
+			_currentUserServiceMock = new Mock<ICurrentUserService>();
+			_userManager = EntitiesSeeding.GetUserManagerMock();
 
-            _currentUserServiceMock.Setup(x => x.UserEmail).Returns(It.IsAny<string>());
+			_currentUserServiceMock.Setup(x => x.UserEmail).Returns(It.IsAny<string>());
 			blobStorageOptionsMock.Setup(x => x.Value).Returns(new AzureBlobStorageOptions
 			{
 				ContainerName = "auctionify-files",
@@ -52,37 +52,37 @@ namespace Auctionify.UnitTests.GetLotByIdTests
 				AdditionalDocumentsFolderName = "additional-documents"
 			});
 
-            _blobStorageOptionsMock = blobStorageOptionsMock;
+			_blobStorageOptionsMock = blobStorageOptionsMock;
 			_mapper = new Mapper(configuration);
-        }
+		}
 
-        [Fact]
-        public async Task GetByIdLotForBuyerQueryHandler_WhenCalledWithCorrectId_ReturnsLot()
-        {
-            //Lot is not in buyer's watchlist
-            _watchListServiceMock.Setup(x => x.IsLotInUserWatchlist(It.IsAny<int>(), It.IsAny<int>(), default)).ReturnsAsync(false);
+		[Fact]
+		public async Task GetByIdLotForBuyerQueryHandler_WhenCalledWithCorrectId_ReturnsLot()
+		{
+			//Lot is not in buyer's watchlist
+			_watchListServiceMock.Setup(x => x.IsLotInUserWatchlist(It.IsAny<int>(), It.IsAny<int>(), default)).ReturnsAsync(false);
 
-            // Lot without files
-            var query = new GetByIdForBuyerLotQuery
-            {
-                Id = 2,
-            };
+			// Lot without files
+			var query = new GetByIdForBuyerLotQuery
+			{
+				Id = 2,
+			};
 
-            var handler = new GetByIdForBuyerLotQueryHandler(
-                _lotRepository,
-                _mapper,
-                _blobServiceMock.Object,
-                _fileRepository,
-                _blobStorageOptionsMock.Object,
-                _currentUserServiceMock.Object,
-                _userManager,
-                _watchListServiceMock.Object);
+			var handler = new GetByIdForBuyerLotQueryHandler(
+				_lotRepository,
+				_mapper,
+				_blobServiceMock.Object,
+				_fileRepository,
+				_blobStorageOptionsMock.Object,
+				_currentUserServiceMock.Object,
+				_userManager,
+				_watchListServiceMock.Object);
 
-            var result = await handler.Handle(query, default);
+			var result = await handler.Handle(query, default);
 
-            result.Should().BeOfType<GetByIdForBuyerLotResponse>();
-            result.Id.Should().Be(query.Id);
-        }
+			result.Should().BeOfType<GetByIdForBuyerLotResponse>();
+			result.Id.Should().Be(query.Id);
+		}
 
 		[Fact]
 		public async Task GetByIdLotForBuyerQueryHandler_WhenCalledWithCorrectIdAndIsInBuyerWatchlist_ReturnsLotWithWatchlistTrue()
@@ -110,7 +110,7 @@ namespace Auctionify.UnitTests.GetLotByIdTests
 
 			result.Should().BeOfType<GetByIdForBuyerLotResponse>();
 			result.Id.Should().Be(query.Id);
-            result.IsInWatchlist.Should().BeTrue();
+			result.IsInWatchlist.Should().BeTrue();
 		}
 
 		[Fact]
@@ -189,28 +189,6 @@ namespace Auctionify.UnitTests.GetLotByIdTests
 			var result = await handler.Handle(query, default);
 
 			result.Id.Should().Be(1);
-		}
-
-		[Fact]
-		public async Task GetByIdLotForSellerQueryHandler_WhenCalledWithCorrectIdAndNotCreatedBySeller_ThrowsValidationException()
-		{
-			// Lot created by other user id
-			var query = new GetByIdForSellerLotQuery
-			{
-				Id = 4,
-			};
-
-			var handler = new GetByIdForSellerLotQueryHandler(
-				_lotRepository,
-				_mapper,
-				_blobServiceMock.Object,
-				_fileRepository,
-				_blobStorageOptionsMock.Object,
-				_currentUserServiceMock.Object,
-				_userManager);
-
-			await Assert.ThrowsAsync<ValidationException>(async () => await handler.Handle(query, default));
-
 		}
 	}
 }

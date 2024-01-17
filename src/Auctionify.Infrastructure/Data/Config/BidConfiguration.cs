@@ -8,8 +8,9 @@ namespace Auctionify.Infrastructure.Data.Config
 	{
 		public void Configure(EntityTypeBuilder<Bid> builder)
 		{
-			builder.Property(b => b.NewPrice).HasColumnType("decimal(7,2)").IsRequired(true);
+			builder.Property(b => b.NewPrice).HasColumnType("decimal(28,2)").IsRequired(true);
 			builder.Property(b => b.TimeStamp).IsRequired(true);
+			builder.Property(b => b.BidRemoved).IsRequired(true);
 		}
 	}
 }
