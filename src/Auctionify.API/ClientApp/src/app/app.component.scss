@@ -1,0 +1,16 @@
+.container {
+    position: relative;
+
+    &__inner {
+        max-width: 1522px;
+        margin: 0 auto;
+        padding-top: 24px;
+        padding-left: 200px;
+        padding-right: 200px;
+        padding-bottom: 120px;
+    }
+}
+
+.container-seller {
+    padding: 24px 40px;
+}

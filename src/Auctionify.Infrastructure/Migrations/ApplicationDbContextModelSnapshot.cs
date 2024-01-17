@@ -57,7 +57,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasIndex("LotId");
 
-                    b.ToTable("Bids");
+                    b.ToTable("Bids", (string)null);
                 });
 
             modelBuilder.Entity("Auctionify.Core.Entities.Category", b =>
@@ -86,10 +86,50 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasIndex("ParentCategoryId");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Auctionify.Core.Entities.ChatMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("ConversationId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModificationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SenderId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConversationId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("ChatMessages", (string)null);
+                });
+
+            modelBuilder.Entity("Auctionify.Core.Entities.Conversation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -106,19 +146,11 @@ namespace Auctionify.Infrastructure.Migrations
                     b.Property<int>("LotId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
                     b.Property<DateTime>("ModificationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("SellerId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("TimeStamp")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -128,7 +160,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasIndex("SellerId");
 
-                    b.ToTable("ChatMessages");
+                    b.ToTable("Conversations", (string)null);
                 });
 
             modelBuilder.Entity("Auctionify.Core.Entities.Currency", b =>
@@ -152,7 +184,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Currency");
+                    b.ToTable("Currency", (string)null);
                 });
 
             modelBuilder.Entity("Auctionify.Core.Entities.File", b =>
@@ -186,7 +218,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasIndex("LotId");
 
-                    b.ToTable("Files");
+                    b.ToTable("Files", (string)null);
                 });
 
             modelBuilder.Entity("Auctionify.Core.Entities.Location", b =>
@@ -224,7 +256,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Locations");
+                    b.ToTable("Locations", (string)null);
                 });
 
             modelBuilder.Entity("Auctionify.Core.Entities.Lot", b =>
@@ -294,7 +326,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasIndex("SellerId");
 
-                    b.ToTable("Lots");
+                    b.ToTable("Lots", (string)null);
                 });
 
             modelBuilder.Entity("Auctionify.Core.Entities.LotStatus", b =>
@@ -318,7 +350,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LotStatuses");
+                    b.ToTable("LotStatuses", (string)null);
                 });
 
             modelBuilder.Entity("Auctionify.Core.Entities.Rate", b =>
@@ -360,7 +392,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Rates");
+                    b.ToTable("Rates", (string)null);
                 });
 
             modelBuilder.Entity("Auctionify.Core.Entities.Role", b =>
@@ -428,7 +460,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Subscriptions");
+                    b.ToTable("Subscriptions", (string)null);
                 });
 
             modelBuilder.Entity("Auctionify.Core.Entities.SubscriptionType", b =>
@@ -452,7 +484,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SubscriptionTypes");
+                    b.ToTable("SubscriptionTypes", (string)null);
                 });
 
             modelBuilder.Entity("Auctionify.Core.Entities.User", b =>
@@ -546,7 +578,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Watchlists");
+                    b.ToTable("Watchlists", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -681,8 +713,27 @@ namespace Auctionify.Infrastructure.Migrations
 
             modelBuilder.Entity("Auctionify.Core.Entities.ChatMessage", b =>
                 {
+                    b.HasOne("Auctionify.Core.Entities.Conversation", "Conversation")
+                        .WithMany("ChatMessages")
+                        .HasForeignKey("ConversationId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("Auctionify.Core.Entities.User", "Sender")
+                        .WithMany("ChatMessages")
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Conversation");
+
+                    b.Navigation("Sender");
+                });
+
+            modelBuilder.Entity("Auctionify.Core.Entities.Conversation", b =>
+                {
                     b.HasOne("Auctionify.Core.Entities.User", "Buyer")
-                        .WithMany("ReceiverChatMessages")
+                        .WithMany("BuyerConversations")
                         .HasForeignKey("BuyerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -694,7 +745,7 @@ namespace Auctionify.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("Auctionify.Core.Entities.User", "Seller")
-                        .WithMany("SenderChatMessages")
+                        .WithMany("SellerConversations")
                         .HasForeignKey("SellerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -884,6 +935,11 @@ namespace Auctionify.Infrastructure.Migrations
                     b.Navigation("Lots");
                 });
 
+            modelBuilder.Entity("Auctionify.Core.Entities.Conversation", b =>
+                {
+                    b.Navigation("ChatMessages");
+                });
+
             modelBuilder.Entity("Auctionify.Core.Entities.Currency", b =>
                 {
                     b.Navigation("Lots");
@@ -916,15 +972,17 @@ namespace Auctionify.Infrastructure.Migrations
 
             modelBuilder.Entity("Auctionify.Core.Entities.User", b =>
                 {
+                    b.Navigation("BuyerConversations");
+
                     b.Navigation("BuyingLots");
 
-                    b.Navigation("ReceiverChatMessages");
+                    b.Navigation("ChatMessages");
 
                     b.Navigation("ReceiverRates");
 
-                    b.Navigation("SellingLots");
+                    b.Navigation("SellerConversations");
 
-                    b.Navigation("SenderChatMessages");
+                    b.Navigation("SellingLots");
 
                     b.Navigation("SenderRates");
 

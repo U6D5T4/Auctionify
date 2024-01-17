@@ -1,4 +1,5 @@
 <div class="register-role">
+    <div class="general-auth-background"></div>
     <div class="register-role__container">
         <div class="register-role__container-inner">
             <div class="register-role__header">
@@ -6,14 +7,25 @@
                 <p>Please choose your role</p>
             </div>
 
-            <form [formGroup]="assignRoleForm" (ngSubmit)="onSubmit()" class="register-role__form form">
+            <form
+                [formGroup]="assignRoleForm"
+                (ngSubmit)="onSubmit()"
+                class="register-role__form form"
+            >
                 <div class="form__options">
                     <div class="form__single-option" *ngFor="let role of roles">
                         <label class="form__option-label">
-                            <input formControlName="role" type="radio" [id]="role.name" [value]="role.name" [checked]="
+                            <input
+                                formControlName="role"
+                                type="radio"
+                                [id]="role.name"
+                                [value]="role.name"
+                                [checked]="
                                     role.name ===
                                     assignRoleForm.controls.role.value
-                                " required />
+                                "
+                                required
+                            />
                             <div class="form__user-type-option">
                                 <div class="radio">
                                     <p>{{ role.name }}</p>
@@ -29,8 +41,16 @@
                     </div>
                 </div>
 
-                <button type="submit" disabled="{{ isLoading }}" mat-raised-button color="primary">
-                    <mat-spinner *ngIf="isLoading; else notLoading" diameter="25"></mat-spinner>
+                <button
+                    type="submit"
+                    disabled="{{ isLoading }}"
+                    mat-raised-button
+                    color="primary"
+                >
+                    <mat-spinner
+                        *ngIf="isLoading; else notLoading"
+                        diameter="25"
+                    ></mat-spinner>
                     <ng-template #notLoading>
                         <div>Continue</div>
                     </ng-template>
