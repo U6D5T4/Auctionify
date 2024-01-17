@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap, Route, Router } from '@angular/router';
 
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 import { RateUserCommandModel } from 'src/app/models/rates/rate-models';
@@ -28,7 +28,8 @@ export class RateUserComponent implements OnInit {
         private client: Client,
         private authorizeService: AuthorizeService,
         private route: ActivatedRoute,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
+        private router: Router
     ) {}
 
     ngOnInit() {
@@ -69,6 +70,7 @@ export class RateUserComponent implements OnInit {
                     this.errorMessage = '';
                     this.showSnackBar('Rate submitted successfully', 'success');
                     this.isLoading = false;
+                    this.router.navigate(["/home"])
                 },
                 (error) => {
                     if (
@@ -87,6 +89,7 @@ export class RateUserComponent implements OnInit {
                     this.errorMessage = '';
                     this.showSnackBar('Rate submitted successfully', 'success');
                     this.isLoading = false;
+                    this.router.navigate(["/home"])
                 },
                 (error) => {
                     if (

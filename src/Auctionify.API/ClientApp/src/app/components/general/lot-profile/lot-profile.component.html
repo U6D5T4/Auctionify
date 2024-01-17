@@ -240,7 +240,7 @@
                         <button
                             [routerLink]="['/seller/update-lot', lotData.id]"
                             class="mat-mdc-outlined-button-custom price-button"
-                            mat-flat-button
+                            mat-flat-button 
                             type="button"
                             color="primary"
                             [disabled]="isSellerOwnsLot(lotData)"
@@ -249,6 +249,18 @@
                             Edit lot
                         </button>
                     </ng-template>
+                    <div>
+                        <button
+                                [routerLink]="['/rate-user', lotData.id]"
+                                class="mat-mdc-outlined-button-custom price-button"
+                                mat-flat-button 
+                                type="button"
+                                color="primary"
+                            >
+                                <mat-icon>edit</mat-icon>
+                                rate
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
