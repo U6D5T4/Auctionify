@@ -179,5 +179,14 @@ namespace Auctionify.API.Controllers
 
 			return Ok(result);
 		}
-	}
+
+        [HttpGet("sellers/draft")]
+        [Authorize(Roles = "Seller")]
+        public async Task<IActionResult> GetAllDraftLotsForSeller([FromQuery] PageRequest pageRequest)
+        {
+            var result = await _mediator.Send(new GetAllLotsWithStatusForSellerQuery { LotStatus = AuctionStatus.Draft, PageRequest = pageRequest });
+
+            return Ok(result);
+        }
+    }
 }

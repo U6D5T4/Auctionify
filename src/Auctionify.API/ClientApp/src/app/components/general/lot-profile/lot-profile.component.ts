@@ -1,7 +1,7 @@
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
 import { formatDate } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit, effect } from '@angular/core';
+import { Component, Inject, LOCALE_ID, OnInit, effect } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
@@ -21,6 +21,7 @@ import {
 import { ImagePopupComponent } from '../image-popup/image-popup.component';
 import { AddBidComponent } from '../add-bid/add-bid.component';
 import { WithdrawBidComponent } from '../withdraw-bid/withdraw-bid.component';
+import { RemoveFromWatchlistComponent } from '../remove-from-watchlist/remove-from-watchlist.component';
 
 @Component({
     selector: 'app-lot-profile',
@@ -49,7 +50,8 @@ export class LotProfileComponent implements OnInit {
         private signalRService: SignalRService,
         private dialog: Dialog,
         private snackBar: MatSnackBar,
-        private sanitizer: DomSanitizer
+        private sanitizer: DomSanitizer,
+        @Inject(LOCALE_ID) public locale: string
     ) {
         effect(() => {
             this.currentUserId = this.authService.getUserId()!;
@@ -110,17 +112,20 @@ export class LotProfileComponent implements OnInit {
             );
         }
 
-        if (this.lotData.category.parentCategoryId) {
-            this.client.getAllCategories().subscribe({
-                next: (result) => {
-                    const parentCategory = result.find(
-                        (x) => x.id === this.lotData?.category.parentCategoryId
-                    );
+        if (this.lotData.category) {
+            if (this.lotData.category.parentCategoryId) {
+                this.client.getAllCategories().subscribe({
+                    next: (result) => {
+                        const parentCategory = result.find(
+                            (x) =>
+                                x.id === this.lotData?.category.parentCategoryId
+                        );
 
-                    if (!parentCategory) return;
-                    this.parentCategoryName = parentCategory?.name;
-                },
-            });
+                        if (!parentCategory) return;
+                        this.parentCategoryName = parentCategory?.name;
+                    },
+                });
+            }
         }
 
         if (this.lotData.bids.length > 0) {
@@ -202,15 +207,15 @@ export class LotProfileComponent implements OnInit {
     }
 
     formatBidDate(date: Date): string {
-        return formatDate(date, 'd MMMM HH:mm', 'en-US');
+        return formatDate(date, 'd MMMM HH:mm', this.locale);
     }
 
     formatStartDate(date: Date | null): string {
-        return date ? formatDate(date, 'dd LLLL, h:mm (z)', 'en-US') : '';
+        return date ? formatDate(date, 'dd LLLL, HH:mm (z)', this.locale) : '';
     }
 
     formatEndDate(date: Date | null): string {
-        return date ? formatDate(date, 'dd LLLL, h:mm (z)', 'en-US') : '';
+        return date ? formatDate(date, 'dd LLLL, HH:mm (z)', this.locale) : '';
     }
 
     handleLotWatchlist() {
@@ -218,45 +223,41 @@ export class LotProfileComponent implements OnInit {
         if (!lotData.isInWatchlist) {
             this.client.addToWatchlist(this.lotId).subscribe({
                 next: (result) => {
-                    this.snackBar.open(result, 'Ok', {
-                        horizontalPosition: 'right',
-                        verticalPosition: 'top',
-                        duration: 5000,
-                    });
+                    this.snackBar.open(
+                        'Successfully added the lot to watchlist',
+                        'Close',
+                        {
+                            horizontalPosition: 'center',
+                            verticalPosition: 'bottom',
+                            duration: 5000,
+                            panelClass: ['success-snackbar'],
+                        }
+                    );
                     this.getLotFromRoute();
                 },
                 error: (result: HttpErrorResponse) => {
                     this.snackBar.open(
                         result.error.errors[0].ErrorMessage,
-                        'Ok',
+                        'Close',
                         {
-                            horizontalPosition: 'right',
-                            verticalPosition: 'top',
+                            horizontalPosition: 'center',
+                            verticalPosition: 'bottom',
                             duration: 5000,
+                            panelClass: ['error-snackbar'],
                         }
                     );
                 },
             });
         } else {
-            this.client.removeFromWatchList(this.lotId).subscribe({
-                next: (result) => {
-                    this.snackBar.open(result, 'Ok', {
-                        horizontalPosition: 'right',
-                        verticalPosition: 'top',
-                        duration: 5000,
-                    });
-                    this.getLotFromRoute();
+            const dialog = this.dialog.open(RemoveFromWatchlistComponent, {
+                data: {
+                    lotId: this.lotId,
                 },
-                error: (result: HttpErrorResponse) => {
-                    this.snackBar.open(
-                        result.error.errors[0].ErrorMessage,
-                        'Ok',
-                        {
-                            horizontalPosition: 'right',
-                            verticalPosition: 'top',
-                            duration: 5000,
-                        }
-                    );
+            });
+
+            dialog.closed.subscribe({
+                next: () => {
+                    this.getLotFromRoute();
                 },
             });
         }

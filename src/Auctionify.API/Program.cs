@@ -16,8 +16,7 @@ namespace Auctionify.API
 	{
 		public static async Task Main(string[] args)
 		{
-			var logger = NLog.LogManager
-				.Setup()
+			var logger = NLog.LogManager.Setup()
 				.LoadConfigurationFromAppSettings()
 				.GetCurrentClassLogger();
 
@@ -33,8 +32,8 @@ namespace Auctionify.API
 
 				// Add services to the container.
 				// To display enum values as strings in the response
-				builder.Services
-					.AddControllers()
+				builder
+					.Services.AddControllers()
 					.AddJsonOptions(
 						options =>
 							options.JsonSerializerOptions.Converters.Add(

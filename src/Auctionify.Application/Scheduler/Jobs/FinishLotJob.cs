@@ -14,8 +14,7 @@ namespace Auctionify.Application.Scheduler.Jobs
 		private readonly IServiceScopeFactory _scopeFactory;
 		private readonly ILogger<FinishLotJob> _logger;
 
-		public FinishLotJob(IServiceScopeFactory scopeFactory,
-			ILogger<FinishLotJob> logger)
+		public FinishLotJob(IServiceScopeFactory scopeFactory, ILogger<FinishLotJob> logger)
 		{
 			_scopeFactory = scopeFactory;
 			_logger = logger;
@@ -28,15 +27,18 @@ namespace Auctionify.Application.Scheduler.Jobs
 
 			using var scope = _scopeFactory.CreateScope();
 			var lotRepository = scope.ServiceProvider.GetRequiredService<ILotRepository>();
+			var bidRepository = scope.ServiceProvider.GetRequiredService<IBidRepository>();
 			var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 
+			var lot = await lotRepository.GetAsync(
+				x => x.Id == lotId,
+				include: x => x.Include(l => l.LotStatus).Include(l => l.Bids)
+			);
 
-			var lot = await lotRepository.GetAsync(x => x.Id == lotId,
-				include: x =>
-							x.Include(l => l.LotStatus)
-							.Include(l => l.Bids));
-
-			if (lot == null) { return; }
+			if (lot == null)
+			{
+				return;
+			}
 
 			Enum.TryParse(lot.LotStatus.Name, out AuctionStatus lotStatus);
 
@@ -45,13 +47,37 @@ namespace Auctionify.Application.Scheduler.Jobs
 			if (lot.Bids.Count > 0)
 			{
 				futureStatus = AuctionStatus.Sold;
+
+				var highestBid = await bidRepository
+					.Query()
+					.Where(x => x.LotId == lotId && !x.BidRemoved)
+					.OrderByDescending(x => x.NewPrice)
+					.FirstOrDefaultAsync();
+
+				if (highestBid != null)
+				{
+					lot.BuyerId = highestBid.BuyerId;
+					lot.StartingPrice = highestBid.NewPrice;
+					await lotRepository.UpdateAsync(lot);
+
+					_logger.LogInformation(
+						"FinishLot job updated lot with id: {lotId} with buyer id: {buyerId}",
+						lotId,
+						highestBid.BuyerId
+					);
+				}
 			}
 
-			var result = await mediator.Send(new UpdateLotStatusCommand { LotId = lotId, Name = futureStatus.ToString() });
+			var result = await mediator.Send(
+				new UpdateLotStatusCommand { LotId = lotId, Name = futureStatus.ToString() }
+			);
 
 			if (result != null)
 			{
-				_logger.LogInformation("FinishLot job finished working for lot with id: {lotId}", lotId);
+				_logger.LogInformation(
+					"FinishLot job finished working for lot with id: {lotId}",
+					lotId
+				);
 			}
 		}
 	}

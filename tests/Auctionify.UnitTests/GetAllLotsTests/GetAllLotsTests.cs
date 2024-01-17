@@ -13,7 +13,7 @@ using Moq;
 
 namespace Auctionify.UnitTests.GetAllLotsTests
 {
-	public class GetAllLotsTest
+	public class GetAllLotsTests
 	{
 		private readonly IMapper _mapper;
 		private readonly ILotRepository _lotRepository;
@@ -23,7 +23,7 @@ namespace Auctionify.UnitTests.GetAllLotsTests
 		private readonly Mock<IPhotoService> _photoServiceMock;
 		private readonly UserManager<User> _userManager;
 
-		public GetAllLotsTest()
+		public GetAllLotsTests()
 		{
 			var mockDbContext = DbContextMock.GetMock<Lot, ApplicationDbContext>(
 				EntitiesSeeding.GetLots(),

@@ -12,10 +12,15 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { BuyerRoutingModule } from './buyer-routing.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { WishlistComponent } from './wishlist/wishlist.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 import { UiElementsModule } from 'src/app/ui-elements/ui-elements.module';
 
 @NgModule({
-    declarations: [DashboardComponent],
+    declarations: [
+    DashboardComponent,
+    WishlistComponent
+  ],
     imports: [
         CommonModule,
         MatIconModule,

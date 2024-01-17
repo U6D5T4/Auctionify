@@ -7,6 +7,7 @@ using Auctionify.Application.Features.Users.Commands.RemoveLotFromWatchlist;
 using Auctionify.Application.Features.Users.Commands.Update;
 using Auctionify.Application.Features.Users.Queries.GetAllBidsOfUserForLot;
 using Auctionify.Application.Features.Users.Queries.GetBuyer;
+using Auctionify.Application.Features.Users.Queries.GetBuyerAuctions;
 using Auctionify.Application.Features.Users.Queries.GetById;
 using Auctionify.Application.Features.Users.Queries.GetByUserWatchlist;
 using Auctionify.Application.Features.Users.Queries.GetSeller;
@@ -132,6 +133,16 @@ namespace Auctionify.API.Controllers
 		{
 			var result = await _mediator.Send(updateUserCommand);
 			return Ok(result);
+		}
+
+		[HttpGet("buyers/auctions")]
+		[Authorize(Roles = "Buyer")]
+		public async Task<IActionResult> GetBuyerAuctions([FromQuery] PageRequest pageRequest)
+		{
+			var query = new GetBuyerAuctionsQuery { PageRequest = pageRequest };
+			var lots = await _mediator.Send(query);
+
+			return Ok(lots);
 		}
 	}
 }

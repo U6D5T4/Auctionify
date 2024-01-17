@@ -1,9 +1,9 @@
 .menu {
     display: flex;
-    padding-right: 200px;
+    margin: 0 auto;
     justify-content: flex-end;
-    height: 96px;
     align-items: center;
+    margin-bottom: 24px;
 
     &__btns-right {
         display: flex;
@@ -36,7 +36,7 @@
 
     &__filter-btn:hover {
         border: none;
-        background-color: #2B5293;
+        background-color: #2b5293;
         transition: 0.5s ease;
         color: white;
     }
@@ -45,22 +45,20 @@
 .main {
     display: flex;
     flex-direction: column;
-    padding-left: 200px;
-    padding-right: 200px;
+    max-width: 1522px;
+    margin: 0 auto;
 
     &__container {
         display: flex;
         flex-direction: column;
-        align-items: center;
     }
 
     &__auction-active {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        gap: 13px;
-        max-width: calc(294px * 5 + 13px * 4);
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(249px, 290px));
         padding-bottom: 20px;
+        gap: 13px;
+        justify-content: space-between;
     }
 
     &__btn {
@@ -73,12 +71,11 @@
     }
 
     &__auction-upcoming {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        gap: 13px;
-        max-width: calc(294px * 5 + 13px * 4);
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(249px, 290px));
         padding-bottom: 20px;
+        gap: 13px;
+        justify-content: space-between;
     }
 
     &__auction-upcoming-title {
@@ -90,12 +87,11 @@
     }
 
     &__auction-archived {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        gap: 13px;
-        max-width: calc(294px * 5 + 13px * 4);
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(249px, 290px));
         padding-bottom: 20px;
+        gap: 13px;
+        justify-content: space-between;
     }
 
     &__auction-archived-title {
@@ -134,7 +130,7 @@
     }
 
     &__like-btn {
-        background-color: #F0F3FE;
+        background-color: #f0f3fe;
         border: none;
         border-radius: 50%;
         width: 48px;
@@ -187,6 +183,6 @@
     }
 
     &__title a:hover {
-        color: #2B5293;
+        color: #2b5293;
     }
 }

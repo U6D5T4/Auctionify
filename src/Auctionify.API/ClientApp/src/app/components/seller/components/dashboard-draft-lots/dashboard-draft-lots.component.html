@@ -1,0 +1,10 @@
+<div *ngIf="draftLots.length > 0; else no_active_lots">
+    <swiper-container class="slider-container" #swiper slides-per-view="auto" navigation="true" free-mode="true">
+        <swiper-slide class="slide" *ngFor=" let item of draftLots">
+            <app-lot-item class="lot-item" [lot]="item" [isUserBuyer]="false"></app-lot-item>
+        </swiper-slide>
+    </swiper-container>
+</div>
+<ng-template #no_active_lots>
+    <p>You do not have any saved draft lots!</p>
+</ng-template>
