@@ -39,7 +39,14 @@ export class AverageRatingItemComponent {
     }
 
     getTotalCount(): number {
-        return this.senderRates.length;
+        let totalCount = 0;
+        for (const key in this.userProfileData?.starCounts!) {
+            if (this.userProfileData?.starCounts!.hasOwnProperty(key)) {
+                totalCount += this.userProfileData?.starCounts![key];
+            }
+        }
+    
+        return totalCount;
     }
 
     ratesEmpty: { [key: number]: number } = {
