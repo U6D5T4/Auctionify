@@ -32,6 +32,7 @@ import {
     Rate,
     RatePaginationModel,
     RateResponse,
+    RateUserCommandModel,
 } from './models/rates/rate-models';
 
 export const API_BASE_URL = new InjectionToken('API_BASE_URL');
@@ -892,6 +893,42 @@ export class Client {
             })
         );
     }
+
+    addRateToSeller(model: RateUserCommandModel): Observable<string> {
+        let url_ = this.baseUrl + '/api/rates/sellers';
+
+        let options_: any = {
+            body: model,
+            responseType: 'text',
+        };
+
+        return this.http.request('post', url_, options_).pipe(
+            map((response: any) => {
+                return response;
+            }),
+            catchError((error) => {
+                return throwError(() => error.error);
+            })
+        );
+    }
+
+    addRateToBuyer(model: RateUserCommandModel): Observable<string> {
+        let url_ = this.baseUrl + '/api/rates/buyers';
+
+        let options_: any = {
+            body: model,
+            responseType: 'text',
+        };
+
+        return this.http.request('post', url_, options_).pipe(
+            map((response: any) => {
+                return response;
+            }),
+            catchError((error) => {
+                return throwError(() => error.error);
+            })
+        );
+    }
 }
 
 export interface PageRequest {
@@ -983,6 +1020,7 @@ export interface UserDto {
     lastName: string;
     phoneNumber: string;
     email: string;
+    profilePicture: string;
 }
 
 export interface SearchLotResponse {
@@ -1021,6 +1059,8 @@ export interface BuyerGetLotResponse {
     isInWatchlist: boolean;
     bidCount: number | null;
     sellerEmail: string;
+    buyer: UserDto | null;
+    seller: UserDto | null;
 }
 
 export interface SellerGetLotResponse {
@@ -1039,6 +1079,8 @@ export interface SellerGetLotResponse {
     bids: BidDto[];
     bidCount: number;
     sellerId: number;
+    buyer: UserDto | null;
+    seller: UserDto | null;
 }
 
 export interface CreateLotResponse {
