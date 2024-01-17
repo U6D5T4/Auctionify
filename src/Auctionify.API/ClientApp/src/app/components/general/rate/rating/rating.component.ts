@@ -123,6 +123,10 @@ export class RatingComponent implements OnInit {
         return this.authorizeService.isUserBuyer();
     }
 
+    isUserHaveRates(): boolean {
+        return this.senderRates.length == 0;
+    }
+
     getPercentage(count: number): string {
         const total = this.getTotalCount();
         return total > 0 ? `${(count / total) * 100}%` : '0%';
@@ -166,4 +170,12 @@ export class RatingComponent implements OnInit {
         }
         return stars;
     }
+
+    ratesEmpty: { [key: number]: number } = {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+    };
 }

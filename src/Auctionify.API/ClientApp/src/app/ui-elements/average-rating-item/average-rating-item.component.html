@@ -5,13 +5,26 @@
     <div class="main__rating">
         <div class="main__progress-bar-container">
             <div class="main__average-rating">
-                <div *ngFor="let rating of userProfileData?.starCounts | keyvalue" class="main__rating-level">
-                    <span class="main__review-number">{{rating.key}}</span>
-                    <div class="main__progress-bar">
-                        <div class="main__progress" [style.width]="getPercentage(rating.value)"></div>
-                    </div>
-                    <span class="main__count">{{ rating.value }}</span>
+                <div *ngIf="isUserHaveRates(); then noRates; else ratingLevels;">
+                                    
                 </div>
+                <ng-template #ratingLevels>
+                    <div *ngFor="let rating of userProfileData?.starCounts | keyvalue" class="main__rating-level">
+                        <span class="main__review-number">{{ rating.key }}</span>
+                        <div class="main__progress-bar">
+                            <div class="main__progress" [style.width]="getPercentage(rating.value)"></div>
+                        </div>
+                        <span class="main__count">{{ rating.value }}</span>
+                    </div>
+                </ng-template>
+                <ng-template #noRates>
+                    <div *ngFor="let rating of ratesEmpty | keyvalue" class="main__rating-level">
+                        <span class="main__review-number">{{ rating.key }}</span>
+                        <div class="main__progress-bar">
+                        </div>
+                        <span class="main__count">0</span>
+                    </div>
+                </ng-template>
             </div>
         </div>
 

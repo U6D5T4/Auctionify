@@ -10,6 +10,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System.Runtime.Intrinsics.X86;
 
 namespace Auctionify.Application.Features.Users.Queries.GetSeller
 {
@@ -104,6 +105,40 @@ namespace Auctionify.Application.Features.Users.Queries.GetSeller
 			}
 			
 			response.RatesCount = ratesForUser.Items.Count;
+
+			var avg = await _rateRepository.GetListAsync(predicate: r => r.ReceiverId == user.Id,
+				include: x =>
+					x.Include(u => u.Sender),
+				enableTracking: false,
+				size: int.MaxValue,
+				index: 0,
+				cancellationToken: cancellationToken);
+
+			if (avg.Count > 0)
+			{
+				var starCounts = new Dictionary<byte, int>
+				{
+					{ 5, 0 },
+					{ 4, 0 },
+					{ 3, 0 },
+					{ 2, 0 },
+					{ 1, 0 },
+				};
+
+				foreach (var rate in avg.Items)
+				{
+					if (rate.Sender != null)
+					{
+						byte ratingValueKey = rate.RatingValue;
+
+						if (starCounts.ContainsKey(ratingValueKey))
+						{
+							starCounts[ratingValueKey]++;
+						}
+					}
+				}
+				response.StarCounts = starCounts;
+			}
 
 			return response;
 		}

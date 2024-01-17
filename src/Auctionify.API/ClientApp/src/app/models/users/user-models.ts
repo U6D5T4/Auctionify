@@ -7,7 +7,7 @@ export interface SellerModel {
     profilePictureUrl: string | null;
     createdLotsCount: number | null;
     finishedLotsCount: number | null;
-    averageRate: number | null;
+    averageRate: number;
     ratesCount: number | null;
     starCounts?: { [key: number]: number };
 }
@@ -21,7 +21,7 @@ export interface BuyerModel {
     profilePictureUrl: string | null;
     createdLotsCount: number | null;
     finishedLotsCount: number | null;
-    averageRate: number | null;
+    averageRate: number;
     ratesCount: number | null;
     starCounts?: { [key: number]: number };
 }
