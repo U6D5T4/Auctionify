@@ -1,5 +1,6 @@
 ﻿using Auctionify.Application.Features.Chats.Commands.CreateChatMessage;
 using Auctionify.Application.Features.Chats.Commands.CreateConversation;
+using Auctionify.Application.Features.Chats.Commands.MarkChatMessageAsRead;
 using Auctionify.Application.Features.Chats.Queries.GetAllChatMessages;
 using Auctionify.Application.Features.Chats.Queries.GetAllUserConversations;
 using MediatR;
@@ -66,6 +67,17 @@ namespace Auctionify.API.Controllers
 			_ = await _mediator.Send(createChatMessageCommand);
 
 			return Ok("Message sent successfully!");
+		}
+
+		[HttpPut("users/conversations/messages/{chatMessageId}")]
+		[Authorize(Roles = "Buyer, Seller")]
+		public async Task<IActionResult> MarkChatMessageAsRead(int chatMessageId)
+		{
+			var result = await _mediator.Send(
+				new MarkChatMessageAsReadCommand { ChatMessageId = chatMessageId }
+			);
+
+			return Ok(result);
 		}
 	}
 }

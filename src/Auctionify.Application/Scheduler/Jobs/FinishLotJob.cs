@@ -1,5 +1,6 @@
 ﻿using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Features.Lots.Commands.UpdateLotStatus;
+using Auctionify.Core.Entities;
 using Auctionify.Core.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,8 @@ namespace Auctionify.Application.Scheduler.Jobs
 			var lotRepository = scope.ServiceProvider.GetRequiredService<ILotRepository>();
 			var bidRepository = scope.ServiceProvider.GetRequiredService<IBidRepository>();
 			var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+			var conversationRepository =
+				scope.ServiceProvider.GetRequiredService<IConversationRepository>();
 
 			var lot = await lotRepository.GetAsync(
 				x => x.Id == lotId,
@@ -59,6 +62,29 @@ namespace Auctionify.Application.Scheduler.Jobs
 					lot.BuyerId = highestBid.BuyerId;
 					lot.StartingPrice = highestBid.NewPrice;
 					await lotRepository.UpdateAsync(lot);
+
+					var conversation = await conversationRepository.GetAsync(
+						x =>
+							x.LotId == lotId
+							&& x.BuyerId == highestBid.BuyerId
+							&& x.SellerId == lot.SellerId
+					);
+
+					#region Creating a conversation after the lot is sold and there is a buyer
+
+					if (conversation == null)
+					{
+						conversation = new Conversation
+						{
+							LotId = lotId,
+							BuyerId = highestBid.BuyerId,
+							SellerId = lot.SellerId
+						};
+
+						await conversationRepository.AddAsync(conversation);
+					}
+
+					#endregion
 
 					_logger.LogInformation(
 						"FinishLot job updated lot with id: {lotId} with buyer id: {buyerId}",
