@@ -58,6 +58,20 @@ namespace Auctionify.Application.Features.Chats.Commands.CreateConversation
 			var sellerId = currentUserRole == UserRole.Seller ? currentUser!.Id : lot!.SellerId;
 			var buyerId = currentUserRole == UserRole.Buyer ? currentUser!.Id : lot!.BuyerId;
 
+			#region If there is already a conversation between the buyer and the seller for this lot, return it
+			var existingConversation = await _conversationRepository.GetAsync(
+				predicate: c =>
+					c.LotId == request.LotId && c.BuyerId == buyerId && c.SellerId == sellerId,
+				cancellationToken: cancellationToken
+			);
+
+			if (existingConversation != null)
+			{
+				return _mapper.Map<CreatedConversationResponse>(existingConversation);
+			}
+
+			#endregion
+
 			var conversation = new Conversation
 			{
 				BuyerId = (int)buyerId!, // because the BuyerId in Lot is nullable

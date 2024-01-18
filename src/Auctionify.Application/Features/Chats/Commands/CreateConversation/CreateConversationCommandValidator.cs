@@ -11,21 +11,18 @@ namespace Auctionify.Application.Features.Chats.Commands.CreateConversation
 	{
 		private readonly ILotRepository _lotRepository;
 		private readonly ILotStatusRepository _lotStatusRepository;
-		private readonly IConversationRepository _conversationRepository;
 		private readonly ICurrentUserService _currentUserService;
 		private readonly UserManager<User> _userManager;
 
 		public CreateConversationCommandValidator(
 			ILotRepository lotRepository,
 			ILotStatusRepository lotStatusRepository,
-			IConversationRepository conversationRepository,
 			ICurrentUserService currentUserService,
 			UserManager<User> userManager
 		)
 		{
 			_lotRepository = lotRepository;
 			_lotStatusRepository = lotStatusRepository;
-			_conversationRepository = conversationRepository;
 			_currentUserService = currentUserService;
 			_userManager = userManager;
 
@@ -45,44 +42,6 @@ namespace Auctionify.Application.Features.Chats.Commands.CreateConversation
 					}
 				)
 				.WithMessage("Lot with this Id does not exist")
-				.OverridePropertyName("LotId")
-				.WithName("Lot Id");
-
-			RuleFor(x => x.LotId)
-				.Cascade(CascadeMode.Stop)
-				.MustAsync(
-					async (lotId, cancellationToken) =>
-					{
-						var lot = await _lotRepository.GetAsync(
-							predicate: x => x.Id == lotId,
-							cancellationToken: cancellationToken
-						);
-
-						var currentUser = await _userManager.FindByEmailAsync(
-							_currentUserService.UserEmail!
-						);
-
-						var currentUserRole = (UserRole)
-							Enum.Parse(
-								typeof(UserRole),
-								(await _userManager.GetRolesAsync(currentUser!)).FirstOrDefault()!
-							);
-
-						var sellerId =
-							currentUserRole == UserRole.Seller ? currentUser!.Id : lot!.SellerId;
-						var buyerId =
-							currentUserRole == UserRole.Buyer ? currentUser!.Id : lot!.BuyerId;
-
-						var conversation = await _conversationRepository.GetAsync(
-							predicate: x =>
-								x.LotId == lotId && x.SellerId == sellerId && x.BuyerId == buyerId,
-							cancellationToken: cancellationToken
-						);
-
-						return conversation is null;
-					}
-				)
-				.WithMessage("Conversation for this lot already exists")
 				.OverridePropertyName("LotId")
 				.WithName("Lot Id");
 
