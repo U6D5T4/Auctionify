@@ -163,6 +163,26 @@ namespace Auctionify.Infrastructure.Persistence
 					{
 						Name = "Computers",
 						ParentCategoryId = electronicsCategory.Entity.Id
+					},
+					new Category
+					{
+						Name = "Cameras",
+						ParentCategoryId = electronicsCategory.Entity.Id
+					},
+					new Category
+					{
+						Name = "Audio Devices",
+						ParentCategoryId = electronicsCategory.Entity.Id
+					},
+					new Category
+					{
+						Name = "Kitchen Appliances",
+						ParentCategoryId = electronicsCategory.Entity.Id
+					},
+					new Category
+					{
+						Name = "Smart Home Devices",
+						ParentCategoryId = electronicsCategory.Entity.Id
 					}
 				);
 
@@ -176,9 +196,123 @@ namespace Auctionify.Infrastructure.Persistence
 					{
 						Name = "Wardrobes",
 						ParentCategoryId = furnitureCategory.Entity.Id
+					},
+					new Category
+					{
+						Name = "Office Chairs",
+						ParentCategoryId = furnitureCategory.Entity.Id
+					},
+					new Category
+					{
+						Name = "Sofas",
+						ParentCategoryId = furnitureCategory.Entity.Id
+					},
+					new Category
+					{
+						Name = "Dining Tables",
+						ParentCategoryId = furnitureCategory.Entity.Id
+					},
+					new Category
+					{
+						Name = "Bedroom Furniture",
+						ParentCategoryId = furnitureCategory.Entity.Id
+					}
+				);
+
+				_context.Categories.AddRange(
+					new Category
+					{
+						Name = "Antiques",
+						ParentCategoryId = null
+					},
+					new Category
+					{
+						Name = "Collectibles",
+						ParentCategoryId = null
+					},
+					new Category
+					{
+						Name = "Art",
+						ParentCategoryId = null
+					},
+					new Category
+					{
+						Name = "Jewelry",
+						ParentCategoryId = null
+					},
+					new Category
+					{
+						Name = "Watches",
+						ParentCategoryId = null
+					},
+					new Category
+					{
+						Name = "Coins and Currency",
+						ParentCategoryId = null
+					},
+					new Category
+					{
+						Name = "Vintage Clothing",
+						ParentCategoryId = null
+					},
+					new Category
+					{
+						Name = "Automobilia",
+						ParentCategoryId = null
+					},
+					new Category
+					{
+						Name = "Memorabilia",
+						ParentCategoryId = null
+					},
+					new Category
+					{
+						Name = "Rare Books",
+						ParentCategoryId = null
+					},
+					new Category
+					{
+						Name = "Stamps",
+						ParentCategoryId = null
+					},
+					new Category
+					{
+						Name = "Sports Memorabilia",
+						ParentCategoryId = null
+					},
+					new Category
+					{
+						Name = "Comic Books",
+						ParentCategoryId = null
+					},
+					new Category
+					{
+						Name = "Trading Cards",
+						ParentCategoryId = null
+					},
+					new Category
+					{
+						Name = "Toys",
+						ParentCategoryId = null
+					},
+					new Category
+					{
+						Name = "Music Instruments",
+						ParentCategoryId = null
+					},
+					new Category
+					{
+						Name = "Music Records Vinyl",
+						ParentCategoryId = null
+					},
+					new Category
+					{
+						Name = "Wine",
+						ParentCategoryId = null
 					}
 				);
 			}
+
 
 			if (!_context.LotStatuses.Any())
 			{
