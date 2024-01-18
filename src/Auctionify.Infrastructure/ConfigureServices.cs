@@ -133,6 +133,8 @@ namespace Auctionify.Infrastructure
 			services.AddScoped<IFileRepository, FileRepository>();
 			services.AddScoped<IWatchlistRepository, WatchlistRepository>();
 			services.AddScoped<IRateRepository, RateRepository>();
+			services.AddScoped<IConversationRepository, ConversationRepository>();
+			services.AddScoped<IChatMessageRepository, ChatMessageRepository>();
 
 			services.AddTransient<IEmailService, SendGridEmailService>();
 			services.AddSingleton<IBlobService, BlobService>();

@@ -10,7 +10,7 @@ namespace Auctionify.Core.Entities
 
 		public decimal NewPrice { get; set; }
 
-		public virtual DateTime TimeStamp { get; set; }
+		public DateTime TimeStamp { get; set; }
 
 		public bool BidRemoved { get; set; }
 

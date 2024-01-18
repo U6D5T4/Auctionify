@@ -313,6 +313,172 @@ namespace Auctionify.UnitTests
 			};
 		}
 
+		public static List<Conversation> GetConversations()
+		{
+			return new List<Conversation>
+			{
+				new()
+				{
+					Id = 1,
+					BuyerId = 1,
+					Buyer = new User
+					{
+						Id = 1,
+						FirstName = "TestFirstName",
+						LastName = "TestLastName",
+					},
+					SellerId = 2,
+					Seller = new User
+					{
+						Id = 2,
+						FirstName = "TestFirstName",
+						LastName = "TestLastName",
+					},
+					LotId = 1,
+					ChatMessages = new List<ChatMessage>
+					{
+						new()
+						{
+							Id = 1,
+							Body = "Test message",
+							ConversationId = 1,
+							SenderId = 1,
+							IsRead = false,
+							TimeStamp = DateTime.Now
+						},
+						new()
+						{
+							Id = 2,
+							Body = "Test message",
+							ConversationId = 1,
+							SenderId = 2,
+							IsRead = false,
+							TimeStamp = DateTime.Now
+						},
+						new()
+						{
+							Id = 3,
+							Body = "Test message",
+							ConversationId = 1,
+							SenderId = 1,
+							IsRead = false,
+							TimeStamp = DateTime.Now
+						}
+					}
+				},
+				new()
+				{
+					Id = 2,
+					BuyerId = 1,
+					Buyer = new User
+					{
+						Id = 1,
+						FirstName = "TestFirstName",
+						LastName = "TestLastName",
+					},
+					SellerId = 3,
+					Seller = new User
+					{
+						Id = 3,
+						FirstName = "TestFirstName",
+						LastName = "TestLastName",
+					},
+					LotId = 2,
+					ChatMessages = new List<ChatMessage>
+					{
+						new()
+						{
+							Id = 4,
+							Body = "Test message",
+							ConversationId = 2,
+							SenderId = 1,
+							TimeStamp = DateTime.Now,
+							IsRead = false,
+						},
+						new()
+						{
+							Id = 5,
+							Body = "Test message",
+							ConversationId = 2,
+							SenderId = 3,
+							TimeStamp = DateTime.Now,
+							IsRead = false,
+						},
+						new()
+						{
+							Id = 6,
+							Body = "Test message",
+							ConversationId = 2,
+							SenderId = 1,
+							TimeStamp = DateTime.Now,
+							IsRead = false,
+						}
+					}
+				}
+			};
+		}
+
+		public static List<ChatMessage> GetChatMessages()
+		{
+			return new List<ChatMessage>
+			{
+				new()
+				{
+					Id = 1,
+					Body = "Test message",
+					ConversationId = 1,
+					SenderId = 1,
+					IsRead = false,
+					TimeStamp = DateTime.Now
+				},
+				new()
+				{
+					Id = 2,
+					Body = "Test message",
+					ConversationId = 1,
+					SenderId = 2,
+					IsRead = false,
+					TimeStamp = DateTime.Now
+				},
+				new()
+				{
+					Id = 3,
+					Body = "Test message",
+					ConversationId = 1,
+					SenderId = 1,
+					IsRead = false,
+					TimeStamp = DateTime.Now
+				},
+				new()
+				{
+					Id = 4,
+					Body = "Test message",
+					ConversationId = 2,
+					SenderId = 1,
+					TimeStamp = DateTime.Now,
+					IsRead = false,
+				},
+				new()
+				{
+					Id = 5,
+					Body = "Test message",
+					ConversationId = 2,
+					SenderId = 3,
+					TimeStamp = DateTime.Now,
+					IsRead = false,
+				},
+				new()
+				{
+					Id = 6,
+					Body = "Test message",
+					ConversationId = 2,
+					SenderId = 1,
+					TimeStamp = DateTime.Now,
+					IsRead = false,
+				}
+			};
+		}
+
 		public static UserManager<User> GetUserManagerMock()
 		{
 			var store = new Mock<IUserStore<User>>();
