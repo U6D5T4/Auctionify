@@ -45,5 +45,10 @@
 
 .transactions {
     padding-top: 32px;
-    width: 1400px;
+    max-width: 1400px;
+    &.left-align {
+        app-transactions {
+            text-align: left;
+        }
+    }
 }
