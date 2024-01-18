@@ -59,6 +59,7 @@ namespace Auctionify.Application.Features.Chats.Commands.CreateConversation
 			var buyerId = currentUserRole == UserRole.Buyer ? currentUser!.Id : lot!.BuyerId;
 
 			#region If there is already a conversation between the buyer and the seller for this lot, return it
+
 			var existingConversation = await _conversationRepository.GetAsync(
 				predicate: c =>
 					c.LotId == request.LotId && c.BuyerId == buyerId && c.SellerId == sellerId,
