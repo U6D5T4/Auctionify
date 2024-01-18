@@ -133,7 +133,14 @@ export class RatingComponent implements OnInit {
     }
 
     getTotalCount(): number {
-        return this.senderRates.length;
+        let totalCount = 0;
+        for (const key in this.userProfileData?.starCounts!) {
+            if (this.userProfileData?.starCounts!.hasOwnProperty(key)) {
+                totalCount += this.userProfileData?.starCounts![key];
+            }
+        }
+
+        return totalCount;
     }
 
     formatDate(date: Date | null): string {
