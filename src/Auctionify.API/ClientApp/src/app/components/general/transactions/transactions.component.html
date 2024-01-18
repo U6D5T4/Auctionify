@@ -42,45 +42,17 @@
                             transaction.transactionDate | date : 'LLLL dd, yyyy'
                         }}
                     </td>
-                    <ng-container
-                        *ngIf="
-                            transaction.transactionStatus === 'Withdraw' ||
-                            transaction.transactionStatus === 'Cancelled'
+                    <td
+                        class="transaction__status"
+                        [style.color]="
+                            getStatusColor(transaction.transactionStatus)
                         "
                     >
-                        <td class="transaction__status" style="color: #828282">
-                            <mat-icon class="transaction__circle-icon"
-                                >circle</mat-icon
-                            >
-                            {{ transaction.transactionStatus }}
-                        </td>
-                    </ng-container>
-                    <ng-container
-                        *ngIf="
-                            transaction.transactionStatus === 'Winner' ||
-                            transaction.transactionStatus === 'Sold'
-                        "
-                    >
-                        <td class="transaction__status" style="color: #2b9355">
-                            <mat-icon class="transaction__circle-icon"
-                                >circle</mat-icon
-                            >
-                            {{ transaction.transactionStatus }}
-                        </td>
-                    </ng-container>
-                    <ng-container
-                        *ngIf="
-                            transaction.transactionStatus === 'Loss' ||
-                            transaction.transactionStatus === 'Expired'
-                        "
-                    >
-                        <td class="transaction__status" style="color: #ab2d25">
-                            <mat-icon class="transaction__circle-icon"
-                                >circle</mat-icon
-                            >
-                            {{ transaction.transactionStatus }}
-                        </td>
-                    </ng-container>
+                        <mat-icon class="transaction__circle-icon"
+                            >circle</mat-icon
+                        >
+                        {{ transaction.transactionStatus }}
+                    </td>
                     <td class="transaction__amount">
                         {{ transaction.transactionAmount }}
                         {{ transaction.transactionCurrency }}
