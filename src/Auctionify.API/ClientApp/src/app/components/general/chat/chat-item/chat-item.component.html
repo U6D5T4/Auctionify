@@ -1,22 +1,39 @@
 <div class="chat">
     <div class="chat__inner" [ngClass]="isActive ? 'active' : ''">
         <div class="chat__avatar">
-            <img [src]="imageUrl" alt="avatar" />
+            <img
+                [src]="
+                    imageUrl
+                        ? imageUrl
+                        : '../../../../assets/icons/NoImage\.svg'
+                "
+                alt="avatar"
+            />
         </div>
         <div class="chat__main">
             <div class="chat__top">
                 <h4 class="chat__top-nickname">
-                    {{ userName }}
+                    {{
+                        userName && userName.trim().length > 0
+                            ? userName
+                            : email
+                    }}
                 </h4>
                 <p class="chat__top-time">
                     {{ messageDate | date : 'hh:mm aa' }}
                 </p>
             </div>
             <div class="chat__bottom">
-                <p class="chat__bottom-message-text">
-                    {{ messageText }}
-                </p>
-                <span class="chat__bottom-unread"> {{ unreadCount }} </span>
+                <div class="chat__bottom-message-container">
+                    <p class="chat__bottom-message-text">
+                        {{ messageText }}
+                    </p>
+                </div>
+                <span class="chat__bottom-unread">
+                    <p>
+                        {{ unreadCount }}
+                    </p>
+                </span>
             </div>
         </div>
     </div>

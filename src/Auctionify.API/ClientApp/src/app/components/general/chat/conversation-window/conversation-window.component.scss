@@ -22,16 +22,54 @@
         min-height: 0;
         flex: 1 1;
 
-        &-inner {
-            height: 100%;
-            overflow-y: scroll;
+        overflow-y: scroll;
+
+        &::-webkit-scrollbar {
+            height: 4px;
+            width: 4px;
+            margin-left: 10px;
         }
 
-        &-group {
-            display: flex;
-            flex-direction: column;
+        &::-webkit-scrollbar-track {
+            border-radius: 20px;
+            background-color: #DFE9EB;
+        }
+
+        &::-webkit-scrollbar-track:hover {
+            background-color: #DFE9EB;
+        }
+
+        &::-webkit-scrollbar-track:active {
+            background-color: #DFE9EB;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            border-radius: 16px;
+            background-color: rgba(#2B5293, 0.5);
+        }
+
+        &::-webkit-scrollbar-thumb:hover {
+            background-color: #3362AF;
+        }
+
+        &::-webkit-scrollbar-thumb:active {
+            background-color: #2B5293;
+        }
+
+        scrollbar-width: thin;
+        scrollbar-color: #2B5293 #DFE9EB;
+
+        &-inner {
+            height: 100%;
+            margin-right: 5px;
         }
     }
+
+    &-group {
+        display: flex;
+        flex-direction: column;
+    }
+
 
     &__date {
         text-align: center;
@@ -75,24 +113,46 @@
         gap: 16px;
     }
 
-    &__controls {}
+    &__controls {
+        display: flex;
+        gap: 4px;
+    }
+
 }
 
-.profile {
-    &-top__user {}
+.control {
+    &__button {
+        flex: 0 1;
+    }
 
-    &-top__settings {}
+    &__icon {
+        margin-left: 0;
+        margin-right: 0;
+    }
 }
 
 .user {
     display: flex;
     gap: 16px;
 
-    &__avatar {}
+    &__avatar {
+        max-width: 64px;
+        max-height: 64px;
+        min-width: 64px;
+        min-height: 64px;
+        height: 64px;
+        border-radius: 100%;
+        overflow: hidden;
 
-    &__fullname {}
+        & img {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+    }
+
 }
 
-.date {
-    &-header {}
+.send-message-input {
+    flex: 2 1;
 }

@@ -5,6 +5,11 @@ export interface ChatItem {
     unread: string | undefined;
 }
 
+export interface ConversationsResponse {
+    user: ChatUser;
+    conversations: Conversation[];
+}
+
 export interface Conversation {
     id: number;
     lotId: number;
@@ -17,7 +22,9 @@ export interface Conversation {
 export interface ChatUser {
     id: number;
     fullName: string;
-    profilePhoto: string;
+    profilePhoto: string | null;
+    role: string;
+    email: string;
 }
 
 export interface ChatMessage {

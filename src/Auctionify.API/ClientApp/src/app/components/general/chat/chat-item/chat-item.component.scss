@@ -1,6 +1,6 @@
 .chat {
     &__inner {
-        padding: 20px 16px;
+        padding: 16px;
         display: flex;
         gap: 16px;
         align-items: center;
@@ -31,6 +31,8 @@
         display: flex;
         flex-direction: column;
         gap: 8px;
+        min-width: 0;
+        flex: 1 1;
     }
 
     &__top {
@@ -48,16 +50,37 @@
 
     &__bottom {
         display: flex;
-        gap: 8px;
+        justify-content: space-between;
+
+        &-message-container {
+            min-width: 0;
+        }
+
+        &-message-text {
+            max-width: 240px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
 
         &-unread {
-            font-family: Onest;
-            font-size: 14px;
-            font-weight: 600;
-            color: white;
-            padding: 4px;
+            width: 26px;
+            height: 26px;
+            align-self: flex-end;
             border-radius: 100%;
             background-color: var(--color-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            & p {
+                font-family: Onest;
+                font-size: 14px;
+                font-weight: 600;
+                color: white;
+                padding: 4px;
+
+            }
         }
     }
 }

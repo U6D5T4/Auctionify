@@ -1,6 +1,6 @@
-import { Component, effect } from '@angular/core';
+import { Component, Input, effect } from '@angular/core';
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
-import { ChatMessage } from 'src/app/models/chats/chat-models';
+import { ChatMessage, Conversation } from 'src/app/models/chats/chat-models';
 
 interface GroupedMessages {
     date: string;
@@ -13,6 +13,8 @@ interface GroupedMessages {
     styleUrls: ['./conversation-window.component.scss'],
 })
 export class ConversationWindowComponent {
+    @Input() conversationId!: number;
+
     constructor(private authService: AuthorizeService) {
         effect(() => {
             this.currentUserId = this.authService.getUserId()!;

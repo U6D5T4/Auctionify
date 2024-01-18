@@ -111,8 +111,11 @@ namespace Auctionify.Application.Features.Chats.Queries.GetAllUserConversations
 								: conversation.BuyerId,
 						FullName =
 							conversation.BuyerId == user.Id
-								? $"{conversation.Seller.FirstName} {conversation.Seller.LastName}"
-								: $"{conversation.Buyer.FirstName} {conversation.Buyer.LastName}",
+								? $"{conversation.Seller?.FirstName} {conversation.Seller?.LastName}"
+								: $"{conversation.Buyer?.FirstName} {conversation.Buyer?.LastName}",
+						Email = conversation.BuyerId == user.Id
+                                ? conversation.Seller?.Email
+								: conversation.Buyer?.Email,
 						Role =
 							conversation.BuyerId == user.Id
 								? UserRole.Seller.ToString()

@@ -2,7 +2,14 @@
     <div class="conversation__profile-top">
         <div class="profile-top__user">
             <div class="user__avatar">
-                <img [src]="" alt="" />
+                <img
+                    [src]="
+                        conversation.chatUser.profilePhoto
+                            ? conversation.chatUser.profilePhoto
+                            : '../../../../assets/icons/NoImage\.svg'
+                    "
+                    alt="avatar"
+                />
             </div>
             <div class="user__fullname">Alex m</div>
         </div>
@@ -38,5 +45,20 @@
         </div>
     </div>
     <div class="conversation__separator"></div>
-    <div class="conversation__controls"></div>
+    <div class="conversation__controls">
+        <button class="control__button" mat-stroked-button>
+            <mat-icon class="control__icon"> attach_file </mat-icon>
+        </button>
+        <mat-form-field
+            class="send-message-input"
+            color="primary"
+            appearance="outline"
+        >
+            <mat-error>Email required</mat-error>
+            <input matInput placeholder="Type a message" />
+        </mat-form-field>
+        <button class="control__button" mat-flat-button color="primary">
+            <mat-icon class="control__icon"> send </mat-icon>
+        </button>
+    </div>
 </div>

@@ -6,12 +6,13 @@ import { Component, Inject, Input } from '@angular/core';
     styleUrls: ['./chat-item.component.scss'],
 })
 export class ChatItemComponent {
-    @Input() imageUrl!: string;
+    @Input() imageUrl!: string | null;
     @Input() userName!: string;
     @Input() messageText!: string;
     @Input() messageDate!: Date;
     @Input() unreadCount: number | undefined;
     @Input() isActive!: boolean;
+    @Input() email!: string;
 
     constructor() {}
 }

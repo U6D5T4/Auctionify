@@ -236,3 +236,9 @@ swiper-container::part(button-next) {
     top: 0;
     z-index: -1;
 }
+
+.send-message-input .mat-mdc-text-field-wrapper.mdc-text-field--outlined .mat-mdc-form-field-infix {
+    padding-top: 14px;
+    padding-bottom: 14px;
+    min-height: auto;
+}

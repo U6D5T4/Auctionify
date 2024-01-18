@@ -1,3 +1,11 @@
 .chat-item {
     cursor: pointer;
 }
+
+.chats {
+    &__conversations {
+        flex-direction: column;
+        display: flex;
+        gap: 12px;
+    }
+}

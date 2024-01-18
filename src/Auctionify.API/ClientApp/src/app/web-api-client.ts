@@ -28,6 +28,10 @@ import {
     SellerModel,
     UpdateUserProfileModel,
 } from './models/users/user-models';
+import {
+    Conversation,
+    ConversationsResponse,
+} from './models/chats/chat-models';
 
 export const API_BASE_URL = new InjectionToken('API_BASE_URL');
 
@@ -895,6 +899,24 @@ export class Client {
         return this.http.get(url, { params: queryParams }).pipe(
             mergeMap((response: any): Observable<FilterResponse> => {
                 return of(response);
+            })
+        );
+    }
+
+    getAllUserConversations(): Observable<ConversationsResponse> {
+        let url_ = this.baseUrl + `/api/chats/users/conversations`;
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<ConversationsResponse> => {
+                return of(response.body);
             })
         );
     }
