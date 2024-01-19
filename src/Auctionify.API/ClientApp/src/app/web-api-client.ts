@@ -25,6 +25,7 @@ import { AddBidModel } from './models/bids/bid-models';
 import { FilterLot } from './models/lots/filter';
 import {
     BuyerModel,
+    GetUserById,
     SellerModel,
     UpdateUserProfileModel,
 } from './models/users/user-models';
@@ -880,6 +881,30 @@ export class Client {
         let url_ = this.baseUrl + `/api/lots/sellers/draft`;
 
         return this.handleGetAllLotsWithStatusForSeller(url_, pageRequest);
+    }
+
+    getUserById(userId: number): Observable<GetUserById> {
+        let url_ = `${this.baseUrl}/api/users/buyers/${userId}`;
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<GetUserById> => {
+                let data!: GetUserById;
+
+                if (response.body !== null) {
+                    data = response.body;
+                }
+
+                return of(data);
+            })
+        );
     }
 
     private handleGetAllLotsWithStatusForSeller(

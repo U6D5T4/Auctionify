@@ -1,30 +1,44 @@
 export interface SellerModel {
-    firstName: string | null,
-    lastName: string | null,
-    email: string,
-    phoneNumber: string | null,
-    aboutMe: string | null,
-    profilePictureUrl: string | null,
-    createdLotsCount: number | null,
-    finishedLotsCount: number | null,
+    firstName: string | null;
+    lastName: string | null;
+    email: string;
+    phoneNumber: string | null;
+    aboutMe: string | null;
+    profilePictureUrl: string | null;
+    createdLotsCount: number | null;
+    finishedLotsCount: number | null;
 }
 
 export interface BuyerModel {
-    firstName: string | null,
-    lastName: string | null,
-    email: string,
-    phoneNumber: string | null,
-    aboutMe: string | null,
-    profilePictureUrl: string | null,
-    createdLotsCount: number | null,
-    finishedLotsCount: number | null,
+    firstName: string | null;
+    lastName: string | null;
+    email: string;
+    phoneNumber: string | null;
+    aboutMe: string | null;
+    profilePictureUrl: string | null;
+    createdLotsCount: number | null;
+    finishedLotsCount: number | null;
+}
+
+export interface GetUserById {
+    firstName: string | null;
+    lastName: string | null;
+    email: string;
+    phoneNumber: string | null;
+    aboutMe: string | null;
+    profilePictureUrl: string | null;
+    createdLotsCount: number | null;
+    finishedLotsCount: number | null;
+    averageRate: number | null;
+    ratesCount: number | null;
+    starCounts?: { [key: number]: number };
 }
 
 export interface UpdateUserProfileModel {
-    firstName: string | null,
-    lastName: string | null,
-    phoneNumber: string | null,
-    aboutMe: string | null,
-    profilePicture: File | null,
-    deleteProfilePicture: boolean,
+    firstName: string | null;
+    lastName: string | null;
+    phoneNumber: string | null;
+    aboutMe: string | null;
+    profilePicture: File | null;
+    deleteProfilePicture: boolean;
 }

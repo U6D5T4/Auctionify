@@ -1,0 +1,55 @@
+.main-container {
+    display: flex;
+    gap: 16px;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    border-radius: 16px;
+    border: 1px solid #E0E0E0;
+    padding: 40px;
+    min-width: 700px;
+
+    &__profile {
+        display: flex;
+        align-items: center;
+        gap: 80px;
+    }
+
+    &__photo {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 4px;
+    }
+
+    &__photo img {
+        border-radius: 50%;
+    }
+
+    &__name-date {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    &__about-me {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    &__personal-info {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    &__number-email {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+}
