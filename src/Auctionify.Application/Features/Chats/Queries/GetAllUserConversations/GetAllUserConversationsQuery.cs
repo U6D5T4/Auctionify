@@ -121,7 +121,17 @@ namespace Auctionify.Application.Features.Chats.Queries.GetAllUserConversations
 						Role =
 							conversation.BuyerId == user.Id
 								? UserRole.Seller.ToString()
-								: UserRole.Buyer.ToString()
+								: UserRole.Buyer.ToString(),
+						ProfilePictureUrl =
+							conversation.BuyerId == user.Id
+								? _blobService.GetBlobUrl(
+									_azureBlobStorageOptions.UserProfilePhotosFolderName,
+									conversation.Seller!.ProfilePicture
+								)
+								: _blobService.GetBlobUrl(
+									_azureBlobStorageOptions.UserProfilePhotosFolderName,
+									conversation.Buyer!.ProfilePicture
+								)
 					},
 					LastMessage = conversation.ChatMessages.Any()
 						? new Common.Models.UserConversations.LastMessage
