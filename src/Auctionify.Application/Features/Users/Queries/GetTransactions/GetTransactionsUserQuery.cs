@@ -125,34 +125,26 @@ namespace Auctionify.Application.Features.Users.Queries.GetTransactions
 								transactionBuyer.TransactionAmount = highestBid.NewPrice;
 								transactionBuyer.TransactionDate = highestBid.TimeStamp;
 
+								var allBids = await _bidRepository.GetUnpaginatedListAsync(
+									predicate: x => x.LotId == lot.Id && x.BuyerId == user.Id,
+									enableTracking: false,
+									cancellationToken: cancellationToken
+								);
+
+								var lastBid = allBids
+									.OrderByDescending(x => x.TimeStamp)
+									.FirstOrDefault();
+
+								if (lastBid!.BidRemoved)
+								{
+									transactionBuyer.TransactionStatus =
+										BuyerTransactionStatus.Withdraw.ToString();
+									transactionBuyer.TransactionAmount = lastBid.NewPrice;
+									transactionBuyer.TransactionDate = lastBid.TimeStamp;
+								}
+
 								transactions.Add(transactionBuyer);
 							}
-						}
-
-						var withdrawnBid = await _bidRepository.GetAsync(
-							predicate: x =>
-								x.LotId == lot.Id && x.BidRemoved && x.BuyerId == user!.Id,
-							enableTracking: false,
-							cancellationToken: cancellationToken
-						);
-
-						if (withdrawnBid is not null)
-						{
-							var transactionBuyerWithdrawn = new TransactionInfo
-							{
-								LotId = lot.Id,
-								LotTitle = lot.Title,
-								LotMainPhotoUrl = await _photoService.GetMainPhotoUrlAsync(
-									lot.Id,
-									cancellationToken
-								),
-								TransactionStatus = BuyerTransactionStatus.Withdraw.ToString(),
-								TransactionAmount = withdrawnBid!.NewPrice,
-								TransactionCurrency = lot.Currency!.Code,
-								TransactionDate = withdrawnBid.TimeStamp
-							};
-
-							transactions.Add(transactionBuyerWithdrawn);
 						}
 					}
 				}
