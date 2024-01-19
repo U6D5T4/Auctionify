@@ -135,7 +135,7 @@ namespace Auctionify.Application.Features.Users.Queries.GetTransactions
 									.OrderByDescending(x => x.TimeStamp)
 									.FirstOrDefault();
 
-								if (lastBid!.BidRemoved)
+								if (lastBid is not null && lastBid.BidRemoved)
 								{
 									transactionBuyer.TransactionStatus =
 										BuyerTransactionStatus.Withdraw.ToString();
