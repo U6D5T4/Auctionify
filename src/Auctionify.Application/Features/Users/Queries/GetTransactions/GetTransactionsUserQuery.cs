@@ -82,27 +82,52 @@ namespace Auctionify.Application.Features.Users.Queries.GetTransactions
 						{
 							transactionBuyer.TransactionStatus =
 								BuyerTransactionStatus.Winner.ToString();
+
+							transactionBuyer.LotId = lot.Id;
+							transactionBuyer.LotTitle = lot.Title;
+							transactionBuyer.TransactionCurrency = lot.Currency!.Code;
+							transactionBuyer.LotMainPhotoUrl =
+								await _photoService.GetMainPhotoUrlAsync(lot.Id, cancellationToken);
+
+							var highestBid = await GetHighestBidAsync(
+								lot,
+								cancellationToken,
+								user.Id
+							);
+
+							transactionBuyer.TransactionAmount = highestBid!.NewPrice;
+							transactionBuyer.TransactionDate = highestBid.TimeStamp;
+
+							transactions.Add(transactionBuyer);
 						}
 						else
 						{
-							transactionBuyer.TransactionStatus =
-								BuyerTransactionStatus.Loss.ToString();
+							var highestBid = await GetHighestBidAsync(
+								lot,
+								cancellationToken,
+								user.Id
+							);
+
+							if (highestBid is not null)
+							{
+								transactionBuyer.TransactionStatus =
+									BuyerTransactionStatus.Loss.ToString();
+
+								transactionBuyer.LotId = lot.Id;
+								transactionBuyer.LotTitle = lot.Title;
+								transactionBuyer.TransactionCurrency = lot.Currency!.Code;
+								transactionBuyer.LotMainPhotoUrl =
+									await _photoService.GetMainPhotoUrlAsync(
+										lot.Id,
+										cancellationToken
+									);
+
+								transactionBuyer.TransactionAmount = highestBid.NewPrice;
+								transactionBuyer.TransactionDate = highestBid.TimeStamp;
+
+								transactions.Add(transactionBuyer);
+							}
 						}
-
-						transactionBuyer.LotId = lot.Id;
-						transactionBuyer.LotTitle = lot.Title;
-						transactionBuyer.TransactionCurrency = lot.Currency!.Code;
-						transactionBuyer.LotMainPhotoUrl = await _photoService.GetMainPhotoUrlAsync(
-							lot.Id,
-							cancellationToken
-						);
-
-						var highestBid = await GetHighestBidAsync(lot, cancellationToken, user.Id);
-
-						transactionBuyer.TransactionAmount = highestBid!.NewPrice;
-						transactionBuyer.TransactionDate = highestBid.TimeStamp;
-
-						transactions.Add(transactionBuyer);
 
 						var withdrawnBid = await _bidRepository.GetAsync(
 							predicate: x =>
