@@ -103,13 +103,7 @@ namespace Auctionify.Application.Features.Users.Queries.GetTransactions
 						transactionBuyer.TransactionDate = highestBid.TimeStamp;
 
 						transactions.Add(transactionBuyer);
-					}
-					else if (
-						lot.LotStatus.Name != AuctionStatus.Sold.ToString()
-						|| lot.LotStatus.Name != AuctionStatus.NotSold.ToString()
-						|| lot.LotStatus.Name != AuctionStatus.Cancelled.ToString()
-					)
-					{
+
 						var withdrawnBid = await _bidRepository.GetAsync(
 							predicate: x =>
 								x.LotId == lot.Id && x.BidRemoved && x.BuyerId == user!.Id,
@@ -117,19 +111,23 @@ namespace Auctionify.Application.Features.Users.Queries.GetTransactions
 							cancellationToken: cancellationToken
 						);
 
-						if (withdrawnBid != null)
+						if (withdrawnBid is not null)
 						{
-							transactionBuyer.LotId = lot.Id;
-							transactionBuyer.LotTitle = lot.Title;
-							transactionBuyer.LotMainPhotoUrl =
-								await _photoService.GetMainPhotoUrlAsync(lot.Id, cancellationToken);
-							transactionBuyer.TransactionStatus =
-								BuyerTransactionStatus.Withdraw.ToString();
-							transactionBuyer.TransactionAmount = withdrawnBid!.NewPrice;
-							transactionBuyer.TransactionCurrency = lot.Currency!.Code;
-							transactionBuyer.TransactionDate = withdrawnBid.TimeStamp;
+							var transactionBuyerWithdrawn = new TransactionInfo
+							{
+								LotId = lot.Id,
+								LotTitle = lot.Title,
+								LotMainPhotoUrl = await _photoService.GetMainPhotoUrlAsync(
+									lot.Id,
+									cancellationToken
+								),
+								TransactionStatus = BuyerTransactionStatus.Withdraw.ToString(),
+								TransactionAmount = withdrawnBid!.NewPrice,
+								TransactionCurrency = lot.Currency!.Code,
+								TransactionDate = withdrawnBid.TimeStamp
+							};
 
-							transactions.Add(transactionBuyer);
+							transactions.Add(transactionBuyerWithdrawn);
 						}
 					}
 				}
