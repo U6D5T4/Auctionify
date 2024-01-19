@@ -1,4 +1,10 @@
 .conversation {
+    &-not-loaded {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     &-window {
         display: flex;
         flex-direction: column;
@@ -9,6 +15,7 @@
     &__profile-top {
         display: flex;
         justify-content: space-between;
+        align-items: center;
     }
 
     &__separator {
@@ -22,7 +29,7 @@
         min-height: 0;
         flex: 1 1;
 
-        overflow-y: scroll;
+        overflow-y: auto;
 
         &::-webkit-scrollbar {
             height: 4px;
@@ -75,6 +82,8 @@
         text-align: center;
         margin-top: 24px;
         margin-bottom: 24px;
+        position: sticky;
+        top: 0.6rem;
 
         & span {
             background-color: var(--color-container);
@@ -118,6 +127,14 @@
         gap: 4px;
     }
 
+}
+
+.profile {
+    &-top__user {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+    }
 }
 
 .control {

@@ -1,4 +1,5 @@
 import { Component, effect } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 
@@ -14,9 +15,13 @@ export class HeaderComponent {
         this.isUserBuyer = this.authService.isUserBuyer();
     });
 
-    constructor(private authService: AuthorizeService) {}
+    constructor(
+        private authService: AuthorizeService,
+        private router: Router
+    ) {}
 
     logout() {
         this.authService.logout();
+        this.router.navigate(['/home']);
     }
 }

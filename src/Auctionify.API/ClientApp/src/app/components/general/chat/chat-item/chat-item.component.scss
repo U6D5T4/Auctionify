@@ -66,6 +66,7 @@
         &-unread {
             width: 26px;
             height: 26px;
+            min-width: 26px;
             align-self: flex-end;
             border-radius: 100%;
             background-color: var(--color-main);

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, effect } from '@angular/core';
+import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 import { Conversation } from 'src/app/models/chats/chat-models';
 import { Client } from 'src/app/web-api-client';
 
@@ -8,7 +9,13 @@ import { Client } from 'src/app/web-api-client';
     styleUrls: ['./chat-page.component.scss'],
 })
 export class ChatPageComponent implements OnInit {
-    constructor(private client: Client) {}
+    isUserBuyer: boolean = false;
+
+    constructor(private client: Client, private authService: AuthorizeService) {
+        effect(() => {
+            this.isUserBuyer = this.authService.isUserBuyer();
+        });
+    }
     ngOnInit(): void {
         this.client.getAllUserConversations().subscribe({
             next: (result) => {
@@ -16,332 +23,20 @@ export class ChatPageComponent implements OnInit {
             },
         });
     }
-    chosenConversationId: number = 0;
+    chosenConversation: Conversation | null = null;
     chatConversations: Conversation[] = [];
-    // chatConversations: Conversation[] = [
-    //     {
-    //         id: 1,
-    //         lotId: 1,
-    //         chatUser: {
-    //             id: 1,
-    //             fullName: 'Anastasia M',
-    //             profilePhoto:
-    //                 'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
-    //         },
-    //         lastMessage: {
-    //             id: 23,
-    //             senderId: 1,
-    //             conversationId: 1,
-    //             body: "Hi there! I'm interested in the a...",
-    //             timeStamp: new Date(),
-    //             isRead: true,
-    //         },
-    //         unreadMessagesCount: 20,
-    //         isActive: false,
-    //     },
-    //     {
-    //         id: 2,
-    //         lotId: 1,
-    //         chatUser: {
-    //             id: 1,
-    //             fullName: 'Anastasia M',
-    //             profilePhoto:
-    //                 'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
-    //         },
-    //         lastMessage: {
-    //             id: 23,
-    //             senderId: 1,
-    //             conversationId: 1,
-    //             body: "Hi there! I'm interested in the a...",
-    //             timeStamp: new Date(),
-    //             isRead: true,
-    //         },
-    //         unreadMessagesCount: 20,
-    //         isActive: false,
-    //     },
-    //     {
-    //         id: 3,
-    //         lotId: 1,
-    //         chatUser: {
-    //             id: 1,
-    //             fullName: 'Anastasia M',
-    //             profilePhoto:
-    //                 'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
-    //         },
-    //         lastMessage: {
-    //             id: 23,
-    //             senderId: 1,
-    //             conversationId: 1,
-    //             body: "Hi there! I'm interested in the a...",
-    //             timeStamp: new Date(),
-    //             isRead: true,
-    //         },
-    //         unreadMessagesCount: 20,
-    //         isActive: false,
-    //     },
-    //     {
-    //         id: 4,
-    //         lotId: 1,
-    //         chatUser: {
-    //             id: 1,
-    //             fullName: 'Anastasia M',
-    //             profilePhoto:
-    //                 'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
-    //         },
-    //         lastMessage: {
-    //             id: 23,
-    //             senderId: 1,
-    //             conversationId: 1,
-    //             body: "Hi there! I'm interested in the a...",
-    //             timeStamp: new Date(),
-    //             isRead: true,
-    //         },
-    //         unreadMessagesCount: 20,
-    //         isActive: false,
-    //     },
-    //     {
-    //         id: 4,
-    //         lotId: 1,
-    //         chatUser: {
-    //             id: 1,
-    //             fullName: 'Anastasia M',
-    //             profilePhoto:
-    //                 'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
-    //         },
-    //         lastMessage: {
-    //             id: 23,
-    //             senderId: 1,
-    //             conversationId: 1,
-    //             body: "Hi there! I'm interested in the a...",
-    //             timeStamp: new Date(),
-    //             isRead: true,
-    //         },
-    //         unreadMessagesCount: 20,
-    //         isActive: false,
-    //     },
-    //     {
-    //         id: 4,
-    //         lotId: 1,
-    //         chatUser: {
-    //             id: 1,
-    //             fullName: 'Anastasia M',
-    //             profilePhoto:
-    //                 'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
-    //         },
-    //         lastMessage: {
-    //             id: 23,
-    //             senderId: 1,
-    //             conversationId: 1,
-    //             body: "Hi there! I'm interested in the a...",
-    //             timeStamp: new Date(),
-    //             isRead: true,
-    //         },
-    //         unreadMessagesCount: 20,
-    //         isActive: false,
-    //     },
-    //     {
-    //         id: 4,
-    //         lotId: 1,
-    //         chatUser: {
-    //             id: 1,
-    //             fullName: 'Anastasia M',
-    //             profilePhoto:
-    //                 'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
-    //         },
-    //         lastMessage: {
-    //             id: 23,
-    //             senderId: 1,
-    //             conversationId: 1,
-    //             body: "Hi there! I'm interested in the a...",
-    //             timeStamp: new Date(),
-    //             isRead: true,
-    //         },
-    //         unreadMessagesCount: 20,
-    //         isActive: false,
-    //     },
-    //     {
-    //         id: 4,
-    //         lotId: 1,
-    //         chatUser: {
-    //             id: 1,
-    //             fullName: 'Anastasia M',
-    //             profilePhoto:
-    //                 'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
-    //         },
-    //         lastMessage: {
-    //             id: 23,
-    //             senderId: 1,
-    //             conversationId: 1,
-    //             body: "Hi there! I'm interested in the a...",
-    //             timeStamp: new Date(),
-    //             isRead: true,
-    //         },
-    //         unreadMessagesCount: 20,
-    //         isActive: false,
-    //     },
-    //     {
-    //         id: 4,
-    //         lotId: 1,
-    //         chatUser: {
-    //             id: 1,
-    //             fullName: 'Anastasia M',
-    //             profilePhoto:
-    //                 'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
-    //         },
-    //         lastMessage: {
-    //             id: 23,
-    //             senderId: 1,
-    //             conversationId: 1,
-    //             body: "Hi there! I'm interested in the a...",
-    //             timeStamp: new Date(),
-    //             isRead: true,
-    //         },
-    //         unreadMessagesCount: 20,
-    //         isActive: false,
-    //     },
-    //     {
-    //         id: 4,
-    //         lotId: 1,
-    //         chatUser: {
-    //             id: 1,
-    //             fullName: 'Anastasia M',
-    //             profilePhoto:
-    //                 'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
-    //         },
-    //         lastMessage: {
-    //             id: 23,
-    //             senderId: 1,
-    //             conversationId: 1,
-    //             body: "Hi there! I'm interested in the a...",
-    //             timeStamp: new Date(),
-    //             isRead: true,
-    //         },
-    //         unreadMessagesCount: 20,
-    //         isActive: false,
-    //     },
-    //     {
-    //         id: 4,
-    //         lotId: 1,
-    //         chatUser: {
-    //             id: 1,
-    //             fullName: 'Anastasia M',
-    //             profilePhoto:
-    //                 'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
-    //         },
-    //         lastMessage: {
-    //             id: 23,
-    //             senderId: 1,
-    //             conversationId: 1,
-    //             body: "Hi there! I'm interested in the a...",
-    //             timeStamp: new Date(),
-    //             isRead: true,
-    //         },
-    //         unreadMessagesCount: 20,
-    //         isActive: false,
-    //     },
-    //     {
-    //         id: 4,
-    //         lotId: 1,
-    //         chatUser: {
-    //             id: 1,
-    //             fullName: 'Anastasia M',
-    //             profilePhoto:
-    //                 'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
-    //         },
-    //         lastMessage: {
-    //             id: 23,
-    //             senderId: 1,
-    //             conversationId: 1,
-    //             body: "Hi there! I'm interested in the a...",
-    //             timeStamp: new Date(),
-    //             isRead: true,
-    //         },
-    //         unreadMessagesCount: 20,
-    //         isActive: false,
-    //     },
-    //     {
-    //         id: 4,
-    //         lotId: 1,
-    //         chatUser: {
-    //             id: 1,
-    //             fullName: 'Anastasia M',
-    //             profilePhoto:
-    //                 'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
-    //         },
-    //         lastMessage: {
-    //             id: 23,
-    //             senderId: 1,
-    //             conversationId: 1,
-    //             body: "Hi there! I'm interested in the a...",
-    //             timeStamp: new Date(),
-    //             isRead: true,
-    //         },
-    //         unreadMessagesCount: 20,
-    //         isActive: false,
-    //     },
-    //     {
-    //         id: 4,
-    //         lotId: 1,
-    //         chatUser: {
-    //             id: 1,
-    //             fullName: 'Anastasia M',
-    //             profilePhoto:
-    //                 'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
-    //         },
-    //         lastMessage: {
-    //             id: 23,
-    //             senderId: 1,
-    //             conversationId: 1,
-    //             body: "Hi there! I'm interested in the a...",
-    //             timeStamp: new Date(),
-    //             isRead: true,
-    //         },
-    //         unreadMessagesCount: 20,
-    //         isActive: false,
-    //     },
-    //     {
-    //         id: 4,
-    //         lotId: 1,
-    //         chatUser: {
-    //             id: 1,
-    //             fullName: 'Anastasia M',
-    //             profilePhoto:
-    //                 'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
-    //         },
-    //         lastMessage: {
-    //             id: 23,
-    //             senderId: 1,
-    //             conversationId: 1,
-    //             body: "Hi there! I'm interested in the a...",
-    //             timeStamp: new Date(),
-    //             isRead: true,
-    //         },
-    //         unreadMessagesCount: 20,
-    //         isActive: false,
-    //     },
-    //     {
-    //         id: 4,
-    //         lotId: 1,
-    //         chatUser: {
-    //             id: 1,
-    //             fullName: 'Anastasia M',
-    //             profilePhoto:
-    //                 'https://buffer.com/cdn-cgi/image/w=1000,fit=contain,q=90,f=auto/library/content/images/size/w1200/2023/10/free-images.jpg',
-    //         },
-    //         lastMessage: {
-    //             id: 23,
-    //             senderId: 1,
-    //             conversationId: 1,
-    //             body: "Hi there! I'm interested in the a...",
-    //             timeStamp: new Date(),
-    //             isRead: true,
-    //         },
-    //         unreadMessagesCount: 20,
-    //         isActive: false,
-    //     },
-    // ];
 
     handleConversationChange(id: number) {
-        this.chosenConversationId = id;
+        this.chosenConversation = this.chatConversations.find(
+            (x) => x.id == id
+        )!;
+    }
+
+    getMainChatContainerWidthClass() {
+        if (this.isUserBuyer) {
+            return 'chat-width-buyer';
+        } else {
+            return 'chat-width-seller';
+        }
     }
 }

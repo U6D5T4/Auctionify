@@ -2,7 +2,7 @@
     <div class="chats__conversations">
         <app-chat-item
             *ngFor="let conversation of conversations"
-            [imageUrl]="conversation.chatUser.profilePhoto"
+            [imageUrl]="conversation.chatUser.profilePictureUrl"
             [userName]="conversation.chatUser.fullName"
             [messageText]="conversation.lastMessage.body"
             [unreadCount]="conversation.unreadMessagesCount"

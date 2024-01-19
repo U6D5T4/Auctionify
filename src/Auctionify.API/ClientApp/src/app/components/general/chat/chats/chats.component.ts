@@ -19,5 +19,6 @@ export class ChatsComponent {
             }
             return v;
         });
+        console.log(this.conversations);
     }
 }

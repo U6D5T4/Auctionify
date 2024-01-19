@@ -10,6 +10,10 @@ export interface ConversationsResponse {
     conversations: Conversation[];
 }
 
+export interface AllChatMessagesResponse {
+    chatMessages: ChatMessage[];
+}
+
 export interface Conversation {
     id: number;
     lotId: number;
@@ -22,7 +26,7 @@ export interface Conversation {
 export interface ChatUser {
     id: number;
     fullName: string;
-    profilePhoto: string | null;
+    profilePictureUrl: string | null;
     role: string;
     email: string;
 }

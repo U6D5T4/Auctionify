@@ -1,64 +1,71 @@
-<div class="conversation-window">
-    <div class="conversation__profile-top">
-        <div class="profile-top__user">
-            <div class="user__avatar">
-                <img
-                    [src]="
-                        conversation.chatUser.profilePhoto
-                            ? conversation.chatUser.profilePhoto
-                            : '../../../../assets/icons/NoImage\.svg'
-                    "
-                    alt="avatar"
-                />
-            </div>
-            <div class="user__fullname">Alex m</div>
-        </div>
-        <div class="profile-top__settings">
-            <button mat-fab>
-                <mat-icon>more_vert</mat-icon>
-            </button>
-        </div>
+<div *ngIf="messages.length == 0; else conversation_loaded">
+    <div class="conversation-not-loaded">
+        <h1>No messages!</h1>
     </div>
-    <div class="conversation__separator"></div>
-    <div class="conversation__main">
-        <div class="conversation__main-inner">
-            <div
-                class="conversation__main-group"
-                *ngFor="let group of groupMessagesByDate(messages)"
-            >
-                <div class="conversation__date">
-                    <span>{{ group.date }}</span>
+</div>
+<ng-template #conversation_loaded>
+    <div class="conversation-window">
+        <div class="conversation__profile-top">
+            <div class="profile-top__user">
+                <div class="user__avatar">
+                    <img
+                        [src]="
+                            conversation.chatUser.profilePictureUrl
+                                ? conversation.chatUser.profilePictureUrl
+                                : '../../../../assets/icons/NoImage\.svg'
+                        "
+                        alt="avatar"
+                    />
                 </div>
-                <div class="conversation__messages-container">
-                    <div
-                        class="conversation__message"
-                        [ngClass]="generateMessageClass(message)"
-                        *ngFor="let message of group.messages"
-                    >
-                        <!-- Display your individual messages here -->
-                        <div class="conversation__message-inner">
-                            {{ message.body }}
+                <div class="user__fullname">
+                    {{ conversation.chatUser.fullName }}
+                </div>
+            </div>
+            <div class="profile-top__settings">
+                <mat-icon>more_vert</mat-icon>
+            </div>
+        </div>
+        <div class="conversation__separator"></div>
+        <div class="conversation__main">
+            <div class="conversation__main-inner">
+                <div
+                    class="conversation__main-group"
+                    *ngFor="let group of groupMessagesByDate(messages)"
+                >
+                    <div class="conversation__date">
+                        <span>{{ group.date }}</span>
+                    </div>
+                    <div class="conversation__messages-container">
+                        <div
+                            class="conversation__message"
+                            [ngClass]="generateMessageClass(message)"
+                            *ngFor="let message of group.messages"
+                        >
+                            <!-- Display your individual messages here -->
+                            <div class="conversation__message-inner">
+                                {{ message.body }}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="conversation__separator"></div>
+        <div class="conversation__controls">
+            <button class="control__button" mat-stroked-button>
+                <mat-icon class="control__icon"> attach_file </mat-icon>
+            </button>
+            <mat-form-field
+                class="send-message-input"
+                color="primary"
+                appearance="outline"
+            >
+                <mat-error>Email required</mat-error>
+                <input matInput placeholder="Type a message" />
+            </mat-form-field>
+            <button class="control__button" mat-flat-button color="primary">
+                <mat-icon class="control__icon"> send </mat-icon>
+            </button>
+        </div>
     </div>
-    <div class="conversation__separator"></div>
-    <div class="conversation__controls">
-        <button class="control__button" mat-stroked-button>
-            <mat-icon class="control__icon"> attach_file </mat-icon>
-        </button>
-        <mat-form-field
-            class="send-message-input"
-            color="primary"
-            appearance="outline"
-        >
-            <mat-error>Email required</mat-error>
-            <input matInput placeholder="Type a message" />
-        </mat-form-field>
-        <button class="control__button" mat-flat-button color="primary">
-            <mat-icon class="control__icon"> send </mat-icon>
-        </button>
-    </div>
-</div>
+</ng-template>

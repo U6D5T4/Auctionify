@@ -1,21 +1,31 @@
-<div class="chat">
+<div class="chat" [ngClass]="getMainChatContainerWidthClass()">
     <div class="chat__conversations">
         <h2>Messages</h2>
-        <div *ngIf="chatConversations != null && chatConversations.length > 0">
+        <ng-container
+            *ngIf="chatConversations != null && chatConversations.length > 0"
+        >
             <app-chats
                 class="chats"
                 [conversations]="chatConversations"
                 (conversationChosen)="handleConversationChange($event)"
             ></app-chats>
-        </div>
+        </ng-container>
     </div>
     <div class="chat__separator"></div>
     <div class="chat__window">
         <app-conversation-window
             class="chat__window-conversation"
-            *ngIf="chosenConversationId > 0"
-            [conversationId]="chosenConversationId"
+            *ngIf="chosenConversation !== null; else no_chat"
+            [conversation]="chosenConversation"
         >
         </app-conversation-window>
+        <ng-template #no_chat>
+            <div class="chat__window-no-chat">
+                <img
+                    src="../../../../../assets/images/select_chat.svg"
+                    alt="select chat image"
+                />
+            </div>
+        </ng-template>
     </div>
 </div>

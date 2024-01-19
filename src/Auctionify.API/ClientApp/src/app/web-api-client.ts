@@ -29,6 +29,7 @@ import {
     UpdateUserProfileModel,
 } from './models/users/user-models';
 import {
+    AllChatMessagesResponse,
     Conversation,
     ConversationsResponse,
 } from './models/chats/chat-models';
@@ -916,6 +917,28 @@ export class Client {
 
         return this.http.request('get', url_, options_).pipe(
             mergeMap((response: any): Observable<ConversationsResponse> => {
+                return of(response.body);
+            })
+        );
+    }
+
+    getAllConversationChatMessages(
+        conversationId: number
+    ): Observable<AllChatMessagesResponse> {
+        let url_ =
+            this.baseUrl +
+            `/api/chats/users/conversations/${conversationId}/messages`;
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<AllChatMessagesResponse> => {
                 return of(response.body);
             })
         );
