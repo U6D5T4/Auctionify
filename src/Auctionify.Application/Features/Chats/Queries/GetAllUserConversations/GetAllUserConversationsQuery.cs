@@ -122,7 +122,18 @@ namespace Auctionify.Application.Features.Chats.Queries.GetAllUserConversations
 							conversation.BuyerId == user.Id
 								? UserRole.Seller.ToString()
 								: UserRole.Buyer.ToString(),
-					},
+                        ProfilePictureUrl =
+                            conversation.BuyerId == user.Id
+                                ? _blobService.GetBlobUrl(
+                                    _azureBlobStorageOptions.UserProfilePhotosFolderName,
+                                    conversation.Seller!.ProfilePicture
+                                )
+                                : _blobService.GetBlobUrl(
+                                    _azureBlobStorageOptions.UserProfilePhotosFolderName,
+                                    conversation.Buyer!.ProfilePicture
+                                )
+                    },
+
 					LastMessage = new Common.Models.UserConversations.LastMessage
 					{
 						Id = conversation.ChatMessages.Last().Id,
@@ -136,20 +147,6 @@ namespace Auctionify.Application.Features.Chats.Queries.GetAllUserConversations
 						cm => cm.SenderId != user.Id && !cm.IsRead
 					)
 				};
-
-                var conversationUserProfilePictureName = conversation.BuyerId == user.Id
-										? conversation.Seller?.ProfilePicture
-										: conversation.Buyer?.ProfilePicture;
-
-                if (conversationUserProfilePictureName != null)
-                {
-                    var conversationUserProfilePictureUrl = _blobService.GetBlobUrl(
-                        _azureBlobStorageOptions.UserProfilePhotosFolderName,
-                        conversationUserProfilePictureName
-                    );
-
-                    userConversation.ChatUser.ProfilePictureUrl = conversationUserProfilePictureUrl;
-                }
 
                 userConversationsList.Add(userConversation);
 			}

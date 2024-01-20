@@ -23,5 +23,9 @@ export class HeaderComponent {
     logout() {
         this.authService.logout();
         this.router.navigate(['/home']);
+
+        if (this.router.url === '/home') {
+            window.location.reload();
+        }
     }
 }
