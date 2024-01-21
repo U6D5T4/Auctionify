@@ -19,6 +19,7 @@ export class FeedbackComponent {
 
     initialRatesCount: number = 10;
     addRatesCount: number = 10;
+    starsCount: number = 5;
 
     noMoreRates: boolean = false;
 
@@ -46,35 +47,35 @@ export class FeedbackComponent {
 
     private fetchUserProfileData() {
         if (this.isUserBuyer()) {
-            this.client.getBuyer().subscribe(
-                (data: BuyerModel) => {
+            this.client.getBuyer().subscribe({
+                next: (data: BuyerModel) => {
                     this.userProfileData = data;
                     this.validate();
                 },
-                (error) => {
+                error: (error) => {
                     this.openDialog(
-                        error.errors! || [
+                        error.errors || [
                             'Something went wrong, please try again later',
                         ],
                         true
                     );
-                }
-            );
+                },
+            });
         } else if (this.isUserSeller()) {
-            this.client.getSeller().subscribe(
-                (data: SellerModel) => {
+            this.client.getSeller().subscribe({
+                next: (data: SellerModel) => {
                     this.userProfileData = data;
                     this.validate();
                 },
-                (error) => {
+                error: (error) => {
                     this.openDialog(
-                        error.errors! || [
+                        error.errors || [
                             'Something went wrong, please try again later',
                         ],
                         true
                     );
-                }
-            );
+                },
+            });
         }
     }
 
@@ -111,7 +112,7 @@ export class FeedbackComponent {
         const roundedAverage = Math.round(averageRating!);
 
         const stars: string[] = [];
-        for (let i = 1; i <= 5; i++) {
+        for (let i = 1; i <= this.starsCount; i++) {
             if (i <= roundedAverage) {
                 stars.push('star');
             } else if (i - roundedAverage === 0.5) {
@@ -143,9 +144,10 @@ export class FeedbackComponent {
     formatDate(date: Date | null): string {
         return date ? formatDate(date, 'dd LLLL, h:mm', 'en-US') : '';
     }
+
     getStars(count: number): string[] {
         const stars: string[] = [];
-        for (let i = 1; i <= 5; i++) {
+        for (let i = 1; i <= this.starsCount; i++) {
             if (i <= count) {
                 stars.push('star');
             } else {

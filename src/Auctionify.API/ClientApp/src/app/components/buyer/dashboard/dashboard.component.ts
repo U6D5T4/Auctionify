@@ -61,21 +61,21 @@ export class DashboardComponent implements OnInit {
     }
 
     private fetchUserProfileData() {
-        this.apiClient.getBuyer().subscribe(
-            (data: BuyerModel) => {
+        this.apiClient.getBuyer().subscribe({
+            next: (data: BuyerModel) => {
                 this.userProfileData = data;
                 this.validate();
             },
-            (error) => {
+            error: (error) => {
                 this.openDialog(
-                    error.errors! || [
+                    error.errors || [
                         'Something went wrong, please try again later',
                     ],
                     true
                 );
-        }
-        );
-        }
+            },
+        });
+    }
 
     private fetchRatesData() {
         const pagination: RatePaginationModel = {
@@ -83,19 +83,19 @@ export class DashboardComponent implements OnInit {
             pageSize: 2,
         };
 
-        this.apiClient.getRates(pagination).subscribe(
-            (userRate) => {
+        this.apiClient.getRates(pagination).subscribe({
+            next: (userRate) => {
                 this.senderRates = userRate.items;
             },
-            (error) => {
+            error: (error) => {
                 this.openDialog(
-                    error.errors! || [
+                    error.errors || [
                         'Something went wrong, please try again later',
                     ],
                     true
                 );
-                }
-        );
+            },
+        });
     }
 
     private validate() {
@@ -112,37 +112,9 @@ export class DashboardComponent implements OnInit {
                 text,
                 isError: error,
             },
-            });
+        });
 
-        dialogRef.closed.subscribe((res) => {});
-    }
-
-    getAverageStars(rate: number | null): string[] {
-        const averageRating = rate;
-
-        const roundedAverage = Math.round(averageRating!);
-
-        const stars: string[] = [];
-        for (let i = 1; i <= 5; i++) {
-            if (i <= roundedAverage) {
-                stars.push('star');
-            } else if (i - roundedAverage === 0.5) {
-                stars.push('star_half');
-            } else {
-                stars.push('star_border');
-                        }
-                        }
-
-        return stars;
-    }
-
-    getPercentage(count: number): string {
-        const total = this.getTotalCount();
-        return total > 0 ? `${(count / total) * 100}%` : '0%';
-        }
-
-    getTotalCount(): number {
-        return this.senderRates.length;
+        dialogRef.closed.subscribe(() => {});
     }
 
     getRecentUserBidForLot(lot: AuctionModel): number | null {

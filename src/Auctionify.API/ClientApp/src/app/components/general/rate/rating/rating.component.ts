@@ -26,7 +26,6 @@ export class RatingComponent implements OnInit {
     constructor(
         private authorizeService: AuthorizeService,
         private client: Client,
-        private router: Router,
         public dialog: Dialog
     ) {}
 
@@ -48,35 +47,35 @@ export class RatingComponent implements OnInit {
 
     private fetchUserProfileData() {
         if (this.isUserBuyer()) {
-            this.client.getBuyer().subscribe(
-                (data: BuyerModel) => {
+            this.client.getBuyer().subscribe({
+                next: (data: BuyerModel) => {
                     this.userProfileData = data;
                     this.validate();
                 },
-                (error) => {
+                error: (error) => {
                     this.openDialog(
-                        error.errors! || [
+                        error.errors || [
                             'Something went wrong, please try again later',
                         ],
                         true
                     );
-                }
-            );
+                },
+            });
         } else if (this.isUserSeller()) {
-            this.client.getSeller().subscribe(
-                (data: SellerModel) => {
+            this.client.getSeller().subscribe({
+                next: (data: SellerModel) => {
                     this.userProfileData = data;
                     this.validate();
                 },
-                (error) => {
+                error: (error) => {
                     this.openDialog(
-                        error.errors! || [
+                        error.errors || [
                             'Something went wrong, please try again later',
                         ],
                         true
                     );
-                }
-            );
+                },
+            });
         }
     }
 
