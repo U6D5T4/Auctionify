@@ -68,7 +68,13 @@ namespace Auctionify.Application.Features.Chats.Commands.CreateConversation
 
 			if (existingConversation != null)
 			{
-				return _mapper.Map<CreatedConversationResponse>(existingConversation);
+				var existingConversationResponse = _mapper.Map<CreatedConversationResponse>(
+					existingConversation
+				);
+
+				existingConversationResponse.Message = "Conversation already exists";
+
+				return existingConversationResponse;
 			}
 
 			#endregion
@@ -82,7 +88,11 @@ namespace Auctionify.Application.Features.Chats.Commands.CreateConversation
 
 			var result = await _conversationRepository.AddAsync(conversation);
 
-			return _mapper.Map<CreatedConversationResponse>(result);
+			var createdConversationResponse = _mapper.Map<CreatedConversationResponse>(result);
+
+			createdConversationResponse.Message = "Conversation created successfully";
+
+			return createdConversationResponse;
 		}
 	}
 }
