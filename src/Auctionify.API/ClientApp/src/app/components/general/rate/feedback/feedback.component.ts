@@ -85,20 +85,20 @@ export class FeedbackComponent {
             pageSize: 10,
         };
 
-        this.client.getFeedbacks(pagination).subscribe(
-            (userRate) => {
+        this.client.getFeedbacks(pagination).subscribe({
+            next: (userRate) => {
                 this.noMoreRates = userRate.hasNext;
                 this.receiverRates = userRate.items;
             },
-            (error) => {
+            error: (error) => {
                 this.openDialog(
-                    error.errors! || [
+                    error.errors || [
                         'Something went wrong, please try again later',
                     ],
                     true
                 );
-            }
-        );
+            },
+        });
     }
 
     loadMoreRates(): void {

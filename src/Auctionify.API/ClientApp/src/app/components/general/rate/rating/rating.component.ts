@@ -85,20 +85,20 @@ export class RatingComponent implements OnInit {
             pageSize: this.initialRatesCount,
         };
 
-        this.client.getRates(pagination).subscribe(
-            (userRate) => {
+        this.client.getRates(pagination).subscribe({
+            next: (userRate) => {
                 this.noMoreRates = userRate.hasNext;
                 this.senderRates = userRate.items;
             },
-            (error) => {
+            error: (error) => {
                 this.openDialog(
-                    error.errors! || [
+                    error.errors || [
                         'Something went wrong, please try again later',
                     ],
                     true
                 );
-            }
-        );
+            },
+        });
     }
 
     loadMoreRates(): void {
