@@ -26,7 +26,7 @@ export class DashboardComponent implements OnInit {
         this.client.getSeller().subscribe(
             (data: SellerModel) => {
                 this.userProfileData = data;
-                this.validate();
+                this.client.validateUserProfileData(this.userProfileData);
             },
             (error) => {
                 this.openDialog(
@@ -58,14 +58,6 @@ export class DashboardComponent implements OnInit {
                 );
             }
         );
-    }
-
-    private validate() {
-        if (!this.userProfileData?.averageRate) {
-            this.userProfileData!.averageRate = 0;
-        } else if (!this.userProfileData?.ratesCount) {
-            this.userProfileData!.ratesCount = 0;
-        }
     }
 
     openDialog(text: string[], error: boolean) {

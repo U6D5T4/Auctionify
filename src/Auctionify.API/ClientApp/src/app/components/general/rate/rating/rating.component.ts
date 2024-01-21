@@ -50,7 +50,7 @@ export class RatingComponent implements OnInit {
             this.client.getBuyer().subscribe({
                 next: (data: BuyerModel) => {
                     this.userProfileData = data;
-                    this.validate();
+                    this.client.validateUserProfileData(this.userProfileData);
                 },
                 error: (error) => {
                     this.openDialog(
@@ -65,7 +65,7 @@ export class RatingComponent implements OnInit {
             this.client.getSeller().subscribe({
                 next: (data: SellerModel) => {
                     this.userProfileData = data;
-                    this.validate();
+                    this.client.validateUserProfileData(this.userProfileData);
                 },
                 error: (error) => {
                     this.openDialog(
@@ -104,14 +104,6 @@ export class RatingComponent implements OnInit {
     loadMoreRates(): void {
         this.initialRatesCount += this.addRatesCount;
         this.fetchRatesData();
-    }
-
-    private validate() {
-        if (!this.userProfileData?.averageRate) {
-            this.userProfileData!.averageRate = 0;
-        } else if (!this.userProfileData?.ratesCount) {
-            this.userProfileData!.ratesCount = 0;
-        }
     }
 
     isUserSeller(): boolean {
