@@ -26,9 +26,9 @@ namespace Auctionify.Application.Features.Users.Queries.GetById
 
 		public GetByIdUserQueryHandler(
 			UserManager<User> userManager,
+			IMapper mapper,
 			IBlobService blobService,
 			IOptions<AzureBlobStorageOptions> azureBlobStorageOptions,
-			IMapper mapper,
 			IRateRepository rateRepository
 		)
         {

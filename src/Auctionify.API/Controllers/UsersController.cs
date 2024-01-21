@@ -29,7 +29,7 @@ namespace Auctionify.API.Controllers
 
 		[HttpGet("{id}")]
 		[Authorize(Roles = "Buyer, Seller")]
-		public async Task<IActionResult> GetById([FromQuery] string id)
+		public async Task<IActionResult> GetById(string id)
 		{
 			var result = await _mediator.Send(new GetByIdUserQuery { Id = id });
 
