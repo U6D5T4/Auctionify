@@ -884,7 +884,7 @@ export class Client {
     }
 
     getUserById(userId: number): Observable<GetUserById> {
-        let url_ = `${this.baseUrl}/api/users/buyers/${userId}`;
+        let url_ = `${this.baseUrl}/api/users/${userId}`;
 
         let options_: any = {
             observe: 'response',

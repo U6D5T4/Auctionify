@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import { GetUserById } from 'src/app/models/users/user-models';
 import { Client } from 'src/app/web-api-client';
+import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 
 @Component({
     selector: 'app-public-user-profile',
@@ -17,6 +18,7 @@ export class PublicUserProfileComponent implements OnInit {
     constructor(
         private client: Client,
         public dialog: Dialog,
+        public authClient: AuthorizeService,
         private activeRoute: ActivatedRoute
     ) {}
 
@@ -27,19 +29,16 @@ export class PublicUserProfileComponent implements OnInit {
     private fetchUserProfileData() {
         const userId = this.activeRoute.snapshot.params['id'];
 
-        this.client.getUserById(userId).subscribe(
-            (data: GetUserById) => {
-                this.userProfileData = data;
-            },
-            (error) => {
+        this.client.getUserById(userId).subscribe({
+            next: (data: GetUserById) => (this.userProfileData = data),
+            error: (error) =>
                 this.openDialog(
                     error.errors! || [
                         'Something went wrong, please try again later',
                     ],
                     true
-                );
-            }
-        );
+                ),
+        });
     }
 
     openDialog(text: string[], error: boolean) {

@@ -7,13 +7,13 @@ import { PublicUserProfileComponent } from './public-user-profile/public-user-pr
 
 const profileRoutes: Routes = [
     {
-        path: '/id',
-        component: PublicUserProfileComponent,
+        path: '',
+        component: UserProfileComponent,
         pathMatch: 'full',
     },
     {
-        path: '',
-        component: UserProfileComponent,
+        path: ':id',
+        component: PublicUserProfileComponent,
         pathMatch: 'full',
     },
     {
