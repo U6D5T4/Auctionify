@@ -50,7 +50,6 @@ export class FeedbackComponent {
             this.client.getBuyer().subscribe({
                 next: (data: BuyerModel) => {
                     this.userProfileData = data;
-                    this.validate();
                 },
                 error: (error) => {
                     this.openDialog(
@@ -65,7 +64,6 @@ export class FeedbackComponent {
             this.client.getSeller().subscribe({
                 next: (data: SellerModel) => {
                     this.userProfileData = data;
-                    this.validate();
                 },
                 error: (error) => {
                     this.openDialog(
@@ -106,33 +104,6 @@ export class FeedbackComponent {
         this.fetchRatesData();
     }
 
-    getAverageStars(rate: number | null): string[] {
-        const averageRating = rate;
-
-        const roundedAverage = Math.round(averageRating!);
-
-        const stars: string[] = [];
-        for (let i = 1; i <= this.starsCount; i++) {
-            if (i <= roundedAverage) {
-                stars.push('star');
-            } else if (i - roundedAverage === 0.5) {
-                stars.push('star_half');
-            } else {
-                stars.push('star_border');
-            }
-        }
-
-        return stars;
-    }
-
-    private validate() {
-        if (!this.userProfileData?.averageRate) {
-            this.userProfileData!.averageRate = 0;
-        } else if (!this.userProfileData?.ratesCount) {
-            this.userProfileData!.ratesCount = 0;
-        }
-    }
-
     isUserSeller(): boolean {
         return this.authorizeService.isUserSeller();
     }
@@ -143,17 +114,5 @@ export class FeedbackComponent {
 
     formatDate(date: Date | null): string {
         return date ? formatDate(date, 'dd LLLL, h:mm', 'en-US') : '';
-    }
-
-    getStars(count: number): string[] {
-        const stars: string[] = [];
-        for (let i = 1; i <= this.starsCount; i++) {
-            if (i <= count) {
-                stars.push('star');
-            } else {
-                stars.push('star_border');
-            }
-        }
-        return stars;
     }
 }

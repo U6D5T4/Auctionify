@@ -8,6 +8,7 @@ import { BuyerModel, SellerModel } from 'src/app/models/users/user-models';
 import { Client } from 'src/app/web-api-client';
 import { UserDataValidatorService } from 'src/app/services/user-data-validator/user-data-validator.service';
 import { Rate, RatePaginationModel } from 'src/app/models/rates/rate-models';
+import { RateCalculatorService } from 'src/app/services/rate-calculator/rate-calculator.service';
 
 @Component({
     selector: 'app-rating',
@@ -27,7 +28,8 @@ export class RatingComponent implements OnInit {
         private authorizeService: AuthorizeService,
         private client: Client,
         public dialog: Dialog,
-        public userDataValidator: UserDataValidatorService
+        public userDataValidator: UserDataValidatorService,
+        public ratesCalculator: RateCalculatorService
     ) {}
 
     ngOnInit(): void {
@@ -141,25 +143,6 @@ export class RatingComponent implements OnInit {
 
     formatDate(date: Date | null): string {
         return date ? formatDate(date, 'dd LLLL, h:mm', 'en-US') : '';
-    }
-
-    getAverageStars(rate: number | null): string[] {
-        const averageRating = rate;
-
-        const roundedAverage = Math.round(averageRating!);
-
-        const stars: string[] = [];
-        for (let i = 1; i <= 5; i++) {
-            if (i <= roundedAverage) {
-                stars.push('star');
-            } else if (i - roundedAverage === 0.5) {
-                stars.push('star_half');
-            } else {
-                stars.push('star_border');
-            }
-        }
-
-        return stars;
     }
 
     getStars(count: number): string[] {
