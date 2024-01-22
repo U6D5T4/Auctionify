@@ -1,4 +1,81 @@
 .dashboard {
+    &__container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 40px;
+        gap: 40px;
+        margin: 0 auto;
+    }
+
+    &__rating-section {
+        display: flex;
+        gap: 32px;
+        min-width: 200px;
+    }
+
+    &__rating-left {
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+    }
+
+    &__options {
+        display: flex;
+        gap: 16px;
+    }
+
+    &__options button {
+        height: 48px;
+        border-radius: 32px;
+        border: none;
+        background-color: #F2F5F7;
+        font-weight: bold;
+        font-family: 'Onest', sans-serif;
+    }
+
+    &__rates {
+        display: flex;
+        gap: 32px;
+        align-items: center;
+    }
+
+    &__container-rate {
+        border-radius: 16px;
+        border: 1px solid #e0e0e0;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+    }
+
+    &__rating-btn {
+        width: 130px;
+    }
+
+    &__feedback-btn {
+        width: 160px;
+    }
+
+    &__see-more-comments-btn button {
+        width: 392px;
+        min-width: 250px;
+        border: 2px solid #2B5293;
+        color: #2B5293;
+    }
+
+    &__btn-content {
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
+        align-items: center;
+    }
+
+    &__no-comments {
+        display: flex;
+        justify-content: center;
+    }
+
     &-main {
         padding: 40px;
         padding-top: 24px;
@@ -41,6 +118,12 @@
         line-height: 40px;
         text-align: left;
     }
+}
+
+.review {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
 }
 
 .transactions {

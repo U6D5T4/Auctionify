@@ -1,4 +1,6 @@
-﻿namespace Auctionify.Application.Features.Users.Queries.GetSeller
+﻿using Auctionify.Application.Common.DTOs;
+
+namespace Auctionify.Application.Features.Users.Queries.GetSeller
 {
 	public class GetSellerResponse
 	{
@@ -17,5 +19,11 @@
 		public int CreatedLotsCount { get; set; }
 
 		public int FinishedLotsCount { get; set; }
+
+		public double AverageRate { get; set; }
+
+		public int RatesCount { get; set; }
+
+		public Dictionary<byte, int> StarCounts { get; set; } = new Dictionary<byte, int>();
 	}
 }

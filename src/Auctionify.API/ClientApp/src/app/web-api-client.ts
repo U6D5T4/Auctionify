@@ -28,6 +28,11 @@ import {
     SellerModel,
     UpdateUserProfileModel,
 } from './models/users/user-models';
+import {
+    Rate,
+    RatePaginationModel,
+    RateResponse,
+} from './models/rates/rate-models';
 
 export const API_BASE_URL = new InjectionToken('API_BASE_URL');
 
@@ -866,6 +871,59 @@ export class Client {
             })
         );
     }
+
+    getRates(params: RatePaginationModel): Observable<RateResponse> {
+        let url_ = this.baseUrl + `/api/rates/rates`;
+
+        let queryParams = new HttpParams();
+
+        if (params.pageIndex !== null) {
+            queryParams = queryParams.set(
+                'PageRequest.PageIndex',
+                params.pageIndex.toString()
+            );
+        }
+
+        if (params.pageSize !== null) {
+            queryParams = queryParams.set(
+                'PageRequest.PageSize',
+                params.pageSize.toString()
+            );
+        }
+
+        return this.http.get(url_, { params: queryParams }).pipe(
+            mergeMap((response: any): Observable<RateResponse> => {
+                return of(response);
+            })
+        );
+    }
+
+    getFeedbacks(params: RatePaginationModel): Observable<RateResponse> {
+        let url_ = this.baseUrl + `/api/rates/feedbacks`;
+
+        let queryParams = new HttpParams();
+
+        if (params.pageIndex !== null) {
+            queryParams = queryParams.set(
+                'PageRequest.PageIndex',
+                params.pageIndex.toString()
+            );
+        }
+
+        if (params.pageSize !== null) {
+            queryParams = queryParams.set(
+                'PageRequest.PageSize',
+                params.pageSize.toString()
+            );
+        }
+
+        return this.http.get(url_, { params: queryParams }).pipe(
+            mergeMap((response: any): Observable<RateResponse> => {
+                return of(response);
+            })
+        );
+    }
+
     getAllActiveLotsForSeller(
         pageRequest: PageRequest
     ): Observable<FilterResponse> {

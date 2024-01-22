@@ -1,7 +1,12 @@
 ﻿using Auctionify.Application.Common.Interfaces;
+using Auctionify.Application.Common.Interfaces.Repositories;
+using Auctionify.Application.Common.Models.Requests;
 using Auctionify.Application.Common.Options;
+using Auctionify.Application.Features.Lots.Queries.GetAll;
 using Auctionify.Application.Features.Users.Queries.GetBuyer;
 using Auctionify.Core.Entities;
+using Auctionify.Infrastructure.Persistence;
+using Auctionify.Infrastructure.Repositories;
 using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
@@ -17,9 +22,13 @@ namespace Auctionify.UnitTests.GetBuyerTests
 		private readonly IMapper _mapper;
 		private readonly Mock<ICurrentUserService> _currentUserServiceMock;
 		private readonly UserManager<User> _userManager;
+		private readonly IRateRepository _rateRepository;
 
 		public GetBuyerQueryHandlerTests()
 		{
+			var mockDbContext = DbContextMock.GetMock<Rate, ApplicationDbContext>(EntitiesSeeding.GetRates(), ctx => ctx.Rates);
+			mockDbContext = DbContextMock.GetMock(EntitiesSeeding.GetLotStatuses(), ctx => ctx.LotStatuses, mockDbContext);
+
 			var configuration = new MapperConfiguration(
 				cfg =>
 					cfg.AddProfiles(
@@ -34,6 +43,8 @@ namespace Auctionify.UnitTests.GetBuyerTests
 
 			_currentUserServiceMock = new Mock<ICurrentUserService>();
 			_userManager = EntitiesSeeding.GetUserManagerMock();
+
+			_rateRepository = new RateRepository(mockDbContext.Object);
 		}
 
 		#endregion
@@ -44,7 +55,10 @@ namespace Auctionify.UnitTests.GetBuyerTests
 		public async Task GetBuyerQueryHandler_WhenCalled_ReturnsBuyerResponse()
 		{
 			// Arrange
-			var query = new GetBuyerQuery();
+			var query = new GetBuyerQuery
+			{
+				PageRequest = new PageRequest { PageIndex = 0, PageSize = 10 }
+			};
 			var testUrl = "test-url";
 			var blobServiceMock = new Mock<IBlobService>();
 			var azureBlobStorageOptionsMock = new Mock<IOptions<AzureBlobStorageOptions>>();
@@ -72,7 +86,8 @@ namespace Auctionify.UnitTests.GetBuyerTests
 				_userManager,
 				blobServiceMock.Object,
 				azureBlobStorageOptionsMock.Object,
-				_mapper
+				_mapper,
+				_rateRepository
 			);
 
 			// Act

@@ -21,6 +21,15 @@ const routes: Routes = [
         canActivate: [isLoggedInGuard],
     },
     {
+        path: 'rating',
+        loadChildren: () =>
+            import('./components/general/rate/rate.module').then(
+                (m) => m.RateModule
+            ),
+        data: { breadcrumb: { skip: true } },
+        canActivate: [isLoggedInGuard],
+    },
+    {
         path: 'seller',
         loadChildren: () =>
             import('./components/seller/seller.module').then(

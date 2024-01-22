@@ -13,6 +13,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { BuyerRoutingModule } from './buyer-routing.module';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { WishlistComponent } from './wishlist/wishlist.component';
+import { UiElementsModule } from 'src/app/ui-elements/ui-elements.module';
 import { GeneralModule } from '../general/general.module';
 
 @NgModule({
@@ -29,6 +30,7 @@ import { GeneralModule } from '../general/general.module';
         MatCheckboxModule,
         MatDialogModule,
         ReactiveFormsModule,
+        UiElementsModule,
         GeneralModule,
     ],
     exports: [],
