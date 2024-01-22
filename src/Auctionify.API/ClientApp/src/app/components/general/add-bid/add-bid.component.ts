@@ -135,7 +135,7 @@ export class AddBidComponent implements OnInit {
     }
 
     maxBidValidator(control: FormControl) {
-        const maxBid = 100000; // 100К
+        const maxBid = 500000; // 500К
         if (control.value && control.value > maxBid) {
             return { maxBidExceeded: true };
         }

@@ -1,12 +1,12 @@
 <div class="withdraw-bid-operation">
-    <h1 class="withdraw-bid-operation__title">Withdraw Bid</h1>
+    <h1 class="withdraw-bid-operation__title">Withdraw bid</h1>
     <p class="withdraw-bid-operation__description">
         Are you sure you want to withdraw your bid?
     </p>
     <div class="withdraw-bid-operation__buttons">
         <button
             type="submit"
-            mat-raised-button
+            mat-button
             class="withdraw-bid-button"
             (click)="confirmWithdraw()"
             *ngIf="bidId !== null"

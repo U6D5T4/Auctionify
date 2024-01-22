@@ -16,6 +16,7 @@ import { Rate, RatePaginationModel } from 'src/app/models/rates/rate-models';
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import { BuyerModel } from 'src/app/models/users/user-models';
 import { UserDataValidatorService } from 'src/app/services/user-data-validator/user-data-validator.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-dashboard',
@@ -183,7 +184,7 @@ export class DashboardComponent implements OnInit {
             this.apiClient.addToWatchlist(lot.id).subscribe({
                 next: (result) => {
                     this.snackBar.open(
-                        'Successfully added the lot to watchlist',
+                        'Successfully added the lot to wishlist',
                         'Close',
                         {
                             horizontalPosition: 'center',
@@ -213,6 +214,7 @@ export class DashboardComponent implements OnInit {
                 data: {
                     lotId: lot.id,
                 },
+                autoFocus: false,
             });
 
             dialog.closed.subscribe({
@@ -223,6 +225,9 @@ export class DashboardComponent implements OnInit {
                     if (updatedAuction) {
                         updatedAuction.isInWatchlist = false;
                         this.loadLotsInWatchlist();
+                        this.loadBuyerAuctions();
+                        this.currentIndex = 0;
+                        this.noMoreAuctionsToLoad = false;
                     }
                     this.loadLotsInWatchlist();
                 },
