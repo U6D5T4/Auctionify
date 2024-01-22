@@ -12,6 +12,11 @@ import {
 import { RemoveFromWatchlistComponent } from '../../general/remove-from-watchlist/remove-from-watchlist.component';
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 import { DateCalculationService } from 'src/app/services/date-calculation/date-calculation.service';
+import { Rate, RatePaginationModel } from 'src/app/models/rates/rate-models';
+import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
+import { BuyerModel } from 'src/app/models/users/user-models';
+import { UserDataValidatorService } from 'src/app/services/user-data-validator/user-data-validator.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-dashboard',
@@ -22,6 +27,8 @@ export class DashboardComponent implements OnInit {
     private readonly MAIN_BLUE_COLOR: string = '#2b5293';
     private readonly MAIN_RED_COLOR: string = '#ab2d25';
     private readonly MAIN_GREEN_COLOR: string = '#2b9355';
+    userProfileData: BuyerModel | null = null;
+    senderRates: Rate[] = [];
 
     priceColor: string = 'black';
 
@@ -41,7 +48,8 @@ export class DashboardComponent implements OnInit {
         private snackBar: MatSnackBar,
         private dialog: Dialog,
         private authService: AuthorizeService,
-        private dateCalculationService: DateCalculationService
+        private dateCalculationService: DateCalculationService,
+        private userDataValidator: UserDataValidatorService
     ) {
         effect(() => {
             this.currentBuyerId = this.authService.getUserId()!;
@@ -51,6 +59,57 @@ export class DashboardComponent implements OnInit {
     ngOnInit(): void {
         this.loadBuyerAuctions();
         this.loadLotsInWatchlist();
+        this.fetchUserProfileData();
+        this.fetchRatesData();
+    }
+
+    private fetchUserProfileData() {
+        this.apiClient.getBuyer().subscribe({
+            next: (data: BuyerModel) => {
+                this.userProfileData = data;
+                this.userDataValidator.validateUserProfileData(data);
+            },
+            error: (error) => {
+                this.openDialog(
+                    error.errors || [
+                        'Something went wrong, please try again later',
+                    ],
+                    true
+                );
+            },
+        });
+    }
+
+    private fetchRatesData() {
+        const pagination: RatePaginationModel = {
+            pageIndex: 0,
+            pageSize: 2,
+        };
+
+        this.apiClient.getRates(pagination).subscribe({
+            next: (userRate) => {
+                this.senderRates = userRate.items;
+            },
+            error: (error) => {
+                this.openDialog(
+                    error.errors || [
+                        'Something went wrong, please try again later',
+                    ],
+                    true
+                );
+            },
+        });
+    }
+
+    openDialog(text: string[], error: boolean) {
+        const dialogRef = this.dialog.open<string>(DialogPopupComponent, {
+            data: {
+                text,
+                isError: error,
+            },
+        });
+
+        dialogRef.closed.subscribe(() => {});
     }
 
     getRecentUserBidForLot(lot: AuctionModel): number | null {
@@ -125,7 +184,7 @@ export class DashboardComponent implements OnInit {
             this.apiClient.addToWatchlist(lot.id).subscribe({
                 next: (result) => {
                     this.snackBar.open(
-                        'Successfully added the lot to watchlist',
+                        'Successfully added the lot to wishlist',
                         'Close',
                         {
                             horizontalPosition: 'center',
@@ -155,6 +214,7 @@ export class DashboardComponent implements OnInit {
                 data: {
                     lotId: lot.id,
                 },
+                autoFocus: false,
             });
 
             dialog.closed.subscribe({
@@ -165,6 +225,9 @@ export class DashboardComponent implements OnInit {
                     if (updatedAuction) {
                         updatedAuction.isInWatchlist = false;
                         this.loadLotsInWatchlist();
+                        this.loadBuyerAuctions();
+                        this.currentIndex = 0;
+                        this.noMoreAuctionsToLoad = false;
                     }
                     this.loadLotsInWatchlist();
                 },

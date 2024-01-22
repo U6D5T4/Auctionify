@@ -1,6 +1,15 @@
 .dashboard {
-    &__auction-border-box {
+    &__title {
+        display: flex;
         padding-top: 40px;
+        padding-bottom: 32px;
+        max-width: 1400px;
+        margin: 0 auto;
+        color: var(--color-text-primary);
+        font-size: 32px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 40px;
     }
 
     &__auction-lots {
@@ -23,6 +32,12 @@
         display: flex;
         justify-content: space-between;
         width: 100%;
+    }
+
+    &__rating-section {
+        display: flex;
+        gap: 32px;
+        min-width: 200px;
     }
 
     &__auction-title {
@@ -66,6 +81,36 @@
         padding-left: 20px;
     }
 
+    &__transactions-section {
+        display: flex;
+        justify-content: space-between;
+        max-width: 1400px;
+        width: 100%;
+        margin: 0 auto;
+        padding-top: 40px;
+    }
+
+    &__transactions {
+        padding-top: 32px;
+    }
+
+    &__transactions-title {
+        display: flex;
+        align-items: center;
+        color: var(--color-text-primary);
+        font-size: 32px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 40px;
+    }
+
+    &__transactions-show-all {
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 24px;
+    }
+
     &__wishlist-container {
         display: flex;
         flex-direction: column;
@@ -85,10 +130,18 @@
     &__wishlist-title {
         display: flex;
         align-items: center;
+        color: var(--color-text-primary);
+        font-size: 32px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 40px;
     }
 
     &__wishlist-show-all {
-        font-weight: bold;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 24px;
     }
 
     &__wishlist-list {
@@ -122,6 +175,77 @@
         font-size: 18px;
         padding-left: 20px;
     }
+
+    &__rating-section {
+        display: flex;
+        gap: 32px;
+        min-width: 200px;
+    }
+
+    &__rating-left {
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+    }
+
+    &__container-main {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 40px;
+        margin: 0 auto;
+    }
+
+    &__options {
+        display: flex;
+        gap: 16px;
+    }
+
+    &__options button {
+        height: 48px;
+        border-radius: 32px;
+        border: none;
+        background-color: #F2F5F7;
+        font-weight: bold;
+        font-family: 'Onest', sans-serif;
+    }
+
+    &__rates {
+        display: flex;
+        gap: 32px;
+        align-items: center;
+    }
+
+    &__container-rate {
+        border-radius: 16px;
+        border: 1px solid #e0e0e0;
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        gap: 40px;
+    }
+
+    &__rating-btn {
+        width: 130px;
+    }
+
+    &__feedback-btn {
+        width: 160px;
+    }
+
+    &__see-more-comments-btn button {
+        width: 392px;
+        min-width: 250px;
+        border: 2px solid #2B5293;
+        color: #2B5293;
+    }
+
+    &__btn-content {
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
+        align-items: center;
+    }
 }
 
 .auction {
@@ -133,8 +257,7 @@
 
     &__image img {
         border-radius: 18.7px;
-        background: url(../../../../assets/icons/NoImage.svg),
-            lightgray 50% / cover no-repeat;
+        background: url(../../../../assets/icons/NoImage.svg), lightgray 50% / cover no-repeat;
     }
 
     &__info {
@@ -153,10 +276,8 @@
         font-style: normal;
         font-weight: 600;
         line-height: 24px;
-
         display: flex;
         align-items: center;
-
         flex-grow: 1;
     }
 
@@ -253,7 +374,6 @@
 }
 
 .show-more-button {
-    background-color: var(--color-main);
     padding: 12px;
     color: white;
     border: none;
@@ -329,4 +449,10 @@
         font-size: 16px;
         color: var(--color-placeholder);
     }
+}
+
+.review {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
 }

@@ -14,6 +14,7 @@ import { UpdateUserProfileComponent } from './update-user-profile/update-user-pr
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { ProfileRoutingModule } from './profile-routing.module';
 import { PublicUserProfileComponent } from './public-user-profile/public-user-profile.component';
+import { UiElementsModule } from 'src/app/ui-elements/ui-elements.module';
 
 @NgModule({
     imports: [
@@ -26,6 +27,7 @@ import { PublicUserProfileComponent } from './public-user-profile/public-user-pr
         MatProgressSpinnerModule,
         DialogModule,
         ProfileRoutingModule,
+        UiElementsModule,
     ],
 
     declarations: [
@@ -40,6 +42,7 @@ import { PublicUserProfileComponent } from './public-user-profile/public-user-pr
         UserProfileComponent,
         UpdateUserProfileComponent,
         ChangePasswordComponent,
+        ProfileNavbarComponent,
     ],
 })
 export class ProfileModule {}

@@ -7,6 +7,9 @@ export interface SellerModel {
     profilePictureUrl: string | null;
     createdLotsCount: number | null;
     finishedLotsCount: number | null;
+    averageRate: number;
+    ratesCount: number | null;
+    starCounts?: { [key: number]: number };
 }
 
 export interface BuyerModel {
@@ -30,6 +33,7 @@ export interface GetUserById {
     createdLotsCount: number | null;
     finishedLotsCount: number | null;
     averageRate: number | null;
+    averageRate: number;
     ratesCount: number | null;
     starCounts?: { [key: number]: number };
 }
@@ -41,4 +45,12 @@ export interface UpdateUserProfileModel {
     aboutMe: string | null;
     profilePicture: File | null;
     deleteProfilePicture: boolean;
+}
+
+export interface UserDto {
+    firstName: string | null;
+    lastName: string | null;
+    email: string;
+    phoneNumber: string | null;
+    profilePicture: string | null;
 }

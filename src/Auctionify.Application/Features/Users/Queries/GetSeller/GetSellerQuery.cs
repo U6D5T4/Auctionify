@@ -1,16 +1,23 @@
-﻿using Auctionify.Application.Common.Interfaces;
+﻿using Auctionify.Application.Common.DTOs;
+using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Interfaces.Repositories;
+using Auctionify.Application.Common.Models.Requests;
 using Auctionify.Application.Common.Options;
 using Auctionify.Core.Entities;
 using Auctionify.Core.Enums;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System.Runtime.Intrinsics.X86;
 
 namespace Auctionify.Application.Features.Users.Queries.GetSeller
 {
-	public class GetSellerQuery : IRequest<GetSellerResponse> { }
+	public class GetSellerQuery : IRequest<GetSellerResponse> 
+	{
+		public PageRequest PageRequest { get; set; }
+	}
 
 	public class GetSellerQueryHandler : IRequestHandler<GetSellerQuery, GetSellerResponse>
 	{
@@ -21,6 +28,7 @@ namespace Auctionify.Application.Features.Users.Queries.GetSeller
 		private readonly IMapper _mapper;
 		private readonly ILotRepository _lotRepository;
 		private readonly ILotStatusRepository _lotStatusRepository;
+		private readonly IRateRepository _rateRepository;
 
 		public GetSellerQueryHandler(
 			ICurrentUserService currentUserService,
@@ -29,7 +37,8 @@ namespace Auctionify.Application.Features.Users.Queries.GetSeller
 			IOptions<AzureBlobStorageOptions> azureBlobStorageOptions,
 			IMapper mapper,
 			ILotRepository lotRepository,
-			ILotStatusRepository lotStatusRepository
+			ILotStatusRepository lotStatusRepository,
+			IRateRepository rateRepository
 		)
 		{
 			_currentUserService = currentUserService;
@@ -39,6 +48,7 @@ namespace Auctionify.Application.Features.Users.Queries.GetSeller
 			_mapper = mapper;
 			_lotRepository = lotRepository;
 			_lotStatusRepository = lotStatusRepository;
+			_rateRepository = rateRepository;
 		}
 
 		public async Task<GetSellerResponse> Handle(
@@ -64,6 +74,8 @@ namespace Auctionify.Application.Features.Users.Queries.GetSeller
 
 			var lots = await _lotRepository.GetListAsync(
 				predicate: lot => lot.SellerId == user.Id,
+				size: int.MaxValue,
+				index: 0,
 				cancellationToken: cancellationToken
 			);
 
@@ -74,6 +86,8 @@ namespace Auctionify.Application.Features.Users.Queries.GetSeller
 					 lotStatus.Name == AuctionStatus.Sold.ToString()
 					 || lotStatus.Name == AuctionStatus.NotSold.ToString()
 					 || lotStatus.Name == AuctionStatus.Archive.ToString(),
+				 size: int.MaxValue,
+				 index: 0,
 				 cancellationToken: cancellationToken
 			 );
 
@@ -82,6 +96,47 @@ namespace Auctionify.Application.Features.Users.Queries.GetSeller
 			);
 
 			response.FinishedLotsCount = finishedLots.Count();
+
+			var avg = await _rateRepository.GetListAsync(predicate: r => r.ReceiverId == user.Id,
+				include: x =>
+					x.Include(u => u.Sender),
+				enableTracking: false,
+				size: int.MaxValue,
+				index: 0,
+				cancellationToken: cancellationToken);
+
+			if (avg.Items.Count > 0)
+			{
+				response.AverageRate = avg.Items.Average(rate => rate.RatingValue);
+			}
+
+			response.RatesCount = avg.Items.Count;
+
+			if (avg.Count > 0)
+			{
+				var starCounts = new Dictionary<byte, int>
+				{
+					{ 5, 0 },
+					{ 4, 0 },
+					{ 3, 0 },
+					{ 2, 0 },
+					{ 1, 0 },
+				};
+
+				foreach (var rate in avg.Items)
+				{
+					if (rate.Sender != null)
+					{
+						byte ratingValueKey = rate.RatingValue;
+
+						if (starCounts.ContainsKey(ratingValueKey))
+						{
+							starCounts[ratingValueKey]++;
+						}
+					}
+				}
+				response.StarCounts = starCounts;
+			}
 
 			return response;
 		}

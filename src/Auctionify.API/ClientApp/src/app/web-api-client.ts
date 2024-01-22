@@ -29,6 +29,11 @@ import {
     SellerModel,
     UpdateUserProfileModel,
 } from './models/users/user-models';
+import {
+    Rate,
+    RatePaginationModel,
+    RateResponse,
+} from './models/rates/rate-models';
 
 export const API_BASE_URL = new InjectionToken('API_BASE_URL');
 
@@ -867,6 +872,59 @@ export class Client {
             })
         );
     }
+
+    getRates(params: RatePaginationModel): Observable<RateResponse> {
+        let url_ = this.baseUrl + `/api/rates/rates`;
+
+        let queryParams = new HttpParams();
+
+        if (params.pageIndex !== null) {
+            queryParams = queryParams.set(
+                'PageRequest.PageIndex',
+                params.pageIndex.toString()
+            );
+        }
+
+        if (params.pageSize !== null) {
+            queryParams = queryParams.set(
+                'PageRequest.PageSize',
+                params.pageSize.toString()
+            );
+        }
+
+        return this.http.get(url_, { params: queryParams }).pipe(
+            mergeMap((response: any): Observable<RateResponse> => {
+                return of(response);
+            })
+        );
+    }
+
+    getFeedbacks(params: RatePaginationModel): Observable<RateResponse> {
+        let url_ = this.baseUrl + `/api/rates/feedbacks`;
+
+        let queryParams = new HttpParams();
+
+        if (params.pageIndex !== null) {
+            queryParams = queryParams.set(
+                'PageRequest.PageIndex',
+                params.pageIndex.toString()
+            );
+        }
+
+        if (params.pageSize !== null) {
+            queryParams = queryParams.set(
+                'PageRequest.PageSize',
+                params.pageSize.toString()
+            );
+        }
+
+        return this.http.get(url_, { params: queryParams }).pipe(
+            mergeMap((response: any): Observable<RateResponse> => {
+                return of(response);
+            })
+        );
+    }
+
     getAllActiveLotsForSeller(
         pageRequest: PageRequest
     ): Observable<FilterResponse> {
@@ -920,6 +978,34 @@ export class Client {
         return this.http.get(url, { params: queryParams }).pipe(
             mergeMap((response: any): Observable<FilterResponse> => {
                 return of(response);
+            })
+        );
+    }
+
+    getUserTransactions(
+        pageIndex: number,
+        pageSize: number
+    ): Observable<TransactionModel[]> {
+        let url_ = this.baseUrl + `/api/users/transactions`;
+
+        let params = new HttpParams()
+            .set('pageIndex', pageIndex.toString())
+            .set('pageSize', pageSize.toString());
+
+        const options_: any = {
+            headers: new HttpHeaders({
+                Accept: 'text/json',
+            }),
+            params,
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<TransactionModel[]> => {
+                if (response) {
+                    return of(response as TransactionModel[]);
+                } else {
+                    throw new Error('Invalid response structure');
+                }
             })
         );
     }
@@ -1000,6 +1086,16 @@ export interface AuctionModel {
     mainPhotoUrl: string | null;
     isInWatchlist: boolean;
     buyerId: number | null;
+}
+
+export interface TransactionModel {
+    lotId: number | null;
+    lotTitle: string | null;
+    lotMainPhotoUrl: string | null;
+    transactionDate: Date | null;
+    transactionStatus: string | null;
+    transactionAmount: number | null;
+    transactionCurrency: string | null;
 }
 
 export interface CategoryDto {
