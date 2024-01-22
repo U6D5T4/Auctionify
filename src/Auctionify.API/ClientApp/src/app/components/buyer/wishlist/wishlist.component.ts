@@ -50,7 +50,7 @@ export class WishlistComponent implements OnInit {
             this.apiClient.addToWatchlist(lot.id).subscribe({
                 next: (result) => {
                     this.snackBar.open(
-                        'Successfully added the lot to watchlist',
+                        'Successfully added the lot to wishlist',
                         'Close',
                         {
                             horizontalPosition: 'center',
@@ -79,6 +79,7 @@ export class WishlistComponent implements OnInit {
                 data: {
                     lotId: lot.id,
                 },
+                autoFocus: false,
             });
 
             dialog.closed.subscribe({

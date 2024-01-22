@@ -604,6 +604,7 @@ export class CreateLotComponent implements OnInit {
     clickLocation() {
         const locationDialogPopup = this.dialog.open(LocationPopUpComponent, {
             data: this.lotForm,
+            autoFocus: false,
         });
 
         locationDialogPopup.closed.subscribe((res: any) => {
@@ -627,6 +628,7 @@ export class CreateLotComponent implements OnInit {
                 formGroup: this.lotForm,
                 currencies: this.currencies,
             },
+            autoFocus: false,
         });
 
         locationDialogPopup.closed.subscribe((res) => {
@@ -653,6 +655,7 @@ export class CreateLotComponent implements OnInit {
                 lotId: this.lotId,
                 formGroup: this.lotForm,
             },
+            autoFocus: false,
         });
 
         filesDialogPopup.closed.subscribe((res) => {});
@@ -731,12 +734,14 @@ export class CreateLotComponent implements OnInit {
                 isError: error,
                 isErrorShown,
             },
+            autoFocus: false,
         });
     }
 
     openChoiceDialog(data: ChoicePopupData): DialogRef<string, unknown> {
         return this.dialog.open<string>(ChoicePopupComponent, {
             data,
+            autoFocus: false,
         });
     }
 }

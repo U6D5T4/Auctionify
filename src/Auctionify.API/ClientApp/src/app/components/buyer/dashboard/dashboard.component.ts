@@ -12,6 +12,7 @@ import {
 import { RemoveFromWatchlistComponent } from '../../general/remove-from-watchlist/remove-from-watchlist.component';
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 import { DateCalculationService } from 'src/app/services/date-calculation/date-calculation.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-dashboard',
@@ -125,7 +126,7 @@ export class DashboardComponent implements OnInit {
             this.apiClient.addToWatchlist(lot.id).subscribe({
                 next: (result) => {
                     this.snackBar.open(
-                        'Successfully added the lot to watchlist',
+                        'Successfully added the lot to wishlist',
                         'Close',
                         {
                             horizontalPosition: 'center',
@@ -155,6 +156,7 @@ export class DashboardComponent implements OnInit {
                 data: {
                     lotId: lot.id,
                 },
+                autoFocus: false,
             });
 
             dialog.closed.subscribe({
@@ -165,6 +167,9 @@ export class DashboardComponent implements OnInit {
                     if (updatedAuction) {
                         updatedAuction.isInWatchlist = false;
                         this.loadLotsInWatchlist();
+                        this.loadBuyerAuctions();
+                        this.currentIndex = 0;
+                        this.noMoreAuctionsToLoad = false;
                     }
                     this.loadLotsInWatchlist();
                 },
