@@ -31,6 +31,7 @@ namespace Auctionify.UnitTests
 					},
 					StartingPrice = 100,
 					SellerId = 1,
+					BuyerId = 2,
 					CategoryId = 1,
 					CurrencyId = 1,
 					Bids = new List<Bid> { bids[0], bids[1], }
@@ -53,6 +54,7 @@ namespace Auctionify.UnitTests
 					},
 					StartingPrice = 100,
 					SellerId = 1,
+					BuyerId = 2,
 					CategoryId = 1,
 					CurrencyId = 1,
 					Bids = new List<Bid> { }
@@ -75,6 +77,7 @@ namespace Auctionify.UnitTests
 					},
 					StartingPrice = 100,
 					SellerId = 1,
+					BuyerId = 2,
 					CategoryId = 1,
 					CurrencyId = 1,
 				},
@@ -96,6 +99,7 @@ namespace Auctionify.UnitTests
 					},
 					StartingPrice = 100,
 					SellerId = 2,
+					BuyerId = 2,
 					CategoryId = 1,
 					CurrencyId = 1,
 				}
@@ -230,6 +234,16 @@ namespace Auctionify.UnitTests
 					AboutMe = "TestAboutMe",
 					ProfilePicture = "TestProfilePicture.png"
 				}
+			};
+		}
+
+		public static List<string> GetRoles()
+		{
+			return new List<string>
+			{
+				"Buyer",
+				"Seller",
+				"Admin",
 			};
 		}
 
@@ -464,6 +478,7 @@ namespace Auctionify.UnitTests
 				null
 			);
 			userManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(GetUser());
+			userManager.Setup(x => x.GetRolesAsync(It.IsAny<User>())).ReturnsAsync(GetRoles());
 			userManager.Object.UserValidators.Add(new UserValidator<User>());
 			userManager.Object.PasswordValidators.Add(new PasswordValidator<User>());
 			return userManager.Object;
