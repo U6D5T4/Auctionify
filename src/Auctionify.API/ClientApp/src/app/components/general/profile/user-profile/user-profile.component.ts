@@ -60,25 +60,6 @@ export class UserProfileComponent {
         }
     }
 
-    getAverageStars(rate: number | null): string[] {
-        const averageRating = rate;
-
-        const roundedAverage = Math.round(averageRating!);
-
-        const stars: string[] = [];
-        for (let i = 1; i <= 5; i++) {
-            if (i <= roundedAverage) {
-                stars.push('star');
-            } else if (i - roundedAverage === 0.5) {
-                stars.push('star_half');
-            } else {
-                stars.push('star_border');
-            }
-        }
-
-        return stars;
-    }
-
     openDialog(text: string[], error: boolean) {
         const dialogRef = this.dialog.open<string>(DialogPopupComponent, {
             data: {

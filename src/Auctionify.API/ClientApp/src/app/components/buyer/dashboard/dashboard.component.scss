@@ -32,8 +32,8 @@
     }
 
     &__auction-title {
-    display: flex;
-    align-items: center;
+        display: flex;
+        align-items: center;
     }
 
     &__auction-list {
@@ -146,7 +146,6 @@
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        padding: 40px;
         gap: 40px;
         margin: 0 auto;
     }
