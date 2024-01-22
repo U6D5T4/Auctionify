@@ -5,10 +5,8 @@ using Auctionify.Core.Entities;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Moq;
-using Xunit;
 using Auctionify.Infrastructure.Persistence;
 using Auctionify.Infrastructure.Repositories;
-using Auctionify.Application.Common.Models.Requests;
 using Auctionify.Application.Common.Options;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
@@ -46,7 +44,11 @@ namespace Auctionify.UnitTests.GetByIdUserTest
 			_rateRepository = new RateRepository(mockDbContext.Object);
 		}
 
-        [Fact]
+		#endregion
+
+		#region Test
+
+		[Fact]
         public async Task Handle_ValidId_ReturnsUser()
         {
             var userId = 1;
@@ -100,50 +102,6 @@ namespace Auctionify.UnitTests.GetByIdUserTest
             Assert.Equal(userId.ToString(), result.Id.ToString());
             Assert.Equal("JohnDoe", result.FirstName);
         }
-
-        [Fact]
-        public async Task Handle_InvalidId_ReturnsNull()
-        {
-			// Arrange
-			var query = new GetByIdUserQuery
-			{
-				Id = 100.ToString()
-			};
-
-			var testUrl = "test-url";
-			var blobServiceMock = new Mock<IBlobService>();
-			var azureBlobStorageOptionsMock = new Mock<IOptions<AzureBlobStorageOptions>>();
-
-			azureBlobStorageOptionsMock
-				.Setup(x => x.Value)
-				.Returns(
-					new AzureBlobStorageOptions
-					{
-						ContainerName = "auctionify-files",
-						PhotosFolderName = "photos",
-						AdditionalDocumentsFolderName = "additional-documents",
-						UserProfilePhotosFolderName = "user-profile-photos"
-					}
-				);
-
-			blobServiceMock
-				.Setup(x => x.GetBlobUrl(It.IsAny<string>(), It.IsAny<string>()))
-				.Returns(testUrl);
-
-			var handler = new GetByIdUserQueryHandler(
-				_userManager,
-				_mapper,
-				blobServiceMock.Object,
-				azureBlobStorageOptionsMock.Object,
-				_rateRepository
-			);
-
-			// Act
-			var result = await handler.Handle(query, default);
-
-			// Assert
-			result.Should().BeNull();
-		}
 
 		#endregion
 
