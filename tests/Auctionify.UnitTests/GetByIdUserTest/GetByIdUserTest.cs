@@ -1,22 +1,20 @@
-﻿using Auctionify.Application.Common.Interfaces.Repositories;
-using Auctionify.Application.Common.Interfaces;
+﻿using Auctionify.Application.Common.Interfaces;
+using Auctionify.Application.Common.Interfaces.Repositories;
+using Auctionify.Application.Common.Options;
 using Auctionify.Application.Features.Users.Queries.GetById;
 using Auctionify.Core.Entities;
-using AutoMapper;
-using Microsoft.AspNetCore.Identity;
-using Moq;
-using Xunit;
 using Auctionify.Infrastructure.Persistence;
 using Auctionify.Infrastructure.Repositories;
-using Auctionify.Application.Common.Models.Requests;
-using Auctionify.Application.Common.Options;
+using AutoMapper;
 using FluentAssertions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using Moq;
 
 namespace Auctionify.UnitTests.GetByIdUserTest
 {
-    public class GetByIdUserTests
-    {
+	public class GetByIdUserTests
+	{
 		#region Initialization
 
 		private readonly IMapper _mapper;
@@ -24,8 +22,8 @@ namespace Auctionify.UnitTests.GetByIdUserTest
 		private readonly UserManager<User> _userManager;
 		private readonly IRateRepository _rateRepository;
 
-		public GetByIdUserTests() 
-        {
+		public GetByIdUserTests()
+		{
 			var mockDbContext = DbContextMock.GetMock<Rate, ApplicationDbContext>(EntitiesSeeding.GetRates(), ctx => ctx.Rates);
 			mockDbContext = DbContextMock.GetMock(EntitiesSeeding.GetLotStatuses(), ctx => ctx.LotStatuses, mockDbContext);
 
@@ -46,19 +44,19 @@ namespace Auctionify.UnitTests.GetByIdUserTest
 			_rateRepository = new RateRepository(mockDbContext.Object);
 		}
 
-        [Fact]
-        public async Task Handle_ValidId_ReturnsUser()
-        {
-            var userId = 1;
-            var user = new User { Id = userId, FirstName = "JohnDoe" };
+		[Fact]
+		public async Task Handle_ValidId_ReturnsUser()
+		{
+			var userId = 1;
+			var user = new User { Id = userId, FirstName = "JohnDoe" };
 
-            var userManagerMock = new Mock<UserManager<User>>(Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
-            userManagerMock.Setup(m => m.FindByIdAsync(userId.ToString()))
-                .ReturnsAsync(user);
+			var userManagerMock = new Mock<UserManager<User>>(Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
+			userManagerMock.Setup(m => m.FindByIdAsync(userId.ToString()))
+				.ReturnsAsync(user);
 
 			var mapperMock = new Mock<IMapper>();
 			mapperMock.Setup(m => m.Map<GetByIdUserResponse>(user))
-				.Returns(new GetByIdUserResponse {  Id = userId, FirstName = "JohnDoe" });
+				.Returns(new GetByIdUserResponse { Id = userId, FirstName = "JohnDoe" });
 
 			var query = new GetByIdUserQuery
 			{
@@ -97,13 +95,13 @@ namespace Auctionify.UnitTests.GetByIdUserTest
 			var result = await handler.Handle(query, default);
 
 			Assert.NotNull(result);
-            Assert.Equal(userId.ToString(), result.Id.ToString());
-            Assert.Equal("JohnDoe", result.FirstName);
-        }
+			Assert.Equal(userId.ToString(), result.Id.ToString());
+			Assert.Equal("JohnDoe", result.FirstName);
+		}
 
-        [Fact]
-        public async Task Handle_InvalidId_ReturnsNull()
-        {
+		[Fact]
+		public async Task Handle_InvalidId_ReturnsNull()
+		{
 			// Arrange
 			var query = new GetByIdUserQuery
 			{
@@ -142,7 +140,15 @@ namespace Auctionify.UnitTests.GetByIdUserTest
 			var result = await handler.Handle(query, default);
 
 			// Assert
-			result.Should().BeNull();
+			result.AboutMe.Should().BeNull();
+			result.AverageRate.Should().Be(0.0);
+			result.Email.Should().BeNull();
+			result.FirstName.Should().BeNull();
+			result.LastName.Should().BeNull();
+			result.PhoneNumber.Should().BeNull();
+			result.ProfilePictureUrl.Should().BeNull();
+			result.RatesCount.Should().Be(0);
+			result.StarCounts.Should().BeEmpty();
 		}
 
 		#endregion
