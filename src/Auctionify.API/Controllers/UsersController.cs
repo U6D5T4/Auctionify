@@ -11,6 +11,7 @@ using Auctionify.Application.Features.Users.Queries.GetBuyerAuctions;
 using Auctionify.Application.Features.Users.Queries.GetById;
 using Auctionify.Application.Features.Users.Queries.GetByUserWatchlist;
 using Auctionify.Application.Features.Users.Queries.GetSeller;
+using Auctionify.Application.Features.Users.Queries.GetTransactions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -143,6 +144,16 @@ namespace Auctionify.API.Controllers
 			var lots = await _mediator.Send(query);
 
 			return Ok(lots);
+		}
+
+		[HttpGet("transactions")]
+		[Authorize(Roles = "Buyer, Seller")]
+		public async Task<IActionResult> GetTransactions([FromQuery] PageRequest pageRequest)
+		{
+			var query = new GetTransactionsUserQuery { PageRequest = pageRequest };
+			var transactions = await _mediator.Send(query);
+
+			return Ok(transactions);
 		}
 	}
 }
