@@ -5,6 +5,7 @@ import { Rate, RatePaginationModel } from 'src/app/models/rates/rate-models';
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import { Client } from 'src/app/web-api-client';
 import { SellerModel } from 'src/app/models/users/user-models';
+import { UserDataValidatorService } from 'src/app/services/user-data-validator/user-data-validator.service';
 
 @Component({
     selector: 'app-dashboard',
@@ -15,7 +16,11 @@ export class DashboardComponent implements OnInit {
     userProfileData: SellerModel | null = null;
     senderRates: Rate[] = [];
 
-    constructor(private client: Client, public dialog: Dialog) {}
+    constructor(
+        private client: Client,
+        public dialog: Dialog,
+        private userDataValidator: UserDataValidatorService
+    ) {}
 
     ngOnInit(): void {
         this.fetchUserProfileData();
@@ -26,7 +31,7 @@ export class DashboardComponent implements OnInit {
         this.client.getSeller().subscribe(
             (data: SellerModel) => {
                 this.userProfileData = data;
-                this.client.validateUserProfileData(this.userProfileData);
+                this.userDataValidator.validateUserProfileData(data);
             },
             (error) => {
                 this.openDialog(

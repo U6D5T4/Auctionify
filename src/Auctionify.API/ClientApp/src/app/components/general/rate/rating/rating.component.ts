@@ -1,12 +1,12 @@
 import { Dialog } from '@angular/cdk/dialog';
 import { Component, OnInit } from '@angular/core';
 import { formatDate } from '@angular/common';
-import { Router } from '@angular/router';
 
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 import { BuyerModel, SellerModel } from 'src/app/models/users/user-models';
 import { Client } from 'src/app/web-api-client';
+import { UserDataValidatorService } from 'src/app/services/user-data-validator/user-data-validator.service';
 import { Rate, RatePaginationModel } from 'src/app/models/rates/rate-models';
 
 @Component({
@@ -26,7 +26,8 @@ export class RatingComponent implements OnInit {
     constructor(
         private authorizeService: AuthorizeService,
         private client: Client,
-        public dialog: Dialog
+        public dialog: Dialog,
+        public userDataValidator: UserDataValidatorService
     ) {}
 
     ngOnInit(): void {
@@ -50,7 +51,9 @@ export class RatingComponent implements OnInit {
             this.client.getBuyer().subscribe({
                 next: (data: BuyerModel) => {
                     this.userProfileData = data;
-                    this.client.validateUserProfileData(this.userProfileData);
+                    this.userDataValidator.validateUserProfileData(
+                        this.userProfileData
+                    );
                 },
                 error: (error) => {
                     this.openDialog(
@@ -65,7 +68,9 @@ export class RatingComponent implements OnInit {
             this.client.getSeller().subscribe({
                 next: (data: SellerModel) => {
                     this.userProfileData = data;
-                    this.client.validateUserProfileData(this.userProfileData);
+                    this.userDataValidator.validateUserProfileData(
+                        this.userProfileData
+                    );
                 },
                 error: (error) => {
                     this.openDialog(

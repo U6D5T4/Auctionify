@@ -15,6 +15,7 @@ import { DateCalculationService } from 'src/app/services/date-calculation/date-c
 import { Rate, RatePaginationModel } from 'src/app/models/rates/rate-models';
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import { BuyerModel } from 'src/app/models/users/user-models';
+import { UserDataValidatorService } from 'src/app/services/user-data-validator/user-data-validator.service';
 
 @Component({
     selector: 'app-dashboard',
@@ -46,7 +47,8 @@ export class DashboardComponent implements OnInit {
         private snackBar: MatSnackBar,
         private dialog: Dialog,
         private authService: AuthorizeService,
-        private dateCalculationService: DateCalculationService
+        private dateCalculationService: DateCalculationService,
+        private userDataValidator: UserDataValidatorService
     ) {
         effect(() => {
             this.currentBuyerId = this.authService.getUserId()!;
@@ -64,7 +66,7 @@ export class DashboardComponent implements OnInit {
         this.apiClient.getBuyer().subscribe({
             next: (data: BuyerModel) => {
                 this.userProfileData = data;
-                this.apiClient.validateUserProfileData(this.userProfileData);
+                this.userDataValidator.validateUserProfileData(data);
             },
             error: (error) => {
                 this.openDialog(
