@@ -1,12 +1,31 @@
 <div class="search">
     <form>
         <div class="search__container">
-            <input (input)="textChange()" #searchInputTrigger="matAutocompleteTrigger" [matAutocomplete]="auto"
-                [formControl]="searchInput" class="search-input" type="text" placeholder="Search..." />
-            <button class="search-button" type="submit" (click)="search($event, searchInputTrigger, auto)">
-                <img class="search-icon" src="assets/icons/SearchIcon.svg" alt="Search Icon">
+            <input
+                (input)="textChange()"
+                #searchInputTrigger="matAutocompleteTrigger"
+                [matAutocomplete]="auto"
+                [formControl]="searchInput"
+                class="search-input"
+                type="text"
+                [placeholder]="searchPlaceholder"
+            />
+            <button
+                class="search-button"
+                type="submit"
+                (click)="search($event, searchInputTrigger, auto)"
+            >
+                <img
+                    class="search-icon"
+                    src="assets/icons/SearchIcon.svg"
+                    alt="Search Icon"
+                />
             </button>
-            <mat-autocomplete [panelWidth]="420" class="search-autocomplete" #auto="matAutocomplete">
+            <mat-autocomplete
+                [panelWidth]="420"
+                class="search-autocomplete"
+                #auto="matAutocomplete"
+            >
                 <mat-option *ngIf="isSearching" [disabled]="true">
                     <div class="body-spinner">
                         <mat-spinner diameter="45"></mat-spinner>
@@ -15,48 +34,71 @@
                 <mat-option *ngIf="!isResult" [disabled]="true">
                     <h3>No results!</h3>
                 </mat-option>
-                <div class="result-header-text" *ngIf="searchNameResult.length > 0">
+                <div
+                    class="result-header-text"
+                    *ngIf="searchNameResult.length > 0"
+                >
                     <h4>Lot name results:</h4>
                 </div>
-                <mat-option [routerLink]="['/get-lot', lot.id,]" *ngFor="let lot of searchNameResult">
+                <mat-option
+                    [routerLink]="['/get-lot', lot.id]"
+                    *ngFor="let lot of searchNameResult"
+                >
                     <div class="option-body">
                         <div class="body-image">
-                            <img width="80px" height="80px"
-                                [src]="lot.mainPhotoUrl || '../../../assets/images/Image_not_available.png'"
-                                alt="lot-main-image">
+                            <img
+                                width="80px"
+                                height="80px"
+                                [src]="
+                                    lot.mainPhotoUrl ||
+                                    '../../../assets/images/Image_not_available.png'
+                                "
+                                alt="lot-main-image"
+                            />
                         </div>
                         <div class="body-title">
-                            <div>{{lot.title}}</div>
+                            <div>{{ lot.title }}</div>
                         </div>
                         <div class="body-button">
                             <button mat-icon-button color="primary">
-                                <mat-icon>
-                                    arrow_right_alt
-                                </mat-icon>
+                                <mat-icon> arrow_right_alt </mat-icon>
                             </button>
                         </div>
                     </div>
                 </mat-option>
-                <hr class="color-grey-5 hr-element" *ngIf="isResult && !isSearching">
-                <div class="result-header-text" *ngIf="searchLocationResult.length > 0">
+                <hr
+                    class="color-grey-5 hr-element"
+                    *ngIf="isResult && !isSearching"
+                />
+                <div
+                    class="result-header-text"
+                    *ngIf="searchLocationResult.length > 0"
+                >
                     <h4>Lot location results:</h4>
                 </div>
-                <mat-option [routerLink]="['/get-lot', lot.id,]" *ngFor="let lot of searchLocationResult">
+                <mat-option
+                    [routerLink]="['/get-lot', lot.id]"
+                    *ngFor="let lot of searchLocationResult"
+                >
                     <div class="option-body">
                         <div class="body-image">
-                            <img width="80px" height="80px"
-                                [src]="lot.mainPhotoUrl || '../../../assets/images/Image_not_available.png'"
-                                alt="lot-main-image">
+                            <img
+                                width="80px"
+                                height="80px"
+                                [src]="
+                                    lot.mainPhotoUrl ||
+                                    '../../../assets/images/Image_not_available.png'
+                                "
+                                alt="lot-main-image"
+                            />
                         </div>
                         <div class="body-title">
-                            <p>{{lot.title}}</p>
-                            <i>Location: {{lot.location.city}}</i>
+                            <p>{{ lot.title }}</p>
+                            <i>Location: {{ lot.location.city }}</i>
                         </div>
                         <div class="body-button">
                             <button mat-icon-button color="primary">
-                                <mat-icon>
-                                    arrow_right_alt
-                                </mat-icon>
+                                <mat-icon> arrow_right_alt </mat-icon>
                             </button>
                         </div>
                     </div>

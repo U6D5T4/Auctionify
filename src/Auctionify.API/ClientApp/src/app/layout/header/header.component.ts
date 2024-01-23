@@ -12,9 +12,14 @@ import { Dialog } from '@angular/cdk/dialog';
 })
 export class HeaderComponent {
     isUserBuyer: boolean = false;
+    isLoggedIn: boolean = false;
 
     private isBuyerEffect = effect(() => {
         this.isUserBuyer = this.authService.isUserBuyer();
+    });
+
+    public IsLoggedIn = effect(() => {
+        this.isLoggedIn = this.authService.isUserLoggedIn();
     });
 
     constructor(
@@ -26,14 +31,16 @@ export class HeaderComponent {
     logout() {
         const dialogRef = this.dialog.open(ChoicePopupComponent, {
             data: {
-                text: ['Sure you want to log out?'],
+                text: ['Are you sure to log out?'],
                 isError: true,
                 continueBtnText: 'Log Out',
                 breakBtnText: 'Cancel',
-                additionalText: 'Just a double-check before you go',
-                continueBtnColor: 'primary',
+                additionalText: 'Just double-check before you go',
+                continueBtnColor: 'warn',
                 breakBtnColor: 'warn',
+                breakBtnFocus: 'break',
             },
+            autoFocus: false,
         });
         dialogRef.closed.subscribe((result) => {
             if (result === 'true') {

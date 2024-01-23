@@ -1,11 +1,13 @@
 .dashboard {
+    &__rate-title {
+        font-size: 20px;
+    }
+
     &__container {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        padding: 40px;
         gap: 40px;
-        margin: 0 auto;
     }
 
     &__rating-section {
@@ -29,7 +31,7 @@
         height: 48px;
         border-radius: 32px;
         border: none;
-        background-color: #F2F5F7;
+        background-color: #f2f5f7;
         font-weight: bold;
         font-family: 'Onest', sans-serif;
     }
@@ -60,8 +62,8 @@
     &__see-more-comments-btn button {
         width: 392px;
         min-width: 250px;
-        border: 2px solid #2B5293;
-        color: #2B5293;
+        border: 2px solid #2b5293;
+        color: #2b5293;
     }
 
     &__btn-content {
@@ -87,7 +89,6 @@
     &__transactions-section {
         display: flex;
         justify-content: space-between;
-        max-width: 1400px;
         padding-top: 40px;
         width: 100%;
     }
@@ -111,8 +112,11 @@
 }
 
 .lots-section {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+
     & h2 {
-        margin-bottom: 40px;
         font-size: 32px;
         font-weight: 700;
         line-height: 40px;
@@ -128,7 +132,7 @@
 
 .transactions {
     padding-top: 32px;
-    max-width: 1400px;
+
     &.left-align {
         app-transactions {
             text-align: left;
