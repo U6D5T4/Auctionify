@@ -128,7 +128,12 @@ namespace Auctionify.UnitTests.GetAllLotsByNameTests
 			// Assert
 			result.Should().BeOfType<GetListResponseDto<GetAllLotsByNameResponse>>();
 			result.Count.Should().Be(4); // There are 4 lots with "Test" in GetLots() in EntitiesSeeding
-			result.Items[0].Description.Should().Be("Test lot with description and some moreeeeee DECSRIPTIOn mock data with long description and some other else");
+			result
+				.Items[0]
+				.Description.Should()
+				.Be(
+					"Test lot with description and some moreeeeee DECSRIPTIOn mock data with long description and some other else"
+				);
 		}
 
 		#endregion

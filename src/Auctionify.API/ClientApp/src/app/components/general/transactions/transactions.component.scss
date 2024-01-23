@@ -1,0 +1,150 @@
+.transactions {
+    padding-bottom: 40px;
+
+    &__title {
+        display: flex;
+        padding-top: 40px;
+        padding-bottom: 32px;
+        max-width: 1400px;
+        margin: 0 auto;
+        color: var(--color-text-primary);
+        font-size: 32px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 40px;
+    }
+
+    &__table {
+        max-width: 1400px;
+        margin: 0 auto;
+        width: -webkit-fill-available;
+        border-collapse: collapse;
+        border-spacing: 5px 16px;
+    }
+
+    &__tbody {
+        text-align: left;
+    }
+
+    &__no-transactions {
+        display: flex;
+        max-width: 1400px;
+        margin: 0 auto;
+        color: var(--color-text-primary);
+        font-size: 18px;
+        padding-left: 30px;
+    }
+}
+
+thead tr th {
+    text-align: left;
+    background: #f2f5f7;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+th {
+    color: var(--color-grey-3);
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 24px;
+}
+
+td {
+    padding-top: 16px;
+}
+
+.lot-name {
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    padding-left: 24px;
+}
+
+.lot-details {
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+    padding-right: 24px;
+}
+
+.transaction {
+    &__lot {
+        display: flex;
+        align-items: center;
+    }
+
+    &__lot-title {
+        display: block;
+        word-break: break-word;
+        max-width: 35ch;
+        overflow: hidden;
+        color: var(--color-text-primary);
+        text-overflow: ellipsis;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 24px;
+        padding-left: 20px;
+    }
+
+    &__lot-title a {
+        text-decoration: none;
+        color: var(--color-text-primary);
+    }
+
+    &__lot-title a:hover {
+        color: var(--color-main);
+    }
+
+    &__lot-image {
+        border-radius: 16px;
+        background: url(../../../../assets/icons/NoImage.svg),
+            lightgray 50% / cover no-repeat;
+    }
+
+    &__date {
+        width: 17%;
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 24px;
+    }
+
+    &__circle-icon {
+        font-size: 12px;
+        line-height: 35px;
+    }
+
+    &__status {
+        width: 13%;
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 34px;
+    }
+
+    &__amount {
+        width: 13%;
+        color: var(--color-text-primary);
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 24px;
+    }
+
+    &__details {
+        width: 17%;
+        padding-right: 65px;
+    }
+
+    &__learn-more-btn {
+        border-radius: 8px;
+        border: 2px solid var(--color-grey-5);
+    }
+
+    &__list:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        border-radius: 16px;
+    }
+}

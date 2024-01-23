@@ -1,15 +1,19 @@
 <div class="email-sent">
+    <div class="general-auth-background"></div>
     <div class="email-sent__container">
         <div class="email-sent__container-inner">
             <div class="email-sent__header">
-                <mat-icon color="primary" class="material-icons-outlined email-icon">
+                <mat-icon
+                    color="primary"
+                    class="material-icons-outlined email-icon"
+                >
                     mail
                 </mat-icon>
             </div>
             <h1>Confirm your email address</h1>
             <div class="email-sent__main-info">
                 <p>Confirmation email has been sent to :</p>
-                <p class="email-sent__email">{{emailAdress}}</p>
+                <p class="email-sent__email">{{ emailAdress }}</p>
             </div>
             <div class="email-sent__redirect">
                 <a [routerLink]="['/auth/login']">Go to login page</a>

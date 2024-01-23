@@ -18,6 +18,8 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { WithdrawBidComponent } from './withdraw-bid/withdraw-bid.component';
 import { RateUserComponent } from './rate-user/rate-user.component';
+import { RemoveFromWatchlistComponent } from './remove-from-watchlist/remove-from-watchlist.component';
+import { TransactionsComponent } from './transactions/transactions.component';
 
 @NgModule({
     declarations: [
@@ -28,6 +30,8 @@ import { RateUserComponent } from './rate-user/rate-user.component';
         FilterComponent,
         WithdrawBidComponent,
         RateUserComponent,
+        RemoveFromWatchlistComponent,
+        TransactionsComponent,
     ],
     imports: [
         CommonModule,
@@ -45,6 +49,6 @@ import { RateUserComponent } from './rate-user/rate-user.component';
         FormsModule,
     ],
 
-    exports: [LotProfileComponent],
+    exports: [LotProfileComponent, TransactionsComponent],
 })
 export class GeneralModule {}

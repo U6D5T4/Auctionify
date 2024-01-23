@@ -7,6 +7,7 @@ import { LotProfileComponent } from './components/general/lot-profile/lot-profil
 import { isLoggedInGuard } from './guards/is-logged-in.guard';
 import { AuctionComponent } from './components/general/home/auction/auction.component';
 import { RateUserComponent } from './components/general/rate-user/rate-user.component';
+import { TransactionsComponent } from './components/general/transactions/transactions.component';
 
 const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -55,6 +56,11 @@ const routes: Routes = [
     {
         path: 'rate-user/:id',
         component: RateUserComponent,
+        canActivate: [isLoggedInGuard],
+    },
+    { 
+        path: 'get-transactions',
+        component: TransactionsComponent,
         canActivate: [isLoggedInGuard],
     },
 ];

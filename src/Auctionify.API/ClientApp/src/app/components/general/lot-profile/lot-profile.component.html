@@ -122,7 +122,7 @@
     <div class="right">
         <h1>{{ lotData.title }}</h1>
         <div class="right__wishlist">
-            <ul class="right__category">
+            <div *ngIf="lotData.category">
                 <div
                     *ngIf="
                         lotData.category.parentCategoryId;
@@ -131,16 +131,23 @@
                     "
                 ></div>
                 <ng-template #category_main>
-                    <li>{{ parentCategoryName }}</li>
-                    <li class="right__category-circle"></li>
-                    <li>
-                        {{ lotData.category.name }}
-                    </li>
+                    <ul class="right__category">
+                        <li>{{ parentCategoryName }}</li>
+                        <li class="right__category-circle"></li>
+                        <li>
+                            {{ lotData.category.name }}
+                        </li>
+                    </ul>
                 </ng-template>
                 <ng-template #category_parent>
-                    <li>{{ lotData.category.name }}</li>
+                    <ul class="right__category">
+                        <li>{{ lotData.category.name }}</li>
+                    </ul>
                 </ng-template>
-            </ul>
+            </div>
+            <ng-template #no_category>
+                <li>No category</li>
+            </ng-template>
             <div
                 *ngIf="isResponseForBuyer(lotData)"
                 class="right__wishlist-btn"
@@ -172,16 +179,24 @@
                             {{
                                 lotData.bids !== null
                                     ? getHighestBidPrice(lotData)
-                                    : lotData.startingPrice
+                                    : lotData.startingPrice ?? 'No code'
                             }}
-                            {{ lotData.currency.code }}
+                            {{
+                                lotData.currency
+                                    ? lotData.currency.code
+                                    : 'No code'
+                            }}
                         </h2>
                     </div>
                     <div class="price-block">
                         <b>Starting price:</b>
                         <h2>
-                            {{ lotData.startingPrice }}
-                            {{ lotData.currency.code }}
+                            {{ lotData.startingPrice ?? 'No price' }}
+                            {{
+                                lotData.currency
+                                    ? lotData.currency.code
+                                    : 'No code'
+                            }}
                         </h2>
                     </div>
                 </div>
@@ -238,7 +253,7 @@
                             >
                         </button>
                         <button
-                            [routerLink]="['/seller/update-lot', lotData.id]"
+                            [routerLink]="['/seller/update-lot', lotData.id]" 
                             class="mat-mdc-outlined-button-custom price-button"
                             mat-flat-button 
                             type="button"

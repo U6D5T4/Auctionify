@@ -31,6 +31,7 @@ namespace Auctionify.UnitTests
 					},
 					StartingPrice = 100,
 					SellerId = 1,
+					BuyerId = 2,
 					CategoryId = 1,
 					CurrencyId = 1,
 					Bids = new List<Bid> { bids[0], bids[1], }
@@ -53,6 +54,7 @@ namespace Auctionify.UnitTests
 					},
 					StartingPrice = 100,
 					SellerId = 1,
+					BuyerId = 2,
 					CategoryId = 1,
 					CurrencyId = 1,
 					Bids = new List<Bid> { }
@@ -75,6 +77,7 @@ namespace Auctionify.UnitTests
 					},
 					StartingPrice = 100,
 					SellerId = 1,
+					BuyerId = 2,
 					CategoryId = 1,
 					CurrencyId = 1,
 				},
@@ -96,6 +99,7 @@ namespace Auctionify.UnitTests
 					},
 					StartingPrice = 100,
 					SellerId = 2,
+					BuyerId = 2,
 					CategoryId = 1,
 					CurrencyId = 1,
 				}
@@ -195,6 +199,16 @@ namespace Auctionify.UnitTests
 			};
 		}
 
+		public static List<Watchlist> GetWatchlists()
+		{
+			return new List<Watchlist>
+			{
+				new Watchlist { Id = 1, },
+				new Watchlist { Id = 2, },
+				new Watchlist { Id = 3, },
+			};
+		}
+
 		public static User GetUser()
 		{
 			return new User
@@ -254,6 +268,16 @@ namespace Auctionify.UnitTests
 			};
 		}
 
+		public static List<string> GetRoles()
+		{
+			return new List<string>
+			{
+				"Buyer",
+				"Seller",
+				"Admin",
+			};
+		}
+
 		public static List<Core.Entities.File> GetFiles()
 		{
 			return new List<Core.Entities.File>
@@ -303,6 +327,172 @@ namespace Auctionify.UnitTests
 			};
 		}
 
+		public static List<Conversation> GetConversations()
+		{
+			return new List<Conversation>
+			{
+				new()
+				{
+					Id = 1,
+					BuyerId = 1,
+					Buyer = new User
+					{
+						Id = 1,
+						FirstName = "TestFirstName",
+						LastName = "TestLastName",
+					},
+					SellerId = 2,
+					Seller = new User
+					{
+						Id = 2,
+						FirstName = "TestFirstName",
+						LastName = "TestLastName",
+					},
+					LotId = 1,
+					ChatMessages = new List<ChatMessage>
+					{
+						new()
+						{
+							Id = 1,
+							Body = "Test message",
+							ConversationId = 1,
+							SenderId = 1,
+							IsRead = false,
+							TimeStamp = DateTime.Now
+						},
+						new()
+						{
+							Id = 2,
+							Body = "Test message",
+							ConversationId = 1,
+							SenderId = 2,
+							IsRead = false,
+							TimeStamp = DateTime.Now
+						},
+						new()
+						{
+							Id = 3,
+							Body = "Test message",
+							ConversationId = 1,
+							SenderId = 1,
+							IsRead = false,
+							TimeStamp = DateTime.Now
+						}
+					}
+				},
+				new()
+				{
+					Id = 2,
+					BuyerId = 1,
+					Buyer = new User
+					{
+						Id = 1,
+						FirstName = "TestFirstName",
+						LastName = "TestLastName",
+					},
+					SellerId = 3,
+					Seller = new User
+					{
+						Id = 3,
+						FirstName = "TestFirstName",
+						LastName = "TestLastName",
+					},
+					LotId = 2,
+					ChatMessages = new List<ChatMessage>
+					{
+						new()
+						{
+							Id = 4,
+							Body = "Test message",
+							ConversationId = 2,
+							SenderId = 1,
+							TimeStamp = DateTime.Now,
+							IsRead = false,
+						},
+						new()
+						{
+							Id = 5,
+							Body = "Test message",
+							ConversationId = 2,
+							SenderId = 3,
+							TimeStamp = DateTime.Now,
+							IsRead = false,
+						},
+						new()
+						{
+							Id = 6,
+							Body = "Test message",
+							ConversationId = 2,
+							SenderId = 1,
+							TimeStamp = DateTime.Now,
+							IsRead = false,
+						}
+					}
+				}
+			};
+		}
+
+		public static List<ChatMessage> GetChatMessages()
+		{
+			return new List<ChatMessage>
+			{
+				new()
+				{
+					Id = 1,
+					Body = "Test message",
+					ConversationId = 1,
+					SenderId = 1,
+					IsRead = false,
+					TimeStamp = DateTime.Now
+				},
+				new()
+				{
+					Id = 2,
+					Body = "Test message",
+					ConversationId = 1,
+					SenderId = 2,
+					IsRead = false,
+					TimeStamp = DateTime.Now
+				},
+				new()
+				{
+					Id = 3,
+					Body = "Test message",
+					ConversationId = 1,
+					SenderId = 1,
+					IsRead = false,
+					TimeStamp = DateTime.Now
+				},
+				new()
+				{
+					Id = 4,
+					Body = "Test message",
+					ConversationId = 2,
+					SenderId = 1,
+					TimeStamp = DateTime.Now,
+					IsRead = false,
+				},
+				new()
+				{
+					Id = 5,
+					Body = "Test message",
+					ConversationId = 2,
+					SenderId = 3,
+					TimeStamp = DateTime.Now,
+					IsRead = false,
+				},
+				new()
+				{
+					Id = 6,
+					Body = "Test message",
+					ConversationId = 2,
+					SenderId = 1,
+					TimeStamp = DateTime.Now,
+					IsRead = false,
+				}
+			};
+		}
+
 		public static UserManager<User> GetUserManagerMock()
 		{
 			var store = new Mock<IUserStore<User>>();
@@ -319,6 +509,7 @@ namespace Auctionify.UnitTests
 				null
 			);
 			userManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(GetUser());
+			userManager.Setup(x => x.GetRolesAsync(It.IsAny<User>())).ReturnsAsync(GetRoles());
 			userManager.Object.UserValidators.Add(new UserValidator<User>());
 			userManager.Object.PasswordValidators.Add(new PasswordValidator<User>());
 			return userManager.Object;

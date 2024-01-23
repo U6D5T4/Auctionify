@@ -29,7 +29,7 @@
                 </ng-template>
                 <ng-template #starting_price>
                     <p class="lot__price-p">
-                        {{ lot.startingPrice }} {{ lot.currency.code }}
+                        {{ lot.startingPrice ?? "No price" }} {{ lot.currency ? lot.currency.code : 'No code' }}
                     </p>
                 </ng-template>
             </div>

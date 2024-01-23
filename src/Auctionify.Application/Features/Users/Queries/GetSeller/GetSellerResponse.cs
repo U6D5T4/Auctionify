@@ -23,5 +23,7 @@ namespace Auctionify.Application.Features.Users.Queries.GetSeller
 		public double AverageRate { get; set; }
 
 		public int RatesCount { get; set; }
+
+		public Dictionary<byte, int> StarCounts { get; set; } = new Dictionary<byte, int>();
 	}
 }

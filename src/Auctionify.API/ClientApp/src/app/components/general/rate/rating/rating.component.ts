@@ -1,13 +1,14 @@
 import { Dialog } from '@angular/cdk/dialog';
 import { Component, OnInit } from '@angular/core';
 import { formatDate } from '@angular/common';
-import { Router } from '@angular/router';
 
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 import { BuyerModel, SellerModel } from 'src/app/models/users/user-models';
 import { Client } from 'src/app/web-api-client';
+import { UserDataValidatorService } from 'src/app/services/user-data-validator/user-data-validator.service';
 import { Rate, RatePaginationModel } from 'src/app/models/rates/rate-models';
+import { RateCalculatorService } from 'src/app/services/rate-calculator/rate-calculator.service';
 
 @Component({
     selector: 'app-rating',
@@ -26,8 +27,9 @@ export class RatingComponent implements OnInit {
     constructor(
         private authorizeService: AuthorizeService,
         private client: Client,
-        private router: Router,
-        public dialog: Dialog
+        public dialog: Dialog,
+        public userDataValidator: UserDataValidatorService,
+        public ratesCalculator: RateCalculatorService
     ) {}
 
     ngOnInit(): void {
@@ -48,35 +50,39 @@ export class RatingComponent implements OnInit {
 
     private fetchUserProfileData() {
         if (this.isUserBuyer()) {
-            this.client.getBuyer().subscribe(
-                (data: BuyerModel) => {
+            this.client.getBuyer().subscribe({
+                next: (data: BuyerModel) => {
                     this.userProfileData = data;
-                    this.validate();
+                    this.userDataValidator.validateUserProfileData(
+                        this.userProfileData
+                    );
                 },
-                (error) => {
+                error: (error) => {
                     this.openDialog(
-                        error.errors! || [
+                        error.errors || [
                             'Something went wrong, please try again later',
                         ],
                         true
                     );
-                }
-            );
+                },
+            });
         } else if (this.isUserSeller()) {
-            this.client.getSeller().subscribe(
-                (data: SellerModel) => {
+            this.client.getSeller().subscribe({
+                next: (data: SellerModel) => {
                     this.userProfileData = data;
-                    this.validate();
+                    this.userDataValidator.validateUserProfileData(
+                        this.userProfileData
+                    );
                 },
-                (error) => {
+                error: (error) => {
                     this.openDialog(
-                        error.errors! || [
+                        error.errors || [
                             'Something went wrong, please try again later',
                         ],
                         true
                     );
-                }
-            );
+                },
+            });
         }
     }
 
@@ -86,33 +92,25 @@ export class RatingComponent implements OnInit {
             pageSize: this.initialRatesCount,
         };
 
-        this.client.getRates(pagination).subscribe(
-            (userRate) => {
+        this.client.getRates(pagination).subscribe({
+            next: (userRate) => {
                 this.noMoreRates = userRate.hasNext;
                 this.senderRates = userRate.items;
             },
-            (error) => {
+            error: (error) => {
                 this.openDialog(
-                    error.errors! || [
+                    error.errors || [
                         'Something went wrong, please try again later',
                     ],
                     true
                 );
-            }
-        );
+            },
+        });
     }
 
     loadMoreRates(): void {
         this.initialRatesCount += this.addRatesCount;
         this.fetchRatesData();
-    }
-
-    private validate() {
-        if (!this.userProfileData?.averageRate) {
-            this.userProfileData!.averageRate = 0;
-        } else if (!this.userProfileData?.ratesCount) {
-            this.userProfileData!.ratesCount = 0;
-        }
     }
 
     isUserSeller(): boolean {
@@ -123,36 +121,28 @@ export class RatingComponent implements OnInit {
         return this.authorizeService.isUserBuyer();
     }
 
+    isUserHaveRates(): boolean {
+        return this.senderRates.length == 0;
+    }
+
     getPercentage(count: number): string {
         const total = this.getTotalCount();
         return total > 0 ? `${(count / total) * 100}%` : '0%';
     }
 
     getTotalCount(): number {
-        return this.senderRates.length;
+        let totalCount = 0;
+        for (const key in this.userProfileData?.starCounts!) {
+            if (this.userProfileData?.starCounts!.hasOwnProperty(key)) {
+                totalCount += this.userProfileData?.starCounts![key];
+            }
+        }
+
+        return totalCount;
     }
 
     formatDate(date: Date | null): string {
         return date ? formatDate(date, 'dd LLLL, h:mm', 'en-US') : '';
-    }
-
-    getAverageStars(rate: number | null): string[] {
-        const averageRating = rate;
-
-        const roundedAverage = Math.round(averageRating!);
-
-        const stars: string[] = [];
-        for (let i = 1; i <= 5; i++) {
-            if (i <= roundedAverage) {
-                stars.push('star');
-            } else if (i - roundedAverage === 0.5) {
-                stars.push('star_half');
-            } else {
-                stars.push('star_border');
-            }
-        }
-
-        return stars;
     }
 
     getStars(count: number): string[] {
@@ -166,4 +156,12 @@ export class RatingComponent implements OnInit {
         }
         return stars;
     }
+
+    ratesEmpty: { [key: number]: number } = {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+    };
 }

@@ -19,6 +19,7 @@ export class FeedbackComponent {
 
     initialRatesCount: number = 10;
     addRatesCount: number = 10;
+    starsCount: number = 5;
 
     noMoreRates: boolean = false;
 
@@ -46,35 +47,33 @@ export class FeedbackComponent {
 
     private fetchUserProfileData() {
         if (this.isUserBuyer()) {
-            this.client.getBuyer().subscribe(
-                (data: BuyerModel) => {
+            this.client.getBuyer().subscribe({
+                next: (data: BuyerModel) => {
                     this.userProfileData = data;
-                    this.validate();
                 },
-                (error) => {
+                error: (error) => {
                     this.openDialog(
-                        error.errors! || [
+                        error.errors || [
                             'Something went wrong, please try again later',
                         ],
                         true
                     );
-                }
-            );
+                },
+            });
         } else if (this.isUserSeller()) {
-            this.client.getSeller().subscribe(
-                (data: SellerModel) => {
+            this.client.getSeller().subscribe({
+                next: (data: SellerModel) => {
                     this.userProfileData = data;
-                    this.validate();
                 },
-                (error) => {
+                error: (error) => {
                     this.openDialog(
-                        error.errors! || [
+                        error.errors || [
                             'Something went wrong, please try again later',
                         ],
                         true
                     );
-                }
-            );
+                },
+            });
         }
     }
 
@@ -84,52 +83,25 @@ export class FeedbackComponent {
             pageSize: 10,
         };
 
-        this.client.getFeedbacks(pagination).subscribe(
-            (userRate) => {
+        this.client.getFeedbacks(pagination).subscribe({
+            next: (userRate) => {
                 this.noMoreRates = userRate.hasNext;
                 this.receiverRates = userRate.items;
             },
-            (error) => {
+            error: (error) => {
                 this.openDialog(
-                    error.errors! || [
+                    error.errors || [
                         'Something went wrong, please try again later',
                     ],
                     true
                 );
-            }
-        );
+            },
+        });
     }
 
     loadMoreRates(): void {
         this.initialRatesCount += this.addRatesCount;
         this.fetchRatesData();
-    }
-
-    getAverageStars(rate: number | null): string[] {
-        const averageRating = rate;
-
-        const roundedAverage = Math.round(averageRating!);
-
-        const stars: string[] = [];
-        for (let i = 1; i <= 5; i++) {
-            if (i <= roundedAverage) {
-                stars.push('star');
-            } else if (i - roundedAverage === 0.5) {
-                stars.push('star_half');
-            } else {
-                stars.push('star_border');
-            }
-        }
-
-        return stars;
-    }
-
-    private validate() {
-        if (!this.userProfileData?.averageRate) {
-            this.userProfileData!.averageRate = 0;
-        } else if (!this.userProfileData?.ratesCount) {
-            this.userProfileData!.ratesCount = 0;
-        }
     }
 
     isUserSeller(): boolean {
@@ -142,16 +114,5 @@ export class FeedbackComponent {
 
     formatDate(date: Date | null): string {
         return date ? formatDate(date, 'dd LLLL, h:mm', 'en-US') : '';
-    }
-    getStars(count: number): string[] {
-        const stars: string[] = [];
-        for (let i = 1; i <= 5; i++) {
-            if (i <= count) {
-                stars.push('star');
-            } else {
-                stars.push('star_border');
-            }
-        }
-        return stars;
     }
 }

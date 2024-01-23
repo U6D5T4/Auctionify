@@ -1,11 +1,179 @@
 .dashboard {
-    &__container {
+    &__title {
+        display: flex;
+        padding-top: 40px;
+        padding-bottom: 32px;
+        max-width: 1400px;
+        margin: 0 auto;
+        color: var(--color-text-primary);
+        font-size: 32px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 40px;
+    }
+
+    &__auction-lots {
+        width: 100%;
+    }
+
+    &__auction-container {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        padding: 40px;
-        gap: 40px;
+        gap: 20px;
+        max-width: 1200px;
         margin: 0 auto;
+        padding: 40px 100px;
+        border-radius: 16px;
+        border: 1px solid var(--color-grey-5);
+    }
+
+    &__auction-section {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    &__rating-section {
+        display: flex;
+        gap: 32px;
+        min-width: 200px;
+    }
+
+    &__auction-title {
+        display: flex;
+        align-items: center;
+    }
+
+    &__auction-list {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        gap: 16px;
+        list-style: none;
+        padding: 0;
+    }
+
+    &__auction-list-lot {
+        align-items: center;
+        justify-content: space-between;
+        display: flex;
+        height: 135px;
+        padding-top: 5px;
+        width: 100%;
+        gap: 24px;
+    }
+
+    &__auction-list-lot:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        border-radius: 16px;
+    }
+
+    &__auction-no-more {
+        font-size: 18px;
+        margin: 0 auto;
+    }
+
+    &__auction-empty {
+        gap: 20px;
+        font-size: 18px;
+        padding-left: 20px;
+    }
+
+    &__transactions-section {
+        display: flex;
+        justify-content: space-between;
+        max-width: 1400px;
+        width: 100%;
+        margin: 0 auto;
+        padding-top: 40px;
+    }
+
+    &__transactions {
+        padding-top: 32px;
+    }
+
+    &__transactions-title {
+        display: flex;
+        align-items: center;
+        color: var(--color-text-primary);
+        font-size: 32px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 40px;
+    }
+
+    &__transactions-show-all {
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 24px;
+    }
+
+    &__wishlist-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 40px;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 40px 5px;
+    }
+
+    &__wishlist-section {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    &__wishlist-title {
+        display: flex;
+        align-items: center;
+        color: var(--color-text-primary);
+        font-size: 32px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 40px;
+    }
+
+    &__wishlist-show-all {
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 24px;
+    }
+
+    &__wishlist-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    &__wishlist-list-lot {
+        width: 250px;
+        height: 400px;
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+        padding-bottom: 10px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    &__wishlist-list-lot:hover {
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s ease;
+        border-radius: 16px;
+    }
+
+    &__wishlist-empty {
+        gap: 20px;
+        font-size: 18px;
+        padding-left: 20px;
     }
 
     &__rating-section {
@@ -18,6 +186,15 @@
         display: flex;
         flex-direction: column;
         gap: 40px;
+        margin-left: 60px;
+    }
+
+    &__container-main {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 40px;
+        margin: 0 auto;
     }
 
     &__options {
@@ -29,7 +206,7 @@
         height: 48px;
         border-radius: 32px;
         border: none;
-        background-color: #F2F5F7;
+        background-color: #f2f5f7;
         font-weight: bold;
         font-family: 'Onest', sans-serif;
     }
@@ -56,81 +233,12 @@
     &__feedback-btn {
         width: 160px;
     }
-    
-    &__rating {
-        display: flex;
-        gap: 40px;
-        flex-wrap: nowrap;
-    }
-
-    &__progress-bar-container {
-        display: flex;
-        gap: 20px;
-    }
-
-    &__average-rating {
-        display: flex;
-        flex-direction: column;
-    }
-
-    &__rating-level {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 16px;
-    }
-      
-    &__progress-bar {
-        width: 200px;
-        height: 8px;
-        border-radius: 500px;
-        background-color: #e0e0e0;
-        position: relative;
-    }
-      
-    &__progress {
-        height: 100%;
-        border-radius: 500px;
-        background-color: #FBBC04;
-    }
-
-    &__count {
-        width: 10px;
-        display: flex;
-        justify-content: center;
-    }
-
-    &__average {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    &__stars mat-icon {
-        color: #ffc72c;
-    }
-
-    &__number-stars {
-        display: flex;
-        flex-direction: column;
-        gap: 1px;
-    }
-
-    &__avarage-score {
-        display: flex;
-        justify-content: center;
-        font-size: 40px;
-    }
-
-    &__rating-count {
-        color: #2B5293;
-    }
 
     &__see-more-comments-btn button {
         width: 392px;
         min-width: 250px;
-        border: 2px solid #2B5293;
-        color: #2B5293;
+        border: 2px solid #2b5293;
+        color: #2b5293;
     }
 
     &__btn-content {
@@ -138,6 +246,210 @@
         flex-direction: row;
         gap: 8px;
         align-items: center;
+    }
+}
+
+.auction {
+    &__image {
+        position: relative;
+        align-self: center;
+        display: flex;
+    }
+
+    &__image img {
+        border-radius: 18.7px;
+        background: url(../../../../assets/icons/NoImage.svg),
+            lightgray 50% / cover no-repeat;
+    }
+
+    &__info {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        flex: 1 1;
+    }
+
+    &__title {
+        overflow: hidden;
+        color: var(--color-text-primary);
+        text-overflow: ellipsis;
+        font-size: 17px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 24px;
+        display: flex;
+        align-items: center;
+        flex-grow: 1;
+    }
+
+    &__title a {
+        text-decoration: none;
+        color: var(--color-text-primary);
+    }
+
+    &__title a:hover {
+        color: var(--color-main);
+    }
+
+    &__description {
+        display: block;
+        word-break: break-word;
+        max-width: 40ch;
+        color: var(--color-grey-3);
+    }
+
+    &__price {
+        display: flex;
+        flex-direction: column;
+        height: initial;
+        row-gap: 7px;
+        position: relative;
+        flex: 1 1;
+    }
+
+    &__price-p {
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 600;
+    }
+
+    &__go-to-lot {
+        position: absolute;
+        top: 0;
+        right: -115px;
+    }
+
+    &__price-p {
+        flex: 0 0 50%;
+    }
+
+    &__comment {
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 16px;
+        order: 1;
+    }
+
+    &__watchlist {
+        width: 110px;
+    }
+
+    &__like-btn {
+        border: 1px solid var(--color-grey-5);
+        border-radius: 8px;
+        padding: 9px;
+        background-color: #ffffff;
+    }
+
+    &__go-to-active-lot-btn {
+        background-color: var(--color-main);
+        padding: 12px;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        size: 16px;
+    }
+
+    &__go-to-won-lot-btn {
+        background: var(--green, #2b9355);
+        padding: 10px;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        size: 16px;
+    }
+
+    &__go-to-lost-lot-btn {
+        background: var(--red, #ab2d25);
+        padding: 10px;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        size: 16px;
+    }
+}
+
+.show-more {
+    margin: 0 auto;
+}
+
+.show-more-button {
+    padding: 12px;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.lot {
+    &__image {
+        position: relative;
+        align-self: center;
+    }
+
+    &__image img {
+        border-radius: 16px;
+    }
+
+    &__like-btn {
+        background-color: var(--color-container);
+        border: none;
+        border-radius: 50%;
+        width: 45px;
+        height: 45px;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 1;
+    }
+
+    &__title {
+        display: flex;
+        font-size: 16px;
+        font-weight: bold;
+        height: 30px;
+        flex-direction: column;
+        text-align: left;
+        justify-content: left;
+        align-self: stretch;
+        padding-top: 10px;
+    }
+
+    &__title a {
+        text-decoration: none;
+        color: var(--color-text-primary);
+    }
+
+    &__title a:hover {
+        color: var(--color-main);
+    }
+
+    &__days-left {
+        font-size: 16px;
+        color: var(--color-placeholder);
+        font-style: normal;
+        font-weight: 500;
+        line-height: 24px;
+        height: 50px;
+    }
+
+    &__price {
+        align-items: center;
+        display: flex;
+        justify-content: flex-start;
+        gap: 30px;
+    }
+
+    &__price-p {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    &__bid-count {
+        font-size: 16px;
+        color: var(--color-placeholder);
     }
 }
 
