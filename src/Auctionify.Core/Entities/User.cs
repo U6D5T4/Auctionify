@@ -12,6 +12,8 @@ namespace Auctionify.Core.Entities
 
 		public string? ProfilePicture { get; set; }
 
+		public bool IsDeleted { get; set; }
+
 		public virtual ICollection<Lot> SellingLots { get; set; }
 
 		public virtual ICollection<Lot> BuyingLots { get; set; }
