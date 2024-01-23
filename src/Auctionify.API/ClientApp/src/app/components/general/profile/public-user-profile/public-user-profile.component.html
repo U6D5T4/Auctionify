@@ -1,6 +1,6 @@
 <div class="main-container">
+    <h1>User profile</h1>
     <div class="main-profile-div">
-        <h1>User profile</h1>
         <div class="main">
             <div class="main__profile">
                 <div class="main__photo">
@@ -34,8 +34,23 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="nav">
-        <!-- Rate element -->
+        <div class="main__container-rate">
+            <app-average-rating-item
+                [userProfileData]="userProfileData"
+            ></app-average-rating-item>
+
+            <div class="main__see-more-comments-btn">
+                <button
+                    routerLink="/rating"
+                    class="main__rating-btn"
+                    mat-flat-button
+                >
+                    <div class="main__btn-content">
+                        <p>Show all comments</p>
+                        <mat-icon>arrow_forward</mat-icon>
+                    </div>
+                </button>
+            </div>
+        </div>
     </div>
 </div>
