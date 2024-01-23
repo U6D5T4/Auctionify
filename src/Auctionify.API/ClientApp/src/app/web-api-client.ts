@@ -957,7 +957,7 @@ export class Client {
             })
         );
     }
-    
+
     addRateToSeller(model: RateUserCommandModel): Observable<string> {
         let url_ = this.baseUrl + '/api/rates/sellers';
 
@@ -990,7 +990,10 @@ export class Client {
             }),
             catchError((error) => {
                 return throwError(() => error.error);
-                
+            })
+        );
+    }
+
     getUserTransactions(
         pageIndex: number,
         pageSize: number

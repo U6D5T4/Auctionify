@@ -45,7 +45,7 @@ export class RatingComponent implements OnInit {
             },
         });
 
-        dialogRef.closed.subscribe((res) => {});
+        dialogRef.closed.subscribe(() => {});
     }
 
     private fetchUserProfileData() {
@@ -139,22 +139,6 @@ export class RatingComponent implements OnInit {
         }
 
         return totalCount;
-    }
-
-    formatDate(date: Date | null): string {
-        return date ? formatDate(date, 'dd LLLL, h:mm', 'en-US') : '';
-    }
-
-    getStars(count: number): string[] {
-        const stars: string[] = [];
-        for (let i = 1; i <= 5; i++) {
-            if (i <= count) {
-                stars.push('star');
-            } else {
-                stars.push('star_border');
-            }
-        }
-        return stars;
     }
 
     ratesEmpty: { [key: number]: number } = {
