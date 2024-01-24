@@ -12,14 +12,9 @@ import { Dialog } from '@angular/cdk/dialog';
 })
 export class HeaderComponent {
     isUserBuyer: boolean = false;
-    isLoggedIn: boolean = false;
 
     private isBuyerEffect = effect(() => {
         this.isUserBuyer = this.authService.isUserBuyer();
-    });
-
-    public IsLoggedIn = effect(() => {
-        this.isLoggedIn = this.authService.isUserLoggedIn();
     });
 
     constructor(
@@ -45,7 +40,9 @@ export class HeaderComponent {
         dialogRef.closed.subscribe((result) => {
             if (result === 'true') {
                 this.authService.logout();
-                this.router.navigate(['/home']);
+                this.router.navigate(['/home']).then(() => {
+                    window.location.reload();
+                  });
             }
         });
     }

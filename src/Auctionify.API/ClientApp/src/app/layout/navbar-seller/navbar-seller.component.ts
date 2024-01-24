@@ -34,7 +34,9 @@ export class NavbarSellerComponent {
         dialogRef.closed.subscribe((result) => {
             if (result === 'true') {
                 this.authService.logout();
-                this.router.navigate(['/home']);
+                this.router.navigate(['/home']).then(() => {
+                    window.location.reload();
+                });
             }
         });
     }
