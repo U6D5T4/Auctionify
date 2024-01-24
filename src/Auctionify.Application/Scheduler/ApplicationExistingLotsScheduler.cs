@@ -39,6 +39,13 @@ namespace Auctionify.Application.Scheduler
 						await _jobSchedulerService.ScheduleUpcomingToActiveLotStatusJob(lot.Id, lot.StartDate);
 					}
 				}
+				else if (lotStatus == AuctionStatus.Active)
+				{
+					if (lot.EndDate > DateTime.UtcNow)
+					{
+						await _jobSchedulerService.ScheduleLotFinishJob(lot.Id, lot.EndDate);
+					}
+				}
 			}
 		}
 
