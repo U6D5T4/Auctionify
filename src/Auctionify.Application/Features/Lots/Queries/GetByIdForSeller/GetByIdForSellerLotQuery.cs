@@ -125,7 +125,10 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForSeller
 						profilePictureName
 					);
 
-					result.Seller.ProfilePicture = profilePictureUrl;
+					if (result.Seller != null)
+					{
+						result.Seller.ProfilePicture = profilePictureUrl;
+					}
 				}
 			}
 			else

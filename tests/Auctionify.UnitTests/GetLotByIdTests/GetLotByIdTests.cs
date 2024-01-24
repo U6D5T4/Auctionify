@@ -49,7 +49,8 @@ namespace Auctionify.UnitTests.GetLotByIdTests
 			{
 				ContainerName = "auctionify-files",
 				PhotosFolderName = "photos",
-				AdditionalDocumentsFolderName = "additional-documents"
+				AdditionalDocumentsFolderName = "additional-documents",
+				UserProfilePhotosFolderName = "user-profile-photos"
 			});
 
 			_blobStorageOptionsMock = blobStorageOptionsMock;
@@ -67,6 +68,7 @@ namespace Auctionify.UnitTests.GetLotByIdTests
 			{
 				Id = 2,
 			};
+			var testUrl = "test-url";
 
 			var handler = new GetByIdForBuyerLotQueryHandler(
 				_lotRepository,
