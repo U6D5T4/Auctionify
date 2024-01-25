@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Auctionify.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240115210732_ConversationTableCreateAndChatTableFixes")]
-    partial class ConversationTableCreateAndChatTableFixes
+    [Migration("20240125084038_RateTableFixAndChatWithConversationTableSetup")]
+    partial class RateTableFixAndChatWithConversationTableSetup
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -380,7 +380,7 @@ namespace Auctionify.Infrastructure.Migrations
                     b.Property<byte>("RatingValue")
                         .HasColumnType("tinyint");
 
-                    b.Property<int>("RecieverId")
+                    b.Property<int>("ReceiverId")
                         .HasColumnType("int");
 
                     b.Property<int>("SenderId")
@@ -391,7 +391,7 @@ namespace Auctionify.Infrastructure.Migrations
                     b.HasIndex("LotId")
                         .IsUnique();
 
-                    b.HasIndex("RecieverId");
+                    b.HasIndex("ReceiverId");
 
                     b.HasIndex("SenderId");
 
@@ -823,9 +823,9 @@ namespace Auctionify.Infrastructure.Migrations
                         .WithOne("Rate")
                         .HasForeignKey("Auctionify.Core.Entities.Rate", "LotId");
 
-                    b.HasOne("Auctionify.Core.Entities.User", "Reciever")
+                    b.HasOne("Auctionify.Core.Entities.User", "Receiver")
                         .WithMany("ReceiverRates")
-                        .HasForeignKey("RecieverId")
+                        .HasForeignKey("ReceiverId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
@@ -837,7 +837,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.Navigation("Lot");
 
-                    b.Navigation("Reciever");
+                    b.Navigation("Receiver");
 
                     b.Navigation("Sender");
                 });
