@@ -278,7 +278,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 			var result = await sut.LoginUserAsync(userModel!);
 
 			// Assert
-			result.Errors.FirstOrDefault().Should().Be("User data is emtpy");
+			result.Errors.FirstOrDefault().Should().Be("User data is empty");
 			result.Should().NotBeNull();
 			result.IsSuccess.Should().BeFalse();
 			result.Result.Should().BeNull();

@@ -30,6 +30,8 @@ namespace Auctionify.Application.Features.Users.Commands.Delete
 
 			user!.IsDeleted = true;
 
+			user!.DeletionDate = DateTime.UtcNow;
+
 			await _userManager.UpdateAsync(user);
 
 			return new DeletedUserResponse

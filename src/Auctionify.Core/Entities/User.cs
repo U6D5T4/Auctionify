@@ -14,6 +14,10 @@ namespace Auctionify.Core.Entities
 
 		public bool IsDeleted { get; set; }
 
+		public DateTime DeletionDate { get; set; }
+
+		public DateTime CreationDate { get; set; }
+
 		public virtual ICollection<Lot> SellingLots { get; set; }
 
 		public virtual ICollection<Lot> BuyingLots { get; set; }

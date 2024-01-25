@@ -90,6 +90,75 @@ namespace Auctionify.Application.Features.Users.Commands.Delete
 				.WithMessage("You can't delete your account if you have at least one active bid")
 				.OverridePropertyName("BuyerId")
 				.WithName("Buyer Id");
+
+			// Inactive states/statuses for now, if I haven't forgotten anything:
+			// successful purchase by buyer, (lot status: sold)
+			// no purchase, (lot status: not sold)
+			// archived status, (lot status: archived)
+			// draft status (lot status: draft)
+			// in above cases, the seller can delete his account
+
+			// for seller role
+			// Seller can’t delete his account if he has at least one active lot
+			RuleFor(x => x)
+				.Cascade(CascadeMode.Stop)
+				.MustAsync(
+					async (command, cancellationToken) =>
+					{
+						// get current user
+						var currentUser = await _userManager.FindByEmailAsync(
+							_currentUserService.UserEmail!
+						);
+
+						// get current user role
+						var currentUserRole = (UserRole)
+							Enum.Parse(
+								typeof(UserRole),
+								(await _userManager.GetRolesAsync(currentUser!)).FirstOrDefault()!
+							);
+
+						// if the current user is not a seller, then we just skip this validation
+						if (currentUserRole != UserRole.Seller)
+						{
+							return true;
+						}
+
+						// get all lots of the seller
+						var lots = await _lotRepository.GetUnpaginatedListAsync(
+							predicate: x => x.SellerId == currentUser!.Id,
+							cancellationToken: cancellationToken
+						);
+
+						// for each lot, check if the lot is active
+						foreach (var lot in lots)
+						{
+							// get the lot status
+							var lotStatus = await _lotStatusRepository.GetAsync(
+								predicate: x => x.Id == lot.LotStatusId,
+								cancellationToken: cancellationToken
+							);
+
+							// if the lot status is active, upcoming, pendingapproval, reopened,
+							// then the seller can't delete his account
+							if (
+								lotStatus!.Name == AuctionStatus.Active.ToString()
+								|| lotStatus!.Name == AuctionStatus.Upcoming.ToString()
+								|| lotStatus!.Name == AuctionStatus.PendingApproval.ToString()
+								|| lotStatus!.Name == AuctionStatus.Reopened.ToString()
+							)
+							{
+								return false;
+							}
+						}
+
+						return true;
+					}
+				)
+				.WithMessage(
+					"You can't delete your account if you have at least one lot with either active, upcoming, pending approval or reopened status"
+				)
+				.OverridePropertyName("SellerId")
+				.WithName("Seller Id");
 		}
 	}
 }

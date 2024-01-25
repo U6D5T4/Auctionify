@@ -59,7 +59,7 @@ namespace Auctionify.Infrastructure.Identity
 			{
 				return new LoginResponse
 				{
-					Errors = new[] { "User data is emtpy" },
+					Errors = new[] { "User data is empty" },
 					IsSuccess = false,
 				};
 			}
@@ -230,7 +230,14 @@ namespace Auctionify.Infrastructure.Identity
 					IsSuccess = false,
 				};
 
-			var user = new User { Email = model.Email, UserName = model.Email, };
+			var user = new User
+			{
+				Email = model.Email,
+				UserName = model.Email,
+				IsDeleted = false,
+				CreationDate = DateTime.UtcNow
+			};
+
 			var result = await _userManager.CreateAsync(user, model.Password);
 
 			if (result.Succeeded)
@@ -306,11 +313,7 @@ namespace Auctionify.Infrastructure.Identity
 
 			if (userRoleList.Any())
 			{
-				return new LoginResponse
-				{
-					IsSuccess = false,
-					Message = "User already has a role"
-				};
+				return new LoginResponse { IsSuccess = false, Message = "User already has a role" };
 			}
 
 			if (string.IsNullOrWhiteSpace(role))
@@ -389,7 +392,10 @@ namespace Auctionify.Infrastructure.Identity
 			return new LoginResponse { IsSuccess = true, Result = token };
 		}
 
-		public async Task<ChangePasswordResponse> ChangeUserPasswordAsync(string email, ChangePasswordViewModel model)
+		public async Task<ChangePasswordResponse> ChangeUserPasswordAsync(
+			string email,
+			ChangePasswordViewModel model
+		)
 		{
 			var user = await _userManager.FindByEmailAsync(email);
 
