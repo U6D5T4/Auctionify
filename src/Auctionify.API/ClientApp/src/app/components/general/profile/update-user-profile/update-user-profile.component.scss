@@ -2,32 +2,6 @@
     display: flex;
     flex-direction: column;
     gap: 32px;
-
-    &__top-container {
-        height: 148px;
-        border-radius: 16px;
-        border: 1px solid #E0E0E0;
-        display: flex;
-        gap: 40px;
-        align-items: center;
-        padding-left: 40px;
-        padding-right: 40px;
-    }
-
-    &__top-container img {
-        border-radius: 50%;
-    }
-
-    &__container-left-info {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-    }
-
-    &__rate-lots {
-        display: flex;
-        gap: 16px;
-    }
 }
 
 .main-container {
@@ -40,7 +14,7 @@
     flex-direction: column;
     border-radius: 16px;
     border: 1px solid #E0E0E0;
-    min-width: 700px;
+    min-width: 610px;
 
     &__profile-form {
         display: flex;

@@ -1,0 +1,60 @@
+.profile {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.main-container {
+    display: flex;
+    gap: 16px;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    border-radius: 16px;
+    border: 1px solid #e0e0e0;
+    padding: 40px;
+    min-width: 610px;
+
+    &__options {
+        display: flex;
+        gap: 16px;
+    }
+
+    &__options button {
+        height: 48px;
+        border-radius: 32px;
+        border: none;
+        background-color: #F2F5F7;
+        font-weight: bold;
+        font-family: 'Onest', sans-serif;
+    }
+
+    &__rating-btn {
+        width: 130px;
+    }
+
+    &__feedback-btn {
+        width: 160px;
+    }
+
+    &__no-comments {
+        display: flex;
+        justify-content: center;
+    }
+
+    &__btn {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 24px;
+        padding-bottom: 20px;
+    }
+
+    &__show-more-btn {
+        max-width: 127px;
+    }
+}

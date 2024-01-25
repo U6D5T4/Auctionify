@@ -1,4 +1,5 @@
 using Auctionify.Application.Common.DTOs;
+using Auctionify.Application.Common.Models.Transaction;
 using Auctionify.Application.Features.Users.Commands.AddBidForLot;
 using Auctionify.Application.Features.Users.Commands.AddLotToWatchlist;
 using Auctionify.Application.Features.Users.Commands.RemoveBid;
@@ -10,6 +11,7 @@ using Auctionify.Application.Features.Users.Queries.GetBuyerAuctions;
 using Auctionify.Application.Features.Users.Queries.GetById;
 using Auctionify.Application.Features.Users.Queries.GetByUserWatchlist;
 using Auctionify.Application.Features.Users.Queries.GetSeller;
+using Auctionify.Application.Features.Users.Queries.GetTransactions;
 using Auctionify.Core.Entities;
 using Auctionify.Core.Persistence.Paging;
 using AutoMapper;
@@ -35,6 +37,9 @@ namespace Auctionify.Application.Features.Users.Profiles
 				.ReverseMap();
 			CreateMap<Lot, GetBuyerAuctionsResponse>().ReverseMap();
 			CreateMap<IPaginate<Lot>, GetListResponseDto<GetBuyerAuctionsResponse>>().ReverseMap();
+			CreateMap<TransactionInfo, GetTransactionsUserResponse>().ReverseMap();
+			CreateMap<IPaginate<TransactionInfo>, GetListResponseDto<GetTransactionsUserResponse>>()
+				.ReverseMap();
 		}
 	}
 }

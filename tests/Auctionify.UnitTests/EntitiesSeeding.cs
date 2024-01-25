@@ -31,6 +31,7 @@ namespace Auctionify.UnitTests
 					},
 					StartingPrice = 100,
 					SellerId = 1,
+					BuyerId = 2,
 					CategoryId = 1,
 					CurrencyId = 1,
 					Bids = new List<Bid> { bids[0], bids[1], }
@@ -53,6 +54,7 @@ namespace Auctionify.UnitTests
 					},
 					StartingPrice = 100,
 					SellerId = 1,
+					BuyerId = 2,
 					CategoryId = 1,
 					CurrencyId = 1,
 					Bids = new List<Bid> { }
@@ -75,6 +77,7 @@ namespace Auctionify.UnitTests
 					},
 					StartingPrice = 100,
 					SellerId = 1,
+					BuyerId = 2,
 					CategoryId = 1,
 					CurrencyId = 1,
 				},
@@ -96,6 +99,7 @@ namespace Auctionify.UnitTests
 					},
 					StartingPrice = 100,
 					SellerId = 2,
+					BuyerId = 2,
 					CategoryId = 1,
 					CurrencyId = 1,
 				}
@@ -126,6 +130,37 @@ namespace Auctionify.UnitTests
 					BuyerId = 3,
 					NewPrice = 140,
 					BidRemoved = false,
+				}
+			};
+		}
+
+		public static List<Rate> GetRates()
+		{
+			return new List<Rate>
+			{
+				new Rate
+				{
+					ReceiverId = 2,
+					SenderId = 1,
+					RatingValue = 5,
+					Comment = "Some comment",
+					LotId = 2
+				},
+				new Rate
+				{
+					ReceiverId = 1,
+					SenderId = 3,
+					RatingValue = 5,
+					Comment = "Some comment 2",
+					LotId = 1
+				},
+				new Rate
+				{
+					ReceiverId = 3,
+					SenderId = 2,
+					RatingValue = 5,
+					Comment = "Some comment 3",
+					LotId = 3
 				}
 			};
 		}
@@ -230,6 +265,16 @@ namespace Auctionify.UnitTests
 					AboutMe = "TestAboutMe",
 					ProfilePicture = "TestProfilePicture.png"
 				}
+			};
+		}
+
+		public static List<string> GetRoles()
+		{
+			return new List<string>
+			{
+				"Buyer",
+				"Seller",
+				"Admin",
 			};
 		}
 
@@ -464,6 +509,7 @@ namespace Auctionify.UnitTests
 				null
 			);
 			userManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(GetUser());
+			userManager.Setup(x => x.GetRolesAsync(It.IsAny<User>())).ReturnsAsync(GetRoles());
 			userManager.Object.UserValidators.Add(new UserValidator<User>());
 			userManager.Object.PasswordValidators.Add(new PasswordValidator<User>());
 			return userManager.Object;

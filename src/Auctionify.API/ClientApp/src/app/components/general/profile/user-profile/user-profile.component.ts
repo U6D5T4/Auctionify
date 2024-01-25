@@ -5,6 +5,7 @@ import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-po
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 import { BuyerModel, SellerModel } from 'src/app/models/users/user-models';
 import { Client } from 'src/app/web-api-client';
+import { UserDataValidatorService } from 'src/app/services/user-data-validator/user-data-validator.service';
 
 @Component({
     selector: 'app-user-profile',
@@ -17,7 +18,8 @@ export class UserProfileComponent {
     constructor(
         private authorizeService: AuthorizeService,
         private client: Client,
-        public dialog: Dialog
+        public dialog: Dialog,
+        public userDataValidator: UserDataValidatorService
     ) {}
 
     ngOnInit(): void {
@@ -29,6 +31,7 @@ export class UserProfileComponent {
             this.client.getBuyer().subscribe(
                 (data: BuyerModel) => {
                     this.userProfileData = data;
+                    this.userDataValidator.validateUserProfileData(data);
                 },
                 (error) => {
                     this.openDialog(
@@ -43,6 +46,7 @@ export class UserProfileComponent {
             this.client.getSeller().subscribe(
                 (data: SellerModel) => {
                     this.userProfileData = data;
+                    this.userDataValidator.validateUserProfileData(data);
                 },
                 (error) => {
                     this.openDialog(
