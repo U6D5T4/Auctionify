@@ -62,7 +62,8 @@ namespace Auctionify.Application.Features.Chats.Queries.GetAllUserConversations
 			{
 				Id = currentUser!.Id,
 				FullName = $"{currentUser!.FirstName} {currentUser!.LastName}",
-				Role = currentUserRole.ToString()
+				Role = currentUserRole.ToString(),
+				Email = currentUser!.Email!
 			};
 
 			var currentUserProfilePictureName = currentUser!.ProfilePicture;
@@ -113,23 +114,39 @@ namespace Auctionify.Application.Features.Chats.Queries.GetAllUserConversations
 							conversation.BuyerId == user.Id
 								? $"{conversation.Seller.FirstName} {conversation.Seller.LastName}"
 								: $"{conversation.Buyer.FirstName} {conversation.Buyer.LastName}",
+						Email =
+							conversation.BuyerId == user.Id
+								? conversation.Seller!.Email!
+								: conversation.Buyer!.Email!,
 						Role =
 							conversation.BuyerId == user.Id
 								? UserRole.Seller.ToString()
-								: UserRole.Buyer.ToString()
+								: UserRole.Buyer.ToString(),
+						ProfilePictureUrl =
+							conversation.BuyerId == user.Id
+								? _blobService.GetBlobUrl(
+									_azureBlobStorageOptions.UserProfilePhotosFolderName,
+									conversation.Seller!.ProfilePicture
+								)
+								: _blobService.GetBlobUrl(
+									_azureBlobStorageOptions.UserProfilePhotosFolderName,
+									conversation.Buyer!.ProfilePicture
+								)
 					},
-					LastMessage = new Common.Models.UserConversations.LastMessage
-					{
-						Id = conversation.ChatMessages.Last().Id,
-						SenderId = conversation.ChatMessages.Last().SenderId,
-						ConversationId = conversation.ChatMessages.Last().ConversationId,
-						Body = conversation.ChatMessages.Last().Body,
-						TimeStamp = conversation.ChatMessages.Last().TimeStamp,
-						IsRead = conversation.ChatMessages.Last().IsRead
-					},
+					LastMessage = conversation.ChatMessages.Any()
+						? new Common.Models.UserConversations.LastMessage
+						{
+							Id = conversation.ChatMessages.Last().Id,
+							SenderId = conversation.ChatMessages.Last().SenderId,
+							ConversationId = conversation.ChatMessages.Last().ConversationId,
+							Body = conversation.ChatMessages.Last().Body,
+							TimeStamp = conversation.ChatMessages.Last().TimeStamp,
+							IsRead = conversation.ChatMessages.Last().IsRead
+						}
+						: new Common.Models.UserConversations.LastMessage { },
 					UnreadMessagesCount = conversation.ChatMessages.Count(
 						cm => cm.SenderId != user.Id && !cm.IsRead
-					)
+					),
 				};
 
 				userConversationsList.Add(userConversation);
