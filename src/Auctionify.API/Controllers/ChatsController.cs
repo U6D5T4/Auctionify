@@ -1,4 +1,7 @@
-﻿using Auctionify.Application.Features.Chats.Queries.GetAllChatMessages;
+﻿using Auctionify.Application.Features.Chats.Commands.CreateChatMessage;
+using Auctionify.Application.Features.Chats.Commands.CreateConversation;
+using Auctionify.Application.Features.Chats.Commands.MarkChatMessageAsRead;
+using Auctionify.Application.Features.Chats.Queries.GetAllChatMessages;
 using Auctionify.Application.Features.Chats.Queries.GetAllUserConversations;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -26,12 +29,52 @@ namespace Auctionify.API.Controllers
 			return Ok(result);
 		}
 
+		[HttpPost("users/conversations")]
+		[Authorize(Roles = "Buyer, Seller")]
+		public async Task<IActionResult> CreateConversation([FromForm] int lotId)
+		{
+			var createConversationCommand = new CreateConversationCommand { LotId = lotId };
+
+			var result = await _mediator.Send(createConversationCommand);
+
+			return Ok(result);
+		}
+
 		[HttpGet("users/conversations/{conversationId}/messages")]
 		[Authorize(Roles = "Buyer, Seller")]
 		public async Task<IActionResult> GetAllConversationChatMessages(int conversationId)
 		{
 			var result = await _mediator.Send(
 				new GetAllChatMessagesQuery { ConversationId = conversationId }
+			);
+
+			return Ok(result);
+		}
+
+		[HttpPost("users/conversations/{conversationId}/messages")]
+		[Authorize(Roles = "Buyer, Seller")]
+		public async Task<IActionResult> CreateChatMessage(
+			[FromRoute] int conversationId,
+			[FromForm] string body
+		)
+		{
+			var createChatMessageCommand = new CreateChatMessageCommand
+			{
+				ConversationId = conversationId,
+				Body = body
+			};
+
+			_ = await _mediator.Send(createChatMessageCommand);
+
+			return Ok("Message sent successfully!");
+		}
+
+		[HttpPut("users/conversations/messages/{chatMessageId}")]
+		[Authorize(Roles = "Buyer, Seller")]
+		public async Task<IActionResult> MarkChatMessageAsRead(int chatMessageId)
+		{
+			var result = await _mediator.Send(
+				new MarkChatMessageAsReadCommand { ChatMessageId = chatMessageId }
 			);
 
 			return Ok(result);

@@ -34,7 +34,7 @@
                     {{userProfileData?.averageRate?.toFixed(1)}}
                 </h1>
                 <div class="main__stars">
-                    <mat-icon *ngFor="let star of getAverageStars(userProfileData?.ratesCount!)">{{ star }}</mat-icon>
+                    <mat-icon *ngFor="let star of this.ratesCalculator.getAverageStars(userProfileData?.ratesCount!)">{{ star }}</mat-icon>
                 </div>
             </div>
             <div class="main__rating-count">

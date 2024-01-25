@@ -1,6 +1,5 @@
 .profile {
     display: flex;
-    padding: 40px;
     flex-direction: column;
     gap: 32px;
 }
@@ -17,7 +16,7 @@
     border-radius: 16px;
     border: 1px solid #e0e0e0;
     padding: 40px;
-    min-width: 600px;
+    min-width: 610px;
 
     &__options {
         display: flex;

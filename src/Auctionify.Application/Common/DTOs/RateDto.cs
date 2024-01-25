@@ -6,11 +6,11 @@ namespace Auctionify.Application.Common.DTOs
     {
         public int Id { get; set; }
 
-		public int ReceiverId { get; set; }
+        public int ReceiverId { get; set; }
 
-		public UserDto Receiver { get; set; }
+        public UserDto Receiver { get; set; }
 
-		public int SenderId { get; set; }
+        public int SenderId { get; set; }
 
         public UserDto Sender { get; set; }
 

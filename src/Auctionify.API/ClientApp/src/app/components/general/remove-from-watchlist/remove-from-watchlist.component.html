@@ -1,14 +1,12 @@
 <div class="remove-from-watchlist-operation">
-    <h1 class="remove-from-watchlist-operation__title">
-        Remove From Watchlist
-    </h1>
+    <h1 class="remove-from-watchlist-operation__title">Remove from wishlist</h1>
     <p class="remove-from-watchlist-operation__description">
-        Are you sure you want to remove this item from your watchlist?
+        Are you sure you want to remove this item from your wishlist?
     </p>
     <div class="remove-from-watchlist-operation__buttons">
         <button
             type="submit"
-            mat-raised-button
+            mat-button
             class="remove-from-watchlist-button"
             (click)="confirmRemove()"
             *ngIf="lotId !== null"

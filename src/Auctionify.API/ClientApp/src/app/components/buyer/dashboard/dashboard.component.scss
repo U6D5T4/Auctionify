@@ -1,6 +1,15 @@
 .dashboard {
-    &__auction-border-box {
+    &__title {
+        display: flex;
         padding-top: 40px;
+        padding-bottom: 32px;
+        max-width: 1400px;
+        margin: 0 auto;
+        color: var(--color-text-primary);
+        font-size: 32px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 40px;
     }
 
     &__auction-lots {
@@ -32,8 +41,8 @@
     }
 
     &__auction-title {
-    display: flex;
-    align-items: center;
+        display: flex;
+        align-items: center;
     }
 
     &__auction-list {
@@ -72,6 +81,36 @@
         padding-left: 20px;
     }
 
+    &__transactions-section {
+        display: flex;
+        justify-content: space-between;
+        max-width: 1400px;
+        width: 100%;
+        margin: 0 auto;
+        padding-top: 40px;
+    }
+
+    &__transactions {
+        padding-top: 32px;
+    }
+
+    &__transactions-title {
+        display: flex;
+        align-items: center;
+        color: var(--color-text-primary);
+        font-size: 32px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 40px;
+    }
+
+    &__transactions-show-all {
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 24px;
+    }
+
     &__wishlist-container {
         display: flex;
         flex-direction: column;
@@ -91,11 +130,18 @@
     &__wishlist-title {
         display: flex;
         align-items: center;
+        color: var(--color-text-primary);
+        font-size: 32px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 40px;
     }
 
     &__wishlist-show-all {
-        font-weight: bold;
-        font-family: 'Onest', sans-serif;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 24px;
     }
 
     &__wishlist-list {
@@ -140,13 +186,13 @@
         display: flex;
         flex-direction: column;
         gap: 40px;
+        margin-left: 60px;
     }
 
     &__container-main {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        padding: 40px;
         gap: 40px;
         margin: 0 auto;
     }
@@ -160,7 +206,7 @@
         height: 48px;
         border-radius: 32px;
         border: none;
-        background-color: #F2F5F7;
+        background-color: #f2f5f7;
         font-weight: bold;
         font-family: 'Onest', sans-serif;
     }
@@ -191,8 +237,8 @@
     &__see-more-comments-btn button {
         width: 392px;
         min-width: 250px;
-        border: 2px solid #2B5293;
-        color: #2B5293;
+        border: 2px solid #2b5293;
+        color: #2b5293;
     }
 
     &__btn-content {
@@ -212,7 +258,8 @@
 
     &__image img {
         border-radius: 18.7px;
-        background: url(../../../../assets/icons/NoImage.svg), lightgray 50% / cover no-repeat;
+        background: url(../../../../assets/icons/NoImage.svg),
+            lightgray 50% / cover no-repeat;
     }
 
     &__info {
@@ -329,7 +376,6 @@
 }
 
 .show-more-button {
-    background-color: var(--color-main);
     padding: 12px;
     color: white;
     border: none;

@@ -15,6 +15,8 @@ import { DateCalculationService } from 'src/app/services/date-calculation/date-c
 import { Rate, RatePaginationModel } from 'src/app/models/rates/rate-models';
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import { BuyerModel } from 'src/app/models/users/user-models';
+import { UserDataValidatorService } from 'src/app/services/user-data-validator/user-data-validator.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-dashboard',
@@ -46,7 +48,8 @@ export class DashboardComponent implements OnInit {
         private snackBar: MatSnackBar,
         private dialog: Dialog,
         private authService: AuthorizeService,
-        private dateCalculationService: DateCalculationService
+        private dateCalculationService: DateCalculationService,
+        private userDataValidator: UserDataValidatorService
     ) {
         effect(() => {
             this.currentBuyerId = this.authService.getUserId()!;
@@ -61,21 +64,21 @@ export class DashboardComponent implements OnInit {
     }
 
     private fetchUserProfileData() {
-        this.apiClient.getBuyer().subscribe(
-            (data: BuyerModel) => {
+        this.apiClient.getBuyer().subscribe({
+            next: (data: BuyerModel) => {
                 this.userProfileData = data;
-                this.validate();
+                this.userDataValidator.validateUserProfileData(data);
             },
-            (error) => {
+            error: (error) => {
                 this.openDialog(
-                    error.errors! || [
+                    error.errors || [
                         'Something went wrong, please try again later',
                     ],
                     true
                 );
-        }
-        );
-        }
+            },
+        });
+    }
 
     private fetchRatesData() {
         const pagination: RatePaginationModel = {
@@ -83,27 +86,19 @@ export class DashboardComponent implements OnInit {
             pageSize: 2,
         };
 
-        this.apiClient.getRates(pagination).subscribe(
-            (userRate) => {
+        this.apiClient.getRates(pagination).subscribe({
+            next: (userRate) => {
                 this.senderRates = userRate.items;
             },
-            (error) => {
+            error: (error) => {
                 this.openDialog(
-                    error.errors! || [
+                    error.errors || [
                         'Something went wrong, please try again later',
                     ],
                     true
                 );
-                }
-        );
-    }
-
-    private validate() {
-        if (!this.userProfileData?.averageRate) {
-            this.userProfileData!.averageRate = 0;
-        } else if (!this.userProfileData?.ratesCount) {
-            this.userProfileData!.ratesCount = 0;
-        }
+            },
+        });
     }
 
     openDialog(text: string[], error: boolean) {
@@ -112,37 +107,9 @@ export class DashboardComponent implements OnInit {
                 text,
                 isError: error,
             },
-            });
+        });
 
-        dialogRef.closed.subscribe((res) => {});
-    }
-
-    getAverageStars(rate: number | null): string[] {
-        const averageRating = rate;
-
-        const roundedAverage = Math.round(averageRating!);
-
-        const stars: string[] = [];
-        for (let i = 1; i <= 5; i++) {
-            if (i <= roundedAverage) {
-                stars.push('star');
-            } else if (i - roundedAverage === 0.5) {
-                stars.push('star_half');
-            } else {
-                stars.push('star_border');
-                        }
-                        }
-
-        return stars;
-    }
-
-    getPercentage(count: number): string {
-        const total = this.getTotalCount();
-        return total > 0 ? `${(count / total) * 100}%` : '0%';
-        }
-
-    getTotalCount(): number {
-        return this.senderRates.length;
+        dialogRef.closed.subscribe(() => {});
     }
 
     getRecentUserBidForLot(lot: AuctionModel): number | null {
@@ -217,7 +184,7 @@ export class DashboardComponent implements OnInit {
             this.apiClient.addToWatchlist(lot.id).subscribe({
                 next: (result) => {
                     this.snackBar.open(
-                        'Successfully added the lot to watchlist',
+                        'Successfully added the lot to wishlist',
                         'Close',
                         {
                             horizontalPosition: 'center',
@@ -247,6 +214,7 @@ export class DashboardComponent implements OnInit {
                 data: {
                     lotId: lot.id,
                 },
+                autoFocus: false,
             });
 
             dialog.closed.subscribe({
@@ -257,6 +225,9 @@ export class DashboardComponent implements OnInit {
                     if (updatedAuction) {
                         updatedAuction.isInWatchlist = false;
                         this.loadLotsInWatchlist();
+                        this.loadBuyerAuctions();
+                        this.currentIndex = 0;
+                        this.noMoreAuctionsToLoad = false;
                     }
                     this.loadLotsInWatchlist();
                 },

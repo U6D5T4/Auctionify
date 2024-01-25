@@ -30,7 +30,7 @@ export class RemoveFromWatchlistComponent implements OnInit {
                 next: (response) => {
                     console.log(response);
                     this.showSnackBar(
-                        'Lot successfully removed from watchlist',
+                        'Lot successfully removed from wishlist',
                         'success'
                     );
                     this.dialogRef.close();
@@ -47,7 +47,7 @@ export class RemoveFromWatchlistComponent implements OnInit {
                             'Lot with this Id does not exist'
                         ) {
                             this.errorMessage =
-                                "Remove Error! You haven't added this lot to your watchlist yet";
+                                "Remove Error! You haven't added this lot to your wishlist yet";
                         }
                         this.showSnackBar(this.errorMessage, 'error');
                         this.dialogRef.close();

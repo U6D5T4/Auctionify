@@ -74,6 +74,8 @@ namespace Auctionify.Application.Features.Users.Queries.GetSeller
 
 			var lots = await _lotRepository.GetListAsync(
 				predicate: lot => lot.SellerId == user.Id,
+				size: int.MaxValue,
+				index: 0,
 				cancellationToken: cancellationToken
 			);
 
@@ -84,6 +86,8 @@ namespace Auctionify.Application.Features.Users.Queries.GetSeller
 					 lotStatus.Name == AuctionStatus.Sold.ToString()
 					 || lotStatus.Name == AuctionStatus.NotSold.ToString()
 					 || lotStatus.Name == AuctionStatus.Archive.ToString(),
+				 size: int.MaxValue,
+				 index: 0,
 				 cancellationToken: cancellationToken
 			 );
 
@@ -93,19 +97,6 @@ namespace Auctionify.Application.Features.Users.Queries.GetSeller
 
 			response.FinishedLotsCount = finishedLots.Count();
 
-			var ratesForUser = await _rateRepository.GetListAsync(predicate: r => r.ReceiverId == user.Id,
-				enableTracking: false,
-				size: request.PageRequest.PageSize,
-				index: request.PageRequest.PageIndex,
-				cancellationToken: cancellationToken);
-
-			if (ratesForUser.Items.Count > 0) 
-			{
-				response.AverageRate = ratesForUser.Items.Average(rate => rate.RatingValue);
-			}
-			
-			response.RatesCount = ratesForUser.Items.Count;
-
 			var avg = await _rateRepository.GetListAsync(predicate: r => r.ReceiverId == user.Id,
 				include: x =>
 					x.Include(u => u.Sender),
@@ -113,6 +104,13 @@ namespace Auctionify.Application.Features.Users.Queries.GetSeller
 				size: int.MaxValue,
 				index: 0,
 				cancellationToken: cancellationToken);
+
+			if (avg.Items.Count > 0)
+			{
+				response.AverageRate = avg.Items.Average(rate => rate.RatingValue);
+			}
+
+			response.RatesCount = avg.Items.Count;
 
 			if (avg.Count > 0)
 			{

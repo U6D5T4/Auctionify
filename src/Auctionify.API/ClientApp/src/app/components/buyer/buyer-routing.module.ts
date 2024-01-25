@@ -15,11 +15,6 @@ const BUYER_ROUTES: Routes = [
         pathMatch: 'full',
     },
     {
-        path: '',
-        redirectTo: 'dashboard',
-        pathMatch: 'full',
-    },
-    {
         path: 'dashboard',
         component: DashboardComponent,
     },

@@ -956,6 +956,34 @@ export class Client {
             })
         );
     }
+
+    getUserTransactions(
+        pageIndex: number,
+        pageSize: number
+    ): Observable<TransactionModel[]> {
+        let url_ = this.baseUrl + `/api/users/transactions`;
+
+        let params = new HttpParams()
+            .set('pageIndex', pageIndex.toString())
+            .set('pageSize', pageSize.toString());
+
+        const options_: any = {
+            headers: new HttpHeaders({
+                Accept: 'text/json',
+            }),
+            params,
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<TransactionModel[]> => {
+                if (response) {
+                    return of(response as TransactionModel[]);
+                } else {
+                    throw new Error('Invalid response structure');
+                }
+            })
+        );
+    }
 }
 
 export interface PageRequest {
@@ -1033,6 +1061,16 @@ export interface AuctionModel {
     mainPhotoUrl: string | null;
     isInWatchlist: boolean;
     buyerId: number | null;
+}
+
+export interface TransactionModel {
+    lotId: number | null;
+    lotTitle: string | null;
+    lotMainPhotoUrl: string | null;
+    transactionDate: Date | null;
+    transactionStatus: string | null;
+    transactionAmount: number | null;
+    transactionCurrency: string | null;
 }
 
 export interface CategoryDto {

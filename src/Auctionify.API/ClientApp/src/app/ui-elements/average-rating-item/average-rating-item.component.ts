@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 
 import { Rate } from 'src/app/models/rates/rate-models';
 import { SellerModel, BuyerModel } from 'src/app/models/users/user-models';
+import { RateCalculatorService } from 'src/app/services/rate-calculator/rate-calculator.service';
 
 @Component({
     selector: 'app-average-rating-item',
@@ -14,24 +15,7 @@ export class AverageRatingItemComponent {
     @Input()
     senderRates: Rate[] = [];
 
-    getAverageStars(rate: number | null): string[] {
-        const averageRating = rate;
-
-        const roundedAverage = Math.round(averageRating!);
-
-        const stars: string[] = [];
-        for (let i = 1; i <= 5; i++) {
-            if (i <= roundedAverage) {
-                stars.push('star');
-            } else if (i - roundedAverage === 0.5) {
-                stars.push('star_half');
-            } else {
-                stars.push('star_border');
-            }
-        }
-
-        return stars;
-    }
+    constructor(public ratesCalculator: RateCalculatorService) {}
 
     getPercentage(count: number): string {
         const total = this.getTotalCount();
