@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Auctionify.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class RateTableFixAndChatWithConversationTableSetup : Migration
+    public partial class ConversationTableCreateAndChatTableFixes : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -23,10 +23,6 @@ namespace Auctionify.Infrastructure.Migrations
                 name: "FK_ChatMessages_Users_SellerId",
                 table: "ChatMessages");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_Rates_Users_RecieverId",
-                table: "Rates");
-
             migrationBuilder.DropIndex(
                 name: "IX_ChatMessages_BuyerId",
                 table: "ChatMessages");
@@ -34,16 +30,6 @@ namespace Auctionify.Infrastructure.Migrations
             migrationBuilder.DropColumn(
                 name: "BuyerId",
                 table: "ChatMessages");
-
-            migrationBuilder.RenameColumn(
-                name: "RecieverId",
-                table: "Rates",
-                newName: "ReceiverId");
-
-            migrationBuilder.RenameIndex(
-                name: "IX_Rates_RecieverId",
-                table: "Rates",
-                newName: "IX_Rates_ReceiverId");
 
             migrationBuilder.RenameColumn(
                 name: "SellerId",
@@ -138,13 +124,6 @@ namespace Auctionify.Infrastructure.Migrations
                 column: "SenderId",
                 principalTable: "Users",
                 principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Rates_Users_ReceiverId",
-                table: "Rates",
-                column: "ReceiverId",
-                principalTable: "Users",
-                principalColumn: "Id");
         }
 
         /// <inheritdoc />
@@ -158,26 +137,12 @@ namespace Auctionify.Infrastructure.Migrations
                 name: "FK_ChatMessages_Users_SenderId",
                 table: "ChatMessages");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_Rates_Users_ReceiverId",
-                table: "Rates");
-
             migrationBuilder.DropTable(
                 name: "Conversations");
 
             migrationBuilder.DropColumn(
                 name: "IsRead",
                 table: "ChatMessages");
-
-            migrationBuilder.RenameColumn(
-                name: "ReceiverId",
-                table: "Rates",
-                newName: "RecieverId");
-
-            migrationBuilder.RenameIndex(
-                name: "IX_Rates_ReceiverId",
-                table: "Rates",
-                newName: "IX_Rates_RecieverId");
 
             migrationBuilder.RenameColumn(
                 name: "SenderId",
@@ -235,13 +200,6 @@ namespace Auctionify.Infrastructure.Migrations
                 name: "FK_ChatMessages_Users_SellerId",
                 table: "ChatMessages",
                 column: "SellerId",
-                principalTable: "Users",
-                principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Rates_Users_RecieverId",
-                table: "Rates",
-                column: "RecieverId",
                 principalTable: "Users",
                 principalColumn: "Id");
         }
