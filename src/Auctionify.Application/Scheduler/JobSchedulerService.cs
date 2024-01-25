@@ -14,6 +14,7 @@ namespace Auctionify.Application.Scheduler
 
 		private readonly string finishGroup = "finish";
 		private readonly string upcomingActiveGroup = "upcoming-active";
+		private readonly string draftLotDeleteGroup = "draft-delete";
 
 		public JobSchedulerService(ISchedulerFactory schedulerFactory, IJobFactory customJobFactory)
 		{
@@ -73,7 +74,25 @@ namespace Auctionify.Application.Scheduler
 			await scheduler.ScheduleJob(job, trigger);
 		}
 
-		private string FormUpcomingActiveJobKey(int lotId)
+        public async Task ScheduleDraftLotDeleteJob(int lotId, DateTime deleteDateTime)
+        {
+			var scheduler = await _schedulerFactory.GetScheduler();
+			scheduler.JobFactory = _customJobFactory;
+
+			var job = JobBuilder.Create<DraftLotDeleteJob>()
+				.WithIdentity(FormDeleteDraftLotJobKey(lotId), draftLotDeleteGroup)
+				.UsingJobData(lotIdJobDataParam, lotId)
+				.Build();
+
+			var trigger = TriggerBuilder.Create()
+				.WithIdentity(FormDeleteDraftLotJobKey(lotId), draftLotDeleteGroup)
+				.StartAt(deleteDateTime)
+				.Build();
+
+			await scheduler.ScheduleJob(job, trigger);
+        }
+
+        private string FormUpcomingActiveJobKey(int lotId)
 		{
 			return $"upcoming-active-{lotId}";
 		}
@@ -82,5 +101,10 @@ namespace Auctionify.Application.Scheduler
 		{
 			return $"finish-{lotId}";
 		}
-	}
+
+		private string FormDeleteDraftLotJobKey(int lotId)
+		{
+			return $"draft-delete-{lotId}";
+		}
+    }
 }

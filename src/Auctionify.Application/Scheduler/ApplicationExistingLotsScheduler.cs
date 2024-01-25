@@ -46,6 +46,11 @@ namespace Auctionify.Application.Scheduler
 						await _jobSchedulerService.ScheduleLotFinishJob(lot.Id, lot.EndDate);
 					}
 				}
+				else if (lotStatus == AuctionStatus.Draft)
+				{
+					var deleteTime = lot.ModificationDate.AddDays(7);
+					await _jobSchedulerService.ScheduleDraftLotDeleteJob(lot.Id);
+				}
 			}
 		}
 

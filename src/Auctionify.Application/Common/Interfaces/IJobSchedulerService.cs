@@ -9,5 +9,7 @@
 		Task ScheduleLotFinishJob(int lotId, DateTime endDate);
 
 		Task RemoveLotFinishJob(int lotId);
+
+		Task ScheduleDraftLotDeleteJob(int lotId, DateTime deleteDateTime);
 	}
 }
