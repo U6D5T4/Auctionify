@@ -1,28 +1,39 @@
-﻿using SendGrid.Helpers.Mail;
-using SendGrid;
-using Auctionify.Application.Common.Interfaces;
+﻿using Auctionify.Application.Common.Interfaces;
 using Microsoft.Extensions.Configuration;
+using System.Net.Mail;
+using System.Net;
 
 namespace Auctionify.Infrastructure.Identity
 {
-	public class SendGridEmailService : IEmailService
+	public class EmailService : IEmailService
 	{
 		private readonly IConfiguration _configuration;
 
-		public SendGridEmailService(IConfiguration configuration)
+		public EmailService(IConfiguration configuration)
 		{
 			_configuration = configuration;
 		}
 
 		public async Task SendEmailAsync(string toEmail, string subject, string content)
 		{
-			var apiKey = _configuration["EmailSender"];
-			var client = new SendGridClient(apiKey);
-			var from = new EmailAddress(_configuration["EmailSenderSendGrid"], "Auctionify");
-			var to = new EmailAddress(toEmail);
-			var htmlContent = $"<strong>{content}</strong>";
-			var msg = MailHelper.CreateSingleEmail(from, to, subject, content, htmlContent);
-			var response = await client.SendEmailAsync(msg);
+			var smtpServer = _configuration["SmtpSettings:Host"];
+			var smtpPort = _configuration["SmtpSettings:Port"];
+			var smtpUsername = _configuration["SmtpSettings:Username"];
+			var smtpPassword = _configuration["SmtpSettings:Password"];
+
+			var from = new MailAddress(smtpUsername, "Auctionify");
+			var to = new MailAddress(toEmail);
+			var message = new MailMessage(from, to);
+			message.Subject = subject;
+			message.Body = content;
+			message.IsBodyHtml = true;
+
+			using (var client = new SmtpClient(smtpServer, int.Parse(smtpPort)))
+			{
+				client.Credentials = new NetworkCredential(smtpUsername, smtpPassword);
+				client.EnableSsl = true;
+				await client.SendMailAsync(message);
+			}
 		}
 	}
 }
