@@ -1,5 +1,4 @@
-﻿using Auctionify.Application.Common.DTOs;
-using Auctionify.Application.Common.Interfaces;
+﻿using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Common.Models.Requests;
 using Auctionify.Application.Common.Options;
@@ -10,11 +9,10 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System.Runtime.Intrinsics.X86;
 
 namespace Auctionify.Application.Features.Users.Queries.GetSeller
 {
-	public class GetSellerQuery : IRequest<GetSellerResponse> 
+	public class GetSellerQuery : IRequest<GetSellerResponse>
 	{
 		public PageRequest PageRequest { get; set; }
 	}
@@ -56,7 +54,8 @@ namespace Auctionify.Application.Features.Users.Queries.GetSeller
 			CancellationToken cancellationToken
 		)
 		{
-			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+			var users = await _userManager.Users.ToListAsync(cancellationToken: cancellationToken);
+			var user = users.Find(u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted);
 
 			var profilePictureName = user.ProfilePicture;
 
@@ -82,14 +81,14 @@ namespace Auctionify.Application.Features.Users.Queries.GetSeller
 			response.CreatedLotsCount = lots.Items.Count;
 
 			var lotStatusIds = await _lotStatusRepository.GetListAsync(
-				 predicate: lotStatus =>
-					 lotStatus.Name == AuctionStatus.Sold.ToString()
-					 || lotStatus.Name == AuctionStatus.NotSold.ToString()
-					 || lotStatus.Name == AuctionStatus.Archive.ToString(),
-				 size: int.MaxValue,
-				 index: 0,
-				 cancellationToken: cancellationToken
-			 );
+				predicate: lotStatus =>
+					lotStatus.Name == AuctionStatus.Sold.ToString()
+					|| lotStatus.Name == AuctionStatus.NotSold.ToString()
+					|| lotStatus.Name == AuctionStatus.Archive.ToString(),
+				size: int.MaxValue,
+				index: 0,
+				cancellationToken: cancellationToken
+			);
 
 			var finishedLots = lots.Items.Where(
 				lot => lotStatusIds.Items.Any(lotStatus => lotStatus.Id == lot.LotStatusId)
@@ -97,13 +96,14 @@ namespace Auctionify.Application.Features.Users.Queries.GetSeller
 
 			response.FinishedLotsCount = finishedLots.Count();
 
-			var avg = await _rateRepository.GetListAsync(predicate: r => r.ReceiverId == user.Id,
-				include: x =>
-					x.Include(u => u.Sender),
+			var avg = await _rateRepository.GetListAsync(
+				predicate: r => r.ReceiverId == user.Id,
+				include: x => x.Include(u => u.Sender),
 				enableTracking: false,
 				size: int.MaxValue,
 				index: 0,
-				cancellationToken: cancellationToken);
+				cancellationToken: cancellationToken
+			);
 
 			if (avg.Items.Count > 0)
 			{

@@ -10,9 +10,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MockQueryable.Moq;
 using Moq;
 using System.Text;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
+using User = Auctionify.Core.Entities.User;
 
 namespace Auctionify.UnitTests.IdentityServiceUnitTests
 {
@@ -43,7 +45,6 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				null
 			);
 			_currentUserServiceMock = new Mock<ICurrentUserService>();
-			_currentUserServiceMock.Setup(x => x.UserEmail).Returns(It.IsAny<string>());
 			_signInManagerMock = new Mock<SignInManager<User>>(
 				_userManagerMock.Object,
 				Mock.Of<IHttpContextAccessor>(),
@@ -85,7 +86,14 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 			var user = users[0];
 			var userModel = loginViewModels[0];
 
-			_userManagerMock.Setup(m => m.FindByEmailAsync(user.Email!)).ReturnsAsync(user);
+			var mock = new List<User> { user }
+				.AsQueryable()
+				.BuildMockDbSet();
+
+			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+
+			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(user.Email);
+
 			_userManagerMock
 				.Setup(m => m.GetRolesAsync(user))
 				.ReturnsAsync(new List<string> { "User" });
@@ -131,7 +139,14 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 			var user = users[1];
 			var userModel = loginViewModels[0];
 
-			_userManagerMock.Setup(m => m.FindByEmailAsync(user.Email!)).ReturnsAsync(user);
+			var mock = new List<User> { user }
+				.AsQueryable()
+				.BuildMockDbSet();
+
+			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+
+			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(user.Email);
+
 			_userManagerMock
 				.Setup(m => m.GetRolesAsync(user))
 				.ReturnsAsync(new List<string> { "User" });
@@ -178,7 +193,14 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 			var user = users[0];
 			var userModel = loginViewModels[1];
 
-			_userManagerMock.Setup(m => m.FindByEmailAsync(user.Email!)).ReturnsAsync(user);
+			var mock = new List<User> { user }
+				.AsQueryable()
+				.BuildMockDbSet();
+
+			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+
+			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(user.Email);
+
 			_userManagerMock
 				.Setup(m => m.GetRolesAsync(user))
 				.ReturnsAsync(new List<string> { "User" });
@@ -225,7 +247,14 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 			var user = users[0];
 			var userModel = loginViewModels[2];
 
-			_userManagerMock.Setup(m => m.FindByEmailAsync(user.Email!)).ReturnsAsync(user);
+			var mock = new List<User> { user }
+				.AsQueryable()
+				.BuildMockDbSet();
+
+			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+
+			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(user.Email);
+
 			_userManagerMock
 				.Setup(m => m.GetRolesAsync(user))
 				.ReturnsAsync(new List<string> { "User" });
@@ -288,9 +317,13 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 		public async Task ForgetPasswordAsync_WhenUserDoesNotExist_ReturnsFalseResetPasswordResponse()
 		{
 			// Arrange
-			_userManagerMock
-				.Setup(m => m.FindByEmailAsync(It.IsAny<string>()))
-				.ReturnsAsync((User?)null);
+			var mock = new List<User> { EntitiesSeeding.GetUsers()[0] }
+				.AsQueryable()
+				.BuildMockDbSet();
+
+			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+
+			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(It.IsAny<string>());
 
 			var sut = new IdentityService(
 				_userManagerMock.Object,
@@ -329,7 +362,14 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 			var validToken = WebEncoders.Base64UrlEncode(encodedToken);
 			var user = users[0];
 
-			_userManagerMock.Setup(m => m.FindByEmailAsync(email)).ReturnsAsync(user);
+			var mock = new List<User> { user }
+				.AsQueryable()
+				.BuildMockDbSet();
+
+			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+
+			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(user.Email);
+
 			_userManagerMock
 				.Setup(m => m.GeneratePasswordResetTokenAsync(user))
 				.ReturnsAsync(token);
@@ -354,8 +394,8 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 
 			// Assert
 			result.IsSuccess.Should().BeTrue();
-			result.Message
-				.Should()
+			result
+				.Message.Should()
 				.Be("Reset password URL has been sent to the email successfully");
 
 			_emailServiceMock.Verify(
@@ -382,9 +422,13 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 		)
 		{
 			// Arrange
-			_userManagerMock
-				.Setup(m => m.FindByEmailAsync(resetPasswordViewModels[0].Email))
-				.ReturnsAsync((User?)null);
+			var mock = new List<User> { EntitiesSeeding.GetUsers()[0] }
+				.AsQueryable()
+				.BuildMockDbSet();
+
+			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+
+			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(It.IsAny<string>());
 
 			var sut = new IdentityService(
 				_userManagerMock.Object,
@@ -398,7 +442,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 			);
 
 			// Act
-			var result = await sut.ResetPasswordAsync(resetPasswordViewModels[0]);
+			var result = await sut.ResetPasswordAsync(resetPasswordViewModels[2]);
 
 			// Assert
 			result.IsSuccess.Should().BeFalse();
@@ -415,9 +459,15 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 		)
 		{
 			// Arrange
-			_userManagerMock
-				.Setup(m => m.FindByEmailAsync(resetPasswordViewModels[1].Email))
-				.ReturnsAsync(new User());
+			var mock = new List<User> { EntitiesSeeding.GetUsers()[0] }
+				.AsQueryable()
+				.BuildMockDbSet();
+
+			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+
+			_currentUserServiceMock
+				.Setup(m => m.UserEmail)
+				.Returns(resetPasswordViewModels[1].Email);
 
 			var sut = new IdentityService(
 				_userManagerMock.Object,
@@ -448,9 +498,16 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 		)
 		{
 			// Arrange
-			_userManagerMock
-				.Setup(m => m.FindByEmailAsync(resetPasswordViewModels[0].Email))
-				.ReturnsAsync(new User());
+			var mock = new List<User> { EntitiesSeeding.GetUsers()[0] }
+				.AsQueryable()
+				.BuildMockDbSet();
+
+			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+
+			_currentUserServiceMock
+				.Setup(m => m.UserEmail)
+				.Returns(resetPasswordViewModels[0].Email);
+
 			_userManagerMock
 				.Setup(
 					m =>
@@ -491,9 +548,15 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 		)
 		{
 			// Arrange
-			_userManagerMock
-				.Setup(m => m.FindByEmailAsync(resetPasswordViewModels[0].Email))
-				.ReturnsAsync(new User());
+			var mock = new List<User> { EntitiesSeeding.GetUsers()[0] }
+				.AsQueryable()
+				.BuildMockDbSet();
+
+			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+
+			_currentUserServiceMock
+				.Setup(m => m.UserEmail)
+				.Returns(resetPasswordViewModels[0].Email);
 
 			_userManagerMock
 				.Setup(
@@ -601,6 +664,14 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 			var validToken = WebEncoders.Base64UrlEncode(encodedToken);
 			var registerModel = registerViewModels[0];
 
+			var mock = new List<User> { EntitiesSeeding.GetUsers()[0] }
+				.AsQueryable()
+				.BuildMockDbSet();
+
+			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+
+			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(It.IsAny<string>());
+
 			_userManagerMock
 				.Setup(m => m.CreateAsync(It.IsAny<User>(), It.IsAny<string>()))
 				.ReturnsAsync(IdentityResult.Success);
@@ -662,6 +733,14 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 		{
 			// Arrange
 			var registerModel = registerViewModels[0];
+
+			var mock = new List<User> { EntitiesSeeding.GetUsers()[0] }
+				.AsQueryable()
+				.BuildMockDbSet();
+
+			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+
+			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(It.IsAny<string>());
 
 			_userManagerMock
 				.Setup(m => m.CreateAsync(It.IsAny<User>(), It.IsAny<string>()))
@@ -733,6 +812,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 		{
 			// Arrange
 			_userManagerMock.Setup(m => m.FindByIdAsync(userId)).ReturnsAsync(new User());
+
 			_userManagerMock
 				.Setup(m => m.ConfirmEmailAsync(It.IsAny<User>(), It.IsAny<string>()))
 				.ReturnsAsync(IdentityResult.Success);
@@ -806,10 +886,18 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 		)
 		{
 			// Arrange
-			_userManagerMock.Setup(m => m.FindByEmailAsync(user.Email!)).ReturnsAsync(user);
+			var mock = new List<User> { user }
+				.AsQueryable()
+				.BuildMockDbSet();
+
+			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+
+			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(user.Email);
+
 			_userManagerMock
 				.Setup(m => m.GetRolesAsync(user))
 				.ReturnsAsync(new List<string> { "User" });
+
 			_authSettingsOptionsMock.Setup(options => options.Value).Returns(authSettingsOptions);
 
 			var sut = new IdentityService(
@@ -843,8 +931,16 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 		)
 		{
 			// Arrange
-			_userManagerMock.Setup(m => m.FindByEmailAsync(user.Email!)).ReturnsAsync(user);
+			var mock = new List<User> { user }
+				.AsQueryable()
+				.BuildMockDbSet();
+
+			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+
+			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(user.Email);
+
 			_userManagerMock.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(new List<string>());
+
 			_authSettingsOptionsMock.Setup(options => options.Value).Returns(authSettingsOptions);
 
 			var sut = new IdentityService(
@@ -878,9 +974,14 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 		)
 		{
 			// Arrange
-			_userManagerMock
-				.Setup(m => m.FindByEmailAsync(It.IsAny<string>()))
-				.ReturnsAsync((User?)null);
+			var mock = new List<User> { EntitiesSeeding.GetUsers()[0] }
+				.AsQueryable()
+				.BuildMockDbSet();
+
+			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+
+			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(It.IsAny<string>());
+
 			_userManagerMock
 				.Setup(m => m.CreateAsync(It.IsAny<User>()))
 				.ReturnsAsync(
@@ -910,9 +1011,14 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 		public async Task ChangeUserPasswordAsync_WhenUserIsNull_ReturnsFalseChangePasswordResponse()
 		{
 			// Arrange
-			_userManagerMock
-				.Setup(m => m.FindByEmailAsync(It.IsAny<string>()))
-				.ReturnsAsync((User?)null);
+			var mock = new List<User> { EntitiesSeeding.GetUsers()[0] }
+				.AsQueryable()
+				.BuildMockDbSet();
+
+			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+
+			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(It.IsAny<string>());
+
 			_userManagerMock
 				.Setup(m => m.CreateAsync(It.IsAny<User>()))
 				.ReturnsAsync(
@@ -952,9 +1058,14 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 		public async Task ChangeUserPasswordAsync_WhenOldPasswordIsInvalid_ReturnsFalseChangePasswordResponse()
 		{
 			// Arrange
-			_userManagerMock
-				.Setup(m => m.FindByEmailAsync(It.IsAny<string>()))
-				.ReturnsAsync(new User());
+			var mock = new List<User> { new User() }
+				.AsQueryable()
+				.BuildMockDbSet();
+
+			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+
+			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(It.IsAny<string>());
+
 			_userManagerMock
 				.Setup(m => m.CheckPasswordAsync(It.IsAny<User>(), It.IsAny<string>()))
 				.ReturnsAsync(false);
@@ -992,9 +1103,14 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 		public async Task ChangeUserPasswordAsync_WhenNewPasswordDoesNotMatchItsConfirmation_ReturnsFalseChangePasswordResponse()
 		{
 			// Arrange
-			_userManagerMock
-				.Setup(m => m.FindByEmailAsync(It.IsAny<string>()))
-				.ReturnsAsync(new User());
+			var mock = new List<User> { new User() }
+				.AsQueryable()
+				.BuildMockDbSet();
+
+			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+
+			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(It.IsAny<string>());
+
 			_userManagerMock
 				.Setup(m => m.CheckPasswordAsync(It.IsAny<User>(), It.IsAny<string>()))
 				.ReturnsAsync(true);
@@ -1032,9 +1148,14 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 		public async Task ChangeUserPasswordAsync_WhenResultIsSucceeded_ReturnsTrueChangePasswordResponse()
 		{
 			// Arrange
-			_userManagerMock
-				.Setup(m => m.FindByEmailAsync(It.IsAny<string>()))
-				.ReturnsAsync(new User());
+			var mock = new List<User> { new User() }
+				.AsQueryable()
+				.BuildMockDbSet();
+
+			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+
+			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(It.IsAny<string>());
+
 			_userManagerMock
 				.Setup(m => m.CheckPasswordAsync(It.IsAny<User>(), It.IsAny<string>()))
 				.ReturnsAsync(true);

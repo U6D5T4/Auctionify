@@ -12,36 +12,36 @@ namespace Auctionify.UnitTests.RemoveLotFromWatchlistTests
 {
 	public class RemoveLotFromWatchlistCommandHandlerTests
 	{
+		#region Initialization
+
+		private readonly ICurrentUserService _currentUserService;
+		private readonly UserManager<User> _userManager;
+
+		public RemoveLotFromWatchlistCommandHandlerTests()
+		{
+			_userManager = EntitiesSeeding.GetUserManagerMock();
+			_currentUserService = EntitiesSeeding.GetCurrentUserServiceMock();
+		}
+
+		#endregion
+
 		[Fact]
 		public async Task Handle_WhenValidRequest_ReturnsRemovedLotFromWatchlistResponse()
 		{
 			// Arrange
 			var mapperMock = new Mock<IMapper>();
 			var watchlistRepositoryMock = new Mock<IWatchlistRepository>();
-			var currentUserServiceMock = new Mock<ICurrentUserService>();
-			var userManagerMock = new Mock<UserManager<User>>(
-				Mock.Of<IUserStore<User>>(),
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null
-			);
 
 			var handler = new RemoveLotFromWatchlistCommandHandler(
 				mapperMock.Object,
 				watchlistRepositoryMock.Object,
-				currentUserServiceMock.Object,
-				userManagerMock.Object
+				_currentUserService,
+				_userManager
 			);
 
 			var command = new RemoveLotFromWatchlistCommand { LotId = 1 };
 
 			var user = new User { Id = 1, Email = "user@example.com" };
-			userManagerMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(user);
 
 			var watchlist = new Watchlist { UserId = user.Id, LotId = command.LotId };
 
@@ -72,16 +72,15 @@ namespace Auctionify.UnitTests.RemoveLotFromWatchlistTests
 			// Assert
 			result.Should().NotBeNull();
 			result.Id.Should().Be(1);
-			userManagerMock.Verify(x => x.FindByEmailAsync(It.IsAny<string>()), Times.Once);
 			watchlistRepositoryMock.Verify(
 				x =>
 					x.GetAsync(
-							It.IsAny<Expression<Func<Watchlist, bool>>>(),
-							null,
-							false,
-							true,
-							default
-						),
+						It.IsAny<Expression<Func<Watchlist, bool>>>(),
+						null,
+						false,
+						true,
+						default
+					),
 				Times.Once
 			);
 			watchlistRepositoryMock.Verify(x => x.DeleteAsync(watchlist, false), Times.Once);

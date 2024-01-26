@@ -47,7 +47,11 @@ namespace Auctionify.Application.Features.Chats.Queries.GetAllUserConversations
 		{
 			#region Getting the current user's information
 
-			var currentUser = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+			var users = await _userManager.Users.ToListAsync(cancellationToken: cancellationToken);
+			var currentUser = users.Find(
+				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted
+			);
+
 			var currentUserRole = (UserRole)
 				Enum.Parse(
 					typeof(UserRole),

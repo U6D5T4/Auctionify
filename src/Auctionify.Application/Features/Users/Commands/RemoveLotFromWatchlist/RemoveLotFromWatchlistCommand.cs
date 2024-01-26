@@ -4,6 +4,7 @@ using Auctionify.Core.Entities;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Auctionify.Application.Features.Users.Commands.RemoveLotFromWatchlist
 {
@@ -13,7 +14,7 @@ namespace Auctionify.Application.Features.Users.Commands.RemoveLotFromWatchlist
 	}
 
 	public class RemoveLotFromWatchlistCommandHandler
-			: IRequestHandler<RemoveLotFromWatchlistCommand, RemovedLotFromWatchlistResponse>
+		: IRequestHandler<RemoveLotFromWatchlistCommand, RemovedLotFromWatchlistResponse>
 	{
 		private readonly IMapper _mapper;
 		private readonly IWatchlistRepository _watchlistRepository;
@@ -38,7 +39,8 @@ namespace Auctionify.Application.Features.Users.Commands.RemoveLotFromWatchlist
 			CancellationToken cancellationToken
 		)
 		{
-			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+			var users = await _userManager.Users.ToListAsync(cancellationToken: cancellationToken);
+			var user = users.Find(u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted);
 
 			var watchlist = await _watchlistRepository.GetAsync(
 				predicate: w => w.UserId == user!.Id && w.LotId == request.LotId,

@@ -11,15 +11,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Auctionify.Application.Features.Lots.Queries.GetAllLotsWithStatusForSeller
 {
-	public class GetAllLotsWithStatusForSellerQuery :
-		IRequest<GetListResponseDto<GetAllLotsWithStatusForSellerResponse>>
+	public class GetAllLotsWithStatusForSellerQuery
+		: IRequest<GetListResponseDto<GetAllLotsWithStatusForSellerResponse>>
 	{
 		public AuctionStatus LotStatus { get; set; }
 		public PageRequest PageRequest { get; set; }
 	}
 
-	public class GetAllLotsWithStatusForSellerQueryHandler :
-		IRequestHandler<GetAllLotsWithStatusForSellerQuery, GetListResponseDto<GetAllLotsWithStatusForSellerResponse>>
+	public class GetAllLotsWithStatusForSellerQueryHandler
+		: IRequestHandler<
+			GetAllLotsWithStatusForSellerQuery,
+			GetListResponseDto<GetAllLotsWithStatusForSellerResponse>
+		>
 	{
 		private readonly ILotRepository _lotRepository;
 		private readonly IMapper _mapper;
@@ -33,7 +36,7 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAllLotsWithStatusForSe
 			ICurrentUserService currentUserService,
 			UserManager<User> userManager,
 			IPhotoService photoService
-			)
+		)
 		{
 			_lotRepository = lotRepository;
 			_mapper = mapper;
@@ -42,17 +45,18 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAllLotsWithStatusForSe
 			_photoService = photoService;
 		}
 
-		public async Task<GetListResponseDto<GetAllLotsWithStatusForSellerResponse>> Handle(GetAllLotsWithStatusForSellerQuery request, CancellationToken cancellationToken)
+		public async Task<GetListResponseDto<GetAllLotsWithStatusForSellerResponse>> Handle(
+			GetAllLotsWithStatusForSellerQuery request,
+			CancellationToken cancellationToken
+		)
 		{
-			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
-
-			if (user == null)
-			{
-				throw new Exception("User not found!");
-			}
+			var users = await _userManager.Users.ToListAsync(cancellationToken: cancellationToken);
+			var user = users.Find(u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted);
 
 			var activeLots = await _lotRepository.GetListAsync(
-				predicate: x => x.SellerId == user.Id && x.LotStatus.Name.Contains(request.LotStatus.ToString()),
+				predicate: x =>
+					x.SellerId == user.Id
+					&& x.LotStatus.Name.Contains(request.LotStatus.ToString()),
 				include: x =>
 					x.Include(l => l.Seller)
 						.Include(l => l.Bids)
@@ -63,15 +67,21 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAllLotsWithStatusForSe
 				size: request.PageRequest.PageSize,
 				index: request.PageRequest.PageIndex,
 				enableTracking: false,
-				cancellationToken: cancellationToken);
+				cancellationToken: cancellationToken
+			);
 
-			var response = _mapper.Map<GetListResponseDto<GetAllLotsWithStatusForSellerResponse>>(activeLots);
+			var response = _mapper.Map<GetListResponseDto<GetAllLotsWithStatusForSellerResponse>>(
+				activeLots
+			);
 
-			foreach ( var lot in response.Items )
+			foreach (var lot in response.Items)
 			{
 				lot.BidCount = lot.Bids.Count;
 
-				lot.MainPhotoUrl = await _photoService.GetMainPhotoUrlAsync(lot.Id, cancellationToken);
+				lot.MainPhotoUrl = await _photoService.GetMainPhotoUrlAsync(
+					lot.Id,
+					cancellationToken
+				);
 			}
 
 			return response;

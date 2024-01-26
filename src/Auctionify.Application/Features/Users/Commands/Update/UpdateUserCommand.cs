@@ -5,6 +5,7 @@ using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace Auctionify.Application.Features.Users.Commands.Update
@@ -24,8 +25,7 @@ namespace Auctionify.Application.Features.Users.Commands.Update
 		public bool DeleteProfilePicture { get; set; }
 	}
 
-	public class UpdateUserCommandHandler
-		: IRequestHandler<UpdateUserCommand, UpdatedUserResponse>
+	public class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, UpdatedUserResponse>
 	{
 		private readonly ICurrentUserService _currentUserService;
 		private readonly UserManager<User> _userManager;
@@ -53,7 +53,8 @@ namespace Auctionify.Application.Features.Users.Commands.Update
 			CancellationToken cancellationToken
 		)
 		{
-			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+			var users = await _userManager.Users.ToListAsync(cancellationToken: cancellationToken);
+			var user = users.Find(u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted);
 
 			user.FirstName = request.FirstName;
 			user.LastName = request.LastName;

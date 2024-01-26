@@ -57,7 +57,8 @@ namespace Auctionify.Application.Features.Users.Queries.GetBuyerAuctions
 			CancellationToken cancellationToken
 		)
 		{
-			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+			var users = await _userManager.Users.ToListAsync(cancellationToken: cancellationToken);
+			var user = users.Find(u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted);
 
 			var bids = await _bidRepository.GetListAsync(
 				predicate: x => x.BuyerId == user!.Id && !x.BidRemoved,

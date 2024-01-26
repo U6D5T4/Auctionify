@@ -1,7 +1,6 @@
 ﻿using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Features.Chats.Commands.CreateConversation;
-using Auctionify.Core.Entities;
 using Auctionify.Core.Enums;
 using Auctionify.Infrastructure.Persistence;
 using Auctionify.Infrastructure.Repositories;
@@ -9,7 +8,9 @@ using AutoMapper;
 using FluentAssertions;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Identity;
+using MockQueryable.Moq;
 using Moq;
+using User = Auctionify.Core.Entities.User;
 
 namespace Auctionify.UnitTests.CreateConversationTests
 {
@@ -27,10 +28,10 @@ namespace Auctionify.UnitTests.CreateConversationTests
 
 		public CreateConversationCommandHandlerTests()
 		{
-			var mockDbContext = DbContextMock.GetMock<Conversation, ApplicationDbContext>(
-				EntitiesSeeding.GetConversations(),
-				ctx => ctx.Conversations
-			);
+			var mockDbContext = DbContextMock.GetMock<
+				Core.Entities.Conversation,
+				ApplicationDbContext
+			>(EntitiesSeeding.GetConversations(), ctx => ctx.Conversations);
 
 			mockDbContext = DbContextMock.GetMock(
 				EntitiesSeeding.GetChatMessages(),
@@ -81,9 +82,13 @@ namespace Auctionify.UnitTests.CreateConversationTests
 			var newUser = new User { Id = 1 };
 			var roles = new List<string> { UserRole.Buyer.ToString() };
 
-			_userManagerMock
-				.Setup(m => m.FindByEmailAsync(It.IsAny<string>()))
-				.ReturnsAsync(newUser);
+			var mock = new List<User> { newUser }
+				.AsQueryable()
+				.BuildMockDbSet();
+
+			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+
+			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(newUser.Email);
 
 			_userManagerMock.Setup(m => m.GetRolesAsync(It.IsAny<User>())).ReturnsAsync(roles);
 

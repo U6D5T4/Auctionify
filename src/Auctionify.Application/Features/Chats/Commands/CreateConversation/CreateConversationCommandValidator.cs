@@ -4,6 +4,7 @@ using Auctionify.Core.Entities;
 using Auctionify.Core.Enums;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Auctionify.Application.Features.Chats.Commands.CreateConversation
 {
@@ -55,8 +56,12 @@ namespace Auctionify.Application.Features.Chats.Commands.CreateConversation
 							cancellationToken: cancellationToken
 						);
 
-						var currentUser = await _userManager.FindByEmailAsync(
-							_currentUserService.UserEmail!
+						var users = await _userManager.Users.ToListAsync(
+							cancellationToken: cancellationToken
+						);
+
+						var currentUser = users.Find(
+							u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted
 						);
 
 						var currentUserRole = (UserRole)

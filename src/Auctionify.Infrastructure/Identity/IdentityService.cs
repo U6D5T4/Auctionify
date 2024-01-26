@@ -4,6 +4,7 @@ using Auctionify.Core.Entities;
 using Auctionify.Infrastructure.Common.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -63,7 +64,9 @@ namespace Auctionify.Infrastructure.Identity
 					IsSuccess = false,
 				};
 			}
-			var user = await _userManager.FindByEmailAsync(userModel.Email);
+
+			var users = await _userManager.Users.ToListAsync();
+			var user = users.Find(u => u.Email == userModel.Email && !u.IsDeleted);
 
 			if (user is null)
 			{
@@ -143,7 +146,9 @@ namespace Auctionify.Infrastructure.Identity
 
 		public async Task<ResetPasswordResponse> ForgetPasswordAsync(string email)
 		{
-			var user = await _userManager.FindByEmailAsync(email);
+			var users = await _userManager.Users.ToListAsync();
+			var user = users.Find(u => u.Email == email && !u.IsDeleted);
+
 			if (user is null)
 			{
 				return new ResetPasswordResponse
@@ -177,7 +182,9 @@ namespace Auctionify.Infrastructure.Identity
 
 		public async Task<ResetPasswordResponse> ResetPasswordAsync(ResetPasswordViewModel model)
 		{
-			var user = await _userManager.FindByEmailAsync(model.Email);
+			var users = await _userManager.Users.ToListAsync();
+			var user = users.Find(u => u.Email == model.Email && !u.IsDeleted);
+
 			if (user is null)
 			{
 				return new ResetPasswordResponse
@@ -230,10 +237,22 @@ namespace Auctionify.Infrastructure.Identity
 					IsSuccess = false,
 				};
 
+			var users = await _userManager.Users.ToListAsync();
+			var existingUser = users.Find(u => u.Email == model.Email && !u.IsDeleted);
+
+			if (existingUser is not null)
+				return new RegisterResponse
+				{
+					Message = "User with this email already exists",
+					IsSuccess = false,
+				};
+
+			var newUsername = GenerateUniqueUserName();
+
 			var user = new User
 			{
 				Email = model.Email,
-				UserName = model.Email,
+				UserName = newUsername,
 				IsDeleted = false,
 				CreationDate = DateTime.UtcNow
 			};
@@ -274,6 +293,11 @@ namespace Auctionify.Infrastructure.Identity
 			};
 		}
 
+		private static string GenerateUniqueUserName()
+		{
+			return $"user_{Guid.NewGuid().ToString("N")}";
+		}
+
 		public async Task<RegisterResponse> ConfirmUserEmailAsync(string userId, string token)
 		{
 			var user = await _userManager.FindByIdAsync(userId);
@@ -302,7 +326,8 @@ namespace Auctionify.Infrastructure.Identity
 
 		public async Task<LoginResponse> AssignRoleToUserAsync(string role)
 		{
-			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+			var users = await _userManager.Users.ToListAsync();
+			var user = users.Find(u => u.Email == _currentUserService.UserEmail!);
 
 			if (user == null)
 			{
@@ -361,7 +386,9 @@ namespace Auctionify.Infrastructure.Identity
 
 		public async Task<LoginResponse> LoginUserWithGoogleAsync(Payload payload)
 		{
-			var user = await _userManager.FindByEmailAsync(payload.Email);
+			var users = await _userManager.Users.ToListAsync();
+			var user = users.Find(u => u.Email == payload.Email && !u.IsDeleted);
+
 			if (user == null)
 			{
 				user = new User
@@ -397,7 +424,9 @@ namespace Auctionify.Infrastructure.Identity
 			ChangePasswordViewModel model
 		)
 		{
-			var user = await _userManager.FindByEmailAsync(email);
+			var users = await _userManager.Users.ToListAsync();
+
+			var user = users.Find(u => u.Email == email && !u.IsDeleted);
 
 			if (user is null)
 			{
