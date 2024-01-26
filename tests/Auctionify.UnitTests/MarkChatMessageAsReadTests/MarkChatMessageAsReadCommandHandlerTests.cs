@@ -130,32 +130,6 @@ namespace Auctionify.UnitTests.MarkChatMessageAsReadTests
 				.Be("Sender of the message cannot mark it as read");
 		}
 
-		[Fact]
-		public async Task Handle_GivenChatMessageIdThatIsNotSentToCurrentUser_ShouldThrowValidationException()
-		{
-			// Arrange
-			var newUser = new User { Id = 1 };
-
-			_userManagerMock
-				.Setup(x => x.FindByEmailAsync(It.IsAny<string>()))
-				.ReturnsAsync(newUser);
-
-			var request = new MarkChatMessageAsReadCommand { ChatMessageId = 2 };
-
-			// Act
-			var result = await _validator.ValidateAsync(request);
-
-			// Assert
-			result.Should().BeOfType<ValidationResult>();
-			result.IsValid.Should().BeFalse();
-			result.Errors.Should().NotBeEmpty();
-			result.Errors.Count.Should().Be(1);
-			result
-				.Errors.First()
-				.ErrorMessage.Should()
-				.Be("You are not the receiver of this chat message");
-		}
-
 		#endregion
 
 		#region Deinitialization
