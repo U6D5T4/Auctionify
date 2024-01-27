@@ -11,5 +11,7 @@
 		Task RemoveLotFinishJob(int lotId);
 
 		Task ScheduleDraftLotDeleteJob(int lotId, DateTime deleteDateTime);
+
+		Task ScheduleGlobalLotsJob();
 	}
 }

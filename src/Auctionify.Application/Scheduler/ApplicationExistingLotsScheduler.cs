@@ -49,7 +49,7 @@ namespace Auctionify.Application.Scheduler
 				else if (lotStatus == AuctionStatus.Draft)
 				{
 					var deleteTime = lot.ModificationDate.AddDays(7);
-					await _jobSchedulerService.ScheduleDraftLotDeleteJob(lot.Id);
+					await _jobSchedulerService.ScheduleDraftLotDeleteJob(lot.Id, deleteTime);
 				}
 			}
 		}
