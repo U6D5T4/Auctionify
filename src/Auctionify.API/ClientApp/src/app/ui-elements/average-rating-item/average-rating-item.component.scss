@@ -35,7 +35,7 @@
         align-items: center;
         gap: 16px;
     }
-    
+
     &__progress-bar {
         width: 200px;
         height: 8px;
@@ -43,11 +43,11 @@
         background-color: #e0e0e0;
         position: relative;
     }
-    
+
     &__progress {
         height: 100%;
         border-radius: 500px;
-        background-color: #FBBC04;
+        background-color: #fbbc04;
     }
 
     &__count {
@@ -79,6 +79,6 @@
     }
 
     &__rating-count {
-        color: #2B5293;
+        color: #2b5293;
     }
 }

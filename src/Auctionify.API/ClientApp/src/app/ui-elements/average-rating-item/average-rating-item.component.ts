@@ -29,7 +29,7 @@ export class AverageRatingItemComponent {
                 totalCount += this.userProfileData?.starCounts![key];
             }
         }
-    
+
         return totalCount;
     }
 

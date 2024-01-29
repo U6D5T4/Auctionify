@@ -27,7 +27,7 @@
         height: 48px;
         border-radius: 32px;
         border: none;
-        background-color: #F2F5F7;
+        background-color: #f2f5f7;
         font-weight: bold;
         font-family: 'Onest', sans-serif;
     }
@@ -52,7 +52,7 @@
         flex-direction: column;
         gap: 40px;
     }
-    
+
     &__rating {
         display: flex;
         gap: 40px;
@@ -74,7 +74,7 @@
         align-items: center;
         gap: 16px;
     }
-      
+
     &__progress-bar {
         width: 300px;
         height: 8px;
@@ -82,11 +82,11 @@
         background-color: #e0e0e0;
         position: relative;
     }
-      
+
     &__progress {
         height: 100%;
         border-radius: 500px;
-        background-color: #FBBC04;
+        background-color: #fbbc04;
     }
 
     &__count {
@@ -118,9 +118,9 @@
     }
 
     &__rating-count {
-        color: #2B5293;
+        color: #2b5293;
     }
-    
+
     &__review-number {
         width: 3px;
         align-items: center;
