@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
 
 import { ChoicePopupComponent } from 'src/app/ui-elements/choice-popup/choice-popup.component';
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';

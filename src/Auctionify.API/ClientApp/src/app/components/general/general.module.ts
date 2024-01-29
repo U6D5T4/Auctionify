@@ -19,6 +19,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { WithdrawBidComponent } from './withdraw-bid/withdraw-bid.component';
 import { RemoveFromWatchlistComponent } from './remove-from-watchlist/remove-from-watchlist.component';
 import { ChatModule } from './chat/chat.module';
+import { TransactionsComponent } from './transactions/transactions.component';
 
 @NgModule({
     declarations: [
@@ -29,6 +30,7 @@ import { ChatModule } from './chat/chat.module';
         FilterComponent,
         WithdrawBidComponent,
         RemoveFromWatchlistComponent,
+        TransactionsComponent,
     ],
     imports: [
         CommonModule,
@@ -46,6 +48,6 @@ import { ChatModule } from './chat/chat.module';
         ChatModule,
     ],
 
-    exports: [LotProfileComponent],
+    exports: [LotProfileComponent, TransactionsComponent],
 })
 export class GeneralModule {}

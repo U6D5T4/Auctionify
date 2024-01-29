@@ -185,6 +185,7 @@ export class LotProfileComponent implements OnInit {
                 startingPrice: this.lotData!.startingPrice,
                 currentHighestBid: this.getHighestBidPrice(this.lotData),
             },
+            autoFocus: false,
         });
 
         dialog.closed.subscribe({
@@ -201,6 +202,7 @@ export class LotProfileComponent implements OnInit {
                     data: {
                         bidId: this.lotData?.bids[0].id,
                     },
+                    autoFocus: false,
                 });
             }
         }
@@ -224,7 +226,7 @@ export class LotProfileComponent implements OnInit {
             this.client.addToWatchlist(this.lotId).subscribe({
                 next: (result) => {
                     this.snackBar.open(
-                        'Successfully added the lot to watchlist',
+                        'Successfully added the lot to wishlist',
                         'Close',
                         {
                             horizontalPosition: 'center',
@@ -253,6 +255,7 @@ export class LotProfileComponent implements OnInit {
                 data: {
                     lotId: this.lotId,
                 },
+                autoFocus: false,
             });
 
             dialog.closed.subscribe({

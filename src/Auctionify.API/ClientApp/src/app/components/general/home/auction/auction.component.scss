@@ -54,11 +54,11 @@
     }
 
     &__auction-active {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(249px, 290px));
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
         padding-bottom: 20px;
-        gap: 13px;
-        justify-content: space-between;
+        gap: 8px;
     }
 
     &__btn {
@@ -71,11 +71,11 @@
     }
 
     &__auction-upcoming {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(249px, 290px));
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
         padding-bottom: 20px;
-        gap: 13px;
-        justify-content: space-between;
+        gap: 8px;
     }
 
     &__auction-upcoming-title {
@@ -87,11 +87,11 @@
     }
 
     &__auction-archived {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(249px, 290px));
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
         padding-bottom: 20px;
-        gap: 13px;
-        justify-content: space-between;
+        gap: 8px;
     }
 
     &__auction-archived-title {
@@ -117,6 +117,7 @@
 
     &__image img {
         border-radius: 20px;
+        object-fit: cover;
     }
 
     &__like-btn {

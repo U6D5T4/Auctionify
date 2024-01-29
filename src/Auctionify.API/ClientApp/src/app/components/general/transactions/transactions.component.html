@@ -1,0 +1,86 @@
+<div class="transactions">
+    <h2 *ngIf="showHeader" class="transactions__title">Transactions history</h2>
+    <div *ngIf="transactions.length > 0; else noTransactions">
+        <table class="transactions__table">
+            <thead class="transactions__thead">
+                <tr>
+                    <th class="lot-name">Lot Name</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Amount</th>
+                    <th class="lot-details">Details</th>
+                </tr>
+            </thead>
+            <tbody class="transactions__tbody">
+                <tr
+                    *ngFor="let transaction of transactions"
+                    class="transaction__list"
+                >
+                    <td class="transaction__lot">
+                        <a routerLink="/get-lot/{{ transaction.lotId }}">
+                            <img
+                                [src]="
+                                    transaction.lotMainPhotoUrl
+                                        ? transaction.lotMainPhotoUrl
+                                        : '../../../../assets/icons/NoImage.svg'
+                                "
+                                alt="lot image"
+                                class="transaction__lot-image"
+                                width="120px"
+                                height="120px"
+                                alt="lot image"
+                            />
+                        </a>
+                        <p class="transaction__lot-title">
+                            <a routerLink="/get-lot/{{ transaction.lotId }}">
+                                {{ transaction.lotTitle }}
+                            </a>
+                        </p>
+                    </td>
+                    <td class="transaction__date">
+                        {{
+                            transaction.transactionDate | date : 'LLLL dd, yyyy'
+                        }}
+                    </td>
+                    <td
+                        class="transaction__status"
+                        [style.color]="
+                            getStatusColor(transaction.transactionStatus)
+                        "
+                    >
+                        <mat-icon class="transaction__circle-icon"
+                            >circle</mat-icon
+                        >
+                        {{ transaction.transactionStatus }}
+                    </td>
+                    <td class="transaction__amount">
+                        {{ transaction.transactionAmount }}
+                        {{ transaction.transactionCurrency }}
+                    </td>
+                    <td class="transaction__details">
+                        <a routerLink="/get-lot/{{ transaction.lotId }}">
+                            <div class="transaction__learn-more-btn">
+                                <button
+                                    mat-flat-button
+                                    class="transactions__details-link"
+                                >
+                                    <p class="transaction__learn-more-text">
+                                        Learn more
+                                    </p>
+                                    <mat-icon
+                                        class="transaction__arrow-icon"
+                                        iconPositionEnd
+                                        >arrow_forward</mat-icon
+                                    >
+                                </button>
+                            </div>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <ng-template #noTransactions>
+        <p class="transactions__no-transactions">No transactions yet</p>
+    </ng-template>
+</div>

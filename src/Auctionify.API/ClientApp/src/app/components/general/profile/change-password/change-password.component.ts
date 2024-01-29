@@ -14,6 +14,7 @@ import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-po
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 import { BuyerModel, SellerModel } from 'src/app/models/users/user-models';
 import { ChangePasswordResponse, Client } from 'src/app/web-api-client';
+import { UserDataValidatorService } from 'src/app/services/user-data-validator/user-data-validator.service';
 
 export interface ChangeUserPasswordFormModel {
     oldPassword: FormControl<string | null>;
@@ -35,7 +36,8 @@ export class ChangePasswordComponent implements OnInit {
         private authorizeService: AuthorizeService,
         private client: Client,
         private router: Router,
-        public dialog: Dialog
+        public dialog: Dialog,
+        public userDataValidator: UserDataValidatorService
     ) {}
 
     ngOnInit(): void {
@@ -144,42 +146,40 @@ export class ChangePasswordComponent implements OnInit {
     }
 
     private fetchUserProfileData() {
-        if (this.isUserBuyer()) {
-            this.client.getBuyer().subscribe(
-                (data: BuyerModel) => {
+        if (this.authorizeService.isUserBuyer()) {
+            this.client.getBuyer().subscribe({
+                next: (data: BuyerModel) => {
                     this.userProfileData = data;
+                    this.userDataValidator.validateUserProfileData(
+                        this.userProfileData
+                    );
                 },
-                (error) => {
+                error: (error) => {
                     this.openDialog(
-                        error.errors! || [
+                        error.errors || [
                             'Something went wrong, please try again later',
                         ],
                         true
                     );
-                }
-            );
-        } else if (this.isUserSeller()) {
-            this.client.getSeller().subscribe(
-                (data: SellerModel) => {
-                    this.userProfileData = data;
                 },
-                (error) => {
+            });
+        } else if (this.authorizeService.isUserSeller()) {
+            this.client.getSeller().subscribe({
+                next: (data: SellerModel) => {
+                    this.userProfileData = data;
+                    this.userDataValidator.validateUserProfileData(
+                        this.userProfileData
+                    );
+                },
+                error: (error) => {
                     this.openDialog(
-                        error.errors! || [
+                        error.errors || [
                             'Something went wrong, please try again later',
                         ],
                         true
                     );
-                }
-            );
+                },
+            });
         }
-    }
-
-    isUserSeller(): boolean {
-        return this.authorizeService.isUserSeller();
-    }
-
-    isUserBuyer(): boolean {
-        return this.authorizeService.isUserBuyer();
     }
 }

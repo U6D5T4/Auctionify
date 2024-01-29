@@ -1,7 +1,10 @@
 ﻿using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Features.Lots.Commands.UpdateLotStatus;
+using Auctionify.Application.Hubs;
+using Auctionify.Core.Entities;
 using Auctionify.Core.Enums;
 using MediatR;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -29,6 +32,11 @@ namespace Auctionify.Application.Scheduler.Jobs
 			var lotRepository = scope.ServiceProvider.GetRequiredService<ILotRepository>();
 			var bidRepository = scope.ServiceProvider.GetRequiredService<IBidRepository>();
 			var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+			var conversationRepository =
+				scope.ServiceProvider.GetRequiredService<IConversationRepository>();
+			var chatMessageRepository =
+				scope.ServiceProvider.GetRequiredService<IChatMessageRepository>();
+			var hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<AuctionHub>>();
 
 			var lot = await lotRepository.GetAsync(
 				x => x.Id == lotId,
@@ -40,7 +48,7 @@ namespace Auctionify.Application.Scheduler.Jobs
 				return;
 			}
 
-			Enum.TryParse(lot.LotStatus.Name, out AuctionStatus lotStatus);
+			_ = Enum.TryParse(lot.LotStatus.Name, out AuctionStatus lotStatus);
 
 			AuctionStatus futureStatus = AuctionStatus.NotSold;
 
@@ -54,11 +62,56 @@ namespace Auctionify.Application.Scheduler.Jobs
 					.OrderByDescending(x => x.NewPrice)
 					.FirstOrDefaultAsync();
 
-				if (highestBid != null)
+				if (highestBid is not null)
 				{
 					lot.BuyerId = highestBid.BuyerId;
 					lot.StartingPrice = highestBid.NewPrice;
 					await lotRepository.UpdateAsync(lot);
+
+					var conversation = await conversationRepository.GetAsync(
+						x =>
+							x.LotId == lotId
+							&& x.BuyerId == highestBid.BuyerId
+							&& x.SellerId == lot.SellerId
+					);
+
+					#region Creating a conversation after the lot is sold and there is a buyer
+
+					if (conversation is null)
+					{
+						conversation = new Conversation
+						{
+							LotId = lotId,
+							BuyerId = highestBid.BuyerId,
+							SellerId = lot.SellerId
+						};
+
+						await conversationRepository.AddAsync(conversation);
+					}
+
+					#endregion
+
+					#region Creating a congratulation message for the buyer
+
+					var congratulationMessage = new ChatMessage
+					{
+						SenderId = lot.SellerId,
+						ConversationId = conversation.Id,
+						Body =
+							$"Congratulations, Dear Buyer! You won the auction for lot with id: {lotId}!",
+						IsRead = false,
+					};
+
+					await chatMessageRepository.AddAsync(congratulationMessage);
+
+					await hubContext
+						.Clients.Group(conversation.Id.ToString())
+						.SendAsync(
+							SignalRActions.ReceiveChatMessageNotification,
+							cancellationToken: context.CancellationToken
+						);
+
+					#endregion
 
 					_logger.LogInformation(
 						"FinishLot job updated lot with id: {lotId} with buyer id: {buyerId}",

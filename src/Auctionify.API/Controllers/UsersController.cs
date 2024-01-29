@@ -1,4 +1,5 @@
 ﻿using Auctionify.Application.Common.Models.Requests;
+using Auctionify.Application.Features.Lots.Queries.GetAll;
 using Auctionify.Application.Features.Users.Commands.AddBidForLot;
 using Auctionify.Application.Features.Users.Commands.AddLotToWatchlist;
 using Auctionify.Application.Features.Users.Commands.RemoveBid;
@@ -10,6 +11,7 @@ using Auctionify.Application.Features.Users.Queries.GetBuyerAuctions;
 using Auctionify.Application.Features.Users.Queries.GetById;
 using Auctionify.Application.Features.Users.Queries.GetByUserWatchlist;
 using Auctionify.Application.Features.Users.Queries.GetSeller;
+using Auctionify.Application.Features.Users.Queries.GetTransactions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -108,17 +110,19 @@ namespace Auctionify.API.Controllers
 
 		[HttpGet("buyers")]
 		[Authorize(Roles = "Buyer")]
-		public async Task<IActionResult> GetBuyer()
+		public async Task<IActionResult> GetBuyer([FromQuery] PageRequest pageRequest)
 		{
-			var result = await _mediator.Send(new GetBuyerQuery());
+			var query = new GetBuyerQuery { PageRequest = pageRequest };
+			var result = await _mediator.Send(query);
 			return Ok(result);
 		}
 
 		[HttpGet("sellers")]
 		[Authorize(Roles = "Seller")]
-		public async Task<IActionResult> GetSeller()
+		public async Task<IActionResult> GetSeller([FromQuery] PageRequest pageRequest)
 		{
-			var result = await _mediator.Send(new GetSellerQuery());
+			var query = new GetSellerQuery { PageRequest = pageRequest };
+			var result = await _mediator.Send(query);
 			return Ok(result);
 		}
 
@@ -140,6 +144,16 @@ namespace Auctionify.API.Controllers
 			var lots = await _mediator.Send(query);
 
 			return Ok(lots);
+		}
+
+		[HttpGet("transactions")]
+		[Authorize(Roles = "Buyer, Seller")]
+		public async Task<IActionResult> GetTransactions([FromQuery] PageRequest pageRequest)
+		{
+			var query = new GetTransactionsUserQuery { PageRequest = pageRequest };
+			var transactions = await _mediator.Send(query);
+
+			return Ok(transactions);
 		}
 	}
 }
