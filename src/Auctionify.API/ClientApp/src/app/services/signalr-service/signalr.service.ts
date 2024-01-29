@@ -66,6 +66,14 @@ export class SignalRService {
             });
     }
 
+    public async joinConversationGroup(conversationId: number) {
+        await this.connectionEstablished;
+        this.connection
+            .invoke('JoinConversationGroup', conversationId)
+            .then(() => {})
+            .catch((err) => {});
+    }
+
     public onReceiveBidNotification(callback: () => void, lotId: number) {
         this.connection.on(SignalRActions.ReceiveBidNotification, () => {
             callback();
@@ -78,6 +86,15 @@ export class SignalRService {
     ) {
         this.connection.on(
             SignalRActions.ReceiveWithdrawBidNotification,
+            () => {
+                callback();
+            }
+        );
+    }
+
+    public onReceiveChatMessage(callback: () => void, conversationId: number) {
+        this.connection.on(
+            SignalRActions.ReceiveChatMessageNotification,
             () => {
                 callback();
             }

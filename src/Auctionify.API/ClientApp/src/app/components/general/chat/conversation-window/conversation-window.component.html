@@ -60,10 +60,15 @@
                 color="primary"
                 appearance="outline"
             >
-                <mat-error>Email required</mat-error>
-                <input matInput placeholder="Type a message" />
+                <input #msg_input matInput placeholder="Type a message" />
             </mat-form-field>
-            <button class="control__button" mat-flat-button color="primary">
+            <button
+                type="button"
+                (click)="sendMessage(msg_input.value)"
+                class="control__button"
+                mat-flat-button
+                color="primary"
+            >
                 <mat-icon class="control__icon"> send </mat-icon>
             </button>
         </div>

@@ -1029,6 +1029,30 @@ export class Client {
             })
         );
     }
+
+    sendChatMessage(conversationId: number, body: string): Observable<void> {
+        let url_ =
+            this.baseUrl +
+            `/api/chats/users/conversations/${conversationId}/messages`;
+
+        let form = new FormData();
+
+        form.append('body', body);
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                Accept: 'text/json',
+            }),
+            body: form,
+        };
+
+        return this.http.request('post', url_, options_).pipe(
+            mergeMap((response: any): Observable<void> => {
+                return of();
+            })
+        );
+    }
 }
 
 export interface PageRequest {

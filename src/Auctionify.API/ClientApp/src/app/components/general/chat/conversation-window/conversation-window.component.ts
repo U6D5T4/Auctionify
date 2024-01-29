@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 import { ChatMessage, Conversation } from 'src/app/models/chats/chat-models';
+import { SignalRService } from 'src/app/services/signalr-service/signalr.service';
 import { Client } from 'src/app/web-api-client';
 
 interface GroupedMessages {
@@ -27,13 +28,33 @@ export class ConversationWindowComponent implements OnInit {
     constructor(
         private authService: AuthorizeService,
         private client: Client,
+        private signalRService: SignalRService,
         @Inject(LOCALE_ID) public locale: string
     ) {
         effect(() => {
             this.currentUserId = this.authService.getUserId()!;
         });
     }
-    ngOnInit(): void {
+
+    async ngOnInit(): Promise<void> {
+        this.getAllConversationMessages();
+
+        if (!this.isSignalrConnected) {
+            await this.signalRService.joinConversationGroup(
+                this.conversation.id
+            );
+
+            this.signalRService.onReceiveChatMessage(() => {
+                this.getAllConversationMessages();
+            }, this.conversation.id);
+        }
+    }
+
+    currentUserId: number = 0;
+    messages: ChatMessage[] = [];
+    private isSignalrConnected = false;
+
+    getAllConversationMessages() {
         this.client
             .getAllConversationChatMessages(this.conversation.id)
             .subscribe({
@@ -44,11 +65,7 @@ export class ConversationWindowComponent implements OnInit {
                     this.messages = result.chatMessages;
                 },
             });
-        console.log(this.conversation);
     }
-
-    currentUserId: number = 0;
-    messages: ChatMessage[] = [];
 
     groupMessagesByDate(messages: ChatMessage[]): GroupedMessages[] {
         const groupedMessages: GroupedMessages[] = [];
@@ -81,6 +98,14 @@ export class ConversationWindowComponent implements OnInit {
         );
 
         return groupedMessages;
+    }
+
+    sendMessage(input: string) {
+        this.client.sendChatMessage(this.conversation.id, input).subscribe({
+            next: () => {
+                console.log('message sent');
+            },
+        });
     }
 
     generateMessageClass(message: ChatMessage) {
