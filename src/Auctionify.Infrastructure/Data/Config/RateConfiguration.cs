@@ -20,9 +20,9 @@ namespace Auctionify.Infrastructure.Data.Config
 				.OnDelete(DeleteBehavior.NoAction);
 
 			builder.HasOne(r => r.Lot)
-				.WithMany(l => l.Rates)
-				.IsRequired(false)
-				.OnDelete(DeleteBehavior.NoAction);
+				.WithOne(l => l.Rate)
+				.HasForeignKey<Rate>(r => r.LotId)
+				.IsRequired(false);
 
 			builder.Property(r => r.RatingValue).IsRequired(true);
 			builder.Property(r => r.Comment).HasMaxLength(2048).IsRequired(false);
