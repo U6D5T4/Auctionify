@@ -72,7 +72,7 @@ namespace Auctionify.Infrastructure.Identity
 			{
 				return new LoginResponse
 				{
-					Errors = new[] { "User is not found" },
+					Errors = new[] { "User is not found or deleted" },
 					IsSuccess = false,
 				};
 			}

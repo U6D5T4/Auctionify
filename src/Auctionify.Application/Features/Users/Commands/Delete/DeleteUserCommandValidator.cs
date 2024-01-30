@@ -91,7 +91,7 @@ namespace Auctionify.Application.Features.Users.Commands.Delete
 					async (command, cancellationToken) =>
 					{
 						var users = await _userManager.Users.ToListAsync(
-							cancellationToken: cancellationToken
+							cancellationToken
 						);
 
 						var currentUser = users.Find(

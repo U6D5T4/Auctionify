@@ -226,7 +226,7 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 			var result = await sut.LoginUserAsync(userModel);
 
 			// Assert
-			result.Errors.FirstOrDefault().Should().Be("User is not found");
+			result.Errors.FirstOrDefault().Should().Be("User is not found or deleted");
 			result.Should().NotBeNull();
 			result.IsSuccess.Should().BeFalse();
 			result.Result.Should().BeNull();
