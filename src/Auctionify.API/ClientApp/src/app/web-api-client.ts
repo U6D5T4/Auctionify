@@ -1030,7 +1030,7 @@ export class Client {
         );
     }
 
-    sendChatMessage(conversationId: number, body: string): Observable<void> {
+    sendChatMessage(conversationId: number, body: string): Observable<boolean> {
         let url_ =
             this.baseUrl +
             `/api/chats/users/conversations/${conversationId}/messages`;
@@ -1048,8 +1048,8 @@ export class Client {
         };
 
         return this.http.request('post', url_, options_).pipe(
-            mergeMap((response: any): Observable<void> => {
-                return of();
+            mergeMap((response: any): Observable<boolean> => {
+                return of(true);
             })
         );
     }

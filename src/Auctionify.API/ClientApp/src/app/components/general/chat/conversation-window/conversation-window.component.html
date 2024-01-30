@@ -1,33 +1,35 @@
-<div *ngIf="messages.length == 0; else conversation_loaded">
-    <div class="conversation-not-loaded">
-        <h1>No messages!</h1>
-    </div>
-</div>
-<ng-template #conversation_loaded>
-    <div class="conversation-window">
-        <div class="conversation__profile-top">
-            <div class="profile-top__user">
-                <div class="user__avatar">
-                    <img
-                        [src]="
-                            conversation.chatUser.profilePictureUrl
-                                ? conversation.chatUser.profilePictureUrl
-                                : '../../../../assets/icons/NoImage\.svg'
-                        "
-                        alt="avatar"
-                    />
-                </div>
-                <div class="user__fullname">
-                    {{ conversation.chatUser.fullName }}
-                </div>
+<div class="conversation-window">
+    <div class="conversation__profile-top">
+        <div class="profile-top__user">
+            <div class="user__avatar">
+                <img
+                    [src]="
+                        conversation.chatUser.profilePictureUrl
+                            ? conversation.chatUser.profilePictureUrl
+                            : '../../../../assets/icons/NoImage\.svg'
+                    "
+                    alt="avatar"
+                />
             </div>
-            <div class="profile-top__settings">
-                <mat-icon>more_vert</mat-icon>
+            <div class="user__fullname">
+                {{ conversation.chatUser.fullName }}
             </div>
         </div>
-        <div class="conversation__separator"></div>
-        <div class="conversation__main">
-            <div class="conversation__main-inner">
+        <div class="profile-top__settings">
+            <mat-icon>more_vert</mat-icon>
+        </div>
+    </div>
+    <div class="conversation__separator"></div>
+    <div class="conversation__main">
+        <div class="conversation__main-inner">
+            <ng-container
+                *ngIf="messages.length == 0; else conversation_loaded"
+            >
+                <div class="conversation-not-loaded">
+                    <h1>No messages!</h1>
+                </div>
+            </ng-container>
+            <ng-template #conversation_loaded>
                 <div
                     class="conversation__main-group"
                     *ngFor="let group of groupMessagesByDate(messages)"
@@ -48,29 +50,29 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="conversation__separator"></div>
-        <div class="conversation__controls">
-            <button class="control__button" mat-stroked-button>
-                <mat-icon class="control__icon"> attach_file </mat-icon>
-            </button>
-            <mat-form-field
-                class="send-message-input"
-                color="primary"
-                appearance="outline"
-            >
-                <input #msg_input matInput placeholder="Type a message" />
-            </mat-form-field>
-            <button
-                type="button"
-                (click)="sendMessage(msg_input.value)"
-                class="control__button"
-                mat-flat-button
-                color="primary"
-            >
-                <mat-icon class="control__icon"> send </mat-icon>
-            </button>
+            </ng-template>
         </div>
     </div>
-</ng-template>
+    <div class="conversation__separator"></div>
+    <div class="conversation__controls">
+        <button class="control__button" mat-stroked-button>
+            <mat-icon class="control__icon"> attach_file </mat-icon>
+        </button>
+        <mat-form-field
+            class="send-message-input"
+            color="primary"
+            appearance="outline"
+        >
+            <input #msg_input matInput placeholder="Type a message" />
+        </mat-form-field>
+        <button
+            type="button"
+            (click)="sendMessage(msg_input.value)"
+            class="control__button"
+            mat-flat-button
+            color="primary"
+        >
+            <mat-icon class="control__icon"> send </mat-icon>
+        </button>
+    </div>
+</div>

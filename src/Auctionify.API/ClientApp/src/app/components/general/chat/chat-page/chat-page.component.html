@@ -5,6 +5,7 @@
             *ngIf="chatConversations != null && chatConversations.length > 0"
         >
             <app-chats
+                #chats
                 class="chats"
                 [conversations]="chatConversations"
                 (conversationChosen)="handleConversationChange($event)"
@@ -13,12 +14,14 @@
     </div>
     <div class="chat__separator"></div>
     <div class="chat__window">
-        <app-conversation-window
-            class="chat__window-conversation"
-            *ngIf="chosenConversation !== null; else no_chat"
-            [conversation]="chosenConversation"
-        >
-        </app-conversation-window>
+        <ng-container *ngIf="chosenConversation !== null; else no_chat">
+            <app-conversation-window
+                class="chat__window-conversation"
+                [conversation]="chosenConversation"
+                (messageSent)="getAllUserConversations()"
+            >
+            </app-conversation-window>
+        </ng-container>
         <ng-template #no_chat>
             <div class="chat__window-no-chat">
                 <img

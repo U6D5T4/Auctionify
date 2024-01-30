@@ -3,7 +3,7 @@
         <div class="chat__avatar">
             <img
                 [src]="
-                    imageUrl
+                    imageUrl == undefined || imageUrl === null
                         ? imageUrl
                         : '../../../../assets/icons/NoImage\.svg'
                 "

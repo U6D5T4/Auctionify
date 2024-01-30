@@ -1,7 +1,14 @@
-import { Component, OnInit, effect } from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    OnInit,
+    ViewChild,
+    effect,
+} from '@angular/core';
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 import { Conversation } from 'src/app/models/chats/chat-models';
 import { Client } from 'src/app/web-api-client';
+import { ChatsComponent } from '../chats/chats.component';
 
 @Component({
     selector: 'app-chat-page',
@@ -17,16 +24,21 @@ export class ChatPageComponent implements OnInit {
         });
     }
     ngOnInit(): void {
+        this.getAllUserConversations();
+    }
+    chosenConversation: Conversation | null = null;
+    chatConversations: Conversation[] = [];
+
+    getAllUserConversations() {
         this.client.getAllUserConversations().subscribe({
             next: (result) => {
                 this.chatConversations = result.conversations;
             },
         });
     }
-    chosenConversation: Conversation | null = null;
-    chatConversations: Conversation[] = [];
 
     handleConversationChange(id: number) {
+        this.chosenConversation = null;
         this.chosenConversation = this.chatConversations.find(
             (x) => x.id == id
         )!;

@@ -173,3 +173,10 @@
 .send-message-input {
     flex: 2 1;
 }
+
+.conversation-not-loaded {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
