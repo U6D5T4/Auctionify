@@ -44,12 +44,9 @@ namespace Auctionify.Application.Features.Users.Commands.AddLotToWatchlist
 				.MustAsync(
 					async (lotId, cancellationToken) =>
 					{
-						var users = await _userManager.Users.ToListAsync(
+						var user = await _userManager.Users.FirstOrDefaultAsync(
+							u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
 							cancellationToken: cancellationToken
-						);
-
-						var user = users.Find(
-							u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted
 						);
 
 						var watchlist = await _watchlistRepository.GetAsync(

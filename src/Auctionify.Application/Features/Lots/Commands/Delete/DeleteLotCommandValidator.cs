@@ -41,12 +41,9 @@ namespace Auctionify.Application.Features.Lots.Commands.Delete
 				.MustAsync(
 					async (id, cancellationToken) =>
 					{
-						var users = await _userManager.Users.ToListAsync(
+						var user = await _userManager.Users.FirstOrDefaultAsync(
+							u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
 							cancellationToken: cancellationToken
-						);
-
-						var user = users.Find(
-							u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted
 						);
 
 						var lot = await _lotRepository.GetAsync(

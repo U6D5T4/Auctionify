@@ -34,7 +34,6 @@ namespace Auctionify.Application.Features.Rates.Queries.GetSenderRates
 			IRateRepository rateRepository,
 			IOptions<AzureBlobStorageOptions> azureBlobStorageOptions,
 			IBlobService blobService
-
 		)
 		{
 			_currentUserService = currentUserService;
@@ -50,16 +49,19 @@ namespace Auctionify.Application.Features.Rates.Queries.GetSenderRates
 			CancellationToken cancellationToken
 		)
 		{
-			var users = await _userManager.Users.ToListAsync(cancellationToken: cancellationToken);
-			var user = users.Find(u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted);
+			var user = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
+				cancellationToken: cancellationToken
+			);
 
-			var userRate = await _rateRepository.GetListAsync(predicate: r => r.ReceiverId == user.Id,
-			include: x =>
-					x.Include(u => u.Sender),
+			var userRate = await _rateRepository.GetListAsync(
+				predicate: r => r.ReceiverId == user.Id,
+				include: x => x.Include(u => u.Sender),
 				enableTracking: false,
 				size: request.PageRequest.PageSize,
 				index: request.PageRequest.PageIndex,
-				cancellationToken: cancellationToken);
+				cancellationToken: cancellationToken
+			);
 
 			var response = _mapper.Map<GetListResponseDto<GetAllSenderRatesResponse>>(userRate);
 

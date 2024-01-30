@@ -4,7 +4,6 @@ using Auctionify.Core.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Quartz;
 
 namespace Auctionify.Application.Scheduler
 {
@@ -15,7 +14,8 @@ namespace Auctionify.Application.Scheduler
 
 		public ApplicationExistingLotsScheduler(
 			IJobSchedulerService jobSchedulerService,
-			IServiceScopeFactory scopeFactory)
+			IServiceScopeFactory scopeFactory
+		)
 		{
 			_jobSchedulerService = jobSchedulerService;
 			_scopeFactory = scopeFactory;
@@ -26,17 +26,23 @@ namespace Auctionify.Application.Scheduler
 			using var scope = _scopeFactory.CreateScope();
 			var lotRepository = scope.ServiceProvider.GetRequiredService<ILotRepository>();
 
-			var lots = await lotRepository.Query().Include(x => x.LotStatus).ToListAsync();
+			var lots = await lotRepository
+				.Query()
+				.Include(x => x.LotStatus)
+				.ToListAsync(cancellationToken: cancellationToken);
 
 			foreach (var lot in lots)
 			{
-				Enum.TryParse(lot.LotStatus.Name, out AuctionStatus lotStatus);
+				_ = Enum.TryParse(lot.LotStatus.Name, out AuctionStatus lotStatus);
 
 				if (lotStatus == AuctionStatus.Upcoming)
 				{
 					if (lot.StartDate > DateTime.UtcNow)
 					{
-						await _jobSchedulerService.ScheduleUpcomingToActiveLotStatusJob(lot.Id, lot.StartDate);
+						await _jobSchedulerService.ScheduleUpcomingToActiveLotStatusJob(
+							lot.Id,
+							lot.StartDate
+						);
 					}
 				}
 			}

@@ -56,12 +56,9 @@ namespace Auctionify.Application.Features.Chats.Commands.MarkChatMessageAsRead
 							cancellationToken: cancellationToken
 						);
 
-						var users = await _userManager.Users.ToListAsync(
+						var user = await _userManager.Users.FirstOrDefaultAsync(
+							u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
 							cancellationToken: cancellationToken
-						);
-
-						var user = users.Find(
-							u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted
 						);
 
 						return chatMessage!.SenderId != user!.Id;
@@ -81,12 +78,9 @@ namespace Auctionify.Application.Features.Chats.Commands.MarkChatMessageAsRead
 							cancellationToken: cancellationToken
 						);
 
-						var users = await _userManager.Users.ToListAsync(
+						var user = await _userManager.Users.FirstOrDefaultAsync(
+							u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
 							cancellationToken: cancellationToken
-						);
-
-						var user = users.Find(
-							u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted
 						);
 
 						var conversation = await _conversationRepository.GetAsync(

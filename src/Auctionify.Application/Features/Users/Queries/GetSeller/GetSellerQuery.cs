@@ -54,8 +54,10 @@ namespace Auctionify.Application.Features.Users.Queries.GetSeller
 			CancellationToken cancellationToken
 		)
 		{
-			var users = await _userManager.Users.ToListAsync(cancellationToken: cancellationToken);
-			var user = users.Find(u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted);
+			var user = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
+				cancellationToken: cancellationToken
+			);
 
 			var profilePictureName = user.ProfilePicture;
 

@@ -37,11 +37,9 @@ namespace Auctionify.Application.Features.Users.Commands.Delete
 				.MustAsync(
 					async (command, cancellationToken) =>
 					{
-						var users = await _userManager.Users.ToListAsync(
+						var currentUser = await _userManager.Users.FirstOrDefaultAsync(
+							u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
 							cancellationToken: cancellationToken
-						);
-						var currentUser = users.Find(
-							u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted
 						);
 
 						var currentUserRole = (UserRole)
@@ -50,96 +48,63 @@ namespace Auctionify.Application.Features.Users.Commands.Delete
 								(await _userManager.GetRolesAsync(currentUser!)).FirstOrDefault()!
 							);
 
-						if (currentUserRole != UserRole.Buyer)
+						if (currentUserRole == UserRole.Buyer)
 						{
-							return true;
-						}
-
-						var bids = await _bidRepository.GetUnpaginatedListAsync(
-							predicate: x => x.BuyerId == currentUser!.Id,
-							cancellationToken: cancellationToken
-						);
-
-						foreach (var bid in bids)
-						{
-							var lot = await _lotRepository.GetAsync(
-								predicate: x => x.Id == bid.LotId,
+							var bids = await _bidRepository.GetUnpaginatedListAsync(
+								predicate: x => x.BuyerId == currentUser!.Id,
 								cancellationToken: cancellationToken
 							);
 
-							var lotStatus = await _lotStatusRepository.GetAsync(
-								predicate: x => x.Id == lot!.LotStatusId,
-								cancellationToken: cancellationToken
-							);
-
-							if (lotStatus!.Name == AuctionStatus.Active.ToString())
+							foreach (var bid in bids)
 							{
-								return false;
+								var lot = await _lotRepository.GetAsync(
+									predicate: x => x.Id == bid.LotId,
+									cancellationToken: cancellationToken
+								);
+
+								var lotStatus = await _lotStatusRepository.GetAsync(
+									predicate: x => x.Id == lot!.LotStatusId,
+									cancellationToken: cancellationToken
+								);
+
+								if (lotStatus!.Name == AuctionStatus.Active.ToString())
+								{
+									return false;
+								}
 							}
 						}
+						else if (currentUserRole == UserRole.Seller)
+						{
+							var lots = await _lotRepository.GetUnpaginatedListAsync(
+								predicate: x => x.SellerId == currentUser!.Id,
+								cancellationToken: cancellationToken
+							);
 
+							foreach (var lot in lots)
+							{
+								var lotStatus = await _lotStatusRepository.GetAsync(
+									predicate: x => x.Id == lot!.LotStatusId,
+									cancellationToken: cancellationToken
+								);
+
+								var invalidLotStatuses = new List<string>
+								{
+									AuctionStatus.Active.ToString(),
+									AuctionStatus.Upcoming.ToString(),
+									AuctionStatus.PendingApproval.ToString(),
+									AuctionStatus.Reopened.ToString()
+								};
+
+								if (invalidLotStatuses.Contains(lotStatus!.Name))
+								{
+									return false;
+								}
+							}
+						}
 						return true;
 					}
 				)
-				.WithMessage("You can't delete your account if you have at least one active bid")
-				.OverridePropertyName("BuyerId")
-				.WithName("Buyer Id");
-
-			RuleFor(x => x)
-				.Cascade(CascadeMode.Stop)
-				.MustAsync(
-					async (command, cancellationToken) =>
-					{
-						var users = await _userManager.Users.ToListAsync(
-							cancellationToken
-						);
-
-						var currentUser = users.Find(
-							u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted
-						);
-
-						var currentUserRole = (UserRole)
-							Enum.Parse(
-								typeof(UserRole),
-								(await _userManager.GetRolesAsync(currentUser!)).FirstOrDefault()!
-							);
-
-						if (currentUserRole != UserRole.Seller)
-						{
-							return true;
-						}
-
-						var lots = await _lotRepository.GetUnpaginatedListAsync(
-							predicate: x => x.SellerId == currentUser!.Id,
-							cancellationToken: cancellationToken
-						);
-
-						foreach (var lot in lots)
-						{
-							var lotStatus = await _lotStatusRepository.GetAsync(
-								predicate: x => x.Id == lot.LotStatusId,
-								cancellationToken: cancellationToken
-							);
-
-							if (
-								lotStatus!.Name == AuctionStatus.Active.ToString()
-								|| lotStatus!.Name == AuctionStatus.Upcoming.ToString()
-								|| lotStatus!.Name == AuctionStatus.PendingApproval.ToString()
-								|| lotStatus!.Name == AuctionStatus.Reopened.ToString()
-							)
-							{
-								return false;
-							}
-						}
-
-						return true;
-					}
-				)
-				.WithMessage(
-					"You can't delete your account if you have at least one lot with either active, upcoming, pending approval or reopened status"
-				)
-				.OverridePropertyName("SellerId")
-				.WithName("Seller Id");
+				.WithMessage("You can't delete your account");
 		}
 	}
 }

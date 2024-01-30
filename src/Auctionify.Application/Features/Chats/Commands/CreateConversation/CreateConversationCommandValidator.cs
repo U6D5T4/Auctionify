@@ -56,12 +56,9 @@ namespace Auctionify.Application.Features.Chats.Commands.CreateConversation
 							cancellationToken: cancellationToken
 						);
 
-						var users = await _userManager.Users.ToListAsync(
+						var currentUser = await _userManager.Users.FirstOrDefaultAsync(
+							u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
 							cancellationToken: cancellationToken
-						);
-
-						var currentUser = users.Find(
-							u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted
 						);
 
 						var currentUserRole = (UserRole)

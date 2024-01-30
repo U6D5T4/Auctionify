@@ -71,11 +71,9 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer
 
 			if (lot is not null)
 			{
-				var users = await _userManager.Users.ToListAsync(
+				var user = await _userManager.Users.FirstOrDefaultAsync(
+					u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
 					cancellationToken: cancellationToken
-				);
-				var user = users.Find(
-					u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted
 				);
 
 				result.IsInWatchlist = await _watchlistService.IsLotInUserWatchlist(

@@ -27,8 +27,10 @@ namespace Auctionify.Application.Features.Users.Commands.Delete
 			CancellationToken cancellationToken
 		)
 		{
-			var users = await _userManager.Users.ToListAsync(cancellationToken: cancellationToken);
-			var user = users.Find(u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted);
+			var user = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
+				cancellationToken: cancellationToken
+			);
 
 			user!.IsDeleted = true;
 

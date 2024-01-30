@@ -59,7 +59,6 @@ namespace Auctionify.UnitTests.DeleteUserTests
 
 		#region Tests
 
-		// delete user command deletes user successfully (no matter the role)
 		[Fact]
 		public async Task DeleteUserCommand_DeletesUserSuccessfully()
 		{
@@ -80,34 +79,6 @@ namespace Auctionify.UnitTests.DeleteUserTests
 			// Arrange
 			var command = new DeleteUserCommand();
 
-			var currentUserServiceMock = new Mock<ICurrentUserService>();
-
-			var userManagerMock = new Mock<UserManager<User>>(
-				Mock.Of<IUserStore<User>>(),
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null
-			);
-
-			var user = new User { Id = 1, Email = "buyer@example.com" };
-
-			var roles = new List<string> { UserRole.Buyer.ToString() };
-
-			var mock = GetUsers()
-				.AsQueryable()
-				.BuildMockDbSet();
-
-			userManagerMock.Setup(m => m.Users).Returns(mock.Object);
-
-			currentUserServiceMock.Setup(m => m.UserEmail).Returns(user.Email);
-
-			userManagerMock.Setup(m => m.GetRolesAsync(It.IsAny<User>())).ReturnsAsync(roles);
-
 			// Act
 			var result = await _validator.TestValidateAsync(command);
 
@@ -115,11 +86,7 @@ namespace Auctionify.UnitTests.DeleteUserTests
 			result.Should().NotBeNull();
 			result.IsValid.Should().BeFalse();
 			result.Errors.Should().HaveCount(1);
-			result
-				.Errors[0]
-				.ErrorMessage.Should()
-				.Be("You can't delete your account if you have at least one active bid");
-			result.Errors[0].PropertyName.Should().Be("BuyerId");
+			result.Errors[0].ErrorMessage.Should().Be("You can't delete your account");
 		}
 
 		[Fact]
@@ -139,10 +106,14 @@ namespace Auctionify.UnitTests.DeleteUserTests
 				null
 			);
 
-			var user = new User { Id = 1, Email = "test@test.COM", IsDeleted = false };
-			var mock = GetUsers()
-				.AsQueryable()
-				.BuildMockDbSet();
+			var user = new User
+			{
+				Id = 1,
+				Email = "test@test.COM",
+				IsDeleted = false
+			};
+
+			var mock = EntitiesSeeding.GetUsers().AsQueryable().BuildMockDbSet();
 			userManagerMock.Setup(m => m.Users).Returns(mock.Object);
 
 			var roles = new List<string> { UserRole.Seller.ToString() };
@@ -160,88 +131,33 @@ namespace Auctionify.UnitTests.DeleteUserTests
 			);
 
 			// Act
-			//var result = _await _validator.TestValidateAsync(command);
 			var result = await validator.TestValidateAsync(command);
 
 			// Assert
 			result.Should().NotBeNull();
 			result.IsValid.Should().BeFalse();
 			result.Errors.Should().HaveCount(1);
-			result
-				.Errors[0]
-				.ErrorMessage.Should()
-				.Be(
-					"You can't delete your account if you have at least one lot with either active, upcoming, pending approval or reopened status"
-				);
+			result.Errors[0].ErrorMessage.Should().Be("You can't delete your account");
 		}
 
 		#endregion
 
-
 		#region Helpers
-
-		public static List<User> GetUsers()
-		{
-			var users = new List<User>()
-			{
-				new()
-				{
-					Id = 1,
-					UserName = "TestUserName",
-					Email = "test@test.COM",
-					EmailConfirmed = true,
-					PhoneNumber = "123456789",
-					FirstName = "TestFirstName",
-					LastName = "TestLastName",
-					AboutMe = "TestAboutMe",
-					ProfilePicture = "TestProfilePicture.png",
-					IsDeleted = false,
-				},
-				new()
-				{
-					Id = 2,
-					UserName = "TestUserName",
-					Email = "test@test.COM",
-					EmailConfirmed = true,
-					PhoneNumber = "123456789",
-					FirstName = "TestFirstName",
-					LastName = "TestLastName",
-					AboutMe = "TestAboutMe",
-					ProfilePicture = "TestProfilePicture.png",
-					IsDeleted = true,
-				},
-				new()
-				{
-					Id = 3,
-					UserName = "TestUserName",
-					Email = "test@test.COM",
-					EmailConfirmed = true,
-					PhoneNumber = "123456789",
-					FirstName = "TestFirstName",
-					LastName = "TestLastName",
-					AboutMe = "TestAboutMe",
-					ProfilePicture = "TestProfilePicture.png",
-					IsDeleted = true,
-				}
-			};
-
-			return users;
-		}
 
 		public static List<LotStatus> GetLotStatuses()
 		{
 			return new List<LotStatus>
 			{
-				new LotStatus { Id = 1, Name = "Draft" },
-				new LotStatus { Id = 2, Name = "PendingApproval" },
-				new LotStatus { Id = 3, Name = "Rejected" },
-				new LotStatus { Id = 4, Name = "Upcoming" },
-				new LotStatus { Id = 5, Name = "Active" },
-				new LotStatus { Id = 6, Name = "Sold" },
-				new LotStatus { Id = 7, Name = "NotSold" },
-				new LotStatus { Id = 8, Name = "Cancelled" },
-				new LotStatus { Id = 9, Name = "Reopened" },
-				new LotStatus { Id = 10, Name = "Archive" }
+				new() { Id = 1, Name = "Draft" },
+				new() { Id = 2, Name = "PendingApproval" },
+				new() { Id = 3, Name = "Rejected" },
+				new() { Id = 4, Name = "Upcoming" },
+				new() { Id = 5, Name = "Active" },
+				new() { Id = 6, Name = "Sold" },
+				new() { Id = 7, Name = "NotSold" },
+				new() { Id = 8, Name = "Cancelled" },
+				new() { Id = 9, Name = "Reopened" },
+				new() { Id = 10, Name = "Archive" }
 			};
 		}
 
@@ -249,7 +165,7 @@ namespace Auctionify.UnitTests.DeleteUserTests
 		{
 			return new List<Bid>
 			{
-				new Bid
+				new()
 				{
 					Id = 1,
 					LotId = 1,
@@ -257,7 +173,7 @@ namespace Auctionify.UnitTests.DeleteUserTests
 					NewPrice = 120,
 					BidRemoved = false,
 				},
-				new Bid
+				new()
 				{
 					Id = 2,
 					LotId = 1,
@@ -265,7 +181,7 @@ namespace Auctionify.UnitTests.DeleteUserTests
 					NewPrice = 140,
 					BidRemoved = false,
 				},
-				new Bid
+				new()
 				{
 					Id = 3,
 					LotId = 2,
@@ -283,7 +199,7 @@ namespace Auctionify.UnitTests.DeleteUserTests
 
 			return new List<Lot>
 			{
-				new Lot
+				new()
 				{
 					Id = 1,
 					Title = "Test Lot Title",
@@ -305,7 +221,7 @@ namespace Auctionify.UnitTests.DeleteUserTests
 					CurrencyId = 1,
 					Bids = new List<Bid> { bids[0], bids[1], }
 				},
-				new Lot
+				new()
 				{
 					Id = 2,
 					Title = "Test Lot Title 2",

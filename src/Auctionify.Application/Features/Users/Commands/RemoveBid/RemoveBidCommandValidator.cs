@@ -89,12 +89,9 @@ namespace Auctionify.Application.Features.Users.Commands.RemoveBid
 				.MustAsync(
 					async (bidId, cancellationToken) =>
 					{
-						var users = await _userManager.Users.ToListAsync(
+						var user = await _userManager.Users.FirstOrDefaultAsync(
+							u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
 							cancellationToken: cancellationToken
-						);
-
-						var user = users.Find(
-							u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted
 						);
 
 						var bid = await _bidRepository.GetAsync(
@@ -128,12 +125,9 @@ namespace Auctionify.Application.Features.Users.Commands.RemoveBid
 				.MustAsync(
 					async (bidId, cancellationToken) =>
 					{
-						var users = await _userManager.Users.ToListAsync(
+						var user = await _userManager.Users.FirstOrDefaultAsync(
+							u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
 							cancellationToken: cancellationToken
-						);
-
-						var user = users.Find(
-							u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted
 						);
 
 						var bid = await _bidRepository.GetAsync(
