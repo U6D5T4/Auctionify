@@ -984,6 +984,16 @@ export class Client {
             })
         );
     }
+
+    deleteAccount(): Observable<any> {
+        let url_ = this.baseUrl + `/api/users`;
+
+        return this.http.request('delete', url_).pipe(
+            catchError((error) => {
+                return throwError(() => error.error);
+            })
+        );
+    }
 }
 
 export interface PageRequest {

@@ -3,7 +3,9 @@
         <h1>My profile</h1>
     </div>
     <div class="profile__top-bar">
-        <app-user-top-bar [userProfileData]="userProfileData"></app-user-top-bar>
+        <app-user-top-bar
+            [userProfileData]="userProfileData"
+        ></app-user-top-bar>
     </div>
     <div class="main-container">
         <div class="main">
@@ -56,6 +58,15 @@
                             <mat-icon>lock</mat-icon> Change Password
                         </button>
                     </div>
+                </div>
+                <div class="delete-account">
+                    <button
+                        mat-stroked-button
+                        class="delete-account-btn"
+                        (click)="confirmDeleteAccount()"
+                    >
+                        <mat-icon>delete</mat-icon> Delete Account
+                    </button>
                 </div>
             </div>
         </div>
