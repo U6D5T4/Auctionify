@@ -29,21 +29,8 @@
                     <div class="dashboard__container-rate">
                         <app-average-rating-item
                             [userProfileData]="userProfileData"
-                            [senderRates]="senderRates"
+                            [IsBtnVisible]="IsBtnVisible"
                         ></app-average-rating-item>
-
-                        <div class="dashboard__see-more-comments-btn">
-                            <button
-                                routerLink="/rating"
-                                class="main__rating-btn"
-                                mat-flat-button
-                            >
-                                <div class="dashboard__btn-content">
-                                    <p>Show all comments</p>
-                                    <mat-icon>arrow_forward</mat-icon>
-                                </div>
-                            </button>
-                        </div>
                     </div>
                     <div class="review">
                         <div
