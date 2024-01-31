@@ -106,17 +106,17 @@ namespace Auctionify.Application.Scheduler.Jobs
 
             if (lot.LotStatus.Name == AuctionStatus.Draft.ToString())
             {
-                var jobKey = new JobKey(JobSchedulerService.FormDeleteDraftLotJobKey(lot.Id), JobSchedulerService.draftLotDeleteGroup);
+                var jobKey = new JobKey(JobSchedulerService.FormJobKey(JobSchedulerService.draftLotDeleteGroup, lot.Id), JobSchedulerService.draftLotDeleteGroup);
                 result = await scheduler.CheckExists(jobKey);
             }
             else if (lot.LotStatus.Name == AuctionStatus.Upcoming.ToString())
             {
-                var jobKey = new JobKey(JobSchedulerService.FormUpcomingActiveJobKey(lot.Id), JobSchedulerService.upcomingActiveGroup);
+                var jobKey = new JobKey(JobSchedulerService.FormJobKey(JobSchedulerService.upcomingActiveGroup, lot.Id), JobSchedulerService.upcomingActiveGroup);
                 result = await scheduler.CheckExists(jobKey);
             }
             else if (lot.LotStatus.Name == AuctionStatus.Active.ToString())
             {
-                var jobKey = new JobKey(JobSchedulerService.FormFinishLotJobKey(lot.Id), JobSchedulerService.finishGroup);
+                var jobKey = new JobKey(JobSchedulerService.FormJobKey(JobSchedulerService.finishGroup, lot.Id), JobSchedulerService.finishGroup);
                 result = await scheduler.CheckExists(jobKey);
             }
 

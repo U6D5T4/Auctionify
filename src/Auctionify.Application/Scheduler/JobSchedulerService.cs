@@ -26,7 +26,7 @@ namespace Auctionify.Application.Scheduler
         {
             var scheduler = await _schedulerFactory.GetScheduler();
             scheduler.JobFactory = _customJobFactory;
-            var jobKey = new JobKey(FormFinishLotJobKey(lotId), finishGroup);
+            var jobKey = new JobKey(FormJobKey(finishGroup, lotId), finishGroup);
             await scheduler.DeleteJob(jobKey);
         }
 
@@ -34,7 +34,7 @@ namespace Auctionify.Application.Scheduler
         {
             var scheduler = await _schedulerFactory.GetScheduler();
             scheduler.JobFactory = _customJobFactory;
-            var jobKey = new JobKey(FormUpcomingActiveJobKey(lotId), upcomingActiveGroup);
+            var jobKey = new JobKey(FormJobKey(upcomingActiveGroup, lotId), upcomingActiveGroup);
             await scheduler.DeleteJob(jobKey);
         }
 
@@ -44,12 +44,12 @@ namespace Auctionify.Application.Scheduler
             scheduler.JobFactory = _customJobFactory;
 
             var job = JobBuilder.Create<FinishLotJob>()
-                .WithIdentity(FormFinishLotJobKey(lotId), finishGroup)
+                .WithIdentity(FormJobKey(finishGroup, lotId), finishGroup)
                 .UsingJobData(lotIdJobDataParam, lotId)
                 .Build();
 
             var trigger = TriggerBuilder.Create()
-                .WithIdentity(FormFinishLotJobKey(lotId), finishGroup)
+                .WithIdentity(FormJobKey(finishGroup, lotId), finishGroup)
                 .StartAt(endDate)
                 .Build();
 
@@ -62,12 +62,12 @@ namespace Auctionify.Application.Scheduler
             scheduler.JobFactory = _customJobFactory;
 
             var job = JobBuilder.Create<UpcomingToActiveJob>()
-                .WithIdentity(FormUpcomingActiveJobKey(lotId), upcomingActiveGroup)
+                .WithIdentity(FormJobKey(upcomingActiveGroup, lotId), upcomingActiveGroup)
                 .UsingJobData(lotIdJobDataParam, lotId)
                 .Build();
 
             var trigger = TriggerBuilder.Create()
-                .WithIdentity(FormUpcomingActiveJobKey(lotId), upcomingActiveGroup)
+                .WithIdentity(FormJobKey(upcomingActiveGroup, lotId), upcomingActiveGroup)
                 .StartAt(startDate)
                 .Build();
 
@@ -80,12 +80,12 @@ namespace Auctionify.Application.Scheduler
             scheduler.JobFactory = _customJobFactory;
 
             var job = JobBuilder.Create<DraftLotDeleteJob>()
-                .WithIdentity(FormDeleteDraftLotJobKey(lotId), draftLotDeleteGroup)
+                .WithIdentity(FormJobKey(draftLotDeleteGroup, lotId), draftLotDeleteGroup)
                 .UsingJobData(lotIdJobDataParam, lotId)
                 .Build();
 
             var trigger = TriggerBuilder.Create()
-                .WithIdentity(FormDeleteDraftLotJobKey(lotId), draftLotDeleteGroup)
+                .WithIdentity(FormJobKey(draftLotDeleteGroup, lotId), draftLotDeleteGroup)
                 .StartAt(deleteDateTime)
                 .Build();
 
@@ -110,19 +110,9 @@ namespace Auctionify.Application.Scheduler
             await scheduler.ScheduleJob(job, trigger);
         }
 
-        public static string FormUpcomingActiveJobKey(int lotId)
+        public static string FormJobKey(string groupName, int lotId)
         {
-            return $"upcoming-active-{lotId}";
-        }
-
-        public static string FormFinishLotJobKey(int lotId)
-        {
-            return $"finish-{lotId}";
-        }
-
-        public static string FormDeleteDraftLotJobKey(int lotId)
-        {
-            return $"draft-delete-{lotId}";
+            return $"{groupName}-{lotId}";
         }
     }
 }
