@@ -18,6 +18,7 @@
             <app-conversation-window
                 class="chat__window-conversation"
                 [conversation]="chosenConversation"
+                [updateChatEvent]="updateChatSubject.asObservable()"
                 (messageSent)="getAllUserConversations()"
             >
             </app-conversation-window>

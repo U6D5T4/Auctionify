@@ -9,6 +9,8 @@ import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 import { Conversation } from 'src/app/models/chats/chat-models';
 import { Client } from 'src/app/web-api-client';
 import { ChatsComponent } from '../chats/chats.component';
+import { SignalRService } from 'src/app/services/signalr-service/signalr.service';
+import { Subject } from 'rxjs';
 
 @Component({
     selector: 'app-chat-page',
@@ -17,15 +19,23 @@ import { ChatsComponent } from '../chats/chats.component';
 })
 export class ChatPageComponent implements OnInit {
     isUserBuyer: boolean = false;
+    private isSignalrConnected = false;
+    updateChatSubject: Subject<void> = new Subject<void>();
 
-    constructor(private client: Client, private authService: AuthorizeService) {
+    constructor(
+        private client: Client,
+        private authService: AuthorizeService,
+        private signalRService: SignalRService
+    ) {
         effect(() => {
             this.isUserBuyer = this.authService.isUserBuyer();
         });
     }
+
     ngOnInit(): void {
         this.getAllUserConversations();
     }
+
     chosenConversation: Conversation | null = null;
     chatConversations: Conversation[] = [];
 
@@ -33,6 +43,30 @@ export class ChatPageComponent implements OnInit {
         this.client.getAllUserConversations().subscribe({
             next: (result) => {
                 this.chatConversations = result.conversations;
+
+                if (!this.isSignalrConnected) {
+                    this.chatConversations.forEach(async (element) => {
+                        await this.signalRService.joinConversationGroup(
+                            element.id
+                        );
+
+                        this.signalRService.onReceiveChatMessage(() => {
+                            this.getAllUserConversations();
+                            this.chatConversations = this.chatConversations.map(
+                                (v) => {
+                                    v.isActive = false;
+                                    if (v.id == this.chosenConversation?.id) {
+                                        v.isActive = true;
+                                    }
+                                    return v;
+                                }
+                            );
+                            this.updateChatSubject.next();
+                        }, element.id);
+
+                        this.isSignalrConnected = true;
+                    });
+                }
             },
         });
     }
@@ -42,6 +76,7 @@ export class ChatPageComponent implements OnInit {
         this.chosenConversation = this.chatConversations.find(
             (x) => x.id == id
         )!;
+        console.log(this.chosenConversation);
     }
 
     getMainChatContainerWidthClass() {

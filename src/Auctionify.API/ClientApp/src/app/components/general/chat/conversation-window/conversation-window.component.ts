@@ -18,6 +18,7 @@ import { ChatMessage, Conversation } from 'src/app/models/chats/chat-models';
 import { SignalRService } from 'src/app/services/signalr-service/signalr.service';
 import { Client } from 'src/app/web-api-client';
 import { ChatsComponent } from '../chats/chats.component';
+import { Observable } from 'rxjs';
 
 interface GroupedMessages {
     date: string;
@@ -29,11 +30,11 @@ interface GroupedMessages {
     templateUrl: './conversation-window.component.html',
     styleUrls: ['./conversation-window.component.scss'],
 })
-export class ConversationWindowComponent implements OnInit, OnChanges {
+export class ConversationWindowComponent implements OnInit {
     @Input() conversation!: Conversation;
+    @Input() updateChatEvent!: Observable<void>;
     currentUserId: number = 0;
     messages: ChatMessage[] = [];
-    private isSignalrConnected = false;
     @ViewChild('msg_input') input!: ElementRef<HTMLInputElement>;
 
     @Output() messageSent = new EventEmitter<boolean>();
@@ -41,30 +42,19 @@ export class ConversationWindowComponent implements OnInit, OnChanges {
     constructor(
         private authService: AuthorizeService,
         private client: Client,
-        private signalRService: SignalRService,
         @Inject(LOCALE_ID) public locale: string
     ) {
         effect(() => {
             this.currentUserId = this.authService.getUserId()!;
         });
     }
-    ngOnChanges(changes: SimpleChanges): void {
-        this.ngOnInit();
-    }
-
     async ngOnInit(): Promise<void> {
         this.getAllConversationMessages();
-
-        if (!this.isSignalrConnected) {
-            await this.signalRService.joinConversationGroup(
-                this.conversation.id
-            );
-
-            this.signalRService.onReceiveChatMessage(() => {
+        this.updateChatEvent.subscribe({
+            next: () => {
                 this.getAllConversationMessages();
-                this.messageSent.emit(true);
-            }, this.conversation.id);
-        }
+            },
+        });
     }
 
     getAllConversationMessages() {
@@ -117,7 +107,7 @@ export class ConversationWindowComponent implements OnInit, OnChanges {
         this.client.sendChatMessage(this.conversation.id, input).subscribe({
             next: () => {
                 this.input.nativeElement.value = '';
-                console.log(this.input.nativeElement);
+                this.messageSent.emit(true);
             },
         });
     }
