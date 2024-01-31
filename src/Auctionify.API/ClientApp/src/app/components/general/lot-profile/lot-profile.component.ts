@@ -22,6 +22,7 @@ import { ImagePopupComponent } from '../image-popup/image-popup.component';
 import { AddBidComponent } from '../add-bid/add-bid.component';
 import { WithdrawBidComponent } from '../withdraw-bid/withdraw-bid.component';
 import { RemoveFromWatchlistComponent } from '../remove-from-watchlist/remove-from-watchlist.component';
+import { UserDataValidatorService } from 'src/app/services/user-data-validator/user-data-validator.service';
 
 @Component({
     selector: 'app-lot-profile',
@@ -51,6 +52,7 @@ export class LotProfileComponent implements OnInit {
         private dialog: Dialog,
         private snackBar: MatSnackBar,
         private sanitizer: DomSanitizer,
+        public userValidatorService: UserDataValidatorService,
         @Inject(LOCALE_ID) public locale: string
     ) {
         effect(() => {
@@ -340,6 +342,14 @@ export class LotProfileComponent implements OnInit {
         if (fileName === null) return '';
 
         return decodeURI(fileName[0].split('/')[1]);
+    }
+
+    isUserSeller(): boolean {
+        return this.authService.isUserSeller();
+    }
+
+    isUserBuyer(): boolean {
+        return this.authService.isUserBuyer();
     }
 
     ngOnDestroy() {

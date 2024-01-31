@@ -5,6 +5,8 @@ import { BuyerModel, SellerModel } from 'src/app/models/users/user-models';
     providedIn: 'root',
 })
 export class UserDataValidatorService {
+    private userIdString: string = 'userId';
+
     constructor() {}
 
     validateUserProfileData(
@@ -15,5 +17,13 @@ export class UserDataValidatorService {
         } else if (!userProfileData?.ratesCount) {
             userProfileData!.ratesCount = 0;
         }
+    }
+
+    isUserIdCurrentUser(id: number | null): boolean {
+        if (id == null) {
+            return false;
+        }
+
+        return localStorage.getItem(this.userIdString) == id.toString();
     }
 }

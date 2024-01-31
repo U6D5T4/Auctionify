@@ -1145,7 +1145,7 @@ export interface BidDto {
 }
 
 export interface UserDto {
-    id: number;
+    id: number | null;
     firstName: string;
     lastName: string;
     phoneNumber: string;
