@@ -14,6 +14,7 @@ import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 })
 export class PublicUserProfileComponent implements OnInit {
     userProfileData: GetUserById | null = null;
+    IsBtnVisible: boolean = false;
 
     constructor(
         private client: Client,

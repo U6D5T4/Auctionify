@@ -13,7 +13,7 @@ export class AverageRatingItemComponent {
     @Input()
     userProfileData: BuyerModel | SellerModel | null = null;
     @Input()
-    senderRates: Rate[] = [];
+    IsBtnVisible!: boolean;
 
     constructor(public ratesCalculator: RateCalculatorService) {}
 
@@ -29,7 +29,7 @@ export class AverageRatingItemComponent {
                 totalCount += this.userProfileData?.starCounts![key];
             }
         }
-    
+
         return totalCount;
     }
 
@@ -42,6 +42,6 @@ export class AverageRatingItemComponent {
     };
 
     isUserHaveRates(): boolean {
-        return this.senderRates.length == 0;
+        return this.getTotalCount() == 0;
     }
 }

@@ -63,7 +63,7 @@
             </div>
         </div>
     </div>
-    <div class="main__see-more-comments-btn">
+    <div class="main__see-more-comments-btn" *ngIf="IsBtnVisible">
         <button routerLink="/rating" class="main__rating-btn" mat-flat-button>
             <div class="main__btn-content">
                 <p>Show all comments</p>
