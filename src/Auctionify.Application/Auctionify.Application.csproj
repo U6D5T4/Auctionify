@@ -27,7 +27,6 @@
 
   <ItemGroup>
     <Folder Include="Common\Extensions\" />
-    <Folder Include="Features\Chats\Commands\" />
     <Folder Include="Features\Locations\Profiles\" />
     <Folder Include="Features\Lots\Constants\" />
     <Folder Include="Features\Lots\Rules\" />

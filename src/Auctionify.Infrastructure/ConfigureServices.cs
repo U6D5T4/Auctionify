@@ -137,7 +137,7 @@ namespace Auctionify.Infrastructure
 			services.AddScoped<IChatMessageRepository, ChatMessageRepository>();
 			services.AddScoped<IRateRepository, RateRepository>();
 
-			services.AddTransient<IEmailService, SendGridEmailService>();
+			services.AddTransient<IEmailService, EmailService>();
 			services.AddSingleton<IBlobService, BlobService>();
 			services.AddScoped<IPhotoService, PhotoService>();
 			services.AddScoped<IWatchlistService, WatchlistService>();
