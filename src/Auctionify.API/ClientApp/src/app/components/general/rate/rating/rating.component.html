@@ -3,7 +3,9 @@
         <h1>My profile</h1>
     </div>
     <div class="profile__top-bar">
-        <app-user-top-bar [userProfileData]="userProfileData"></app-user-top-bar>
+        <app-user-top-bar
+            [userProfileData]="userProfileData"
+        ></app-user-top-bar>
     </div>
     <div class="main-container">
         <div class="main">
@@ -11,22 +13,22 @@
                 <h1>Rating & Review</h1>
             </div>
             <div class="main__options">
-                <button 
+                <button
                     routerLink="/rating"
                     class="main__rating-btn"
                     mat-flat-button
-                    >
+                >
                     My rating
                 </button>
-                <button 
+                <button
                     routerLink="/rating/feedback"
                     class="main__feedback-btn"
                     mat-flat-button
-                    >
+                >
                     My feedback
                 </button>
             </div>
-        
+
             <div class="main__container">
                 <div class="main__container-title">
                     <h2>Average rating</h2>
@@ -35,41 +37,73 @@
                     <div class="main__progress-bar-container">
                         <div class="main__average-rating">
                             <div class="main__average-rating">
-                                <div *ngIf="isUserHaveRates(); then noRates; else ratingLevels;">
-                                    
-                                </div>
+                                <div
+                                    *ngIf="
+                                        isUserHaveRates();
+                                        then noRates;
+                                        else ratingLevels
+                                    "
+                                ></div>
                                 <ng-template #ratingLevels>
-                                    <div *ngFor="let rating of userProfileData?.starCounts | keyvalue" class="main__rating-level">
-                                        <span class="main__review-number">{{ rating.key }}</span>
+                                    <div
+                                        *ngFor="
+                                            let rating of userProfileData?.starCounts
+                                                | keyvalue
+                                        "
+                                        class="main__rating-level"
+                                    >
+                                        <span class="main__review-number">{{
+                                            rating.key
+                                        }}</span>
                                         <div class="main__progress-bar">
-                                            <div class="main__progress" [style.width]="getPercentage(rating.value)"></div>
+                                            <div
+                                                class="main__progress"
+                                                [style.width]="
+                                                    getPercentage(rating.value)
+                                                "
+                                            ></div>
                                         </div>
-                                        <span class="main__count">{{ rating.value }}</span>
+                                        <span class="main__count">{{
+                                            rating.value
+                                        }}</span>
                                     </div>
                                 </ng-template>
                                 <ng-template #noRates>
-                                    <div *ngFor="let rating of ratesEmpty | keyvalue" class="main__rating-level">
-                                        <span class="main__review-number">{{ rating.key }}</span>
-                                        <div class="main__progress-bar">
-                                        </div>
+                                    <div
+                                        *ngFor="
+                                            let rating of ratesEmpty | keyvalue
+                                        "
+                                        class="main__rating-level"
+                                    >
+                                        <span class="main__review-number">{{
+                                            rating.key
+                                        }}</span>
+                                        <div class="main__progress-bar"></div>
                                         <span class="main__count">0</span>
                                     </div>
                                 </ng-template>
                             </div>
                         </div>
                     </div>
-        
+
                     <div class="main__average">
                         <div class="main__number-stars">
                             <h1 class="main__avarage-score">
-                                {{userProfileData?.averageRate?.toFixed(1)}}
+                                {{ userProfileData?.averageRate?.toFixed(1) }}
                             </h1>
                             <div class="main__stars">
-                                <mat-icon *ngFor="let star of this.ratesCalculator.getAverageStars(userProfileData?.averageRate!)">{{ star }}</mat-icon>
+                                <mat-icon
+                                    *ngFor="
+                                        let star of this.ratesCalculator.getAverageStars(
+                                            userProfileData?.averageRate!
+                                        )
+                                    "
+                                    >{{ star }}</mat-icon
+                                >
                             </div>
                         </div>
                         <div class="main__rating-count">
-                            <p>Comments: {{userProfileData?.ratesCount}}</p>
+                            <p>Comments: {{ userProfileData?.ratesCount }}</p>
                         </div>
                     </div>
                 </div>
@@ -79,17 +113,25 @@
                 <app-rate-item [rate]="rate"></app-rate-item>
             </div>
 
-            <div class="main__btn" *ngIf="senderRates && senderRates.length === 0">
+            <div
+                class="main__btn"
+                *ngIf="senderRates && senderRates.length === 0"
+            >
                 <h2>No comments yet.</h2>
             </div>
-            
+
             <div class="main__btn" *ngIf="noMoreRates">
                 <p>Want to see more rates?</p>
-                <button mat-flat-button type="button" class="main__show-more-btn" color="primary"
-                (click)="loadMoreRates()">
-                  <p>Show more</p>
+                <button
+                    mat-flat-button
+                    type="button"
+                    class="main__show-more-btn"
+                    color="primary"
+                    (click)="loadMoreRates()"
+                >
+                    <p>Show more</p>
                 </button>
-              </div>
+            </div>
         </div>
         <div class="nav">
             <app-profile-navbar></app-profile-navbar>

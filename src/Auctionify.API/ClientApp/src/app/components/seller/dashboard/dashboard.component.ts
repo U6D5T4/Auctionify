@@ -15,6 +15,7 @@ import { UserDataValidatorService } from 'src/app/services/user-data-validator/u
 export class DashboardComponent implements OnInit {
     userProfileData: SellerModel | null = null;
     senderRates: Rate[] = [];
+    IsBtnVisible: boolean = true;
 
     constructor(
         private client: Client,

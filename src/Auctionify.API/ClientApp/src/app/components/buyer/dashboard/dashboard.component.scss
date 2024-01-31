@@ -3,8 +3,6 @@
         display: flex;
         padding-top: 16px;
         padding-bottom: 32px;
-        max-width: 1400px;
-        margin: 0 auto;
         color: var(--color-text-primary);
         font-size: 32px;
         font-style: normal;
@@ -21,9 +19,7 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 20px;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 40px 100px;
+        padding: 40px;
         border-radius: 16px;
         border: 1px solid var(--color-grey-5);
     }
@@ -72,7 +68,6 @@
 
     &__auction-no-more {
         font-size: 18px;
-        margin: 0 auto;
     }
 
     &__auction-empty {
@@ -84,9 +79,7 @@
     &__transactions-section {
         display: flex;
         justify-content: space-between;
-        max-width: 1400px;
         width: 100%;
-        margin: 0 auto;
         padding-top: 40px;
     }
 
@@ -116,8 +109,6 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 40px;
-        max-width: 1400px;
-        margin: 0 auto;
         padding: 40px 5px;
     }
 
@@ -150,7 +141,6 @@
         gap: 10px;
         list-style: none;
         padding: 0;
-        margin: 0;
     }
 
     &__wishlist-list-lot {
@@ -186,15 +176,14 @@
         display: flex;
         flex-direction: column;
         gap: 40px;
-        margin-left: 60px;
     }
 
     &__container-main {
+        padding-top: 40px;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
         gap: 40px;
-        margin: 0 auto;
     }
 
     &__options {
@@ -217,35 +206,12 @@
         align-items: center;
     }
 
-    &__container-rate {
-        border-radius: 16px;
-        border: 1px solid #e0e0e0;
-        padding: 40px;
-        display: flex;
-        flex-direction: column;
-        gap: 40px;
-    }
-
     &__rating-btn {
         width: 130px;
     }
 
     &__feedback-btn {
         width: 160px;
-    }
-
-    &__see-more-comments-btn button {
-        width: 392px;
-        min-width: 250px;
-        border: 2px solid #2b5293;
-        color: #2b5293;
-    }
-
-    &__btn-content {
-        display: flex;
-        flex-direction: row;
-        gap: 8px;
-        align-items: center;
     }
 }
 
@@ -369,10 +335,6 @@
         border-radius: 8px;
         size: 16px;
     }
-}
-
-.show-more {
-    margin: 0 auto;
 }
 
 .show-more-button {

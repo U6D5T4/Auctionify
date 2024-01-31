@@ -1,0 +1,53 @@
+<div class="main-container">
+    <h1>User profile</h1>
+    <div class="main-profile-div">
+        <div class="main">
+            <div class="main__top-section">
+                <div class="main__profile">
+                    <div class="main__photo">
+                        <img
+                            [src]="
+                                userProfileData &&
+                                userProfileData.profilePictureUrl
+                                    ? userProfileData.profilePictureUrl
+                                    : '../../../../../assets/images/User.png'
+                            "
+                            alt="User-profile-image"
+                            width="200"
+                            height="200"
+                        />
+                    </div>
+                    <div class="main__name-date">
+                        <h1>
+                            {{ userProfileData?.firstName }}
+                            {{ userProfileData?.lastName }}
+                        </h1>
+                    </div>
+                </div>
+                <p
+                    class="main__is-deleted"
+                    *ngIf="userProfileData?.isDeleted == true"
+                >
+                    Deleted user
+                </p>
+            </div>
+            <div class="main__about-me">
+                <h2>About me</h2>
+                <p>{{ userProfileData?.aboutMe }}</p>
+            </div>
+            <div class="main__personal-info">
+                <h2>Personal info</h2>
+                <div class="main__number-email">
+                    <p>{{ userProfileData?.phoneNumber }}</p>
+                    <p>{{ userProfileData?.email }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="main__container-rate">
+            <app-average-rating-item
+                [userProfileData]="userProfileData"
+                [IsBtnVisible]="IsBtnVisible"
+            ></app-average-rating-item>
+        </div>
+    </div>
+</div>
