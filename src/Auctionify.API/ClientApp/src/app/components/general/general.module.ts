@@ -19,6 +19,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { WithdrawBidComponent } from './withdraw-bid/withdraw-bid.component';
 import { RemoveFromWatchlistComponent } from './remove-from-watchlist/remove-from-watchlist.component';
 import { TransactionsComponent } from './transactions/transactions.component';
+import { UiElementsModule } from "../../ui-elements/ui-elements.module";
 
 @NgModule({
     declarations: [
@@ -31,6 +32,7 @@ import { TransactionsComponent } from './transactions/transactions.component';
         RemoveFromWatchlistComponent,
         TransactionsComponent,
     ],
+    exports: [LotProfileComponent, TransactionsComponent],
     imports: [
         CommonModule,
         RouterModule,
@@ -44,8 +46,7 @@ import { TransactionsComponent } from './transactions/transactions.component';
         MatInputModule,
         MatCheckboxModule,
         MatSnackBarModule,
-    ],
-
-    exports: [LotProfileComponent, TransactionsComponent],
+        UiElementsModule
+    ]
 })
 export class GeneralModule {}

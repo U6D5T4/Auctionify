@@ -30,9 +30,11 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/leaflet/dist/leaflet.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": ["google-one-tap", "leaflet"]
           },
           "configurations": {
             "production": {

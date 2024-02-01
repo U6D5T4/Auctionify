@@ -25,6 +25,8 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 		public string? State { get; set; }
 		public string Country { get; set; }
 		public string Address { get; set; }
+		public string Latitude { get; set; }
+		public string Longitude { get; set; }
 		public int? CurrencyId { get; set; }
 		public IList<IFormFile>? Photos { get; set; }
 		public IList<IFormFile>? AdditionalDocuments { get; set; }
@@ -86,6 +88,8 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 				City = request.City,
 				State = request.State!,
 				Country = request.Country,
+				Latitude = request.Latitude,
+				Longitude = request.Longitude,
 			};
 
 			var lot = new Lot
