@@ -40,6 +40,9 @@ export class LotProfileComponent implements OnInit {
     isDeleteLoading = false;
     recentBidOfCurrentBuyer: number = 0;
     currentUserId: number = 0;
+    soldLotStatus: string = 'Sold';
+    canBuyerRateSeller: boolean = false;
+    canSellerRateBuyer: boolean = false;
 
     private isSignalrConnected = false;
 
@@ -52,7 +55,6 @@ export class LotProfileComponent implements OnInit {
         private dialog: Dialog,
         private snackBar: MatSnackBar,
         private sanitizer: DomSanitizer,
-        public userValidatorService: UserDataValidatorService,
         @Inject(LOCALE_ID) public locale: string
     ) {
         effect(() => {
@@ -137,6 +139,9 @@ export class LotProfileComponent implements OnInit {
                 this.bidsToShow = this.lotData.bids.slice(0, 3);
             }
         }
+
+        this.canBuyerRate();
+        this.canSellerRate();
     }
 
     handleLotError() {
@@ -326,6 +331,25 @@ export class LotProfileComponent implements OnInit {
         return this.dialog.open<string>(ChoicePopupComponent, {
             data,
         });
+    }
+
+    canBuyerRate(): void {
+        if (
+            this.currentUserId == this.lotData?.buyerId &&
+            this.lotData?.lotStatus.name == this.soldLotStatus
+        ) {
+            this.canBuyerRateSeller = true;
+        }
+    }
+
+    canSellerRate(): void {
+        console.log(this.lotData);
+        if (
+            this.currentUserId == this.lotData?.sellerId &&
+            this.lotData?.lotStatus.name == this.soldLotStatus
+        ) {
+            this.canSellerRateBuyer = true;
+        }
     }
 
     isSellerOwnsLot(response: any): response is SellerGetLotResponse {

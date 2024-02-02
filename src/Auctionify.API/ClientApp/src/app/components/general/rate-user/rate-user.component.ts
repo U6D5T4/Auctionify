@@ -65,14 +65,14 @@ export class RateUserComponent implements OnInit {
         this.isLoading = true;
 
         if (this.authorizeService.isUserSeller()) {
-            this.client.addRateToBuyer(rateData).subscribe(
-                (response) => {
+            this.client.addRateToBuyer(rateData).subscribe({
+                next: () => {
                     this.errorMessage = '';
                     this.showSnackBar('Rate submitted successfully', 'success');
                     this.isLoading = false;
-                    this.router.navigate(["/home"])
+                    this.router.navigate(['/home']);
                 },
-                (error) => {
+                error: (error) => {
                     if (
                         JSON.parse(error) &&
                         JSON.parse(error)?.errors?.length
@@ -81,17 +81,17 @@ export class RateUserComponent implements OnInit {
                             JSON.parse(error)?.errors[0]?.ErrorMessage;
                         this.showSnackBar(this.errorMessage, 'error');
                     }
-                }
-            );
+                },
+            });
         } else if (this.authorizeService.isUserBuyer()) {
-            this.client.addRateToSeller(rateData).subscribe(
-                (response) => {
+            this.client.addRateToSeller(rateData).subscribe({
+                next: () => {
                     this.errorMessage = '';
                     this.showSnackBar('Rate submitted successfully', 'success');
                     this.isLoading = false;
-                    this.router.navigate(["/home"])
+                    this.router.navigate(['/home']);
                 },
-                (error) => {
+                error: (error) => {
                     if (
                         JSON.parse(error) &&
                         JSON.parse(error)?.errors?.length
@@ -100,8 +100,8 @@ export class RateUserComponent implements OnInit {
                             JSON.parse(error)?.errors[0]?.ErrorMessage;
                         this.showSnackBar(this.errorMessage, 'error');
                     }
-                }
-            );
+                },
+            });
         }
     }
 
@@ -125,8 +125,24 @@ export class RateUserComponent implements OnInit {
         this.selectedRating = rating;
     }
 
-    getUserProfileImage(src: string | undefined): string {
-        return src ? src : '../../../../../assets/images/User.png';
+    getUserProfileImg(): string | undefined {
+        if (this.isUserSeller()) {
+            return (
+                this.lotData?.seller?.profilePicture ||
+                '../../../../../assets/images/User.png'
+            );
+        } else {
+            return (
+                this.lotData?.buyer?.profilePicture ||
+                '../../../../../assets/images/User.png'
+            );
+        }
+    }
+
+    getLotPicture(): string {
+        return this.lotData && this.lotData.photosUrl?.[0]
+            ? this.lotData.photosUrl?.[0]
+            : '../../../../assets/images/Image_not_available.png';
     }
 
     isUserSeller(): boolean {

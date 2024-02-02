@@ -1189,6 +1189,8 @@ export interface BuyerGetLotResponse {
     isInWatchlist: boolean;
     bidCount: number | null;
     sellerEmail: string;
+    sellerId: number;
+    buyerId: number;
     buyer: UserDto | null;
     seller: UserDto | null;
 }
@@ -1209,6 +1211,7 @@ export interface SellerGetLotResponse {
     bids: BidDto[];
     bidCount: number;
     sellerId: number;
+    buyerId: number;
     buyer: UserDto | null;
     seller: UserDto | null;
 }

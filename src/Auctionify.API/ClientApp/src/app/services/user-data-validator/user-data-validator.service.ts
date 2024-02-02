@@ -18,12 +18,4 @@ export class UserDataValidatorService {
             userProfileData!.ratesCount = 0;
         }
     }
-
-    isUserIdCurrentUser(id: number | null): boolean {
-        if (id == null) {
-            return false;
-        }
-
-        return localStorage.getItem(this.userIdString) == id.toString();
-    }
 }

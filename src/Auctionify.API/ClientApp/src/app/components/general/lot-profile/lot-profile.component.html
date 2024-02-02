@@ -328,12 +328,7 @@
                 </ul>
             </div>
         </div>
-        <div
-            class="right__rate-btn"
-            *ngIf="
-                currentUserId == lotData.seller?.id && lotData.lotStatus.id == 6
-            "
-        >
+        <div class="right__rate-btn" *ngIf="canSellerRateBuyer">
             <button
                 [routerLink]="['/rate-user', lotData.id]"
                 class="mat-mdc-outlined-button-custom price-button"
@@ -345,11 +340,11 @@
                 rate
             </button>
         </div>
-        <div class="right__rate-btn" *ngIf="isUserBuyer()">
+        <div
+            class="right__rate-btn"
+            *ngIf="isUserBuyer() && canBuyerRateSeller"
+        >
             <button
-                *ngIf="
-                    userValidatorService.isUserIdCurrentUser(lotData.buyer!.id)
-                "
                 [routerLink]="['/rate-user', lotData.id]"
                 class="mat-mdc-outlined-button-custom price-button"
                 mat-flat-button
