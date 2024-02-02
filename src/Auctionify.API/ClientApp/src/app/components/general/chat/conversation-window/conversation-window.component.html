@@ -20,7 +20,7 @@
         </div>
     </div>
     <div class="conversation__separator"></div>
-    <div class="conversation__main">
+    <div class="conversation__main" #main_conversation>
         <div class="conversation__main-inner">
             <ng-container
                 *ngIf="messages.length == 0; else conversation_loaded"
@@ -32,7 +32,8 @@
             <ng-template #conversation_loaded>
                 <div
                     class="conversation__main-group"
-                    *ngFor="let group of groupMessagesByDate(messages)"
+                    *ngFor="let group of messages"
+                    #messagePool
                 >
                     <div class="conversation__date">
                         <span>{{ group.date }}</span>
@@ -40,8 +41,18 @@
                     <div class="conversation__messages-container">
                         <div
                             class="conversation__message"
+                            [id]="message.id"
                             [ngClass]="generateMessageClass(message)"
                             *ngFor="let message of group.messages"
+                            appMessageObserver
+                            (isIntersecting)="intersect($event)"
+                            #messages="intersection"
+                            [isContinuous]="true"
+                            [threshold]="1"
+                            [attr.messageId]="message.id"
+                            [parentWindow]="messagePool"
+                            [isOwner]="currentUserId == message.senderId"
+                            [isRead]="message.isRead"
                         >
                             <!-- Display your individual messages here -->
                             <div class="conversation__message-inner">
@@ -54,25 +65,29 @@
         </div>
     </div>
     <div class="conversation__separator"></div>
-    <div class="conversation__controls">
-        <button class="control__button" mat-stroked-button>
-            <mat-icon class="control__icon"> attach_file </mat-icon>
-        </button>
-        <mat-form-field
-            class="send-message-input"
-            color="primary"
-            appearance="outline"
+    <div class="">
+        <form
+            class="conversation__controls"
+            (submit)="sendMessage($event, msg_input.value)"
         >
-            <input #msg_input matInput placeholder="Type a message" />
-        </mat-form-field>
-        <button
-            type="button"
-            (click)="sendMessage(msg_input.value)"
-            class="control__button"
-            mat-flat-button
-            color="primary"
-        >
-            <mat-icon class="control__icon"> send </mat-icon>
-        </button>
+            <button class="control__button" mat-stroked-button>
+                <mat-icon class="control__icon"> attach_file </mat-icon>
+            </button>
+            <mat-form-field
+                class="send-message-input"
+                color="primary"
+                appearance="outline"
+            >
+                <input #msg_input matInput placeholder="Type a message" />
+            </mat-form-field>
+            <button
+                type="submit"
+                class="control__button"
+                mat-flat-button
+                color="primary"
+            >
+                <mat-icon class="control__icon"> send </mat-icon>
+            </button>
+        </form>
     </div>
 </div>

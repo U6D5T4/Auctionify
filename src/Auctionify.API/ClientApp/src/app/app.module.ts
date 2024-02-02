@@ -10,6 +10,7 @@ import { ApiAuthorizationModule } from './api-authorization/api-authorization.mo
 import { AuthorizeInterceptor } from './api-authorization/authorize.interceptor';
 import { LayoutModule } from './layout/layout.module';
 import { GeneralModule } from './components/general/general.module';
+import { MessageObserverDirective } from './directives/message-observer.directive';
 
 register();
 

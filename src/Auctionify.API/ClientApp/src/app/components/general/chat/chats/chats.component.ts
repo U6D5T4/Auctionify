@@ -21,7 +21,6 @@ export class ChatsComponent implements OnChanges {
 
     ngOnChanges(changes: SimpleChanges): void {
         if (this.chosenId > 0) {
-            console.log(this.chosenId);
             this.handleConversationChange(this.chosenId);
         }
     }

@@ -61,6 +61,7 @@ namespace Auctionify.Application.Features.Chats.Commands.CreateChatMessage
 				.Clients.Group(request.ConversationId.ToString())
 				.SendAsync(
 					SignalRActions.ReceiveChatMessageNotification,
+					chatMessage.SenderId,
 					cancellationToken: cancellationToken
 				);
 

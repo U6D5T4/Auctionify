@@ -21,6 +21,7 @@ export class ChatPageComponent implements OnInit {
     isUserBuyer: boolean = false;
     private isSignalrConnected = false;
     updateChatSubject: Subject<void> = new Subject<void>();
+    currentUserId: number = 0;
 
     constructor(
         private client: Client,
@@ -29,6 +30,9 @@ export class ChatPageComponent implements OnInit {
     ) {
         effect(() => {
             this.isUserBuyer = this.authService.isUserBuyer();
+        });
+        effect(() => {
+            this.currentUserId = this.authService.getUserId()!;
         });
     }
 
@@ -50,8 +54,9 @@ export class ChatPageComponent implements OnInit {
                             element.id
                         );
 
-                        this.signalRService.onReceiveChatMessage(() => {
-                            this.getAllUserConversations();
+                        this.signalRService.onReceiveChatMessage((senderId) => {
+                            if (senderId != this.currentUserId)
+                                this.getAllUserConversations();
                             this.chatConversations = this.chatConversations.map(
                                 (v) => {
                                     v.isActive = false;
@@ -61,7 +66,8 @@ export class ChatPageComponent implements OnInit {
                                     return v;
                                 }
                             );
-                            this.updateChatSubject.next();
+                            if (this.chosenConversation?.id == element.id)
+                                this.updateChatSubject.next();
                         }, element.id);
 
                         this.isSignalrConnected = true;
@@ -76,7 +82,6 @@ export class ChatPageComponent implements OnInit {
         this.chosenConversation = this.chatConversations.find(
             (x) => x.id == id
         )!;
-        console.log(this.chosenConversation);
     }
 
     getMainChatContainerWidthClass() {

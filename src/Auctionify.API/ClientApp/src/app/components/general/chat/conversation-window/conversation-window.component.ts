@@ -1,5 +1,6 @@
 import { formatDate } from '@angular/common';
 import {
+    AfterViewInit,
     Component,
     ElementRef,
     EventEmitter,
@@ -9,8 +10,10 @@ import {
     OnChanges,
     OnInit,
     Output,
+    QueryList,
     SimpleChanges,
     ViewChild,
+    ViewChildren,
     effect,
 } from '@angular/core';
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
@@ -18,7 +21,11 @@ import { ChatMessage, Conversation } from 'src/app/models/chats/chat-models';
 import { SignalRService } from 'src/app/services/signalr-service/signalr.service';
 import { Client } from 'src/app/web-api-client';
 import { ChatsComponent } from '../chats/chats.component';
-import { Observable } from 'rxjs';
+import { Observable, last } from 'rxjs';
+import {
+    IntersectResult,
+    MessageObserverDirective,
+} from 'src/app/directives/message-observer.directive';
 
 interface GroupedMessages {
     date: string;
@@ -30,14 +37,24 @@ interface GroupedMessages {
     templateUrl: './conversation-window.component.html',
     styleUrls: ['./conversation-window.component.scss'],
 })
-export class ConversationWindowComponent implements OnInit {
+export class ConversationWindowComponent
+    implements OnInit, AfterViewInit, OnChanges
+{
     @Input() conversation!: Conversation;
     @Input() updateChatEvent!: Observable<void>;
     currentUserId: number = 0;
-    messages: ChatMessage[] = [];
+    messages: GroupedMessages[] = [];
     @ViewChild('msg_input') input!: ElementRef<HTMLInputElement>;
-
-    @Output() messageSent = new EventEmitter<boolean>();
+    @ViewChild('main_conversation')
+    mainConversationWindow!: ElementRef<HTMLElement>;
+    @ViewChildren('messagePool')
+    messagePool!: QueryList<ElementRef>;
+    @ViewChildren('messages')
+    innerMessages!: QueryList<MessageObserverDirective>;
+    @Output()
+    messageSent = new EventEmitter<boolean>();
+    isFirstUnread: boolean = true;
+    firstUnreadId: number = 0;
 
     constructor(
         private authService: AuthorizeService,
@@ -48,6 +65,18 @@ export class ConversationWindowComponent implements OnInit {
             this.currentUserId = this.authService.getUserId()!;
         });
     }
+    ngOnChanges(changes: SimpleChanges): void {
+        if (
+            changes['conversation'] !== null &&
+            changes['conversation'] !== undefined
+        ) {
+            this.conversation = changes['conversation'].currentValue;
+            this.getAllConversationMessages();
+        }
+    }
+
+    ngAfterViewInit(): void {}
+
     async ngOnInit(): Promise<void> {
         this.getAllConversationMessages();
         this.updateChatEvent.subscribe({
@@ -65,9 +94,75 @@ export class ConversationWindowComponent implements OnInit {
                     result.chatMessages.map(
                         (el) => (el.timeStamp = new Date(el.timeStamp))
                     );
-                    this.messages = result.chatMessages;
+
+                    let mainWindowScrollHeightBefore =
+                        this.mainConversationWindow.nativeElement.scrollHeight;
+                    this.messages = this.groupMessagesByDate(
+                        result.chatMessages
+                    );
+
+                    if (this.messagePool !== undefined) {
+                        let subscriber = this.messagePool.changes.subscribe(
+                            (i) => {
+                                this.innerMessages.forEach((el) => {
+                                    if (el.id == this.firstUnreadId) {
+                                        console.log(
+                                            el.id,
+                                            this.firstUnreadId,
+                                            el.offsetTop
+                                        );
+                                        console.log(
+                                            this.mainConversationWindow
+                                                .nativeElement.offsetHeight
+                                        );
+                                        this.mainConversationWindow.nativeElement.scrollTop =
+                                            el.offsetTop -
+                                            this.mainConversationWindow
+                                                .nativeElement.offsetHeight;
+
+                                        console.log(
+                                            this.mainConversationWindow
+                                                .nativeElement.scrollTop
+                                        );
+                                    }
+                                });
+
+                                subscriber.unsubscribe();
+                            }
+                        );
+                    }
                 },
             });
+    }
+
+    scrollBehaviour(before: any | null) {
+        let mainWindowScrollHeight =
+            before ?? this.mainConversationWindow.nativeElement.scrollHeight;
+        let scrollTop =
+            this.mainConversationWindow.nativeElement.scrollTop +
+            this.mainConversationWindow.nativeElement.clientHeight;
+
+        let lastDateGroup = this.messages.length - 1;
+        let lastDateMessages = this.messages[lastDateGroup].messages.length - 1;
+        let lastMessageSender =
+            this.messages[lastDateGroup].messages[lastDateMessages].senderId;
+
+        if (lastMessageSender == this.currentUserId) {
+        } else {
+            // if (scrollTop == mainWindowScrollHeight) {
+            //     console.log('SCROLLTOP', scrollTop, mainWindowScrollHeight);
+            //     this.scrollToBottom();
+            // }
+        }
+    }
+
+    scrollToBottom() {
+        let mainWindowScrollHeight =
+            this.mainConversationWindow.nativeElement.scrollHeight;
+        this.mainConversationWindow.nativeElement.scrollTo({
+            top: mainWindowScrollHeight,
+            behavior: 'smooth',
+        });
     }
 
     groupMessagesByDate(messages: ChatMessage[]): GroupedMessages[] {
@@ -90,6 +185,15 @@ export class ConversationWindowComponent implements OnInit {
             );
 
             if (existingGroup) {
+                if (
+                    this.isFirstUnread &&
+                    !message.isRead &&
+                    message.senderId != this.currentUserId
+                ) {
+                    this.firstUnreadId = message.id;
+                    this.isFirstUnread = false;
+                }
+
                 existingGroup.messages.push(message);
             } else {
                 groupedMessages.push({ date: dateKey, messages: [message] });
@@ -103,11 +207,18 @@ export class ConversationWindowComponent implements OnInit {
         return groupedMessages;
     }
 
-    sendMessage(input: string) {
+    sendMessage($event: Event, input: string) {
+        $event.preventDefault();
         this.client.sendChatMessage(this.conversation.id, input).subscribe({
             next: () => {
                 this.input.nativeElement.value = '';
                 this.messageSent.emit(true);
+                this.scrollToBottom();
+                let subscriber = this.messagePool.changes.subscribe((i) => {
+                    this.scrollToBottom();
+
+                    subscriber.unsubscribe();
+                });
             },
         });
     }
@@ -116,5 +227,14 @@ export class ConversationWindowComponent implements OnInit {
         if (this.currentUserId == message.senderId) {
             return 'self';
         } else return 'other';
+    }
+
+    intersect(event: IntersectResult) {
+        if (event.isIntersecting && !event.isRead)
+            this.client.chatMessageRead(event.messageId).subscribe({
+                next: () => {
+                    this.messageSent.emit(true);
+                },
+            });
     }
 }

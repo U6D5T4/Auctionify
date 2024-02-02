@@ -92,11 +92,14 @@ export class SignalRService {
         );
     }
 
-    public onReceiveChatMessage(callback: () => void, conversationId: number) {
+    public onReceiveChatMessage(
+        callback: (sendeId: any) => void,
+        conversationId: number
+    ) {
         this.connection.on(
             SignalRActions.ReceiveChatMessageNotification,
-            () => {
-                callback();
+            (senderId) => {
+                callback(senderId);
             }
         );
     }

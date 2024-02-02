@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ImagePopupComponent } from './image-popup/image-popup.component';
 import { AddBidComponent } from './add-bid/add-bid.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -41,6 +41,7 @@ import { TransactionsComponent } from './transactions/transactions.component';
         MatSliderModule,
         MatProgressSpinnerModule,
         ReactiveFormsModule,
+        FormsModule,
         MatFormFieldModule,
         MatInputModule,
         MatCheckboxModule,

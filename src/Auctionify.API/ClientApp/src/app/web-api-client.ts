@@ -1053,6 +1053,25 @@ export class Client {
             })
         );
     }
+
+    chatMessageRead(messageId: number): Observable<boolean> {
+        let url_ =
+            this.baseUrl +
+            `/api/chats/users/conversations/messages/${messageId}`;
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('put', url_, options_).pipe(
+            mergeMap((response: any): Observable<boolean> => {
+                return of(true);
+            })
+        );
+    }
 }
 
 export interface PageRequest {

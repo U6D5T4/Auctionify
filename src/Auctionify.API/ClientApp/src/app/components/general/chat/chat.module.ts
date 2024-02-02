@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MessageObserverDirective } from 'src/app/directives/message-observer.directive';
 
 @NgModule({
     declarations: [
@@ -15,6 +16,7 @@ import { MatInputModule } from '@angular/material/input';
         ChatsComponent,
         ChatItemComponent,
         ConversationWindowComponent,
+        MessageObserverDirective,
     ],
     imports: [
         CommonModule,
