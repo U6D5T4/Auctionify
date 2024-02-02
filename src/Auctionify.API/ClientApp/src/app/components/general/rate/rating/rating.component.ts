@@ -18,6 +18,7 @@ import { RateCalculatorService } from 'src/app/services/rate-calculator/rate-cal
 export class RatingComponent implements OnInit {
     userProfileData: BuyerModel | SellerModel | null = null;
     senderRates: Rate[] = [];
+    IsSentRates: boolean = true;
 
     initialRatesCount: number = 10;
     addRatesCount: number = 10;

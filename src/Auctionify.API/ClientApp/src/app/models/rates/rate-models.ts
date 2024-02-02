@@ -1,7 +1,9 @@
 import { UserDto } from '../users/user-models';
 
 export interface Rate {
+    receiverId: number;
     receiver: UserDto | null;
+    senderId: number;
     sender: UserDto | null;
     ratingValue: number | null;
     comment: string | null;

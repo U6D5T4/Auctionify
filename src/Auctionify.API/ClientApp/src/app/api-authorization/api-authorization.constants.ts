@@ -9,6 +9,7 @@ export const LoginActions = {
     ForgetPassword: 'forget-password',
     ResetPassword: 'reset-password',
     EmailSent: 'email-sent',
+    ResetEmailSent: 'reset-email-sent',
 };
 
 let applicationPaths: ApplicationPathsType = {
@@ -20,6 +21,7 @@ let applicationPaths: ApplicationPathsType = {
     ForgetPassword: `auth/${LoginActions.ForgetPassword}`,
     ResetPassword: `auth/${LoginActions.ResetPassword}`,
     EmailSent: `auth/${LoginActions.EmailSent}/:email`,
+    ResetEmailSent: `auth/${LoginActions.ResetEmailSent}/:email`,
     LoginPathComponents: [],
     RegisterPathComponents: [],
     RegisterRolePathComponent: [],
@@ -27,6 +29,7 @@ let applicationPaths: ApplicationPathsType = {
     ForgetPasswordComponents: [],
     ResetPasswordComponents: [],
     EmailSentComponents: [],
+    ResetEmailSentComponent: [],
 };
 
 applicationPaths = {
@@ -38,6 +41,7 @@ applicationPaths = {
     ResetPasswordComponents: applicationPaths.ResetPassword.split('/'),
     RegisterRolePathComponent: applicationPaths.Profile.split('/'),
     EmailSentComponents: applicationPaths.Profile.split('/'),
+    ResetEmailSentComponent: applicationPaths.Profile.split('/'),
 };
 
 interface ApplicationPathsType {
@@ -49,6 +53,7 @@ interface ApplicationPathsType {
     readonly ForgetPassword: string;
     readonly ResetPassword: string;
     readonly EmailSent: string;
+    readonly ResetEmailSent: string;
     readonly LoginPathComponents: string[];
     readonly RegisterPathComponents: string[];
     readonly RegisterRolePathComponent: string[];
@@ -56,6 +61,7 @@ interface ApplicationPathsType {
     readonly ForgetPasswordComponents: string[];
     readonly ResetPasswordComponents: string[];
     readonly EmailSentComponents: string[];
+    readonly ResetEmailSentComponent: string[];
 }
 
 export const ApplicationPaths: ApplicationPathsType = applicationPaths;
