@@ -24,6 +24,7 @@ export class MessageObserverDirective implements OnInit, OnDestroy {
     @Input() isRead: boolean = false;
     @Input() id: number = 0;
     public offsetTop = 0;
+    public clientHeight = 0;
 
     @Output() isIntersecting = new EventEmitter<IntersectResult>();
 
@@ -35,6 +36,7 @@ export class MessageObserverDirective implements OnInit, OnDestroy {
     ngOnInit() {
         this.subscription = this.createAndObserve();
         this.offsetTop = this.element.nativeElement.offsetTop;
+        this.clientHeight = this.element.nativeElement.clientHeight;
     }
 
     ngOnDestroy() {

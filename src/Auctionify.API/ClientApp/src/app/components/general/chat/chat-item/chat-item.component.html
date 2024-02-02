@@ -29,11 +29,13 @@
                         {{ messageText }}
                     </p>
                 </div>
-                <span class="chat__bottom-unread">
-                    <p>
-                        {{ unreadCount }}
-                    </p>
-                </span>
+                <ng-container *ngIf="unreadCount! > 0"
+                    ><span class="chat__bottom-unread">
+                        <p>
+                            {{ unreadCount }}
+                        </p>
+                    </span></ng-container
+                >
             </div>
         </div>
     </div>

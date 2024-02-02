@@ -56,6 +56,8 @@ export class ConversationWindowComponent
     isFirstUnread: boolean = true;
     firstUnreadId: number = 0;
 
+    isScrolledUp: boolean = true;
+
     constructor(
         private authService: AuthorizeService,
         private client: Client,
@@ -75,7 +77,13 @@ export class ConversationWindowComponent
         }
     }
 
-    ngAfterViewInit(): void {}
+    ngAfterViewInit(): void {
+        this.mainConversationWindow.nativeElement.onscroll = (el) => {
+            let percent = this.calculateCurrentScrollPercent();
+            if (percent < 97.6) this.isScrolledUp = true;
+            else this.isScrolledUp = false;
+        };
+    }
 
     async ngOnInit(): Promise<void> {
         this.getAllConversationMessages();
@@ -95,8 +103,6 @@ export class ConversationWindowComponent
                         (el) => (el.timeStamp = new Date(el.timeStamp))
                     );
 
-                    let mainWindowScrollHeightBefore =
-                        this.mainConversationWindow.nativeElement.scrollHeight;
                     this.messages = this.groupMessagesByDate(
                         result.chatMessages
                     );
@@ -105,25 +111,22 @@ export class ConversationWindowComponent
                         let subscriber = this.messagePool.changes.subscribe(
                             (i) => {
                                 this.innerMessages.forEach((el) => {
-                                    if (el.id == this.firstUnreadId) {
-                                        console.log(
-                                            el.id,
-                                            this.firstUnreadId,
-                                            el.offsetTop
-                                        );
-                                        console.log(
-                                            this.mainConversationWindow
-                                                .nativeElement.offsetHeight
-                                        );
-                                        this.mainConversationWindow.nativeElement.scrollTop =
-                                            el.offsetTop -
-                                            this.mainConversationWindow
-                                                .nativeElement.offsetHeight;
-
-                                        console.log(
-                                            this.mainConversationWindow
-                                                .nativeElement.scrollTop
-                                        );
+                                    if (!this.isScrolledUp) {
+                                        if (el.id == this.firstUnreadId) {
+                                            this.mainConversationWindow.nativeElement.scrollTo(
+                                                {
+                                                    top:
+                                                        el.offsetTop -
+                                                        this
+                                                            .mainConversationWindow
+                                                            .nativeElement
+                                                            .offsetHeight *
+                                                            2 +
+                                                        el.clientHeight,
+                                                    behavior: 'smooth',
+                                                }
+                                            );
+                                        }
                                     }
                                 });
 
@@ -133,27 +136,6 @@ export class ConversationWindowComponent
                     }
                 },
             });
-    }
-
-    scrollBehaviour(before: any | null) {
-        let mainWindowScrollHeight =
-            before ?? this.mainConversationWindow.nativeElement.scrollHeight;
-        let scrollTop =
-            this.mainConversationWindow.nativeElement.scrollTop +
-            this.mainConversationWindow.nativeElement.clientHeight;
-
-        let lastDateGroup = this.messages.length - 1;
-        let lastDateMessages = this.messages[lastDateGroup].messages.length - 1;
-        let lastMessageSender =
-            this.messages[lastDateGroup].messages[lastDateMessages].senderId;
-
-        if (lastMessageSender == this.currentUserId) {
-        } else {
-            // if (scrollTop == mainWindowScrollHeight) {
-            //     console.log('SCROLLTOP', scrollTop, mainWindowScrollHeight);
-            //     this.scrollToBottom();
-            // }
-        }
     }
 
     scrollToBottom() {
@@ -236,5 +218,12 @@ export class ConversationWindowComponent
                     this.messageSent.emit(true);
                 },
             });
+    }
+
+    calculateCurrentScrollPercent() {
+        let scrollElement = this.mainConversationWindow.nativeElement;
+        let scrollPos = scrollElement.scrollTop + scrollElement.clientHeight;
+
+        return (scrollPos * 100) / scrollElement.scrollHeight;
     }
 }
