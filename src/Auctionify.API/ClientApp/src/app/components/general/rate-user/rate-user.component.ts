@@ -128,12 +128,12 @@ export class RateUserComponent implements OnInit {
     getUserProfileImg(): string | undefined {
         if (this.isUserSeller()) {
             return (
-                this.lotData?.seller?.profilePicture ||
+                this.lotData?.profilePictureUrl ||
                 '../../../../../assets/images/User.png'
             );
         } else {
             return (
-                this.lotData?.buyer?.profilePicture ||
+                this.lotData?.profilePictureUrl ||
                 '../../../../../assets/images/User.png'
             );
         }

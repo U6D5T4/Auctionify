@@ -62,8 +62,7 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer
 						.Include(x => x.Currency)
 						.Include(x => x.Location)
 						.Include(x => x.LotStatus)
-						.Include(x => x.Bids)
-						.Include(x => x.Buyer),
+						.Include(x => x.Bids),
 				cancellationToken: cancellationToken
 			);
 
@@ -132,11 +131,9 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer
 						_azureBlobStorageOptions.UserProfilePhotosFolderName,
 						profilePictureName
 					);
-
-					if (result.Buyer != null)
-					{
-						result.Buyer.ProfilePicture = profilePictureUrl;
-					}
+					
+					result.ProfilePictureUrl = profilePictureUrl;
+					
 				}
 			}
 			else

@@ -1191,8 +1191,7 @@ export interface BuyerGetLotResponse {
     sellerEmail: string;
     sellerId: number;
     buyerId: number;
-    buyer: UserDto | null;
-    seller: UserDto | null;
+    profilePictureUrl: string;
 }
 
 export interface SellerGetLotResponse {
@@ -1212,8 +1211,7 @@ export interface SellerGetLotResponse {
     bidCount: number;
     sellerId: number;
     buyerId: number;
-    buyer: UserDto | null;
-    seller: UserDto | null;
+    profilePictureUrl: string;
 }
 
 export interface CreateLotResponse {
