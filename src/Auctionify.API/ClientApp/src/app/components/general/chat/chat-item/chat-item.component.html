@@ -3,9 +3,11 @@
         <div class="chat__avatar">
             <img
                 [src]="
-                    imageUrl == undefined || imageUrl === null
-                        ? imageUrl
-                        : '../../../../assets/icons/NoImage\.svg'
+                    imageUrl == undefined ||
+                    imageUrl === null ||
+                    imageUrl === ''
+                        ? '../../../../assets/icons/NoImage\.svg'
+                        : imageUrl
                 "
                 alt="avatar"
             />

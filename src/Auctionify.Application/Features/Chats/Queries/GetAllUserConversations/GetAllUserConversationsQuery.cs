@@ -129,7 +129,7 @@ namespace Auctionify.Application.Features.Chats.Queries.GetAllUserConversations
 								? _blobService.GetBlobUrl(
 									_azureBlobStorageOptions.UserProfilePhotosFolderName,
 									conversation.Seller!.ProfilePicture
-								)
+								) 
 								: _blobService.GetBlobUrl(
 									_azureBlobStorageOptions.UserProfilePhotosFolderName,
 									conversation.Buyer!.ProfilePicture
