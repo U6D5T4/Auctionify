@@ -5,6 +5,7 @@ using Auctionify.Core.Enums;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using UserRole = Auctionify.Core.Enums.UserRole;
 
 namespace Auctionify.Application.Features.Users.Commands.Delete
 {

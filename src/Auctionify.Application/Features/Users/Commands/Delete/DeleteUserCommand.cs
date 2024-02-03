@@ -1,8 +1,8 @@
 ﻿using Auctionify.Application.Common.Interfaces;
-using Auctionify.Core.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using User = Auctionify.Core.Entities.User;
 
 namespace Auctionify.Application.Features.Users.Commands.Delete
 {
@@ -27,10 +27,19 @@ namespace Auctionify.Application.Features.Users.Commands.Delete
 			CancellationToken cancellationToken
 		)
 		{
+			var currentUserEmail = _currentUserService.UserEmail!;
+			var currentUserRole = _currentUserService.UserRole!;
+
 			var user = await _userManager.Users.FirstOrDefaultAsync(
 				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
 				cancellationToken: cancellationToken
 			);
+
+			// I need to get that user where the email is equal to the current user email and the user is not deleted
+			// and the UserRoles is equal to the current user role
+			// maybe I need to use joins
+			// using joins to get the user where the email is equal to the current user email and the user is not deleted
+			// and the UserRoles is equal to the current user role
 
 			user!.IsDeleted = true;
 

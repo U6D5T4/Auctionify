@@ -12,6 +12,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
+using UserRole = Auctionify.Core.Enums.UserRole;
 
 namespace Auctionify.Infrastructure.Identity
 {
@@ -50,12 +51,12 @@ namespace Auctionify.Infrastructure.Identity
 			_currentUserService = currentUserService;
 		}
 
-		public async Task<LoginResponse> LoginUserAsync(LoginViewModel userModel)
+		public async Task<LoginResponse> LoginUserAsync(LoginViewModel loginModel)
 		{
 			if (
-				userModel is null
-				|| string.IsNullOrEmpty(userModel.Email)
-				|| string.IsNullOrEmpty(userModel.Password)
+				loginModel is null
+				|| string.IsNullOrEmpty(loginModel.Email)
+				|| string.IsNullOrEmpty(loginModel.Password)
 			)
 			{
 				return new LoginResponse
@@ -65,11 +66,11 @@ namespace Auctionify.Infrastructure.Identity
 				};
 			}
 
-			var user = await _userManager.Users.FirstOrDefaultAsync(
-				u => u.Email == userModel.Email && !u.IsDeleted
-			);
+			var users = await _userManager
+				.Users.Where(u => u.Email == loginModel.Email && !u.IsDeleted)
+				.ToListAsync();
 
-			if (user is null)
+			if (users is null)
 			{
 				return new LoginResponse
 				{
@@ -79,8 +80,8 @@ namespace Auctionify.Infrastructure.Identity
 			}
 
 			var result = await _signInManager.PasswordSignInAsync(
-				user,
-				userModel.Password,
+				users[0],
+				loginModel.Password,
 				false,
 				false
 			);
@@ -98,7 +99,7 @@ namespace Auctionify.Infrastructure.Identity
 				};
 			}
 
-			if (!user.EmailConfirmed)
+			if (!users[0].EmailConfirmed)
 			{
 				return new LoginResponse
 				{
@@ -107,10 +108,176 @@ namespace Auctionify.Infrastructure.Identity
 				};
 			}
 
-			var token = await GenerateJWTTokenWithUserClaimsAsync(user);
+			var token = await GenerateJWTTokenWithUserClaimsAsync(users[0]);
 
-			token.Role = (await _userManager.GetRolesAsync(user)).FirstOrDefault()!;
-			token.UserId = user.Id;
+			var roles = new List<string>()
+			{
+				UserRole.Buyer.ToString(),
+				UserRole.Seller.ToString()
+			};
+
+			token.Roles = roles;
+
+			return new LoginResponse { IsSuccess = true, Result = token };
+		}
+
+		public async Task<LoginResponse> CheckEligibilityToLoginWithSelectedRole(
+			string role
+		)
+		{
+			if (role is null)
+			{
+				return new LoginResponse
+				{
+					Errors = new[] { "Role is null" },
+					IsSuccess = false,
+				};
+			}
+
+			var roleExists = await _roleManager.RoleExistsAsync(role);
+
+			if (!roleExists)
+			{
+				return new LoginResponse
+				{
+					Errors = new[] { "Specified role not found" },
+					IsSuccess = false,
+				};
+			}
+
+			if (role == UserRole.Administrator.ToString())
+			{
+				return new LoginResponse
+				{
+					Errors = new[] { "Administrator role is not allowed" },
+					IsSuccess = false,
+				};
+			}
+
+			var users = await _userManager
+				.Users.Where(u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted)
+				.ToListAsync();
+
+			if (users is null)
+			{
+				return new LoginResponse
+				{
+					Errors = new[] { "User is not found or deleted" },
+					IsSuccess = false,
+				};
+			}
+
+			foreach (var user in users)
+			{
+				var userRole = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+
+				if (userRole == role)
+				{
+					var token = await GenerateJWTTokenWithUserClaimsAsync(user);
+
+					token.Role = role;
+					token.UserId = user.Id;
+
+					return new LoginResponse { IsSuccess = true, Result = token };
+				}
+			}
+
+			return new LoginResponse
+			{
+				Message = $"User has no {role} role, do you want to create one?"
+			};
+		}
+
+		public async Task<LoginResponse> CreateNewUserWithNewRole(string role)
+		{
+			var users = await _userManager
+				.Users.Where(u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted)
+				.ToListAsync();
+
+			var roleExists = await _roleManager.RoleExistsAsync(role);
+
+			if (!roleExists)
+			{
+				return new LoginResponse { IsSuccess = false, Message = "Role not found" };
+			}
+
+			if (role == UserRole.Administrator.ToString())
+			{
+				return new LoginResponse
+				{
+					IsSuccess = false,
+					Message = "Administrator role is not allowed"
+				};
+			}
+
+			if (users.Count == 2)
+			{
+				return new LoginResponse
+				{
+					IsSuccess = false,
+					Message = "User already has both seller and buyer accounts"
+				};
+			}
+
+			foreach (var user in users)
+			{
+				var userRole = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+
+				if (userRole == role)
+				{
+					return new LoginResponse
+					{
+						IsSuccess = false,
+						Message = $"User already has {role} account"
+					};
+				}
+			}
+
+			var newUser = new User
+			{
+				Email = users[0].Email,
+				UserName = GenerateUniqueUserName(),
+				FirstName = users[0].FirstName,
+				LastName = users[0].LastName,
+				EmailConfirmed = true,
+				PasswordHash = users[0].PasswordHash,
+				SecurityStamp = users[0].SecurityStamp,
+				ConcurrencyStamp = users[0].ConcurrencyStamp,
+				PhoneNumber = users[0].PhoneNumber,
+				AboutMe = users[0].AboutMe,
+				ProfilePicture = users[0].ProfilePicture,
+				CreationDate = DateTime.UtcNow,
+				IsDeleted = false,
+			};
+
+			var result = await _userManager.CreateAsync(newUser);
+
+			if (!result.Succeeded)
+			{
+				return new LoginResponse
+				{
+					IsSuccess = false,
+					Message = "Failed to create a new user",
+					Errors = result.Errors.Select(e => e.Description)
+				};
+			}
+
+			var roleResult = await _userManager.AddToRoleAsync(newUser, role);
+
+			if (!roleResult.Succeeded)
+			{
+				return new LoginResponse
+				{
+					IsSuccess = false,
+					Message = "Failed to assign role",
+					Errors = roleResult.Errors.Select(e => e.Description)
+				};
+			}
+
+			var token = await GenerateJWTTokenWithUserClaimsAsync(newUser);
+
+			token.Role = role;
+			token.UserId = newUser.Id;
 
 			return new LoginResponse { IsSuccess = true, Result = token };
 		}
@@ -407,6 +574,7 @@ namespace Auctionify.Infrastructure.Identity
 				};
 
 				var createdResult = await _userManager.CreateAsync(user);
+
 				if (!createdResult.Succeeded)
 				{
 					return new LoginResponse
@@ -419,8 +587,12 @@ namespace Auctionify.Infrastructure.Identity
 
 			var token = await GenerateJWTTokenWithUserClaimsAsync(user);
 
-			token.Role = (await _userManager.GetRolesAsync(user)).FirstOrDefault()!;
 			token.UserId = user.Id;
+			token.Roles = new List<string>()
+			{
+				UserRole.Buyer.ToString(),
+				UserRole.Seller.ToString()
+			};
 
 			return new LoginResponse { IsSuccess = true, Result = token };
 		}

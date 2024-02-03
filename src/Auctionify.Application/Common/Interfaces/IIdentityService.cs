@@ -17,12 +17,19 @@ namespace Auctionify.Application.Common.Interfaces
 
 		Task<ResetPasswordResponse> ResetPasswordAsync(ResetPasswordViewModel model);
 
-		Task<LoginResponse> LoginUserAsync(LoginViewModel userModel);
-
-		Task<ChangePasswordResponse> ChangeUserPasswordAsync(string email, ChangePasswordViewModel model);
+		Task<ChangePasswordResponse> ChangeUserPasswordAsync(
+			string email,
+			ChangePasswordViewModel model
+		);
 
 		Task<LoginResponse> AssignRoleToUserAsync(string role);
 
 		Task<LoginResponse> LoginUserWithGoogleAsync(Payload payload);
+
+		Task<LoginResponse> LoginUserAsync(LoginViewModel loginModel);
+
+		Task<LoginResponse> CheckEligibilityToLoginWithSelectedRole(string role);
+
+		Task<LoginResponse> CreateNewUserWithNewRole(string role);
 	}
 }
