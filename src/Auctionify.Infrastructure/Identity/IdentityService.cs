@@ -12,7 +12,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
-using UserRole = Auctionify.Core.Enums.UserRole;
+using AccountRole = Auctionify.Core.Enums.AccountRole;
 
 namespace Auctionify.Infrastructure.Identity
 {
@@ -112,8 +112,8 @@ namespace Auctionify.Infrastructure.Identity
 
 			var roles = new List<string>()
 			{
-				UserRole.Buyer.ToString(),
-				UserRole.Seller.ToString()
+				AccountRole.Buyer.ToString(),
+				AccountRole.Seller.ToString()
 			};
 
 			token.Roles = roles;
@@ -145,7 +145,7 @@ namespace Auctionify.Infrastructure.Identity
 				};
 			}
 
-			if (role == UserRole.Administrator.ToString())
+			if (role == AccountRole.Administrator.ToString())
 			{
 				return new LoginResponse
 				{
@@ -201,7 +201,7 @@ namespace Auctionify.Infrastructure.Identity
 				return new LoginResponse { IsSuccess = false, Message = "Role not found" };
 			}
 
-			if (role == UserRole.Administrator.ToString())
+			if (role == AccountRole.Administrator.ToString())
 			{
 				return new LoginResponse
 				{
@@ -210,14 +210,9 @@ namespace Auctionify.Infrastructure.Identity
 				};
 			}
 
-			if (users.Count == 2)
-			{
-				return new LoginResponse
-				{
-					IsSuccess = false,
-					Message = "User already has both seller and buyer accounts"
-				};
-			}
+			// if the current user already has both roles (Buyer and Seller) (where flag IsDeleted is false)
+			var userRoles = (await _userManager.GetRolesAsync(users[0])).ToList();
+
 
 			foreach (var user in users)
 			{
@@ -233,53 +228,8 @@ namespace Auctionify.Infrastructure.Identity
 				}
 			}
 
-			var newUser = new User
-			{
-				Email = users[0].Email,
-				UserName = GenerateUniqueUserName(),
-				FirstName = users[0].FirstName,
-				LastName = users[0].LastName,
-				EmailConfirmed = true,
-				PasswordHash = users[0].PasswordHash,
-				SecurityStamp = users[0].SecurityStamp,
-				ConcurrencyStamp = users[0].ConcurrencyStamp,
-				PhoneNumber = users[0].PhoneNumber,
-				AboutMe = users[0].AboutMe,
-				ProfilePicture = users[0].ProfilePicture,
-				CreationDate = DateTime.UtcNow,
-				IsDeleted = false,
-			};
+			throw new NotImplementedException();
 
-			var result = await _userManager.CreateAsync(newUser);
-
-			if (!result.Succeeded)
-			{
-				return new LoginResponse
-				{
-					IsSuccess = false,
-					Message = "Failed to create a new user",
-					Errors = result.Errors.Select(e => e.Description)
-				};
-			}
-
-			var roleResult = await _userManager.AddToRoleAsync(newUser, role);
-
-			if (!roleResult.Succeeded)
-			{
-				return new LoginResponse
-				{
-					IsSuccess = false,
-					Message = "Failed to assign role",
-					Errors = roleResult.Errors.Select(e => e.Description)
-				};
-			}
-
-			var token = await GenerateJWTTokenWithUserClaimsAsync(newUser);
-
-			token.Role = role;
-			token.UserId = newUser.Id;
-
-			return new LoginResponse { IsSuccess = true, Result = token };
 		}
 
 		/// <summary>
@@ -590,8 +540,8 @@ namespace Auctionify.Infrastructure.Identity
 			token.UserId = user.Id;
 			token.Roles = new List<string>()
 			{
-				UserRole.Buyer.ToString(),
-				UserRole.Seller.ToString()
+				AccountRole.Buyer.ToString(),
+				AccountRole.Seller.ToString()
 			};
 
 			return new LoginResponse { IsSuccess = true, Result = token };

@@ -48,9 +48,9 @@ namespace Auctionify.Application.Features.Chats.Commands.CreateConversation
 				cancellationToken: cancellationToken
 			);
 
-			var currentUserRole = (UserRole)
+			var currentUserRole = (AccountRole)
 				Enum.Parse(
-					typeof(UserRole),
+					typeof(AccountRole),
 					(await _userManager.GetRolesAsync(currentUser!)).FirstOrDefault()!
 				);
 
@@ -59,8 +59,8 @@ namespace Auctionify.Application.Features.Chats.Commands.CreateConversation
 				cancellationToken: cancellationToken
 			);
 
-			var sellerId = currentUserRole == UserRole.Seller ? currentUser!.Id : lot!.SellerId;
-			var buyerId = currentUserRole == UserRole.Buyer ? currentUser!.Id : lot!.BuyerId;
+			var sellerId = currentUserRole == AccountRole.Seller ? currentUser!.Id : lot!.SellerId;
+			var buyerId = currentUserRole == AccountRole.Buyer ? currentUser!.Id : lot!.BuyerId;
 
 			#region If there is already a conversation between the buyer and the seller for this lot, return it
 

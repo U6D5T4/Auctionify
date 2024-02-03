@@ -109,7 +109,7 @@ namespace Auctionify.UnitTests.GetTransactionsTests
 
 			var user = new User { Id = 1, Email = "buyer@example.com" };
 
-			var roles = new List<string> { UserRole.Buyer.ToString() };
+			var roles = new List<string> { AccountRole.Buyer.ToString() };
 
 			var mock = new List<User> { user }
 				.AsQueryable()
@@ -183,7 +183,7 @@ namespace Auctionify.UnitTests.GetTransactionsTests
 
 			var user = new User { Id = 1, Email = "seller@example.com" };
 
-			var roles = new List<string> { UserRole.Seller.ToString() };
+			var roles = new List<string> { AccountRole.Seller.ToString() };
 
 			var mock = new List<User> { user }
 				.AsQueryable()

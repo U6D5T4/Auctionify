@@ -52,9 +52,9 @@ namespace Auctionify.Application.Features.Chats.Queries.GetAllUserConversations
 				cancellationToken: cancellationToken
 			);
 
-			var currentUserRole = (UserRole)
+			var currentUserRole = (AccountRole)
 				Enum.Parse(
-					typeof(UserRole),
+					typeof(AccountRole),
 					(await _userManager.GetRolesAsync(currentUser!)).FirstOrDefault()!
 				);
 
@@ -124,8 +124,8 @@ namespace Auctionify.Application.Features.Chats.Queries.GetAllUserConversations
 								: conversation.Buyer!.Email!,
 						Role =
 							conversation.BuyerId == user.Id
-								? UserRole.Seller.ToString()
-								: UserRole.Buyer.ToString(),
+								? AccountRole.Seller.ToString()
+								: AccountRole.Buyer.ToString(),
 						ProfilePictureUrl =
 							conversation.BuyerId == user.Id
 								? _blobService.GetBlobUrl(

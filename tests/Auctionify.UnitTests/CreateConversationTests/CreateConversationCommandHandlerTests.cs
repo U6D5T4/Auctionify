@@ -80,7 +80,7 @@ namespace Auctionify.UnitTests.CreateConversationTests
 			);
 
 			var newUser = new User { Id = 1 };
-			var roles = new List<string> { UserRole.Buyer.ToString() };
+			var roles = new List<string> { AccountRole.Buyer.ToString() };
 
 			var mock = new List<User> { newUser }
 				.AsQueryable()

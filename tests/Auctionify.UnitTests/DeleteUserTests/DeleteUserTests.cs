@@ -107,7 +107,7 @@ namespace Auctionify.UnitTests.DeleteUserTests
 			var mock = EntitiesSeeding.GetUsers().AsQueryable().BuildMockDbSet();
 			userManagerMock.Setup(m => m.Users).Returns(mock.Object);
 
-			var roles = new List<string> { UserRole.Seller.ToString() };
+			var roles = new List<string> { AccountRole.Seller.ToString() };
 			userManagerMock.Setup(m => m.GetRolesAsync(It.IsAny<User>())).ReturnsAsync(roles);
 
 			var currentUserServiceMock = new Mock<ICurrentUserService>();

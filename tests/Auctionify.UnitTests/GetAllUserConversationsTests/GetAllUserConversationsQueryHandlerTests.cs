@@ -88,7 +88,7 @@ namespace Auctionify.UnitTests.GetAllUserConversationsTests
 				ProfilePicture = "test-profile-picture.png"
 			};
 
-			var roles = new List<string> { UserRole.Buyer.ToString() };
+			var roles = new List<string> { AccountRole.Buyer.ToString() };
 
 			var mock = new List<User> { user }.AsQueryable().BuildMockDbSet();
 			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);

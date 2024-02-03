@@ -1,6 +1,6 @@
 ﻿namespace Auctionify.Core.Enums
 {
-	public enum UserRole
+	public enum AccountRole
 	{
 		Administrator,
 		Buyer,

@@ -61,15 +61,15 @@ namespace Auctionify.Application.Features.Users.Queries.GetTransactions
 				cancellationToken: cancellationToken
 			);
 
-			var role = (UserRole)
+			var role = (AccountRole)
 				Enum.Parse(
-					typeof(UserRole),
+					typeof(AccountRole),
 					(await _userManager.GetRolesAsync(user!)).FirstOrDefault()!
 				);
 
 			var transactions = new List<TransactionInfo>();
 
-			if (role == UserRole.Buyer)
+			if (role == AccountRole.Buyer)
 			{
 				var lotsForBuyer = await _lotRepository.GetUnpaginatedListAsync(
 					include: x => x.Include(l => l.Currency).Include(l => l.LotStatus),
@@ -153,7 +153,7 @@ namespace Auctionify.Application.Features.Users.Queries.GetTransactions
 					}
 				}
 			}
-			else if (role == UserRole.Seller)
+			else if (role == AccountRole.Seller)
 			{
 				var lotsForSeller = await _lotRepository.GetUnpaginatedListAsync(
 					x => x.SellerId == user!.Id,
