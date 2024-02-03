@@ -21,7 +21,6 @@ namespace Auctionify.UnitTests.DeleteUserTests
 		private readonly ICurrentUserService _currentUserService;
 		private readonly IBidRepository _bidRepository;
 		private readonly ILotRepository _lotRepository;
-		private readonly ILotStatusRepository _lotStatusRepository;
 		private readonly DeleteUserCommandValidator _validator;
 
 		public DeleteUserTests()
@@ -34,17 +33,10 @@ namespace Auctionify.UnitTests.DeleteUserTests
 				ctx => ctx.Bids
 			);
 
-			mockDbContext = DbContextMock.GetMock(
-				GetLotStatuses(),
-				ctx => ctx.LotStatuses,
-				mockDbContext
-			);
-
 			mockDbContext = DbContextMock.GetMock(GetLots(), ctx => ctx.Lots, mockDbContext);
 
 			_bidRepository = new BidRepository(mockDbContext.Object);
 			_lotRepository = new LotRepository(mockDbContext.Object);
-			_lotStatusRepository = new LotStatusRepository(mockDbContext.Object);
 
 			_validator = new DeleteUserCommandValidator(
 				_userManager,
