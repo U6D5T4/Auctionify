@@ -44,35 +44,31 @@ namespace Auctionify.Application.Features.Users.Commands.Delete
 
 						if (currentUserRole == UserRole.Buyer)
 						{
-							var bids = await _bidRepository.GetUnpaginatedListAsync(
-								predicate: x => x.BuyerId == currentUser!.Id,
-								include: x => x.Include(b => b.Lot).ThenInclude(l => l.LotStatus),
+							var hasActiveBids = await _bidRepository.AnyAsync(
+								predicate: x =>
+									x.BuyerId == currentUser!.Id
+									&& x.Lot.LotStatus.Name == AuctionStatus.Active.ToString(),
 								cancellationToken: cancellationToken
 							);
 
-							return bids.All(
-								bid => bid.Lot.LotStatus.Name != AuctionStatus.Active.ToString()
-							);
+							return !hasActiveBids;
 						}
 						else if (currentUserRole == UserRole.Seller)
 						{
-							var lots = await _lotRepository.GetUnpaginatedListAsync(
-								predicate: x => x.SellerId == currentUser!.Id,
-								include: x => x.Include(l => l.LotStatus),
+							var hasInvalidLotStatuses = await _lotRepository.AnyAsync(
+								predicate: x =>
+									x.SellerId == currentUser!.Id
+									&& new[]
+									{
+										AuctionStatus.Active.ToString(),
+										AuctionStatus.Upcoming.ToString(),
+										AuctionStatus.PendingApproval.ToString(),
+										AuctionStatus.Reopened.ToString()
+									}.Contains(x.LotStatus.Name),
 								cancellationToken: cancellationToken
 							);
 
-							var invalidLotStatuses = new List<string>
-							{
-								AuctionStatus.Active.ToString(),
-								AuctionStatus.Upcoming.ToString(),
-								AuctionStatus.PendingApproval.ToString(),
-								AuctionStatus.Reopened.ToString()
-							};
-
-							return lots.All(
-								lot => !invalidLotStatuses.Contains(lot.LotStatus.Name)
-							);
+							return !hasInvalidLotStatuses;
 						}
 						return true;
 					}
