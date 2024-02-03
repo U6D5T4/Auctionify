@@ -50,8 +50,7 @@ namespace Auctionify.UnitTests.DeleteUserTests
 				_userManager,
 				_currentUserService,
 				_bidRepository,
-				_lotRepository,
-				_lotStatusRepository
+				_lotRepository
 			);
 		}
 
@@ -126,8 +125,7 @@ namespace Auctionify.UnitTests.DeleteUserTests
 				userManagerMock.Object,
 				currentUserServiceMock.Object,
 				_bidRepository,
-				_lotRepository,
-				_lotStatusRepository
+				_lotRepository
 			);
 
 			// Act
@@ -172,6 +170,12 @@ namespace Auctionify.UnitTests.DeleteUserTests
 					BuyerId = 1,
 					NewPrice = 120,
 					BidRemoved = false,
+					Lot = new Lot
+					{
+						Id = 1,
+						LotStatusId = 5,
+						LotStatus = new LotStatus { Id = 5, Name = "Active" }
+					}
 				},
 				new()
 				{
@@ -180,6 +184,12 @@ namespace Auctionify.UnitTests.DeleteUserTests
 					BuyerId = 1,
 					NewPrice = 140,
 					BidRemoved = false,
+					Lot = new Lot
+					{
+						Id = 1,
+						LotStatusId = 5,
+						LotStatus = new LotStatus { Id = 5, Name = "Active" }
+					}
 				},
 				new()
 				{
@@ -188,6 +198,12 @@ namespace Auctionify.UnitTests.DeleteUserTests
 					BuyerId = 1,
 					NewPrice = 160,
 					BidRemoved = false,
+					Lot = new Lot
+					{
+						Id = 2,
+						LotStatusId = 6,
+						LotStatus = new LotStatus { Id = 6, Name = "Sold" }
+					}
 				}
 			};
 		}
@@ -219,7 +235,7 @@ namespace Auctionify.UnitTests.DeleteUserTests
 					SellerId = 1,
 					CategoryId = 1,
 					CurrencyId = 1,
-					Bids = new List<Bid> { bids[0], bids[1], }
+					Bids = new List<Bid> { bids.Find(x => x.LotId == 1)! }
 				},
 				new()
 				{
@@ -241,7 +257,7 @@ namespace Auctionify.UnitTests.DeleteUserTests
 					SellerId = 1,
 					CategoryId = 1,
 					CurrencyId = 1,
-					Bids = new List<Bid> { bids[2], }
+					Bids = new List<Bid> { bids.Find(x => x.LotId == 2)! }
 				}
 			};
 		}
