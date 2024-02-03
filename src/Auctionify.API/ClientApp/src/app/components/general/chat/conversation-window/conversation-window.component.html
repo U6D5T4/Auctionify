@@ -12,7 +12,11 @@
                 />
             </div>
             <div class="user__fullname">
-                {{ conversation.chatUser.fullName }}
+                {{
+                    conversation.chatUser.fullName == ' '
+                        ? conversation.chatUser.email
+                        : conversation.chatUser.fullName
+                }}
             </div>
         </div>
         <div class="profile-top__settings">

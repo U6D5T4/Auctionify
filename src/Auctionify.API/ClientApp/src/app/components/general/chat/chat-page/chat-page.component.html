@@ -16,6 +16,7 @@
     <div class="chat__window">
         <ng-container *ngIf="chosenConversation !== null; else no_chat">
             <app-conversation-window
+                #conversation_window
                 class="chat__window-conversation"
                 [conversation]="chosenConversation"
                 [updateChatEvent]="updateChatSubject.asObservable()"

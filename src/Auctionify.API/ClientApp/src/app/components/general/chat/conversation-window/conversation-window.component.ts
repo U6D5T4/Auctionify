@@ -8,6 +8,7 @@ import {
     Input,
     LOCALE_ID,
     OnChanges,
+    OnDestroy,
     OnInit,
     Output,
     QueryList,
@@ -54,9 +55,10 @@ export class ConversationWindowComponent
     @Output()
     messageSent = new EventEmitter<boolean>();
     isFirstUnread: boolean = true;
+    isFirstLoadScrolled: boolean = false;
     firstUnreadId: number = 0;
 
-    isScrolledUp: boolean = true;
+    isScrolledUp: boolean = false;
 
     constructor(
         private authService: AuthorizeService,
@@ -67,6 +69,7 @@ export class ConversationWindowComponent
             this.currentUserId = this.authService.getUserId()!;
         });
     }
+
     ngOnChanges(changes: SimpleChanges): void {
         if (
             changes['conversation'] !== null &&
@@ -111,23 +114,7 @@ export class ConversationWindowComponent
                         let subscriber = this.messagePool.changes.subscribe(
                             (i) => {
                                 this.innerMessages.forEach((el) => {
-                                    if (!this.isScrolledUp) {
-                                        if (el.id == this.firstUnreadId) {
-                                            this.mainConversationWindow.nativeElement.scrollTo(
-                                                {
-                                                    top:
-                                                        el.offsetTop -
-                                                        this
-                                                            .mainConversationWindow
-                                                            .nativeElement
-                                                            .offsetHeight *
-                                                            2 +
-                                                        el.clientHeight,
-                                                    behavior: 'smooth',
-                                                }
-                                            );
-                                        }
-                                    }
+                                    this.scrollBehaviour(el);
                                 });
 
                                 subscriber.unsubscribe();
@@ -136,6 +123,28 @@ export class ConversationWindowComponent
                     }
                 },
             });
+    }
+
+    scrollBehaviour(el: MessageObserverDirective | null) {
+        console.log(el, this.firstUnreadId);
+        if (!this.isScrolledUp) {
+            if (el !== null && el.id == this.firstUnreadId) {
+                this.mainConversationWindow.nativeElement.scrollTo({
+                    top:
+                        el.offsetTop -
+                        this.mainConversationWindow.nativeElement.offsetHeight *
+                            2 +
+                        el.clientHeight,
+                    behavior: 'smooth',
+                });
+            } else if (!this.isFirstLoadScrolled) {
+                this.mainConversationWindow.nativeElement.scrollTo({
+                    top: this.mainConversationWindow.nativeElement.scrollHeight,
+                    behavior: 'smooth',
+                });
+                this.isFirstLoadScrolled = true;
+            }
+        }
     }
 
     scrollToBottom() {
@@ -172,6 +181,7 @@ export class ConversationWindowComponent
                     !message.isRead &&
                     message.senderId != this.currentUserId
                 ) {
+                    console.log('UNREAD');
                     this.firstUnreadId = message.id;
                     this.isFirstUnread = false;
                 }
@@ -212,12 +222,14 @@ export class ConversationWindowComponent
     }
 
     intersect(event: IntersectResult) {
-        if (event.isIntersecting && !event.isRead)
+        if (event.isIntersecting && !event.isRead && !event.isOwner) {
+            console.log(event.isIntersecting, event.isRead);
             this.client.chatMessageRead(event.messageId).subscribe({
                 next: () => {
                     this.messageSent.emit(true);
                 },
             });
+        }
     }
 
     calculateCurrentScrollPercent() {

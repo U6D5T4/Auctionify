@@ -76,6 +76,7 @@ export class MessageObserverDirective implements OnInit, OnDestroy {
                     messageId:
                         this.element.nativeElement.getAttribute('messageId'),
                     isRead: this.isRead,
+                    isOwner: this.isOwner,
                     element: this.element.nativeElement,
                 };
                 this.isIntersecting.emit(data);
@@ -86,6 +87,7 @@ export class MessageObserverDirective implements OnInit, OnDestroy {
 
 export interface IntersectResult {
     isIntersecting: boolean;
+    isOwner: boolean;
     messageId: number;
     isRead: boolean;
     element: HTMLElement;
