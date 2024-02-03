@@ -35,12 +35,6 @@ namespace Auctionify.Application.Features.Users.Commands.Delete
 				cancellationToken: cancellationToken
 			);
 
-			// I need to get that user where the email is equal to the current user email and the user is not deleted
-			// and the UserRoles is equal to the current user role
-			// maybe I need to use joins
-			// using joins to get the user where the email is equal to the current user email and the user is not deleted
-			// and the UserRoles is equal to the current user role
-
 			user!.IsDeleted = true;
 
 			user!.DeletionDate = DateTime.UtcNow;
