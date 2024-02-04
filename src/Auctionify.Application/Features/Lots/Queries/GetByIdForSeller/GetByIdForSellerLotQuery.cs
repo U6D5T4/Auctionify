@@ -26,6 +26,8 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForSeller
 		private readonly IBlobService _blobService;
 		private readonly IFileRepository _fileRepository;
 		private readonly AzureBlobStorageOptions _azureBlobStorageOptions;
+		private readonly UserManager<User> _userManager;
+		private readonly ICurrentUserService _currentUserService;
 
 		public GetByIdForSellerLotQueryHandler(
 			ILotRepository lotRepository,
@@ -42,6 +44,8 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForSeller
 			_blobService = blobService;
 			_fileRepository = fileRepository;
 			_azureBlobStorageOptions = azureBlobStorageOptions.Value;
+			_userManager = userManager;
+			_currentUserService = currentUserService;
 		}
 
 		public async Task<GetByIdForSellerLotResponse> Handle(
@@ -49,6 +53,11 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForSeller
 			CancellationToken cancellationToken
 		)
 		{
+			var user = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
+				cancellationToken: cancellationToken
+			);
+
 			var lot = await _lotRepository.GetAsync(
 				predicate: x => x.Id == request.Id,
 				include: x =>

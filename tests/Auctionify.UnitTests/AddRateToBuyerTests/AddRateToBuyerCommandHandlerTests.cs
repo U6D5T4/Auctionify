@@ -12,14 +12,14 @@ using Auctionify.Infrastructure.Repositories;
 
 namespace Auctionify.UnitTests.AddRateToBuyerTests
 {
-	public class AddRateToBuyerCommandHandlerTests : IDisposable
+	public class AddRateToBuyerCommandHandlerTests
 	{
 		private readonly IMapper _mapper;
 		private readonly IRateRepository _rateRepository;
 		private readonly ILotRepository _lotRepository;
 		private readonly ILotStatusRepository _lotStatusRepository;
 		private readonly UserManager<User> _userManager;
-		private readonly Mock<ICurrentUserService> _currentUserServiceMock;
+		private readonly ICurrentUserService _currentUserService;
 		private readonly AddRateToBuyerCommandValidator _validator;
 
 		public AddRateToBuyerCommandHandlerTests()
@@ -55,8 +55,7 @@ namespace Auctionify.UnitTests.AddRateToBuyerTests
 
 			_userManager = EntitiesSeeding.GetUserManagerMock();
 
-			_currentUserServiceMock = new Mock<ICurrentUserService>();
-			_currentUserServiceMock.Setup(x => x.UserEmail).Returns(It.IsAny<string>());
+			_currentUserService = EntitiesSeeding.GetCurrentUserServiceMock();
 
 			_rateRepository = new RateRepository(mockDbContext.Object);
 			_lotRepository = new LotRepository(mockDbContext.Object);
@@ -124,7 +123,7 @@ namespace Auctionify.UnitTests.AddRateToBuyerTests
 				mapperMock.Object,
 				rateRepositoryMock.Object,
 				_lotRepository,
-				_currentUserServiceMock.Object,
+				_currentUserService,
 				_userManager
 			);
 
@@ -275,20 +274,6 @@ namespace Auctionify.UnitTests.AddRateToBuyerTests
 					Bids = null,
 				}
 			};
-		}
-
-		public void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
-
-		protected virtual void Dispose(bool disposing)
-		{
-			if (disposing)
-			{
-				_currentUserServiceMock.Reset();
-			}
 		}
 	}
 }

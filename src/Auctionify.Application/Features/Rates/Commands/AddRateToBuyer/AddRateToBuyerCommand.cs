@@ -4,6 +4,7 @@ using Auctionify.Core.Entities;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Auctionify.Application.Features.Rates.Commands.AddRateToBuyer
 {
@@ -45,7 +46,10 @@ namespace Auctionify.Application.Features.Rates.Commands.AddRateToBuyer
         )
         {
 
-            var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+            var user = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
+				cancellationToken: cancellationToken
+			);
 
             var lot = await _lotRepository.GetAsync(
                 predicate: x => x.Id == request.LotId,
