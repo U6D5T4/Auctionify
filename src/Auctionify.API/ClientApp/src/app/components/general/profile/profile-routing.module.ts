@@ -12,7 +12,7 @@ const profileRoutes: Routes = [
         pathMatch: 'full',
     },
     {
-        path: ':id',
+        path: 'user/:id',
         component: PublicUserProfileComponent,
         pathMatch: 'full',
     },
