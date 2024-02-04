@@ -7,6 +7,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Auctionify.Application.Features.Chats.Queries.GetAllChatMessages
 {
@@ -44,7 +45,10 @@ namespace Auctionify.Application.Features.Chats.Queries.GetAllChatMessages
 			CancellationToken cancellationToken
 		)
 		{
-			var currentUser = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+			var currentUser = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
+				cancellationToken: cancellationToken
+			);
 
 			var conversation =
 				await _conversationRepository.GetAsync(

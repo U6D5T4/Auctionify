@@ -1,5 +1,4 @@
-﻿using Auctionify.Application.Common.DTOs;
-using Auctionify.Application.Common.Interfaces;
+﻿using Auctionify.Application.Common.Interfaces;
 using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Common.Models.Requests;
 using Auctionify.Application.Common.Options;
@@ -12,13 +11,12 @@ using Microsoft.Extensions.Options;
 
 namespace Auctionify.Application.Features.Users.Queries.GetBuyer
 {
-	public class GetBuyerQuery : IRequest<GetBuyerResponse> 
+	public class GetBuyerQuery : IRequest<GetBuyerResponse>
 	{
 		public PageRequest PageRequest { get; set; }
 	}
 
-	public class GetBuyerQueryHandler
-		: IRequestHandler<GetBuyerQuery, GetBuyerResponse>
+	public class GetBuyerQueryHandler : IRequestHandler<GetBuyerQuery, GetBuyerResponse>
 	{
 		private readonly ICurrentUserService _currentUserService;
 		private readonly UserManager<User> _userManager;
@@ -34,7 +32,6 @@ namespace Auctionify.Application.Features.Users.Queries.GetBuyer
 			IOptions<AzureBlobStorageOptions> azureBlobStorageOptions,
 			IMapper mapper,
 			IRateRepository rateRepository
-
 		)
 		{
 			_currentUserService = currentUserService;
@@ -50,7 +47,10 @@ namespace Auctionify.Application.Features.Users.Queries.GetBuyer
 			CancellationToken cancellationToken
 		)
 		{
-			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+			var user = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
+				cancellationToken: cancellationToken
+			);
 
 			var profilePictureName = user.ProfilePicture;
 
@@ -66,13 +66,14 @@ namespace Auctionify.Application.Features.Users.Queries.GetBuyer
 				response.ProfilePictureUrl = profilePictureUrl;
 			}
 
-			var avg = await _rateRepository.GetListAsync(predicate: r => r.ReceiverId == user.Id,
-				include: x =>
-					x.Include(u => u.Sender),
+			var avg = await _rateRepository.GetListAsync(
+				predicate: r => r.ReceiverId == user.Id,
+				include: x => x.Include(u => u.Sender),
 				enableTracking: false,
 				size: int.MaxValue,
 				index: 0,
-				cancellationToken: cancellationToken);
+				cancellationToken: cancellationToken
+			);
 
 			if (avg.Items.Count > 0)
 			{

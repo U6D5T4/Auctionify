@@ -58,7 +58,10 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAll
 			CancellationToken cancellationToken
 		)
 		{
-			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+			var user = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
+				cancellationToken: cancellationToken
+			);
 
 			var lots = await _lotRepository.GetListAsync(
 				predicate: x => validStatuses.Contains(x.LotStatus.Name),

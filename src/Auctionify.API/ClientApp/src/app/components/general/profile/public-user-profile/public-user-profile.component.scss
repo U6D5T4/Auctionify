@@ -1,0 +1,77 @@
+.main-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.main-profile-div {
+    display: flex;
+    gap: 40px;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    border-radius: 16px;
+    border: 1px solid #e0e0e0;
+    padding: 40px;
+    min-width: 610px;
+
+    &__profile {
+        display: flex;
+        align-items: center;
+        gap: 80px;
+    }
+
+    &__top-section {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    &__photo {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 4px;
+    }
+
+    &__photo img {
+        border-radius: 50%;
+    }
+
+    &__name-date {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    &__is-deleted {
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 24px;
+        border-radius: 500px;
+        background: var(--color-grey-6);
+        padding: 8px 16px;
+    }
+
+    &__about-me {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    &__personal-info {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    &__number-email {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+}

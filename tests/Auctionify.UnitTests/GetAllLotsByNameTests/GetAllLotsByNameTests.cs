@@ -21,9 +21,9 @@ namespace Auctionify.UnitTests.GetAllLotsByNameTests
 		private readonly ILotRepository _lotRepository;
 		private readonly IBidRepository _bidRepository;
 		private readonly Mock<IWatchlistService> _watchListServiceMock;
-		private readonly Mock<ICurrentUserService> _currentUserServiceMock;
 		private readonly Mock<IPhotoService> _photoServiceMock;
 		private readonly UserManager<User> _userManager;
+		private readonly ICurrentUserService _currentUserService;
 
 		public GetAllLotsByNameTests()
 		{
@@ -60,12 +60,12 @@ namespace Auctionify.UnitTests.GetAllLotsByNameTests
 
 			_watchListServiceMock = new Mock<IWatchlistService>();
 			_photoServiceMock = new Mock<IPhotoService>();
-			_currentUserServiceMock = new Mock<ICurrentUserService>();
 
 			_lotRepository = new LotRepository(mockDbContext.Object);
 			_bidRepository = new BidRepository(mockDbContext.Object);
 
 			_userManager = EntitiesSeeding.GetUserManagerMock();
+			_currentUserService = EntitiesSeeding.GetCurrentUserServiceMock();
 
 			_mapper = new Mapper(configuration);
 		}
@@ -86,7 +86,7 @@ namespace Auctionify.UnitTests.GetAllLotsByNameTests
 
 			var handler = new GetAllLotsByNameQueryHandler(
 				_lotRepository,
-				_currentUserServiceMock.Object,
+				_currentUserService,
 				_userManager,
 				_watchListServiceMock.Object,
 				_photoServiceMock.Object,
@@ -114,7 +114,7 @@ namespace Auctionify.UnitTests.GetAllLotsByNameTests
 
 			var handler = new GetAllLotsByNameQueryHandler(
 				_lotRepository,
-				_currentUserServiceMock.Object,
+				_currentUserService,
 				_userManager,
 				_watchListServiceMock.Object,
 				_photoServiceMock.Object,
@@ -151,7 +151,6 @@ namespace Auctionify.UnitTests.GetAllLotsByNameTests
 			if (disposing)
 			{
 				_watchListServiceMock.Reset();
-				_currentUserServiceMock.Reset();
 				_photoServiceMock.Reset();
 			}
 		}

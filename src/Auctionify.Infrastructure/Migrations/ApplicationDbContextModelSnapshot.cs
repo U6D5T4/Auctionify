@@ -57,7 +57,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasIndex("LotId");
 
-                    b.ToTable("Bids", (string)null);
+                    b.ToTable("Bids");
                 });
 
             modelBuilder.Entity("Auctionify.Core.Entities.Category", b =>
@@ -86,7 +86,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasIndex("ParentCategoryId");
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Auctionify.Core.Entities.ChatMessage", b =>
@@ -126,7 +126,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("ChatMessages", (string)null);
+                    b.ToTable("ChatMessages");
                 });
 
             modelBuilder.Entity("Auctionify.Core.Entities.Conversation", b =>
@@ -160,7 +160,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasIndex("SellerId");
 
-                    b.ToTable("Conversations", (string)null);
+                    b.ToTable("Conversations");
                 });
 
             modelBuilder.Entity("Auctionify.Core.Entities.Currency", b =>
@@ -184,7 +184,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Currency", (string)null);
+                    b.ToTable("Currency");
                 });
 
             modelBuilder.Entity("Auctionify.Core.Entities.File", b =>
@@ -218,7 +218,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasIndex("LotId");
 
-                    b.ToTable("Files", (string)null);
+                    b.ToTable("Files");
                 });
 
             modelBuilder.Entity("Auctionify.Core.Entities.Location", b =>
@@ -256,7 +256,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Locations", (string)null);
+                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("Auctionify.Core.Entities.Lot", b =>
@@ -326,7 +326,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasIndex("SellerId");
 
-                    b.ToTable("Lots", (string)null);
+                    b.ToTable("Lots");
                 });
 
             modelBuilder.Entity("Auctionify.Core.Entities.LotStatus", b =>
@@ -350,7 +350,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LotStatuses", (string)null);
+                    b.ToTable("LotStatuses");
                 });
 
             modelBuilder.Entity("Auctionify.Core.Entities.Rate", b =>
@@ -392,7 +392,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Rates", (string)null);
+                    b.ToTable("Rates");
                 });
 
             modelBuilder.Entity("Auctionify.Core.Entities.Role", b =>
@@ -460,7 +460,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Subscriptions", (string)null);
+                    b.ToTable("Subscriptions");
                 });
 
             modelBuilder.Entity("Auctionify.Core.Entities.SubscriptionType", b =>
@@ -484,7 +484,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("SubscriptionTypes", (string)null);
+                    b.ToTable("SubscriptionTypes");
                 });
 
             modelBuilder.Entity("Auctionify.Core.Entities.User", b =>
@@ -502,6 +502,12 @@ namespace Auctionify.Infrastructure.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DeletionDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -511,6 +517,9 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
@@ -578,7 +587,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Watchlists", (string)null);
+                    b.ToTable("Watchlists");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

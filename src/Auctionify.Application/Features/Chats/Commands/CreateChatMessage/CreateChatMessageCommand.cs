@@ -6,6 +6,7 @@ using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Auctionify.Application.Features.Chats.Commands.CreateChatMessage
 {
@@ -44,7 +45,10 @@ namespace Auctionify.Application.Features.Chats.Commands.CreateChatMessage
 			CancellationToken cancellationToken
 		)
 		{
-			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+			var user = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
+				cancellationToken: cancellationToken
+			);
 
 			var chatMessage = new ChatMessage
 			{

@@ -4,6 +4,7 @@ using Auctionify.Core.Entities;
 using Auctionify.Core.Enums;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Auctionify.Application.Features.Users.Commands.RemoveBid
 {
@@ -88,8 +89,9 @@ namespace Auctionify.Application.Features.Users.Commands.RemoveBid
 				.MustAsync(
 					async (bidId, cancellationToken) =>
 					{
-						var user = await _userManager.FindByEmailAsync(
-							_currentUserService.UserEmail!
+						var user = await _userManager.Users.FirstOrDefaultAsync(
+							u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
+							cancellationToken: cancellationToken
 						);
 
 						var bid = await _bidRepository.GetAsync(
@@ -123,8 +125,9 @@ namespace Auctionify.Application.Features.Users.Commands.RemoveBid
 				.MustAsync(
 					async (bidId, cancellationToken) =>
 					{
-						var user = await _userManager.FindByEmailAsync(
-							_currentUserService.UserEmail!
+						var user = await _userManager.Users.FirstOrDefaultAsync(
+							u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
+							cancellationToken: cancellationToken
 						);
 
 						var bid = await _bidRepository.GetAsync(

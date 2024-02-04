@@ -3,10 +3,12 @@ using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Core.Entities;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Auctionify.Application.Features.Users.Commands.RemoveLotFromWatchlist
 {
-	public class RemoveLotFromWatchlistCommandValidator : AbstractValidator<RemoveLotFromWatchlistCommand>
+	public class RemoveLotFromWatchlistCommandValidator
+		: AbstractValidator<RemoveLotFromWatchlistCommand>
 	{
 		private readonly IWatchlistRepository _watchlistRepository;
 		private readonly ILotRepository _lotRepository;
@@ -43,8 +45,9 @@ namespace Auctionify.Application.Features.Users.Commands.RemoveLotFromWatchlist
 				.MustAsync(
 					async (lotId, cancellationToken) =>
 					{
-						var user = await _userManager.FindByEmailAsync(
-							_currentUserService.UserEmail!
+						var user = await _userManager.Users.FirstOrDefaultAsync(
+							u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
+							cancellationToken: cancellationToken
 						);
 
 						var watchlist = await _watchlistRepository.GetAsync(

@@ -1,17 +1,28 @@
 <div class="modal">
     <div class="modal__inner">
         <div class="error-main">
-            <img src="{{iconPath}}" alt="info_icon">
-            <h3 *ngFor="let message of messages">{{message}}</h3>
+            <img src="{{ iconPath }}" alt="info_icon" />
+            <h3 *ngFor="let message of messages">{{ message }}</h3>
         </div>
         <p>
-            {{additionalText}}
+            {{ additionalText }}
         </p>
         <div class="btns-container">
-            <button class="mat-mdc-outlined-button-custom" mat-stroked-button (click)="closeDialog(false)"
-                [color]="breakBtnColor">{{breakBtnText}}</button>
-            <button mat-raised-button (click)="closeDialog(true)"
-                [color]="continueBtnColor">{{continueBtnText}}</button>
+            <button
+                class="mat-mdc-outlined-button-custom"
+                mat-stroked-button
+                (click)="closeDialog(false)"
+                [color]="breakBtnColor"
+            >
+                {{ breakBtnText }}
+            </button>
+            <button
+                mat-flat-button
+                (click)="closeDialog(true)"
+                [color]="continueBtnColor"
+            >
+                {{ continueBtnText }}
+            </button>
         </div>
     </div>
 </div>

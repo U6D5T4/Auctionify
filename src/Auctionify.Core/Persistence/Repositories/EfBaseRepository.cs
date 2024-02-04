@@ -166,5 +166,21 @@ namespace Auctionify.Core.Persistence.Repositories
 				return await orderBy(queryable).ToListAsync(cancellationToken);
 			return await queryable.ToListAsync(cancellationToken);
 		}
+
+		public async Task<bool> AllAsync(
+			Expression<Func<TEntity, bool>> predicate,
+			CancellationToken cancellationToken = default
+		)
+		{
+			return await Query().AllAsync(predicate, cancellationToken);
+		}
+
+		public async Task<bool> AnyAsync(
+			Expression<Func<TEntity, bool>> predicate,
+			CancellationToken cancellationToken = default
+		)
+		{
+			return await Query().AnyAsync(predicate, cancellationToken);
+		}
 	}
 }

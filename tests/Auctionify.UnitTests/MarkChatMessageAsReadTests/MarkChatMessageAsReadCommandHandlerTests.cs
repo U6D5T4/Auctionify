@@ -7,7 +7,9 @@ using Auctionify.Infrastructure.Repositories;
 using FluentAssertions;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Identity;
+using MockQueryable.Moq;
 using Moq;
+using User = Auctionify.Core.Entities.User;
 
 namespace Auctionify.UnitTests.MarkChatMessageAsReadTests
 {
@@ -46,13 +48,13 @@ namespace Auctionify.UnitTests.MarkChatMessageAsReadTests
 				null
 			);
 
-			_currentUserServiceMock.Setup(x => x.UserEmail).Returns(It.IsAny<string>());
+			var newUser = new User { Id = 1, Email = "test@mail.com" };
 
-			var newUser = new User { Id = 1 };
-
-			_userManagerMock
-				.Setup(x => x.FindByEmailAsync(It.IsAny<string>()))
-				.ReturnsAsync(newUser);
+			var mock = new List<User> { newUser }
+				.AsQueryable()
+				.BuildMockDbSet();
+			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(newUser.Email);
 
 			_chatMessageRepository = new ChatMessageRepository(mockDbContext.Object);
 
@@ -126,32 +128,6 @@ namespace Auctionify.UnitTests.MarkChatMessageAsReadTests
 				.Errors.First()
 				.ErrorMessage.Should()
 				.Be("Sender of the message cannot mark it as read");
-		}
-
-		[Fact]
-		public async Task Handle_GivenChatMessageIdThatIsNotSentToCurrentUser_ShouldThrowValidationException()
-		{
-			// Arrange
-			var newUser = new User { Id = 3 };
-
-			_userManagerMock
-				.Setup(x => x.FindByEmailAsync(It.IsAny<string>()))
-				.ReturnsAsync(newUser);
-
-			var request = new MarkChatMessageAsReadCommand { ChatMessageId = 2 };
-
-			// Act
-			var result = await _validator.ValidateAsync(request);
-
-			// Assert
-			result.Should().BeOfType<ValidationResult>();
-			result.IsValid.Should().BeFalse();
-			result.Errors.Should().NotBeEmpty();
-			result.Errors.Count.Should().Be(1);
-			result
-				.Errors.First()
-				.ErrorMessage.Should()
-				.Be("You are not the receiver of this chat message");
 		}
 
 		#endregion

@@ -3,8 +3,10 @@
         <img src="assets/icons/AuctionifyLogo.svg" title="AuctionifyLogo" />
     </a>
 
-    <div class="header__search">
-        <app-search></app-search>
+    <div class="header__search" *ngIf="isUserBuyer">
+        <app-search
+            [searchPlaceholder]="'Search by name or location...'"
+        ></app-search>
     </div>
 
     <ul class="navigation">
@@ -17,15 +19,6 @@
                 <a routerLink="/buyer/dashboard">Dashboard</a>
             </li>
         </ng-container>
-        <ng-container *ngIf="!isUserBuyer">
-            <li>
-                <img
-                    src="assets/icons/DashboardIcon.svg"
-                    alt="Dashboard Icon"
-                />
-                <a routerLink="/auth/login">Dashboard</a>
-            </li>
-        </ng-container>
         <ng-container *ngIf="isUserBuyer">
             <li>
                 <img src="assets/icons/WishlistIcon.svg" alt="Wishlist Icon" />
@@ -36,24 +29,26 @@
                 <a routerLink="/chat">Messages</a>
             </li>
         </ng-container>
-        <ng-container *ngIf="!isUserBuyer">
-            <li>
-                <img src="assets/icons/WishlistIcon.svg" alt="Wishlist Icon" />
-                <a routerLink="/auth/login">Wishlist</a>
-            </li>
-            <li>
-                <img src="assets/icons/mail-01.svg" alt="Wishlist Icon" />
-                <a routerLink="/auth/login">Messages</a>
-            </li>
-        </ng-container>
         <ng-container *ngIf="isUserBuyer">
             <li>
                 <img src="assets/icons/ProfileIcon.svg" alt="Profile Icon" />
                 <a routerLink="/profile">My Profile</a>
             </li>
-            <li>
-                <img src="assets/icons/LogoutIcon.svg" alt="Logout Icon" />
-                <a (click)="logout()" class="logout-button">Logout</a>
+            <li class="logout__btn">
+                <button
+                    type="button"
+                    (click)="logout()"
+                    mat-flat-button
+                    color="white"
+                >
+                    <div class="logout__btn-content">
+                        <img
+                            src="assets/icons/LogoutIcon.svg"
+                            alt="Logout Icon"
+                        />
+                        Logout
+                    </div>
+                </button>
             </li>
         </ng-container>
         <ng-container *ngIf="!isUserBuyer">
