@@ -2,25 +2,34 @@
     <h1>User profile</h1>
     <div class="main-profile-div">
         <div class="main">
-            <div class="main__profile">
-                <div class="main__photo">
-                    <img
-                        [src]="
-                            userProfileData && userProfileData.profilePictureUrl
-                                ? userProfileData.profilePictureUrl
-                                : '../../../../../assets/images/User.png'
-                        "
-                        alt="User-profile-image"
-                        width="200"
-                        height="200"
-                    />
+            <div class="main__top-section">
+                <div class="main__profile">
+                    <div class="main__photo">
+                        <img
+                            [src]="
+                                userProfileData &&
+                                userProfileData.profilePictureUrl
+                                    ? userProfileData.profilePictureUrl
+                                    : '../../../../../assets/images/User.png'
+                            "
+                            alt="User-profile-image"
+                            width="200"
+                            height="200"
+                        />
+                    </div>
+                    <div class="main__name-date">
+                        <h1>
+                            {{ userProfileData?.firstName }}
+                            {{ userProfileData?.lastName }}
+                        </h1>
+                    </div>
                 </div>
-                <div class="main__name-date">
-                    <h1>
-                        {{ userProfileData?.firstName }}
-                        {{ userProfileData?.lastName }}
-                    </h1>
-                </div>
+                <p
+                    class="main__is-deleted"
+                    *ngIf="userProfileData?.isDeleted == true"
+                >
+                    Deleted user
+                </p>
             </div>
             <div class="main__about-me">
                 <h2>About me</h2>

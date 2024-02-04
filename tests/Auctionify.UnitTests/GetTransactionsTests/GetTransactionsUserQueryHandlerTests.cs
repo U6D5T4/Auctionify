@@ -11,6 +11,7 @@ using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Query;
+using MockQueryable.Moq;
 using Moq;
 using System.Linq.Expressions;
 
@@ -110,7 +111,13 @@ namespace Auctionify.UnitTests.GetTransactionsTests
 
 			var roles = new List<string> { UserRole.Buyer.ToString() };
 
-			_userManagerMock.Setup(m => m.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(user);
+			var mock = new List<User> { user }
+				.AsQueryable()
+				.BuildMockDbSet();
+
+			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+
+			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(user.Email);
 
 			_userManagerMock.Setup(m => m.GetRolesAsync(It.IsAny<User>())).ReturnsAsync(roles);
 
@@ -178,7 +185,13 @@ namespace Auctionify.UnitTests.GetTransactionsTests
 
 			var roles = new List<string> { UserRole.Seller.ToString() };
 
-			_userManagerMock.Setup(m => m.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(user);
+			var mock = new List<User> { user }
+				.AsQueryable()
+				.BuildMockDbSet();
+
+			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+
+			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(user.Email);
 
 			_userManagerMock.Setup(m => m.GetRolesAsync(It.IsAny<User>())).ReturnsAsync(roles);
 

@@ -9,6 +9,7 @@ using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace Auctionify.Application.Features.Lots.Commands.Create
@@ -78,7 +79,10 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 				cancellationToken: cancellationToken
 			);
 
-			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+			var user = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
+				cancellationToken: cancellationToken
+			);
 
 			var location = new Location
 			{
@@ -130,7 +134,8 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 			{
 				var folderName = Guid.NewGuid().ToString();
 
-				var additionalDocumentsPath = $"{_azureBlobStorageOptions.AdditionalDocumentsFolderName}/{folderName}";
+				var additionalDocumentsPath =
+					$"{_azureBlobStorageOptions.AdditionalDocumentsFolderName}/{folderName}";
 
 				foreach (var document in request.AdditionalDocuments)
 				{
@@ -153,7 +158,10 @@ namespace Auctionify.Application.Features.Lots.Commands.Create
 
 			if (!request.IsDraft)
 			{
-				await _jobSchedulerService.ScheduleUpcomingToActiveLotStatusJob(mappedLot.Id, mappedLot.StartDate);
+				await _jobSchedulerService.ScheduleUpcomingToActiveLotStatusJob(
+					mappedLot.Id,
+					mappedLot.StartDate
+				);
 			}
 
 			return mappedLot;

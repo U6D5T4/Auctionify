@@ -8,6 +8,7 @@ using AutoMapper;
 using FluentAssertions;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using MockQueryable.Moq;
 using Moq;
 
 namespace Auctionify.UnitTests.GetAllChatMessagesTests
@@ -84,7 +85,9 @@ namespace Auctionify.UnitTests.GetAllChatMessagesTests
 				ProfilePicture = "test-profile-picture.png"
 			};
 
-			_userManagerMock.Setup(m => m.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(user);
+			var mock = new List<User> { user }.AsQueryable().BuildMockDbSet();
+			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(user.Email);
 
 			var handler = new GetAllChatMessagesQueryHandler(
 				_conversationRepository,
@@ -116,7 +119,9 @@ namespace Auctionify.UnitTests.GetAllChatMessagesTests
 				ProfilePicture = "test-profile-picture.png"
 			};
 
-			_userManagerMock.Setup(m => m.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(user);
+			var mock = new List<User> { user }.AsQueryable().BuildMockDbSet();
+			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(user.Email);
 
 			var handler = new GetAllChatMessagesQueryHandler(
 				_conversationRepository,

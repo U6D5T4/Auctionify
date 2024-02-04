@@ -24,6 +24,12 @@
         gap: 80px;
     }
 
+    &__top-section {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
     &__photo {
         display: flex;
         flex-direction: column;
@@ -39,6 +45,16 @@
         display: flex;
         flex-direction: column;
         gap: 16px;
+    }
+
+    &__is-deleted {
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 24px;
+        border-radius: 500px;
+        background: var(--color-grey-6);
+        padding: 8px 16px;
     }
 
     &__about-me {

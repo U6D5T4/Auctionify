@@ -1,6 +1,4 @@
-﻿using Auctionify.Application.Common.DTOs;
-
-namespace Auctionify.Application.Features.Users.Queries.GetById
+﻿namespace Auctionify.Application.Features.Users.Queries.GetById
 {
 	public class GetByIdUserResponse
 	{
@@ -23,6 +21,8 @@ namespace Auctionify.Application.Features.Users.Queries.GetById
 		public int RatesCount { get; set; }
 
 		public Dictionary<byte, int> StarCounts { get; set; } = new Dictionary<byte, int>();
+
+		public bool IsDeleted { get; set; }
 	}
 }
 

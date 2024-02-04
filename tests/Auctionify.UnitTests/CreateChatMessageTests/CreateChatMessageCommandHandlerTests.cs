@@ -10,7 +10,9 @@ using FluentAssertions;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
+using MockQueryable.Moq;
 using Moq;
+using User = Auctionify.Core.Entities.User;
 
 namespace Auctionify.UnitTests.CreateChatMessageTests
 {
@@ -27,10 +29,10 @@ namespace Auctionify.UnitTests.CreateChatMessageTests
 
 		public CreateChatMessageCommandHandlerTests()
 		{
-			var mockDbContext = DbContextMock.GetMock<Conversation, ApplicationDbContext>(
-				EntitiesSeeding.GetConversations(),
-				ctx => ctx.Conversations
-			);
+			var mockDbContext = DbContextMock.GetMock<
+				Core.Entities.Conversation,
+				ApplicationDbContext
+			>(EntitiesSeeding.GetConversations(), ctx => ctx.Conversations);
 
 			mockDbContext = DbContextMock.GetMock(
 				EntitiesSeeding.GetChatMessages(),
@@ -66,13 +68,13 @@ namespace Auctionify.UnitTests.CreateChatMessageTests
 				null
 			);
 
-			_currentUserServiceMock.Setup(x => x.UserEmail).Returns(It.IsAny<string>());
-
 			var newUser = new User { Id = 7 }; // User with Id = 7 is not a part of conversation with Id = 1
 
-			_userManagerMock
-				.Setup(x => x.FindByEmailAsync(It.IsAny<string>()))
-				.ReturnsAsync(newUser);
+			var mock = new List<User> { newUser }
+				.AsQueryable()
+				.BuildMockDbSet();
+			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(newUser.Email);
 
 			_chatMessageRepository = new ChatMessageRepository(mockDbContext.Object);
 			_conversationRepository = new ConversationRepository(mockDbContext.Object);
@@ -115,7 +117,14 @@ namespace Auctionify.UnitTests.CreateChatMessageTests
 			mockHubContext.Setup(x => x.Clients).Returns(mockClients.Object);
 
 			var user = new User { Id = 1, Email = "user@example.com" };
-			userManagerMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(user);
+
+			var mock = new List<User> { user }
+				.AsQueryable()
+				.BuildMockDbSet();
+
+			userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+
+			currentUserServiceMock.Setup(m => m.UserEmail).Returns(user.Email);
 
 			var request = new CreateChatMessageCommand
 			{

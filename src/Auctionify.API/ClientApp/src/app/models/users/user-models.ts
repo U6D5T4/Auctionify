@@ -38,6 +38,7 @@ export interface GetUserById {
     averageRate: number;
     ratesCount: number | null;
     starCounts?: { [key: number]: number };
+    isDeleted: boolean;
 }
 
 export interface UpdateUserProfileModel {

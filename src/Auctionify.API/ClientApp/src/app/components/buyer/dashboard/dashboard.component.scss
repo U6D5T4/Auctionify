@@ -1,7 +1,7 @@
 .dashboard {
     &__title {
         display: flex;
-        padding-top: 40px;
+        padding-top: 16px;
         padding-bottom: 32px;
         color: var(--color-text-primary);
         font-size: 32px;
@@ -339,10 +339,12 @@
 
 .show-more-button {
     padding: 12px;
-    color: white;
     border: none;
     border-radius: 8px;
-    font-weight: bold;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 24px;
 }
 
 .lot {

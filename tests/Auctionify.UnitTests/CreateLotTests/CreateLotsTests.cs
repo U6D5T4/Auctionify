@@ -11,7 +11,6 @@ using FluentValidation.TestHelper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Moq;
-using System.Collections;
 
 namespace Auctionify.UnitTests.CreateLotTests
 {
@@ -23,9 +22,9 @@ namespace Auctionify.UnitTests.CreateLotTests
 		private readonly ILotStatusRepository _lotStatusRepository;
 		private readonly Mock<IBlobService> _blobServiceMock;
 		private readonly Mock<IOptions<AzureBlobStorageOptions>> _blobStorageOptionsMock;
-		private readonly Mock<ICurrentUserService> _currentUserServiceMock;
 		private readonly Mock<IJobSchedulerService> _jobSchedulerServiceMock;
 		private readonly UserManager<User> _userManager;
+		private readonly ICurrentUserService _currentUserService;
 		private readonly CreateLotCommandValidator _validator;
 		private static readonly DateTime CustomDateTimeNow = new DateTime(2023, 11, 2, 13, 0, 0);
 
@@ -45,14 +44,12 @@ namespace Auctionify.UnitTests.CreateLotTests
 			}));
 			_mapper = new Mapper(configuration);
 
-			var currentUserService = new Mock<ICurrentUserService>();
 			var jobSchedulerService = new Mock<IJobSchedulerService>();
 			_blobServiceMock = new Mock<IBlobService> { CallBase = true };
-			_currentUserServiceMock = currentUserService;
 			_jobSchedulerServiceMock = jobSchedulerService;
 			_userManager = EntitiesSeeding.GetUserManagerMock();
+			_currentUserService = EntitiesSeeding.GetCurrentUserServiceMock();
 
-			currentUserService.Setup(x => x.UserEmail).Returns(It.IsAny<string>());
 			blobStorageOptionsMock.Setup(x => x.Value).Returns(new AzureBlobStorageOptions
 			{
 				ContainerName = "auctionify-files",
@@ -85,7 +82,7 @@ namespace Auctionify.UnitTests.CreateLotTests
 			var command = new CreateLotCommandHandler(
 				_lotRepository,
 				_lotStatusRepository,
-				_currentUserServiceMock.Object,
+				_currentUserService,
 				_userManager,
 				_mapper,
 				_blobServiceMock.Object,

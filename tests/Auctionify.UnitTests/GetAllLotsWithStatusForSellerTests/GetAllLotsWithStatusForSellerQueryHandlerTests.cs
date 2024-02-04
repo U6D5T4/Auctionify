@@ -1,16 +1,16 @@
-﻿using Auctionify.Application.Common.Interfaces.Repositories;
+﻿using Auctionify.Application.Common.DTOs;
 using Auctionify.Application.Common.Interfaces;
+using Auctionify.Application.Common.Interfaces.Repositories;
+using Auctionify.Application.Common.Models.Requests;
+using Auctionify.Application.Features.Lots.Queries.GetAllLotsWithStatusForSeller;
 using Auctionify.Core.Entities;
-using AutoMapper;
-using Microsoft.AspNetCore.Identity;
-using Moq;
+using Auctionify.Core.Enums;
 using Auctionify.Infrastructure.Persistence;
 using Auctionify.Infrastructure.Repositories;
-using Auctionify.Application.Features.Lots.Queries.GetAllLotsWithStatusForSeller;
-using Auctionify.Application.Common.Models.Requests;
-using Auctionify.Application.Common.DTOs;
+using AutoMapper;
 using FluentAssertions;
-using Auctionify.Core.Enums;
+using Microsoft.AspNetCore.Identity;
+using Moq;
 
 namespace Auctionify.UnitTests.GetAllLotsWithStatusForSellerTests
 {
@@ -20,8 +20,8 @@ namespace Auctionify.UnitTests.GetAllLotsWithStatusForSellerTests
 
 		private readonly IMapper _mapper;
 		private readonly ILotRepository _lotRepository;
-		private readonly Mock<ICurrentUserService> _currentUserServiceMock;
 		private readonly UserManager<User> _userManager;
+		private readonly ICurrentUserService _currentUserService;
 		private readonly Mock<IPhotoService> _photoServiceMock;
 
 		public GetAllLotsWithStatusForSellerQueryHandlerTests()
@@ -58,13 +58,12 @@ namespace Auctionify.UnitTests.GetAllLotsWithStatusForSellerTests
 			);
 
 			_mapper = new Mapper(configuration);
-
 			_userManager = EntitiesSeeding.GetUserManagerMock();
-			_currentUserServiceMock = new Mock<ICurrentUserService>();
-			_currentUserServiceMock.Setup(x => x.UserEmail).Returns(It.IsAny<string>());
+			_currentUserService = EntitiesSeeding.GetCurrentUserServiceMock();
 
 			_photoServiceMock = new Mock<IPhotoService>();
-			_photoServiceMock.Setup(x => x.GetMainPhotoUrlAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+			_photoServiceMock
+				.Setup(x => x.GetMainPhotoUrlAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
 				.ReturnsAsync(It.IsAny<string>());
 
 			_lotRepository = new LotRepository(mockDbContext.Object);
@@ -86,15 +85,18 @@ namespace Auctionify.UnitTests.GetAllLotsWithStatusForSellerTests
 			var handler = new GetAllLotsWithStatusForSellerQueryHandler(
 				_lotRepository,
 				_mapper,
-				_currentUserServiceMock.Object,
+				_currentUserService,
 				_userManager,
-				_photoServiceMock.Object);
+				_photoServiceMock.Object
+			);
 
 			var result = await handler.Handle(query, default);
 
 			result.Should().BeOfType<GetListResponseDto<GetAllLotsWithStatusForSellerResponse>>();
 			result.Should().NotBeNull();
-			result.Items.Should().OnlyContain(x => x.LotStatus.Name == AuctionStatus.Active.ToString());
+			result
+				.Items.Should()
+				.OnlyContain(x => x.LotStatus.Name == AuctionStatus.Active.ToString());
 		}
 
 		[Fact]
@@ -109,15 +111,18 @@ namespace Auctionify.UnitTests.GetAllLotsWithStatusForSellerTests
 			var handler = new GetAllLotsWithStatusForSellerQueryHandler(
 				_lotRepository,
 				_mapper,
-				_currentUserServiceMock.Object,
+				_currentUserService,
 				_userManager,
-				_photoServiceMock.Object);
+				_photoServiceMock.Object
+			);
 
 			var result = await handler.Handle(query, default);
 
 			result.Should().BeOfType<GetListResponseDto<GetAllLotsWithStatusForSellerResponse>>();
 			result.Should().NotBeNull();
-			result.Items.Should().OnlyContain(x => x.LotStatus.Name == AuctionStatus.Draft.ToString());
+			result
+				.Items.Should()
+				.OnlyContain(x => x.LotStatus.Name == AuctionStatus.Draft.ToString());
 		}
 
 		#endregion
