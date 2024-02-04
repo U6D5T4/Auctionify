@@ -25,6 +25,7 @@ import { AddBidModel } from './models/bids/bid-models';
 import { FilterLot } from './models/lots/filter';
 import {
     BuyerModel,
+    GetUserById,
     SellerModel,
     UpdateUserProfileModel,
 } from './models/users/user-models';
@@ -941,6 +942,30 @@ export class Client {
         return this.handleGetAllLotsWithStatusForSeller(url_, pageRequest);
     }
 
+    getUserById(userId: number): Observable<GetUserById> {
+        let url_ = `${this.baseUrl}/api/users/${userId}`;
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<GetUserById> => {
+                let data!: GetUserById;
+
+                if (response.body !== null) {
+                    data = response.body;
+                }
+
+                return of(data);
+            })
+        );
+    }
+
     private handleGetAllLotsWithStatusForSeller(
         url: string,
         pageRequest: PageRequest
@@ -1018,6 +1043,16 @@ export class Client {
                 } else {
                     throw new Error('Invalid response structure');
                 }
+            })
+        );
+    }
+
+    deleteAccount(): Observable<any> {
+        let url_ = this.baseUrl + `/api/users`;
+
+        return this.http.request('delete', url_).pipe(
+            catchError((error) => {
+                return throwError(() => error.error);
             })
         );
     }

@@ -69,17 +69,24 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				new ResetPasswordViewModel
 				{
 					Token = "simpletesttoken",
-					Email = "test@email.com",
+					Email = "test@test.COM",
 					NewPassword = "testpassword",
 					ConfirmPassword = "testpassword" // password matches its confirmation
                 },
 				new ResetPasswordViewModel
 				{
 					Token = "simpletesttoken",
-					Email = "test@email.com",
+					Email = "test@test.COM",
 					NewPassword = "testpassword",
 					ConfirmPassword = "wrongtestpassword" // password does not match its confirmation
-                }
+                },
+				new ResetPasswordViewModel
+				{
+					Token = "simpletesttoken",
+					Email = "OTHERUSERtest@test.COM", // no such user
+					NewPassword = "testpassword",
+					ConfirmPassword = "testpassword"
+				},
 			};
 
 			yield return new object[] { resetPasswordViewModels };

@@ -1,6 +1,10 @@
-﻿using Auctionify.Core.Entities;
+﻿using Auctionify.Application.Common.Interfaces;
+using Auctionify.Core.Entities;
 using Microsoft.AspNetCore.Identity;
+using MockQueryable.Moq;
 using Moq;
+using Conversation = Auctionify.Core.Entities.Conversation;
+using User = Auctionify.Core.Entities.User;
 
 namespace Auctionify.UnitTests
 {
@@ -209,27 +213,11 @@ namespace Auctionify.UnitTests
 			};
 		}
 
-		public static User GetUser()
-		{
-			return new User
-			{
-				Id = 1,
-				UserName = "TestUserName",
-				Email = "test@test.COM",
-				EmailConfirmed = true,
-				PhoneNumber = "123456789",
-				FirstName = "TestFirstName",
-				LastName = "TestLastName",
-				AboutMe = "TestAboutMe",
-				ProfilePicture = "TestProfilePicture.png",
-			};
-		}
-
 		public static List<User> GetUsers()
 		{
-			return new List<User>
+			var users = new List<User>()
 			{
-				new User
+				new()
 				{
 					Id = 1,
 					UserName = "TestUserName",
@@ -240,8 +228,9 @@ namespace Auctionify.UnitTests
 					LastName = "TestLastName",
 					AboutMe = "TestAboutMe",
 					ProfilePicture = "TestProfilePicture.png",
+					IsDeleted = false,
 				},
-				new User
+				new()
 				{
 					Id = 2,
 					UserName = "TestUserName",
@@ -251,9 +240,10 @@ namespace Auctionify.UnitTests
 					FirstName = "TestFirstName",
 					LastName = "TestLastName",
 					AboutMe = "TestAboutMe",
-					ProfilePicture = "TestProfilePicture.png"
+					ProfilePicture = "TestProfilePicture.png",
+					IsDeleted = true,
 				},
-				new User
+				new()
 				{
 					Id = 3,
 					UserName = "TestUserName",
@@ -263,19 +253,17 @@ namespace Auctionify.UnitTests
 					FirstName = "TestFirstName",
 					LastName = "TestLastName",
 					AboutMe = "TestAboutMe",
-					ProfilePicture = "TestProfilePicture.png"
+					ProfilePicture = "TestProfilePicture.png",
+					IsDeleted = true,
 				}
 			};
+
+			return users;
 		}
 
 		public static List<string> GetRoles()
 		{
-			return new List<string>
-			{
-				"Buyer",
-				"Seller",
-				"Admin",
-			};
+			return new List<string> { "Buyer", "Seller", "Admin", };
 		}
 
 		public static List<Core.Entities.File> GetFiles()
@@ -508,11 +496,22 @@ namespace Auctionify.UnitTests
 				null,
 				null
 			);
-			userManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(GetUser());
+
+			var mock = GetUsers().AsQueryable().BuildMockDbSet();
+			userManager.Setup(x => x.Users).Returns(mock.Object);
+
 			userManager.Setup(x => x.GetRolesAsync(It.IsAny<User>())).ReturnsAsync(GetRoles());
 			userManager.Object.UserValidators.Add(new UserValidator<User>());
 			userManager.Object.PasswordValidators.Add(new PasswordValidator<User>());
 			return userManager.Object;
+		}
+
+		public static ICurrentUserService GetCurrentUserServiceMock()
+		{
+			var currentUserServiceMock = new Mock<ICurrentUserService>();
+			currentUserServiceMock.Setup(x => x.UserEmail).Returns("test@test.COM");
+
+			return currentUserServiceMock.Object;
 		}
 	}
 }

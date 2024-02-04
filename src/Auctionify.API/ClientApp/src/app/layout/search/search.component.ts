@@ -3,7 +3,7 @@ import {
     HttpResponse,
     HttpStatusCode,
 } from '@angular/common/http';
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, Input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import {
     MatAutocomplete,
@@ -20,6 +20,8 @@ import { Client, SearchLotResponse } from 'src/app/web-api-client';
     styleUrls: ['./search.component.scss'],
 })
 export class SearchComponent {
+    @Input() searchPlaceholder: string = 'Search by name or location';
+
     searchInput = new FormControl<string>('');
     searchNameResult: SearchLotResponse[] = [];
     searchLocationResult: SearchLotResponse[] = [];

@@ -151,6 +151,16 @@ namespace Auctionify.Infrastructure.Persistence
 					new Category { Name = "Furniture" }
 				);
 
+				var collectiblesCategory = _context.Categories.Add(
+					new Category { Name = "Collectibles" }
+				);
+
+				var artCategory = _context.Categories.Add(new Category { Name = "Art" });
+
+				var musicCategory = _context.Categories.Add(new Category { Name = "Music" });
+
+				var jewelryCategory = _context.Categories.Add(new Category { Name = "Jewelry" });
+
 				await _context.SaveChangesAsync();
 
 				_context.Categories.AddRange(
@@ -183,6 +193,17 @@ namespace Auctionify.Infrastructure.Persistence
 					{
 						Name = "Smart Home Devices",
 						ParentCategoryId = electronicsCategory.Entity.Id
+					},
+					new Category
+					{
+						Name = "Video Games",
+						ParentCategoryId = electronicsCategory.Entity.Id
+					},
+					new Category { Name = "TVs", ParentCategoryId = electronicsCategory.Entity.Id },
+					new Category
+					{
+						Name = "Printers",
+						ParentCategoryId = electronicsCategory.Entity.Id
 					}
 				);
 
@@ -202,11 +223,7 @@ namespace Auctionify.Infrastructure.Persistence
 						Name = "Office Chairs",
 						ParentCategoryId = furnitureCategory.Entity.Id
 					},
-					new Category
-					{
-						Name = "Sofas",
-						ParentCategoryId = furnitureCategory.Entity.Id
-					},
+					new Category { Name = "Sofas", ParentCategoryId = furnitureCategory.Entity.Id },
 					new Category
 					{
 						Name = "Dining Tables",
@@ -219,100 +236,152 @@ namespace Auctionify.Infrastructure.Persistence
 					}
 				);
 
-				_context.Categories.AddRange(
-					new Category
-					{
-						Name = "Antiques",
-						ParentCategoryId = null
-					},
-					new Category
-					{
-						Name = "Collectibles",
-						ParentCategoryId = null
-					},
-					new Category
-					{
-						Name = "Art",
-						ParentCategoryId = null
-					},
-					new Category
-					{
-						Name = "Jewelry",
-						ParentCategoryId = null
-					},
-					new Category
-					{
-						Name = "Watches",
-						ParentCategoryId = null
-					},
-					new Category
-					{
-						Name = "Coins and Currency",
-						ParentCategoryId = null
-					},
-					new Category
-					{
-						Name = "Vintage Clothing",
-						ParentCategoryId = null
-					},
-					new Category
-					{
-						Name = "Automobilia",
-						ParentCategoryId = null
-					},
-					new Category
-					{
-						Name = "Memorabilia",
-						ParentCategoryId = null
-					},
-					new Category
-					{
-						Name = "Rare Books",
-						ParentCategoryId = null
-					},
-					new Category
-					{
-						Name = "Stamps",
-						ParentCategoryId = null
-					},
-					new Category
-					{
-						Name = "Sports Memorabilia",
-						ParentCategoryId = null
-					},
-					new Category
-					{
-						Name = "Comic Books",
-						ParentCategoryId = null
-					},
+				_context.AddRange(
 					new Category
 					{
 						Name = "Trading Cards",
-						ParentCategoryId = null
+						ParentCategoryId = collectiblesCategory.Entity.Id
 					},
 					new Category
 					{
 						Name = "Toys",
-						ParentCategoryId = null
+						ParentCategoryId = collectiblesCategory.Entity.Id
+					},
+					new Category
+					{
+						Name = "Action Figures",
+						ParentCategoryId = collectiblesCategory.Entity.Id
+					},
+					new Category
+					{
+						Name = "Pins",
+						ParentCategoryId = collectiblesCategory.Entity.Id
+					},
+					new Category
+					{
+						Name = "Key Chains",
+						ParentCategoryId = collectiblesCategory.Entity.Id
+					},
+					new Category
+					{
+						Name = "Model Cars",
+						ParentCategoryId = collectiblesCategory.Entity.Id
+					},
+					new Category
+					{
+						Name = "Rare Books",
+						ParentCategoryId = collectiblesCategory.Entity.Id
+					},
+					new Category
+					{
+						Name = "Comic Books",
+						ParentCategoryId = collectiblesCategory.Entity.Id
+					},
+					new Category
+					{
+						Name = "Stamps",
+						ParentCategoryId = collectiblesCategory.Entity.Id
+					},
+					new Category
+					{
+						Name = "Coins and Currency",
+						ParentCategoryId = collectiblesCategory.Entity.Id
+					}
+				);
+
+				_context.Categories.AddRange(
+					new Category { Name = "Paintings", ParentCategoryId = artCategory.Entity.Id },
+					new Category { Name = "Sculptures", ParentCategoryId = artCategory.Entity.Id },
+					new Category { Name = "Books", ParentCategoryId = artCategory.Entity.Id },
+					new Category { Name = "Comics", ParentCategoryId = artCategory.Entity.Id },
+					new Category { Name = "Photography", ParentCategoryId = artCategory.Entity.Id },
+					new Category { Name = "Posters", ParentCategoryId = artCategory.Entity.Id }
+				);
+
+				_context.Categories.AddRange(
+					new Category { Name = "Guitars", ParentCategoryId = musicCategory.Entity.Id },
+					new Category
+					{
+						Name = "Bass Guitars",
+						ParentCategoryId = musicCategory.Entity.Id
+					},
+					new Category { Name = "Drums", ParentCategoryId = musicCategory.Entity.Id },
+					new Category { Name = "Pianos", ParentCategoryId = musicCategory.Entity.Id },
+					new Category { Name = "Keyboards", ParentCategoryId = musicCategory.Entity.Id },
+					new Category
+					{
+						Name = "Synthesizers",
+						ParentCategoryId = musicCategory.Entity.Id
+					},
+					new Category
+					{
+						Name = "DJ Equipment",
+						ParentCategoryId = musicCategory.Entity.Id
+					},
+					new Category
+					{
+						Name = "Microphones",
+						ParentCategoryId = musicCategory.Entity.Id
+					},
+					new Category
+					{
+						Name = "Music Accessories",
+						ParentCategoryId = musicCategory.Entity.Id
 					},
 					new Category
 					{
 						Name = "Music Instruments",
-						ParentCategoryId = null
+						ParentCategoryId = musicCategory.Entity.Id
 					},
 					new Category
 					{
-						Name = "Music Records Vinyl",
-						ParentCategoryId = null
+						Name = "Vinyl Records",
+						ParentCategoryId = musicCategory.Entity.Id
+					},
+					new Category { Name = "CDs", ParentCategoryId = musicCategory.Entity.Id },
+					new Category { Name = "Cassettes", ParentCategoryId = musicCategory.Entity.Id },
+					new Category
+					{
+						Name = "8-Track Tapes",
+						ParentCategoryId = musicCategory.Entity.Id
 					},
 					new Category
 					{
-						Name = "Wine",
-						ParentCategoryId = null
+						Name = "Reel-to-Reel Tapes",
+						ParentCategoryId = musicCategory.Entity.Id
 					}
 				);
-			}
 
+				_context.Categories.AddRange(
+					new Category { Name = "Rings", ParentCategoryId = jewelryCategory.Entity.Id },
+					new Category
+					{
+						Name = "Necklaces",
+						ParentCategoryId = jewelryCategory.Entity.Id
+					},
+					new Category
+					{
+						Name = "Bracelets",
+						ParentCategoryId = jewelryCategory.Entity.Id
+					},
+					new Category
+					{
+						Name = "Earrings",
+						ParentCategoryId = jewelryCategory.Entity.Id
+					},
+					new Category
+					{
+						Name = "Brooches",
+						ParentCategoryId = jewelryCategory.Entity.Id
+					},
+					new Category
+					{
+						Name = "Pendants",
+						ParentCategoryId = jewelryCategory.Entity.Id
+					},
+					new Category { Name = "Watches", ParentCategoryId = jewelryCategory.Entity.Id }
+				);
+			}
 
 			if (!_context.LotStatuses.Any())
 			{

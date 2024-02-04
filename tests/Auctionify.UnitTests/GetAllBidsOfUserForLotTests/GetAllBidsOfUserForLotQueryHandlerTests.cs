@@ -9,7 +9,6 @@ using Auctionify.Infrastructure.Repositories;
 using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
-using Moq;
 
 namespace Auctionify.UnitTests.GetAllBidsOfUserForLotTests
 {
@@ -21,8 +20,8 @@ namespace Auctionify.UnitTests.GetAllBidsOfUserForLotTests
 		private readonly IBidRepository _bidRepository;
 		private readonly ILotRepository _lotRepository;
 		private readonly ICurrencyRepository _currencyRepository;
-		private readonly Mock<ICurrentUserService> _currentUserServiceMock;
 		private readonly UserManager<User> _userManager;
+		private readonly ICurrentUserService _currentUserService;
 
 		public GetAllBidsOfUserForLotQueryHandlerTests()
 		{
@@ -59,8 +58,7 @@ namespace Auctionify.UnitTests.GetAllBidsOfUserForLotTests
 			_mapper = new Mapper(configuration);
 
 			_userManager = EntitiesSeeding.GetUserManagerMock();
-			_currentUserServiceMock = new Mock<ICurrentUserService>();
-			_currentUserServiceMock.Setup(x => x.UserEmail).Returns(It.IsAny<string>());
+			_currentUserService = EntitiesSeeding.GetCurrentUserServiceMock();
 
 			_bidRepository = new BidRepository(mockDbContext.Object);
 			_lotRepository = new LotRepository(mockDbContext.Object);
@@ -85,7 +83,7 @@ namespace Auctionify.UnitTests.GetAllBidsOfUserForLotTests
 			var handler = new GetAllBidsOfUserForLotQueryHandler(
 				_mapper,
 				_bidRepository,
-				_currentUserServiceMock.Object,
+				_currentUserService,
 				_userManager,
 				_lotRepository,
 				_currencyRepository

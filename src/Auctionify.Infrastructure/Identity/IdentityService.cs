@@ -4,6 +4,7 @@ using Auctionify.Core.Entities;
 using Auctionify.Infrastructure.Common.Options;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -59,17 +60,20 @@ namespace Auctionify.Infrastructure.Identity
 			{
 				return new LoginResponse
 				{
-					Errors = new[] { "User data is emtpy" },
+					Errors = new[] { "User data is empty" },
 					IsSuccess = false,
 				};
 			}
-			var user = await _userManager.FindByEmailAsync(userModel.Email);
+
+			var user = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == userModel.Email && !u.IsDeleted
+			);
 
 			if (user is null)
 			{
 				return new LoginResponse
 				{
-					Errors = new[] { "User is not found" },
+					Errors = new[] { "User is not found or deleted" },
 					IsSuccess = false,
 				};
 			}
@@ -119,7 +123,7 @@ namespace Auctionify.Infrastructure.Identity
 		private async Task<TokenModel> GenerateJWTTokenWithUserClaimsAsync(User user)
 		{
 			var roles = await _userManager.GetRolesAsync(user);
-			var claims = new List<Claim> { new Claim(ClaimTypes.Email, user.Email!), };
+			var claims = new List<Claim> { new(ClaimTypes.Email, user.Email!) };
 
 			foreach (var role in roles)
 			{
@@ -143,7 +147,10 @@ namespace Auctionify.Infrastructure.Identity
 
 		public async Task<ResetPasswordResponse> ForgetPasswordAsync(string email)
 		{
-			var user = await _userManager.FindByEmailAsync(email);
+			var user = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == email && !u.IsDeleted
+			);
+
 			if (user is null)
 			{
 				return new ResetPasswordResponse
@@ -177,7 +184,10 @@ namespace Auctionify.Infrastructure.Identity
 
 		public async Task<ResetPasswordResponse> ResetPasswordAsync(ResetPasswordViewModel model)
 		{
-			var user = await _userManager.FindByEmailAsync(model.Email);
+			var user = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == model.Email && !u.IsDeleted
+			);
+
 			if (user is null)
 			{
 				return new ResetPasswordResponse
@@ -230,7 +240,27 @@ namespace Auctionify.Infrastructure.Identity
 					IsSuccess = false,
 				};
 
-			var user = new User { Email = model.Email, UserName = model.Email, };
+			var existingUser = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == model.Email && !u.IsDeleted
+			);
+
+			if (existingUser is not null)
+				return new RegisterResponse
+				{
+					Message = "User with this email already exists",
+					IsSuccess = false,
+				};
+
+			var newUsername = GenerateUniqueUserName();
+
+			var user = new User
+			{
+				Email = model.Email,
+				UserName = newUsername,
+				IsDeleted = false,
+				CreationDate = DateTime.UtcNow
+			};
+
 			var result = await _userManager.CreateAsync(user, model.Password);
 
 			if (result.Succeeded)
@@ -267,6 +297,11 @@ namespace Auctionify.Infrastructure.Identity
 			};
 		}
 
+		private static string GenerateUniqueUserName()
+		{
+			return $"user_{Guid.NewGuid().ToString("N")}";
+		}
+
 		public async Task<RegisterResponse> ConfirmUserEmailAsync(string userId, string token)
 		{
 			var user = await _userManager.FindByIdAsync(userId);
@@ -295,7 +330,9 @@ namespace Auctionify.Infrastructure.Identity
 
 		public async Task<LoginResponse> AssignRoleToUserAsync(string role)
 		{
-			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+			var user = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == _currentUserService.UserEmail!
+			);
 
 			if (user == null)
 			{
@@ -306,11 +343,7 @@ namespace Auctionify.Infrastructure.Identity
 
 			if (userRoleList.Any())
 			{
-				return new LoginResponse
-				{
-					IsSuccess = false,
-					Message = "User already has a role"
-				};
+				return new LoginResponse { IsSuccess = false, Message = "User already has a role" };
 			}
 
 			if (string.IsNullOrWhiteSpace(role))
@@ -358,7 +391,10 @@ namespace Auctionify.Infrastructure.Identity
 
 		public async Task<LoginResponse> LoginUserWithGoogleAsync(Payload payload)
 		{
-			var user = await _userManager.FindByEmailAsync(payload.Email);
+			var user = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == payload.Email && !u.IsDeleted
+			);
+
 			if (user == null)
 			{
 				user = new User
@@ -389,9 +425,14 @@ namespace Auctionify.Infrastructure.Identity
 			return new LoginResponse { IsSuccess = true, Result = token };
 		}
 
-		public async Task<ChangePasswordResponse> ChangeUserPasswordAsync(string email, ChangePasswordViewModel model)
+		public async Task<ChangePasswordResponse> ChangeUserPasswordAsync(
+			string email,
+			ChangePasswordViewModel model
+		)
 		{
-			var user = await _userManager.FindByEmailAsync(email);
+			var user = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == email && !u.IsDeleted
+			);
 
 			if (user is null)
 			{

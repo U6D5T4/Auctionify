@@ -1,22 +1,17 @@
 .main {
     &__container-rate {
+        border-radius: 16px;
+        border: 1px solid #e0e0e0;
+        padding: 40px;
         display: flex;
         flex-direction: column;
         gap: 40px;
     }
 
-    &__rating-btn {
-        width: 130px;
-    }
-
-    &__feedback-btn {
-        width: 160px;
-    }
-
     &__rating {
         display: flex;
         gap: 40px;
-        flex-wrap: nowrap;
+        flex-wrap: wrap;
     }
 
     &__progress-bar-container {
@@ -35,7 +30,7 @@
         align-items: center;
         gap: 16px;
     }
-    
+
     &__progress-bar {
         width: 200px;
         height: 8px;
@@ -43,11 +38,11 @@
         background-color: #e0e0e0;
         position: relative;
     }
-    
+
     &__progress {
         height: 100%;
         border-radius: 500px;
-        background-color: #FBBC04;
+        background-color: #fbbc04;
     }
 
     &__count {
@@ -79,6 +74,19 @@
     }
 
     &__rating-count {
-        color: #2B5293;
+        color: #2b5293;
+    }
+
+    &__see-more-comments-btn button {
+        min-width: 150px;
+        border: 2px solid #2b5293;
+        color: #2b5293;
+    }
+
+    &__btn-content {
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
+        align-items: center;
     }
 }

@@ -24,9 +24,9 @@ namespace Auctionify.UnitTests.GetWatshlistLotsTests
 		private readonly ILotStatusRepository _lotStatusRepository;
 		private readonly IBidRepository _bidRepository;
 		private readonly IMapper _mapper;
-		private readonly Mock<ICurrentUserService> _currentUserServiceMock;
 		private readonly Mock<IPhotoService> _photoServiceMock;
 		private readonly UserManager<User> _userManager;
+		private readonly ICurrentUserService _currentUserService;
 
 		public GetWatchlistLotsQueryHandlerTests()
 		{
@@ -75,7 +75,6 @@ namespace Auctionify.UnitTests.GetWatshlistLotsTests
 			_mapper = new Mapper(configuration);
 
 			_photoServiceMock = new Mock<IPhotoService>();
-			_currentUserServiceMock = new Mock<ICurrentUserService>();
 
 			_bidRepository = new BidRepository(mockDbContext.Object);
 			_watchlistRepository = new WatchlistRepository(mockDbContext.Object);
@@ -85,6 +84,7 @@ namespace Auctionify.UnitTests.GetWatshlistLotsTests
 			_lotStatusRepository = new LotStatusRepository(mockDbContext.Object);
 
 			_userManager = EntitiesSeeding.GetUserManagerMock();
+			_currentUserService = EntitiesSeeding.GetCurrentUserServiceMock();
 		}
 
 		#endregion
@@ -108,7 +108,7 @@ namespace Auctionify.UnitTests.GetWatshlistLotsTests
 				_lotStatusRepository,
 				_mapper,
 				_photoServiceMock.Object,
-				_currentUserServiceMock.Object,
+				_currentUserService,
 				_userManager,
 				_bidRepository
 			);
@@ -134,7 +134,6 @@ namespace Auctionify.UnitTests.GetWatshlistLotsTests
 		{
 			if (disposing)
 			{
-				_currentUserServiceMock.Reset();
 				_photoServiceMock.Reset();
 			}
 		}

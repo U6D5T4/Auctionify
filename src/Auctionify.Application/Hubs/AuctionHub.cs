@@ -16,5 +16,15 @@ namespace Auctionify.Application.Hubs
 		{
 			await Groups.RemoveFromGroupAsync(Context.ConnectionId, lotId.ToString());
 		}
+
+		public async Task JoinConversationGroup(int conversationId)
+		{
+			await Groups.AddToGroupAsync(Context.ConnectionId, conversationId.ToString());
+		}
+
+		public async Task LeaveConversationGroup(int conversationId)
+		{
+			await Groups.RemoveFromGroupAsync(Context.ConnectionId, conversationId.ToString());
+		}
 	}
 }
