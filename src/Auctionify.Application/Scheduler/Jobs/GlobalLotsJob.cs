@@ -67,7 +67,7 @@ namespace Auctionify.Application.Scheduler.Jobs
                         {
                             AuctionStatus futureStatus = AuctionStatus.NotSold;
 
-                            if (lot.Bids.Count > 0)
+                            if (lot.Bids?.Count > 0)
                             {
                                 futureStatus = AuctionStatus.Sold;
 

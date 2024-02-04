@@ -52,6 +52,8 @@ namespace Auctionify.Application.Scheduler
 					await _jobSchedulerService.ScheduleDraftLotDeleteJob(lot.Id, deleteTime);
 				}
 			}
+
+			await _jobSchedulerService.ScheduleGlobalLotsJob();
 		}
 
 		public Task StopAsync(CancellationToken cancellationToken)
