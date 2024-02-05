@@ -81,6 +81,7 @@ export class RateUserComponent implements OnInit {
                             JSON.parse(error)?.errors[0]?.ErrorMessage;
                         this.showSnackBar(this.errorMessage, 'error');
                     }
+                    this.isLoading = false;
                 },
             });
         } else if (this.authorizeService.isUserBuyer()) {
@@ -100,6 +101,7 @@ export class RateUserComponent implements OnInit {
                             JSON.parse(error)?.errors[0]?.ErrorMessage;
                         this.showSnackBar(this.errorMessage, 'error');
                     }
+                    this.isLoading = false;
                 },
             });
         }

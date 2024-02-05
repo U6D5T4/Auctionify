@@ -52,7 +52,7 @@ export class ForgetPasswordComponent {
                 next: (result) => {
                     if (result) {
                         this.router.navigate([
-                            `auth/resetemail-sent/${this.forgetPasswordForm.value.email}`,
+                            `auth/reset-email-sent/${this.forgetPasswordForm.value.email}`,
                         ]);
                     }
                 },
