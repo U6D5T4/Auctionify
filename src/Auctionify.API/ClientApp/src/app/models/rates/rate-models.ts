@@ -25,3 +25,9 @@ export interface RateResponse {
     pages: number;
     size: number;
 }
+
+export interface RateUserCommandModel {
+    lotId: number;
+    comment: string | null;
+    ratingValue: number;
+}
