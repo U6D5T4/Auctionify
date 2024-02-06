@@ -1,28 +1,29 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Auctionify.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class UserRolesTableEntitySetUp : Migration
+    public partial class UserRolesTableEntity : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
+            migrationBuilder.AddColumn<DateTime>(
                 name: "CreationDate",
                 table: "UserRoles",
-                type: "int",
+                type: "datetime2",
                 nullable: false,
-                defaultValue: 0);
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
-            migrationBuilder.AddColumn<int>(
+            migrationBuilder.AddColumn<DateTime>(
                 name: "DeletionDate",
                 table: "UserRoles",
-                type: "int",
+                type: "datetime2",
                 nullable: false,
-                defaultValue: 0);
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
 
             migrationBuilder.AddColumn<bool>(
                 name: "IsDeleted",

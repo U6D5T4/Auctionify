@@ -121,17 +121,11 @@ namespace Auctionify.Infrastructure.Identity
 			return new LoginResponse { IsSuccess = true, Result = token };
 		}
 
-		public async Task<LoginResponse> CheckEligibilityToLoginWithSelectedRole(
-			string role
-		)
+		public async Task<LoginResponse> CheckEligibilityToLoginWithSelectedRole(string role)
 		{
 			if (role is null)
 			{
-				return new LoginResponse
-				{
-					Errors = new[] { "Role is null" },
-					IsSuccess = false,
-				};
+				return new LoginResponse { Errors = new[] { "Role is null" }, IsSuccess = false, };
 			}
 
 			var roleExists = await _roleManager.RoleExistsAsync(role);
@@ -213,7 +207,6 @@ namespace Auctionify.Infrastructure.Identity
 			// if the current user already has both roles (Buyer and Seller) (where flag IsDeleted is false)
 			var userRoles = (await _userManager.GetRolesAsync(users[0])).ToList();
 
-
 			foreach (var user in users)
 			{
 				var userRole = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
@@ -229,7 +222,6 @@ namespace Auctionify.Infrastructure.Identity
 			}
 
 			throw new NotImplementedException();
-
 		}
 
 		/// <summary>

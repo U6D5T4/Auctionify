@@ -4,9 +4,9 @@ namespace Auctionify.Core.Entities
 {
 	public class UserRole : IdentityUserRole<int>
 	{
-		public int CreationDate { get; set; }
+		public DateTime CreationDate { get; set; }
 
-		public int DeletionDate { get; set; }
+		public DateTime DeletionDate { get; set; }
 
 		public bool IsDeleted { get; set; }
 	}

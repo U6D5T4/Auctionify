@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Auctionify.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240203163309_UserRolesTableEntitySetUp")]
-    partial class UserRolesTableEntitySetUp
+    [Migration("20240206094407_UserRolesTableEntity")]
+    partial class UserRolesTableEntity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -572,11 +572,11 @@ namespace Auctionify.Infrastructure.Migrations
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CreationDate")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int>("DeletionDate")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("DeletionDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
