@@ -148,11 +148,16 @@ namespace Auctionify.Infrastructure.Identity
 				};
 			}
 
-			var users = await _userManager
-				.Users.Where(u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted)
-				.ToListAsync();
+			//var users = await _userManager
+			//	.Users.Where(u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted)
+			//	.ToListAsync();
 
-			if (users is null)
+			// first or default
+			var user = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted
+			);
+
+			if (user is null)
 			{
 				return new LoginResponse
 				{
@@ -161,18 +166,24 @@ namespace Auctionify.Infrastructure.Identity
 				};
 			}
 
-			foreach (var user in users)
+			//var userRole = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+
+			// list of roles
+			var userRoles = await _userManager.GetRolesAsync(user);
+
+			if (userRoles.Any())
 			{
-				var userRole = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
-
-				if (userRole == role)
+				foreach (var userRole in userRoles)
 				{
-					var token = await GenerateJWTTokenWithUserClaimsAsync(user);
+					if (userRole == role)
+					{
+						var token = await GenerateJWTTokenWithUserClaimsAsync(user);
 
-					token.Role = role;
-					token.UserId = user.Id;
+						token.Role = role;
+						token.UserId = user.Id;
 
-					return new LoginResponse { IsSuccess = true, Result = token };
+						return new LoginResponse { IsSuccess = true, Result = token };
+					}
 				}
 			}
 
@@ -184,9 +195,14 @@ namespace Auctionify.Infrastructure.Identity
 
 		public async Task<LoginResponse> CreateNewUserWithNewRole(string role)
 		{
-			var users = await _userManager
-				.Users.Where(u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted)
-				.ToListAsync();
+			//var users = await _userManager
+			//	.Users.Where(u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted)
+			//	.ToListAsync();
+
+			// first or default
+			var user = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted
+			);
 
 			var roleExists = await _roleManager.RoleExistsAsync(role);
 
@@ -204,24 +220,47 @@ namespace Auctionify.Infrastructure.Identity
 				};
 			}
 
-			// if the current user already has both roles (Buyer and Seller) (where flag IsDeleted is false)
-			var userRoles = (await _userManager.GetRolesAsync(users[0])).ToList();
-
-			foreach (var user in users)
+			if (user is null)
 			{
-				var userRole = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+				return new LoginResponse { IsSuccess = false, Message = "User not found" };
+			}
 
-				if (userRole == role)
+			var userRoles = await _userManager.GetRolesAsync(user);
+
+			if (userRoles == null)
+			{
+				return new LoginResponse { IsSuccess = false, Message = "User has no roles" };
+			}
+
+			if (userRoles.Any())
+			{
+				foreach (var userRole in userRoles)
 				{
-					return new LoginResponse
+					if (userRole == role)
 					{
-						IsSuccess = false,
-						Message = $"User already has {role} account"
-					};
+						return new LoginResponse
+						{
+							IsSuccess = false,
+							Message = $"User already has {role} account"
+						};
+					}
 				}
 			}
 
-			throw new NotImplementedException();
+			var result = await _userManager.AddToRoleAsync(user, role);
+			// updating the creation date of UserRole table
+			var userRole = new UserRole
+			{
+				UserId = user.Id,
+				RoleId = (await _roleManager.FindByNameAsync(role)).Id,
+				CreationDate = DateTime.UtcNow,
+				IsDeleted = false
+			};
+
+			// writing to the database
+
+
+
 		}
 
 		/// <summary>
