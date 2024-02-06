@@ -331,7 +331,7 @@ namespace Auctionify.Infrastructure.Identity
 		public async Task<LoginResponse> AssignRoleToUserAsync(string role)
 		{
 			var user = await _userManager.Users.FirstOrDefaultAsync(
-				u => u.Email == _currentUserService.UserEmail!
+				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted
 			);
 
 			if (user == null)
