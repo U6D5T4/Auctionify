@@ -51,6 +51,8 @@ export class ChatPageComponent implements OnInit {
 
                 if (this.chatConversations.length == 0) this.isAnyChats = false;
                 else this.isAnyChats = true;
+
+                console.log(this.chatConversations);
                 if (!this.isSignalrConnected) {
                     this.chatConversations.forEach(async (element) => {
                         await this.signalRService.joinConversationGroup(

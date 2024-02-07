@@ -36,6 +36,17 @@
         min-width: 200px;
     }
 
+    &__rating-title {
+        display: flex;
+        padding-top: 16px;
+        padding-bottom: 32px;
+        color: var(--color-text-primary);
+        font-size: 32px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 40px;
+    }
+
     &__auction-title {
         display: flex;
         align-items: center;
