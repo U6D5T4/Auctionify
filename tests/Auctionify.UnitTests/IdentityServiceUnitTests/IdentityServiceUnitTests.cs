@@ -8,10 +8,12 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MockQueryable.Moq;
 using Moq;
+using System.Linq.Expressions;
 using System.Text;
 using static Google.Apis.Auth.GoogleJsonWebSignature;
 using User = Auctionify.Core.Entities.User;
@@ -67,6 +69,37 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				null
 			);
 			_userRoleDbContextServiceMock = new Mock<IUserRoleDbContextService>();
+
+			//var userRoles = await _userRoleDbContextService.GetUnpaginatedListAsync(
+			//		ur => ur.UserId == user.Id && !ur.IsDeleted
+			//	);
+			// setting up userRoleDbContextServiceMock
+
+			_userRoleDbContextServiceMock
+				.Setup(
+					m =>
+						m.GetUnpaginatedListAsync(
+							It.IsAny<Expression<Func<UserRole, bool>>>(),
+							It.IsAny<Func<IQueryable<UserRole>, IOrderedQueryable<UserRole>>>(),
+							It.IsAny<
+								Func<IQueryable<UserRole>, IIncludableQueryable<UserRole, object>>
+							>(),
+							It.IsAny<bool>(),
+							It.IsAny<bool>(),
+							It.IsAny<CancellationToken>()
+						)
+				)
+				.ReturnsAsync(
+					new List<UserRole>
+					{
+						new()
+						{
+							UserId = 1,
+							RoleId = 1,
+							IsDeleted = false
+						}
+					}
+				);
 		}
 
 		#endregion
@@ -105,6 +138,10 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 				.ReturnsAsync(SignInResult.Success);
 
 			_authSettingsOptionsMock.Setup(options => options.Value).Returns(authSettingsOptions);
+
+			_roleManagerMock
+				.Setup(m => m.FindByIdAsync(It.IsAny<string>()))
+				.ReturnsAsync(new Role { Name = "Buyer" });
 
 			var sut = new IdentityService(
 				_userManagerMock.Object,
@@ -920,6 +957,10 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 
 			_authSettingsOptionsMock.Setup(options => options.Value).Returns(authSettingsOptions);
 
+			_roleManagerMock
+				.Setup(m => m.FindByIdAsync(It.IsAny<string>()))
+				.ReturnsAsync(new Role { Name = "Buyer" });
+
 			var sut = new IdentityService(
 				_userManagerMock.Object,
 				_signInManagerMock.Object,
@@ -963,6 +1004,10 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 			_userManagerMock.Setup(m => m.GetRolesAsync(user)).ReturnsAsync(new List<string>());
 
 			_authSettingsOptionsMock.Setup(options => options.Value).Returns(authSettingsOptions);
+
+			_roleManagerMock
+				.Setup(m => m.FindByIdAsync(It.IsAny<string>()))
+				.ReturnsAsync(new Role { Name = "Buyer" });
 
 			var sut = new IdentityService(
 				_userManagerMock.Object,

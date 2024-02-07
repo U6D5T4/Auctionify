@@ -10,6 +10,7 @@ using FluentValidation.TestHelper;
 using Microsoft.AspNetCore.Identity;
 using MockQueryable.Moq;
 using Moq;
+using User = Auctionify.Core.Entities.User;
 
 namespace Auctionify.UnitTests.DeleteUserTests
 {
@@ -22,7 +23,7 @@ namespace Auctionify.UnitTests.DeleteUserTests
 		private readonly IBidRepository _bidRepository;
 		private readonly ILotRepository _lotRepository;
 		private readonly DeleteUserCommandValidator _validator;
-		private readonly Mock<IUserRoleDbContextService> _userRoleDbContextService;
+		private readonly Mock<IUserRoleDbContextService> _userRoleDbContextServiceMock;
 		private readonly Mock<RoleManager<Role>> _roleManagerMock;
 
 		public DeleteUserTests()
@@ -40,7 +41,7 @@ namespace Auctionify.UnitTests.DeleteUserTests
 			_bidRepository = new BidRepository(mockDbContext.Object);
 			_lotRepository = new LotRepository(mockDbContext.Object);
 
-			_userRoleDbContextService = new Mock<IUserRoleDbContextService>();
+			_userRoleDbContextServiceMock = new Mock<IUserRoleDbContextService>();
 
 			_roleManagerMock = new Mock<RoleManager<Role>>(
 				Mock.Of<IRoleStore<Role>>(),
@@ -67,10 +68,34 @@ namespace Auctionify.UnitTests.DeleteUserTests
 		{
 			var command = new DeleteUserCommand();
 
+			_roleManagerMock
+				.Setup(m => m.FindByNameAsync(It.IsAny<string>()))
+				.ReturnsAsync(new Role { Id = 1, Name = "Buyer" });
+
+			_userRoleDbContextServiceMock
+				.Setup(
+					m =>
+						m.GetAsync(
+							It.IsAny<System.Linq.Expressions.Expression<Func<UserRole, bool>>>(),
+							null,
+							false,
+							true,
+							default
+						)
+				)
+				.ReturnsAsync(
+					new UserRole
+					{
+						UserId = 1,
+						RoleId = 1,
+						IsDeleted = false
+					}
+				);
+
 			var handler = new DeleteUserCommandHandler(
 				_userManager,
 				_currentUserService,
-				_userRoleDbContextService.Object,
+				_userRoleDbContextServiceMock.Object,
 				_roleManagerMock.Object
 			);
 
@@ -87,8 +112,30 @@ namespace Auctionify.UnitTests.DeleteUserTests
 			// Arrange
 			var command = new DeleteUserCommand();
 
+			_roleManagerMock
+				.Setup(m => m.FindByNameAsync(It.IsAny<string>()))
+				.ReturnsAsync(new Role { Id = 1, Name = "Buyer" });
+
+			var user = new User
+			{
+				Id = 1,
+				Email = "test@test.COM",
+				IsDeleted = false
+			};
+
+			var currentUserServiceMock = new Mock<ICurrentUserService>();
+			currentUserServiceMock.Setup(m => m.UserEmail).Returns(user.Email);
+			currentUserServiceMock.Setup(m => m.UserRole).Returns(AccountRole.Buyer.ToString());
+
+			var validator = new DeleteUserCommandValidator(
+				_userManager,
+				currentUserServiceMock.Object,
+				_bidRepository,
+				_lotRepository
+			);
+
 			// Act
-			var result = await _validator.TestValidateAsync(command);
+			var result = await validator.TestValidateAsync(command);
 
 			// Assert
 			result.Should().NotBeNull();
@@ -129,6 +176,7 @@ namespace Auctionify.UnitTests.DeleteUserTests
 
 			var currentUserServiceMock = new Mock<ICurrentUserService>();
 			currentUserServiceMock.Setup(m => m.UserEmail).Returns(user.Email);
+			currentUserServiceMock.Setup(m => m.UserRole).Returns(AccountRole.Seller.ToString());
 
 			var validator = new DeleteUserCommandValidator(
 				userManagerMock.Object,
