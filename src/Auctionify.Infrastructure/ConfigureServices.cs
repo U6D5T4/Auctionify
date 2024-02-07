@@ -37,6 +37,8 @@ namespace Auctionify.Infrastructure
 
 			services.Configure<AppOptions>(configuration.GetSection(AppOptions.App));
 
+			services.Configure<GoogleMapOptions>(configuration.GetSection(GoogleMapOptions.GoogleMap));
+
 			// Register Google sign-in options
 			services.Configure<SignInWithGoogleOptions>(
 				configuration.GetSection(SignInWithGoogleOptions.Google)

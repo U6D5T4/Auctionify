@@ -5,6 +5,7 @@ import {
     ViewChild,
     ElementRef,
     AfterViewInit,
+    OnInit,
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { LotFormModel } from '../../create-lot.component';
@@ -34,8 +35,7 @@ export class LocationPopUpComponent implements AfterViewInit {
     constructor(
         public dialogRef: DialogRef<string>,
         @Inject(DIALOG_DATA) public data: FormGroup<LotFormModel>,
-        private snackBar: MatSnackBar,
-        private googleMapsService: GoogleMapService
+        private snackBar: MatSnackBar
     ) {
         this.locationGroup = data;
     }
@@ -79,9 +79,7 @@ export class LocationPopUpComponent implements AfterViewInit {
     }
 
     ngAfterViewInit() {
-        this.googleMapsService.loadApi().subscribe(() => {
-            this.initAutocomplete();
-        });
+        this.initAutocomplete();
     }
 
     initAutocomplete(): void {
@@ -130,14 +128,6 @@ export class LocationPopUpComponent implements AfterViewInit {
             this.locationGroup.controls['longitude'].setValue(
                 this.longitude.toString()
             );
-
-            console.log(
-                'Latitude: ',
-                this.latitude,
-                'Longitude: ',
-                this.longitude
-            );
-            console.log('someting');
         });
     }
 

@@ -1,7 +1,10 @@
 ﻿using Auctionify.Application.Common.Behaviours;
+using Auctionify.Application.Common.Options;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Builder.Extensions;
 using Microsoft.Extensions.DependencyInjection;
+using System.Configuration;
 using System.Reflection;
 
 namespace Auctionify.Application
