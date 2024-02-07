@@ -87,10 +87,8 @@ namespace Auctionify.UnitTests.CreateConversationTests
 				.BuildMockDbSet();
 
 			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
-
 			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(newUser.Email);
-
-			_userManagerMock.Setup(m => m.GetRolesAsync(It.IsAny<User>())).ReturnsAsync(roles);
+			_currentUserServiceMock.Setup(m => m.UserRole).Returns(roles.First());
 
 			_lotRepository = new LotRepository(mockDbContext.Object);
 			_conversationRepository = new ConversationRepository(mockDbContext.Object);

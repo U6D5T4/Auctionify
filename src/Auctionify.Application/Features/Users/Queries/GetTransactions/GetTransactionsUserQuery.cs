@@ -61,11 +61,7 @@ namespace Auctionify.Application.Features.Users.Queries.GetTransactions
 				cancellationToken: cancellationToken
 			);
 
-			var role = (AccountRole)
-				Enum.Parse(
-					typeof(AccountRole),
-					(await _userManager.GetRolesAsync(user!)).FirstOrDefault()!
-				);
+			var role = (AccountRole)Enum.Parse(typeof(AccountRole), _currentUserService.UserRole!);
 
 			var transactions = new List<TransactionInfo>();
 

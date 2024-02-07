@@ -91,10 +91,12 @@ namespace Auctionify.UnitTests.GetAllUserConversationsTests
 			var roles = new List<string> { AccountRole.Buyer.ToString() };
 
 			var mock = new List<User> { user }.AsQueryable().BuildMockDbSet();
+
 			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
+
 			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(user.Email);
 
-			_userManagerMock.Setup(m => m.GetRolesAsync(It.IsAny<User>())).ReturnsAsync(roles);
+			_currentUserServiceMock.Setup(m => m.UserRole).Returns(roles.First());
 
 			_blobStorageOptionsMock
 				.SetupGet(m => m.Value)

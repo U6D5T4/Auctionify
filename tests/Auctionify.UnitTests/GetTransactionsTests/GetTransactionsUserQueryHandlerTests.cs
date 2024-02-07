@@ -119,7 +119,7 @@ namespace Auctionify.UnitTests.GetTransactionsTests
 
 			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(user.Email);
 
-			_userManagerMock.Setup(m => m.GetRolesAsync(It.IsAny<User>())).ReturnsAsync(roles);
+			_currentUserServiceMock.Setup(m => m.UserRole).Returns(roles.First());
 
 			_lotRepositoryMock
 				.Setup(
@@ -193,7 +193,7 @@ namespace Auctionify.UnitTests.GetTransactionsTests
 
 			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(user.Email);
 
-			_userManagerMock.Setup(m => m.GetRolesAsync(It.IsAny<User>())).ReturnsAsync(roles);
+			_currentUserServiceMock.Setup(m => m.UserRole).Returns(roles.First());
 
 			_lotRepositoryMock
 				.Setup(

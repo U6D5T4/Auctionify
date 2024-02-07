@@ -61,11 +61,10 @@ namespace Auctionify.Application.Features.Chats.Commands.CreateConversation
 							cancellationToken: cancellationToken
 						);
 
+						var currentUserRoleName = _currentUserService.UserRole!;
+
 						var currentUserRole = (AccountRole)
-							Enum.Parse(
-								typeof(AccountRole),
-								(await _userManager.GetRolesAsync(currentUser!)).FirstOrDefault()!
-							);
+							Enum.Parse(typeof(AccountRole), currentUserRoleName);
 
 						var buyerId =
 							currentUserRole == AccountRole.Buyer ? currentUser!.Id : lot!.BuyerId;

@@ -48,11 +48,9 @@ namespace Auctionify.Application.Features.Chats.Commands.CreateConversation
 				cancellationToken: cancellationToken
 			);
 
-			var currentUserRole = (AccountRole)
-				Enum.Parse(
-					typeof(AccountRole),
-					(await _userManager.GetRolesAsync(currentUser!)).FirstOrDefault()!
-				);
+			var currentUserRoleName = _currentUserService.UserRole!;
+
+			var currentUserRole = (AccountRole)Enum.Parse(typeof(AccountRole), currentUserRoleName);
 
 			var lot = await _lotRepository.GetAsync(
 				predicate: l => l.Id == request.LotId,
