@@ -6,6 +6,7 @@ import { isBuyerGuard } from './guards/buyer/is-buyer.guard';
 import { LotProfileComponent } from './components/general/lot-profile/lot-profile.component';
 import { isLoggedInGuard } from './guards/is-logged-in.guard';
 import { AuctionComponent } from './components/general/home/auction/auction.component';
+import { RateUserComponent } from './components/general/rate-user/rate-user.component';
 import { TransactionsComponent } from './components/general/transactions/transactions.component';
 import { ChatPageComponent } from './components/general/chat/chat-page/chat-page.component';
 
@@ -54,6 +55,11 @@ const routes: Routes = [
         canActivate: [isLoggedInGuard],
     },
     {
+        path: 'rate-user/:id',
+        component: RateUserComponent,
+        canActivate: [isLoggedInGuard],
+    },
+    { 
         path: 'get-transactions',
         component: TransactionsComponent,
         canActivate: [isLoggedInGuard],

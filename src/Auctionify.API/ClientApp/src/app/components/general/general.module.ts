@@ -17,6 +17,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { WithdrawBidComponent } from './withdraw-bid/withdraw-bid.component';
+import { RateUserComponent } from './rate-user/rate-user.component';
 import { RemoveFromWatchlistComponent } from './remove-from-watchlist/remove-from-watchlist.component';
 import { ChatModule } from './chat/chat.module';
 import { TransactionsComponent } from './transactions/transactions.component';
@@ -29,6 +30,7 @@ import { TransactionsComponent } from './transactions/transactions.component';
         AuctionComponent,
         FilterComponent,
         WithdrawBidComponent,
+        RateUserComponent,
         RemoveFromWatchlistComponent,
         TransactionsComponent,
     ],

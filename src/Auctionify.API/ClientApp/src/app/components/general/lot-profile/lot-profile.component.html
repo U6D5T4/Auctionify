@@ -328,5 +328,32 @@
                 </ul>
             </div>
         </div>
+        <div class="right__rate-btn" *ngIf="canSellerRateBuyer">
+            <button
+                [routerLink]="['/rate-user', lotData.id]"
+                class="mat-mdc-outlined-button-custom price-button"
+                mat-flat-button
+                type="button"
+                color="primary"
+            >
+                <mat-icon>edit</mat-icon>
+                rate
+            </button>
+        </div>
+        <div
+            class="right__rate-btn"
+            *ngIf="isUserBuyer() && canBuyerRateSeller"
+        >
+            <button
+                [routerLink]="['/rate-user', lotData.id]"
+                class="mat-mdc-outlined-button-custom price-button"
+                mat-flat-button
+                type="button"
+                color="primary"
+            >
+                <mat-icon>edit</mat-icon>
+                rate
+            </button>
+        </div>
     </div>
 </div>
