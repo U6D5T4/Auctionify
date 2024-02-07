@@ -22,6 +22,7 @@ export class ChatPageComponent implements OnInit {
     private isSignalrConnected = false;
     updateChatSubject: Subject<void> = new Subject<void>();
     currentUserId: number = 0;
+    isAnyChats: boolean = false;
 
     constructor(
         private client: Client,
@@ -48,6 +49,8 @@ export class ChatPageComponent implements OnInit {
             next: (result) => {
                 this.chatConversations = result.conversations;
 
+                if (this.chatConversations.length == 0) this.isAnyChats = false;
+                else this.isAnyChats = true;
                 if (!this.isSignalrConnected) {
                     this.chatConversations.forEach(async (element) => {
                         await this.signalRService.joinConversationGroup(

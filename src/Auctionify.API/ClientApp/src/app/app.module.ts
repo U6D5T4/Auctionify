@@ -11,6 +11,7 @@ import { AuthorizeInterceptor } from './api-authorization/authorize.interceptor'
 import { LayoutModule } from './layout/layout.module';
 import { GeneralModule } from './components/general/general.module';
 import { MessageObserverDirective } from './directives/message-observer.directive';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 register();
 
@@ -24,6 +25,7 @@ register();
         BrowserAnimationsModule,
         LayoutModule,
         GeneralModule,
+        NgbModule,
     ],
     providers: [
         {

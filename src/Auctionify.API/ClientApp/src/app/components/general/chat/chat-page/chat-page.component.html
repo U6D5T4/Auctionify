@@ -1,36 +1,41 @@
 <div class="chat" [ngClass]="getMainChatContainerWidthClass()">
-    <div class="chat__conversations">
-        <h2>Messages</h2>
-        <ng-container
-            *ngIf="chatConversations != null && chatConversations.length > 0"
-        >
-            <app-chats
-                #chats
-                class="chats"
-                [conversations]="chatConversations"
-                (conversationChosen)="handleConversationChange($event)"
-            ></app-chats>
-        </ng-container>
-    </div>
-    <div class="chat__separator"></div>
-    <div class="chat__window">
-        <ng-container *ngIf="chosenConversation !== null; else no_chat">
-            <app-conversation-window
-                #conversation_window
-                class="chat__window-conversation"
-                [conversation]="chosenConversation"
-                [updateChatEvent]="updateChatSubject.asObservable()"
-                (messageSent)="getAllUserConversations()"
+    <ng-container *ngIf="!isAnyChats"> </ng-container>
+    <ng-template #conversation_available>
+        <div class="chat__conversations">
+            <h2>Messages</h2>
+            <ng-container
+                *ngIf="
+                    chatConversations != null && chatConversations.length > 0
+                "
             >
-            </app-conversation-window>
-        </ng-container>
-        <ng-template #no_chat>
-            <div class="chat__window-no-chat">
-                <img
-                    src="../../../../../assets/images/select_chat.svg"
-                    alt="select chat image"
-                />
-            </div>
-        </ng-template>
-    </div>
+                <app-chats
+                    #chats
+                    class="chats"
+                    [conversations]="chatConversations"
+                    (conversationChosen)="handleConversationChange($event)"
+                ></app-chats>
+            </ng-container>
+        </div>
+        <div class="chat__separator"></div>
+        <div class="chat__window">
+            <ng-container *ngIf="chosenConversation !== null; else no_chat">
+                <app-conversation-window
+                    #conversation_window
+                    class="chat__window-conversation"
+                    [conversation]="chosenConversation"
+                    [updateChatEvent]="updateChatSubject.asObservable()"
+                    (messageSent)="getAllUserConversations()"
+                >
+                </app-conversation-window>
+            </ng-container>
+            <ng-template #no_chat>
+                <div class="chat__window-no-chat">
+                    <img
+                        src="../../../../../assets/images/select_chat.svg"
+                        alt="select chat image"
+                    />
+                </div>
+            </ng-template>
+        </div>
+    </ng-template>
 </div>
