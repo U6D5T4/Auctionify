@@ -1,4 +1,5 @@
-﻿using Auctionify.Application.Common.Interfaces.Repositories;
+﻿using Auctionify.Application.Common.Interfaces;
+using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Features.Lots.Commands.UpdateLotStatus;
 using Auctionify.Core.Entities;
 using Auctionify.Core.Enums;
@@ -37,6 +38,7 @@ namespace Auctionify.Application.Scheduler.Jobs
             var lotStatusRepository = scope.ServiceProvider.GetRequiredService<ILotStatusRepository>();
             var bidRepository = scope.ServiceProvider.GetRequiredService<IBidRepository>();
             var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+            var jobSchedulerService = scope.ServiceProvider.GetRequiredService<IJobSchedulerService>();
 
             var lots = await lotRepository.Query().Include(l => l.LotStatus).ToListAsync();
             var lotStatuses = await lotStatusRepository.Query().ToListAsync();
@@ -65,33 +67,7 @@ namespace Auctionify.Application.Scheduler.Jobs
                     {
                         if (lot.EndDate <= DateTime.UtcNow)
                         {
-                            AuctionStatus futureStatus = AuctionStatus.NotSold;
-
-                            if (lot.Bids?.Count > 0)
-                            {
-                                futureStatus = AuctionStatus.Sold;
-
-                                var highestBid = await bidRepository
-                                    .Query()
-                                    .Where(x => x.LotId == lot.Id && !x.BidRemoved)
-                                    .OrderByDescending(x => x.NewPrice)
-                                    .FirstOrDefaultAsync();
-
-                                if (highestBid != null)
-                                {
-                                    lot.BuyerId = highestBid.BuyerId;
-                                    lot.StartingPrice = highestBid.NewPrice;
-                                    await lotRepository.UpdateAsync(lot);
-
-                                    _logger.LogInformation(
-                                        "FinishLot job updated lot with id: {lotId} with buyer id: {buyerId}",
-                                        lot.Id,
-                                        highestBid.BuyerId
-                                    );
-                                }
-                            }
-
-                            await mediator.Send( new UpdateLotStatusCommand { LotId = lot.Id, Name = futureStatus.ToString() });
+                            await jobSchedulerService.ScheduleLotFinishJob(lot.Id, DateTime.UtcNow);
                         }
                     }
                 }
