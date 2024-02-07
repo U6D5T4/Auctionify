@@ -22,7 +22,6 @@ export class ChatPageComponent implements OnInit {
     private isSignalrConnected = false;
     updateChatSubject: Subject<void> = new Subject<void>();
     currentUserId: number = 0;
-    isAnyChats: boolean = false;
 
     constructor(
         private client: Client,

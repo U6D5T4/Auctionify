@@ -126,6 +126,7 @@ export class ConversationWindowComponent
     }
 
     scrollBehaviour(el: MessageObserverDirective | null) {
+        console.log(el, this.firstUnreadId);
         if (!this.isScrolledUp) {
             if (el !== null && el.id == this.firstUnreadId) {
                 this.mainConversationWindow.nativeElement.scrollTo({
@@ -180,6 +181,7 @@ export class ConversationWindowComponent
                     !message.isRead &&
                     message.senderId != this.currentUserId
                 ) {
+                    console.log('UNREAD');
                     this.firstUnreadId = message.id;
                     this.isFirstUnread = false;
                 }
@@ -221,6 +223,7 @@ export class ConversationWindowComponent
 
     intersect(event: IntersectResult) {
         if (event.isIntersecting && !event.isRead && !event.isOwner) {
+            console.log(event.isIntersecting, event.isRead);
             this.client.chatMessageRead(event.messageId).subscribe({
                 next: () => {
                     this.messageSent.emit(true);

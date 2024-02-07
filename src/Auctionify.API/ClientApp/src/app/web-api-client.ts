@@ -671,6 +671,8 @@ export class Client {
             this.baseUrl
         }/api/auth/forget-password?email=${encodeURIComponent(email)}`;
 
+        console.log(email);
+
         let options_: any = {
             observe: 'response',
             headers: new HttpHeaders({
