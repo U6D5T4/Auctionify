@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MessageObserverDirective } from 'src/app/directives/message-observer.directive';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
     declarations: [
@@ -24,6 +25,7 @@ import { MessageObserverDirective } from 'src/app/directives/message-observer.di
         MatButtonModule,
         MatFormFieldModule,
         MatInputModule,
+        RouterModule,
     ],
 })
 export class ChatModule {}

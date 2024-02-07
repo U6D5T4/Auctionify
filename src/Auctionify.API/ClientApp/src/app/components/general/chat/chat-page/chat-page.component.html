@@ -1,26 +1,38 @@
 <ng-container *ngIf="!isAnyChats; else conversation_available">
     <h2>Messages</h2>
-    <div class="row justify-content-center align-items-center">
-        <div class="col-3 d-flex flex-column" style="gap: 40px">
-            <div class="col-12">
-                <div class="image">
-                    <img
-                        src="../../../../../assets/images/undraw_manage_chats_re_0yoj 1.svg"
-                        alt=""
-                    />
-                </div>
+    <div
+        class=""
+        style="
+            gap: 40px;
+            display: flex;
+            flex-direction: column;
+            max-width: 320px;
+            margin: 0 auto;
+        "
+    >
+        <div class="col-12">
+            <div class="image">
+                <img
+                    src="../../../../../assets/images/undraw_manage_chats_re_0yoj 1.svg"
+                    alt=""
+                />
             </div>
-            <div class="col-12 d-flex justify-content-center flex-column">
-                <h2 class="text-center">Nothing here yet</h2>
-                <p class="text-center">
-                    You must win an auction to start a chat with seller
-                </p>
-            </div>
-            <div class="col-12">
-                <button type="button" mat-flat-button color="primary">
-                    View lots
-                </button>
-            </div>
+        </div>
+        <div class="col-12 d-flex justify-content-center flex-column">
+            <h2 style="text-align: center">Nothing here yet</h2>
+            <p style="text-align: center">
+                You must win an auction to start a chat with seller
+            </p>
+        </div>
+        <div class="col-12">
+            <button
+                [routerLink]="['/home']"
+                type="button"
+                mat-flat-button
+                color="primary"
+            >
+                View lots
+            </button>
         </div>
     </div>
 </ng-container>

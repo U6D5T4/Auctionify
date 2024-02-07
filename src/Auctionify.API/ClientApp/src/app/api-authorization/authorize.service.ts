@@ -124,7 +124,6 @@ export class AuthorizeService {
 
     processLoginResponse(response: LoginResponse | AssignRoleResponse) {
         if (response.result === undefined) throw new Error('user not found');
-        console.log(response);
         localStorage.setItem(this.tokenString, response.result.accessToken);
         localStorage.setItem(this.expireString, response.result.expireDate);
         localStorage.setItem(this.roleString, response.result.role);
