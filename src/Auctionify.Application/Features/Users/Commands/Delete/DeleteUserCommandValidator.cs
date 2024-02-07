@@ -37,11 +37,10 @@ namespace Auctionify.Application.Features.Users.Commands.Delete
 							cancellationToken: cancellationToken
 						);
 
+						var currentUserRoleName = _currentUserService.UserRole!;
+
 						var currentUserRole = (AccountRole)
-							Enum.Parse(
-								typeof(AccountRole),
-								(await _userManager.GetRolesAsync(currentUser!)).FirstOrDefault()!
-							);
+							Enum.Parse(typeof(AccountRole), currentUserRoleName);
 
 						if (currentUserRole == AccountRole.Buyer)
 						{

@@ -29,6 +29,7 @@ namespace Auctionify.Infrastructure.Identity
 		private readonly AuthSettingsOptions _authSettingsOptions;
 		private readonly AppOptions _appOptions;
 		private readonly ICurrentUserService _currentUserService;
+		private readonly IUserRoleDbContextService _userRoleDbContextService;
 
 		public IdentityService(
 			UserManager<User> userManager,
@@ -38,7 +39,8 @@ namespace Auctionify.Infrastructure.Identity
 			RoleManager<Role> roleManager,
 			IOptions<AuthSettingsOptions> authSettingsOptions,
 			IOptions<AppOptions> appOptions,
-			ICurrentUserService currentUserService
+			ICurrentUserService currentUserService,
+			IUserRoleDbContextService userRoleDbContextService
 		)
 		{
 			_userManager = userManager;
@@ -49,6 +51,7 @@ namespace Auctionify.Infrastructure.Identity
 			_authSettingsOptions = authSettingsOptions.Value;
 			_appOptions = appOptions.Value;
 			_currentUserService = currentUserService;
+			_userRoleDbContextService = userRoleDbContextService;
 		}
 
 		public async Task<LoginResponse> LoginUserAsync(LoginViewModel loginModel)
@@ -66,11 +69,11 @@ namespace Auctionify.Infrastructure.Identity
 				};
 			}
 
-			var users = await _userManager
-				.Users.Where(u => u.Email == loginModel.Email && !u.IsDeleted)
-				.ToListAsync();
+			var user = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == loginModel.Email && !u.IsDeleted
+			);
 
-			if (users is null)
+			if (user is null)
 			{
 				return new LoginResponse
 				{
@@ -80,7 +83,7 @@ namespace Auctionify.Infrastructure.Identity
 			}
 
 			var result = await _signInManager.PasswordSignInAsync(
-				users[0],
+				user,
 				loginModel.Password,
 				false,
 				false
@@ -99,7 +102,7 @@ namespace Auctionify.Infrastructure.Identity
 				};
 			}
 
-			if (!users[0].EmailConfirmed)
+			if (!user.EmailConfirmed)
 			{
 				return new LoginResponse
 				{
@@ -108,7 +111,7 @@ namespace Auctionify.Infrastructure.Identity
 				};
 			}
 
-			var token = await GenerateJWTTokenWithUserClaimsAsync(users[0]);
+			var token = await GenerateJWTTokenWithUserClaimsAsync(user);
 
 			var roles = new List<string>()
 			{
@@ -148,11 +151,6 @@ namespace Auctionify.Infrastructure.Identity
 				};
 			}
 
-			//var users = await _userManager
-			//	.Users.Where(u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted)
-			//	.ToListAsync();
-
-			// first or default
 			var user = await _userManager.Users.FirstOrDefaultAsync(
 				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted
 			);
@@ -166,18 +164,17 @@ namespace Auctionify.Infrastructure.Identity
 				};
 			}
 
-			//var userRole = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
-
-			// list of roles
-			var userRoles = await _userManager.GetRolesAsync(user);
+			var userRoles = await _userRoleDbContextService.GetUnpaginatedListAsync(
+				ur => ur.UserId == user.Id && !ur.IsDeleted
+			);
 
 			if (userRoles.Any())
 			{
 				foreach (var userRole in userRoles)
 				{
-					if (userRole == role)
+					if (userRole.RoleId == (await _roleManager.FindByNameAsync(role))!.Id)
 					{
-						var token = await GenerateJWTTokenWithUserClaimsAsync(user);
+						var token = await GenerateJWTTokenWithUserClaimsAsync(user, role);
 
 						token.Role = role;
 						token.UserId = user.Id;
@@ -195,14 +192,14 @@ namespace Auctionify.Infrastructure.Identity
 
 		public async Task<LoginResponse> CreateNewUserWithNewRole(string role)
 		{
-			//var users = await _userManager
-			//	.Users.Where(u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted)
-			//	.ToListAsync();
-
-			// first or default
 			var user = await _userManager.Users.FirstOrDefaultAsync(
 				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted
 			);
+
+			if (user is null)
+			{
+				return new LoginResponse { IsSuccess = false, Message = "User not found" };
+			}
 
 			var roleExists = await _roleManager.RoleExistsAsync(role);
 
@@ -218,11 +215,6 @@ namespace Auctionify.Infrastructure.Identity
 					IsSuccess = false,
 					Message = "Administrator role is not allowed"
 				};
-			}
-
-			if (user is null)
-			{
-				return new LoginResponse { IsSuccess = false, Message = "User not found" };
 			}
 
 			var userRoles = await _userManager.GetRolesAsync(user);
@@ -247,20 +239,34 @@ namespace Auctionify.Infrastructure.Identity
 				}
 			}
 
-			var result = await _userManager.AddToRoleAsync(user, role);
-			// updating the creation date of UserRole table
-			var userRole = new UserRole
+			var newUserRole = new UserRole
 			{
 				UserId = user.Id,
-				RoleId = (await _roleManager.FindByNameAsync(role)).Id,
+				RoleId = (await _roleManager.FindByNameAsync(role))!.Id,
 				CreationDate = DateTime.UtcNow,
 				IsDeleted = false
 			};
 
-			// writing to the database
+			var result = await _userRoleDbContextService.AddAsync(newUserRole);
 
+			if (result is not null)
+			{
+				var token = await GenerateJWTTokenWithUserClaimsAsync(user, role);
 
+				token.Role = role;
+				token.UserId = user.Id;
 
+				return new LoginResponse
+				{
+					IsSuccess = true,
+					Result = token,
+					Message = $"Role '{role}' assigned to the user successfully"
+				};
+			}
+			else
+			{
+				return new LoginResponse { IsSuccess = false, Message = "Failed to assign role" };
+			}
 		}
 
 		/// <summary>
@@ -268,14 +274,34 @@ namespace Auctionify.Infrastructure.Identity
 		/// </summary>
 		/// <param name="user"></param>
 		/// <returns></returns>
-		private async Task<TokenModel> GenerateJWTTokenWithUserClaimsAsync(User user)
+		private async Task<TokenModel> GenerateJWTTokenWithUserClaimsAsync(
+			User user,
+			string role = null
+		)
 		{
-			var roles = await _userManager.GetRolesAsync(user);
 			var claims = new List<Claim> { new(ClaimTypes.Email, user.Email!) };
 
-			foreach (var role in roles)
+			if (role is not null)
 			{
 				claims.Add(new Claim(ClaimTypes.Role, role));
+			}
+			else
+			{
+				var userRoles = await _userRoleDbContextService.GetUnpaginatedListAsync(
+					ur => ur.UserId == user.Id && !ur.IsDeleted
+				);
+
+				if (userRoles.Any())
+				{
+					foreach (var userRole in userRoles)
+					{
+						var currentRole = await _roleManager.FindByIdAsync(
+							userRole.RoleId.ToString()
+						);
+
+						claims.Add(new Claim(ClaimTypes.Role, currentRole!.Name!));
+					}
+				}
 			}
 
 			var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_authSettingsOptions.Key));
@@ -479,7 +505,7 @@ namespace Auctionify.Infrastructure.Identity
 		public async Task<LoginResponse> AssignRoleToUserAsync(string role)
 		{
 			var user = await _userManager.Users.FirstOrDefaultAsync(
-				u => u.Email == _currentUserService.UserEmail!
+				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted
 			);
 
 			if (user == null)
@@ -510,13 +536,21 @@ namespace Auctionify.Infrastructure.Identity
 				return new LoginResponse { IsSuccess = false, Message = "Role not found" };
 			}
 
-			var result = await _userManager.AddToRoleAsync(user, role);
-
-			if (result.Succeeded)
+			var newUserRole = new UserRole
 			{
-				var token = await GenerateJWTTokenWithUserClaimsAsync(user);
+				UserId = user.Id,
+				RoleId = (await _roleManager.FindByNameAsync(role))!.Id,
+				CreationDate = DateTime.UtcNow,
+				IsDeleted = false
+			};
 
-				token.Role = (await _userManager.GetRolesAsync(user)).FirstOrDefault()!;
+			var result = await _userRoleDbContextService.AddAsync(newUserRole);
+
+			if (result is not null)
+			{
+				var token = await GenerateJWTTokenWithUserClaimsAsync(user, role);
+
+				token.Role = role;
 				token.UserId = user.Id;
 
 				return new LoginResponse
@@ -528,12 +562,7 @@ namespace Auctionify.Infrastructure.Identity
 			}
 			else
 			{
-				return new LoginResponse
-				{
-					IsSuccess = false,
-					Message = "Failed to assign role",
-					Errors = result.Errors.Select(e => e.Description)
-				};
+				return new LoginResponse { IsSuccess = false, Message = "Failed to assign role" };
 			}
 		}
 

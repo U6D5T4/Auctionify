@@ -108,7 +108,7 @@ namespace Auctionify.Infrastructure
 							if (
 								!string.IsNullOrEmpty(accessToken)
 								&& path.StartsWithSegments(configuration["SignalR:HubStartPath"])
-								)
+							)
 							{
 								context.Token = accessToken;
 							}
@@ -141,6 +141,7 @@ namespace Auctionify.Infrastructure
 			services.AddSingleton<IBlobService, BlobService>();
 			services.AddScoped<IPhotoService, PhotoService>();
 			services.AddScoped<IWatchlistService, WatchlistService>();
+			services.AddTransient<IUserRoleDbContextService, UserRoleDbContextService>();
 
 			return services;
 		}
