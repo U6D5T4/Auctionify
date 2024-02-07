@@ -13,6 +13,7 @@ import { ProfileNavbarComponent } from './profile-navbar/profile-navbar.componen
 import { UpdateUserProfileComponent } from './update-user-profile/update-user-profile.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { ProfileRoutingModule } from './profile-routing.module';
+import { PublicUserProfileComponent } from './public-user-profile/public-user-profile.component';
 import { UiElementsModule } from 'src/app/ui-elements/ui-elements.module';
 
 @NgModule({
@@ -34,6 +35,7 @@ import { UiElementsModule } from 'src/app/ui-elements/ui-elements.module';
         ProfileNavbarComponent,
         UpdateUserProfileComponent,
         ChangePasswordComponent,
+        PublicUserProfileComponent,
     ],
 
     exports: [

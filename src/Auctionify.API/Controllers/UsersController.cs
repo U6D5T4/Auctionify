@@ -1,7 +1,7 @@
 ﻿using Auctionify.Application.Common.Models.Requests;
-using Auctionify.Application.Features.Lots.Queries.GetAll;
 using Auctionify.Application.Features.Users.Commands.AddBidForLot;
 using Auctionify.Application.Features.Users.Commands.AddLotToWatchlist;
+using Auctionify.Application.Features.Users.Commands.Delete;
 using Auctionify.Application.Features.Users.Commands.RemoveBid;
 using Auctionify.Application.Features.Users.Commands.RemoveLotFromWatchlist;
 using Auctionify.Application.Features.Users.Commands.Update;
@@ -30,8 +30,8 @@ namespace Auctionify.API.Controllers
 		}
 
 		[HttpGet("{id}")]
-		[Authorize(Roles = "Buyer")]
-		public async Task<IActionResult> GetById([FromRoute] string id)
+		[Authorize(Roles = "Buyer, Seller")]
+		public async Task<IActionResult> GetById(string id)
 		{
 			var result = await _mediator.Send(new GetByIdUserQuery { Id = id });
 
@@ -154,6 +154,15 @@ namespace Auctionify.API.Controllers
 			var transactions = await _mediator.Send(query);
 
 			return Ok(transactions);
+		}
+
+		[HttpDelete]
+		[Authorize(Roles = "Buyer, Seller")]
+		public async Task<IActionResult> DeleteUser()
+		{
+			var result = await _mediator.Send(new DeleteUserCommand());
+
+			return Ok(result);
 		}
 	}
 }

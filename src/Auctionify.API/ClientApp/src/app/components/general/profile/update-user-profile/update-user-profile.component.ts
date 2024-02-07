@@ -134,6 +134,7 @@ export class UpdateUserProfileComponent {
                     this.userDataValidator.validateUserProfileData(
                         this.userProfileData
                     );
+                    this.setFormControlData(data);
                 },
                 error: (error) => {
                     this.openDialog(
@@ -151,6 +152,7 @@ export class UpdateUserProfileComponent {
                     this.userDataValidator.validateUserProfileData(
                         this.userProfileData
                     );
+                    this.setFormControlData(data);
                 },
                 error: (error) => {
                     this.openDialog(

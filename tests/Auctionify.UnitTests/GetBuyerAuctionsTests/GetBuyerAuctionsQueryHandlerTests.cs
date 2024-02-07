@@ -10,6 +10,7 @@ using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Moq;
+using User = Auctionify.Core.Entities.User;
 
 namespace Auctionify.UnitTests.GetBuyerAuctionsTests
 {
@@ -22,7 +23,7 @@ namespace Auctionify.UnitTests.GetBuyerAuctionsTests
 		private readonly IMapper _mapper;
 		private readonly Mock<IPhotoService> _photoServiceMock;
 		private readonly Mock<IWatchlistService> _watchlistServiceMock;
-		private readonly Mock<ICurrentUserService> _currentUserServiceMock;
+		private readonly ICurrentUserService _currentUserService;
 		private readonly UserManager<User> _userManager;
 
 		public GetBuyerAuctionsQueryHandlerTests()
@@ -53,12 +54,12 @@ namespace Auctionify.UnitTests.GetBuyerAuctionsTests
 
 			_photoServiceMock = new Mock<IPhotoService>();
 			_watchlistServiceMock = new Mock<IWatchlistService>();
-			_currentUserServiceMock = new Mock<ICurrentUserService>();
 
 			_lotRepository = new LotRepository(mockDbContext.Object);
 			_bidRepository = new BidRepository(mockDbContext.Object);
 
 			_userManager = EntitiesSeeding.GetUserManagerMock();
+			_currentUserService = EntitiesSeeding.GetCurrentUserServiceMock();
 		}
 
 		#endregion
@@ -78,7 +79,7 @@ namespace Auctionify.UnitTests.GetBuyerAuctionsTests
 				_lotRepository,
 				_mapper,
 				_photoServiceMock.Object,
-				_currentUserServiceMock.Object,
+				_currentUserService,
 				_userManager,
 				_watchlistServiceMock.Object,
 				_bidRepository
@@ -108,7 +109,6 @@ namespace Auctionify.UnitTests.GetBuyerAuctionsTests
 			{
 				_photoServiceMock.Reset();
 				_watchlistServiceMock.Reset();
-				_currentUserServiceMock.Reset();
 			}
 		}
 

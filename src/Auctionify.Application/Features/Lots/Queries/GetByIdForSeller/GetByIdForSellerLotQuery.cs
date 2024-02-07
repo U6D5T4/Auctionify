@@ -4,6 +4,7 @@ using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Common.Options;
 using Auctionify.Core.Entities;
 using AutoMapper;
+using Azure;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -18,15 +19,15 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForSeller
 	}
 
 	public class GetByIdForSellerLotQueryHandler
-			: IRequestHandler<GetByIdForSellerLotQuery, GetByIdForSellerLotResponse>
+		: IRequestHandler<GetByIdForSellerLotQuery, GetByIdForSellerLotResponse>
 	{
 		private readonly ILotRepository _lotRepository;
 		private readonly IMapper _mapper;
 		private readonly IBlobService _blobService;
 		private readonly IFileRepository _fileRepository;
 		private readonly AzureBlobStorageOptions _azureBlobStorageOptions;
-		private readonly ICurrentUserService _currentUserService;
 		private readonly UserManager<User> _userManager;
+		private readonly ICurrentUserService _currentUserService;
 
 		public GetByIdForSellerLotQueryHandler(
 			ILotRepository lotRepository,
@@ -43,8 +44,8 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForSeller
 			_blobService = blobService;
 			_fileRepository = fileRepository;
 			_azureBlobStorageOptions = azureBlobStorageOptions.Value;
-			_currentUserService = currentUserService;
 			_userManager = userManager;
+			_currentUserService = currentUserService;
 		}
 
 		public async Task<GetByIdForSellerLotResponse> Handle(
@@ -52,7 +53,10 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForSeller
 			CancellationToken cancellationToken
 		)
 		{
-			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+			var user = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
+				cancellationToken: cancellationToken
+			);
 
 			var lot = await _lotRepository.GetAsync(
 				predicate: x => x.Id == request.Id,
@@ -71,7 +75,9 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForSeller
 			{
 				if (lot.Bids.Count > 0)
 				{
-					var notRemovedBids = lot.Bids.Where(x => !x.BidRemoved).OrderByDescending(x => x.TimeStamp).ToList();
+					var notRemovedBids = lot.Bids.Where(x => !x.BidRemoved)
+						.OrderByDescending(x => x.TimeStamp)
+						.ToList();
 
 					result.BidCount = notRemovedBids.Count;
 
@@ -87,9 +93,7 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForSeller
 				var additionalDocuments = await _fileRepository.GetListAsync(
 					predicate: x =>
 						x.LotId == lot.Id
-						&& x.Path.Contains(
-							_azureBlobStorageOptions.AdditionalDocumentsFolderName
-						),
+						&& x.Path.Contains(_azureBlobStorageOptions.AdditionalDocumentsFolderName),
 					cancellationToken: cancellationToken
 				);
 
@@ -113,6 +117,18 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForSeller
 
 				result.PhotosUrl = photoLinks;
 				result.AdditionalDocumentsUrl = additionalDocumentLinks;
+
+				var profilePictureName = user.ProfilePicture;
+
+				if (user.ProfilePicture != null)
+				{
+					var profilePictureUrl = _blobService.GetBlobUrl(
+						_azureBlobStorageOptions.UserProfilePhotosFolderName,
+						profilePictureName
+					);
+					
+					result.ProfilePictureUrl = profilePictureUrl;
+				}
 			}
 			else
 			{

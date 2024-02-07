@@ -1,26 +1,26 @@
-﻿using Auctionify.Application.Common.Interfaces.Repositories;
+﻿using Auctionify.Application.Common.DTOs;
 using Auctionify.Application.Common.Interfaces;
+using Auctionify.Application.Common.Interfaces.Repositories;
+using Auctionify.Application.Common.Models.Requests;
+using Auctionify.Application.Common.Options;
+using Auctionify.Application.Features.Rates.Queries.GetReceiverRates;
 using Auctionify.Core.Entities;
 using Auctionify.Infrastructure.Persistence;
 using Auctionify.Infrastructure.Repositories;
 using AutoMapper;
-using Microsoft.AspNetCore.Identity;
-using Moq;
-using Auctionify.Application.Common.DTOs;
-using Auctionify.Application.Common.Models.Requests;
-using Auctionify.Application.Features.Rates.Queries.GetReceiverRates;
 using FluentAssertions;
-using Auctionify.Application.Common.Options;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using Moq;
 
 namespace Auctionify.UnitTests.GetAllFeedbacksTests
 {
-    public class GetReceiverRatesQueryHandlerTest
+	public class GetReceiverRatesQueryHandlerTest
 	{
 		private readonly IMapper _mapper;
 		private readonly IRateRepository _rateRepository;
-		private readonly Mock<ICurrentUserService> _currentUserServiceMock;
 		private readonly UserManager<User> _userManager;
+		private readonly ICurrentUserService _currentUserService;
 
 		public GetReceiverRatesQueryHandlerTest()
 		{
@@ -41,8 +41,8 @@ namespace Auctionify.UnitTests.GetAllFeedbacksTests
 			);
 
 			_rateRepository = new RateRepository(mockDbContext.Object);
-			_currentUserServiceMock = new Mock<ICurrentUserService>();
 			_userManager = EntitiesSeeding.GetUserManagerMock();
+			_currentUserService = EntitiesSeeding.GetCurrentUserServiceMock();
 			_mapper = new Mapper(configuration);
 		}
 
@@ -77,7 +77,7 @@ namespace Auctionify.UnitTests.GetAllFeedbacksTests
 				.Returns(testUrl);
 
 			var handler = new GetAllReceiverRatesQueryHandler(
-				_currentUserServiceMock.Object,
+				_currentUserService,
 				_userManager,
 				_mapper,
 				_rateRepository,
@@ -128,7 +128,7 @@ namespace Auctionify.UnitTests.GetAllFeedbacksTests
 				.Returns(testUrl);
 
 			var handler = new GetAllReceiverRatesQueryHandler(
-				_currentUserServiceMock.Object,
+				_currentUserService,
 				_userManager,
 				_mapper,
 				rateRepository,

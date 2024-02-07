@@ -3,6 +3,7 @@ using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Core.Entities;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Auctionify.Application.Features.Chats.Commands.MarkChatMessageAsRead
 {
@@ -55,8 +56,9 @@ namespace Auctionify.Application.Features.Chats.Commands.MarkChatMessageAsRead
 							cancellationToken: cancellationToken
 						);
 
-						var user = await _userManager.FindByEmailAsync(
-							_currentUserService.UserEmail!
+						var user = await _userManager.Users.FirstOrDefaultAsync(
+							u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
+							cancellationToken: cancellationToken
 						);
 
 						return chatMessage!.SenderId != user!.Id;
@@ -76,8 +78,9 @@ namespace Auctionify.Application.Features.Chats.Commands.MarkChatMessageAsRead
 							cancellationToken: cancellationToken
 						);
 
-						var user = await _userManager.FindByEmailAsync(
-							_currentUserService.UserEmail!
+						var user = await _userManager.Users.FirstOrDefaultAsync(
+							u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
+							cancellationToken: cancellationToken
 						);
 
 						var conversation = await _conversationRepository.GetAsync(

@@ -21,9 +21,9 @@ namespace Auctionify.UnitTests.GetAllLotsByLocationTests
 		private readonly ILotRepository _lotRepository;
 		private readonly IBidRepository _bidRepository;
 		private readonly Mock<IWatchlistService> _watchListServiceMock;
-		private readonly Mock<ICurrentUserService> _currentUserServiceMock;
 		private readonly Mock<IPhotoService> _photoServiceMock;
 		private readonly UserManager<User> _userManager;
+		private readonly ICurrentUserService _currentUserService;
 
 		public GetAllLotsByLocationTests()
 		{
@@ -60,12 +60,12 @@ namespace Auctionify.UnitTests.GetAllLotsByLocationTests
 
 			_watchListServiceMock = new Mock<IWatchlistService>();
 			_photoServiceMock = new Mock<IPhotoService>();
-			_currentUserServiceMock = new Mock<ICurrentUserService>();
 
 			_lotRepository = new LotRepository(mockDbContext.Object);
 			_bidRepository = new BidRepository(mockDbContext.Object);
 
 			_userManager = EntitiesSeeding.GetUserManagerMock();
+			_currentUserService = EntitiesSeeding.GetCurrentUserServiceMock();
 
 			_mapper = new Mapper(configuration);
 		}
@@ -86,7 +86,7 @@ namespace Auctionify.UnitTests.GetAllLotsByLocationTests
 
 			var handler = new GetAllLotsByLocationQueryHandler(
 				_lotRepository,
-				_currentUserServiceMock.Object,
+				_currentUserService,
 				_userManager,
 				_watchListServiceMock.Object,
 				_photoServiceMock.Object,
@@ -114,7 +114,7 @@ namespace Auctionify.UnitTests.GetAllLotsByLocationTests
 
 			var handler = new GetAllLotsByLocationQueryHandler(
 				_lotRepository,
-				_currentUserServiceMock.Object,
+				_currentUserService,
 				_userManager,
 				_watchListServiceMock.Object,
 				_photoServiceMock.Object,
@@ -127,7 +127,7 @@ namespace Auctionify.UnitTests.GetAllLotsByLocationTests
 
 			// Assert
 			result.Should().BeOfType<GetListResponseDto<GetAllLotsByLocationResponse>>();
-			result.Count.Should().Be(4); 
+			result.Count.Should().Be(4);
 		}
 
 		#endregion
@@ -145,7 +145,6 @@ namespace Auctionify.UnitTests.GetAllLotsByLocationTests
 			if (disposing)
 			{
 				_watchListServiceMock.Reset();
-				_currentUserServiceMock.Reset();
 				_photoServiceMock.Reset();
 			}
 		}

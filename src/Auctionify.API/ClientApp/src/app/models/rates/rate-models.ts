@@ -1,7 +1,9 @@
 import { UserDto } from '../users/user-models';
 
 export interface Rate {
+    receiverId: number;
     receiver: UserDto | null;
+    senderId: number;
     sender: UserDto | null;
     ratingValue: number | null;
     comment: string | null;
@@ -22,4 +24,10 @@ export interface RateResponse {
     items: Rate[];
     pages: number;
     size: number;
+}
+
+export interface RateUserCommandModel {
+    lotId: number;
+    comment: string | null;
+    ratingValue: number;
 }

@@ -16,6 +16,7 @@ import { Rate, RatePaginationModel } from 'src/app/models/rates/rate-models';
 export class FeedbackComponent {
     userProfileData: BuyerModel | SellerModel | null = null;
     receiverRates: Rate[] = [];
+    IsSentRates: boolean = false;
 
     initialRatesCount: number = 10;
     addRatesCount: number = 10;

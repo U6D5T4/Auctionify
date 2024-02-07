@@ -393,8 +393,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LotId")
-                        .IsUnique();
+                    b.HasIndex("LotId");
 
                     b.HasIndex("ReceiverId");
 
@@ -510,6 +509,12 @@ namespace Auctionify.Infrastructure.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DeletionDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -519,6 +524,9 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .HasColumnType("nvarchar(max)");
@@ -825,8 +833,9 @@ namespace Auctionify.Infrastructure.Migrations
             modelBuilder.Entity("Auctionify.Core.Entities.Rate", b =>
                 {
                     b.HasOne("Auctionify.Core.Entities.Lot", "Lot")
-                        .WithOne("Rate")
-                        .HasForeignKey("Auctionify.Core.Entities.Rate", "LotId");
+                        .WithMany("Rates")
+                        .HasForeignKey("LotId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Auctionify.Core.Entities.User", "Receiver")
                         .WithMany("ReceiverRates")
@@ -963,7 +972,7 @@ namespace Auctionify.Infrastructure.Migrations
                 {
                     b.Navigation("Bids");
 
-                    b.Navigation("Rate");
+                    b.Navigation("Rates");
 
                     b.Navigation("Watchlists");
                 });
