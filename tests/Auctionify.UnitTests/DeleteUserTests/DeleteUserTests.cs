@@ -25,6 +25,7 @@ namespace Auctionify.UnitTests.DeleteUserTests
 		private readonly DeleteUserCommandValidator _validator;
 		private readonly Mock<IUserRoleDbContextService> _userRoleDbContextServiceMock;
 		private readonly Mock<RoleManager<Role>> _roleManagerMock;
+		private readonly Mock<IEmailService> _emailServiceMock;
 
 		public DeleteUserTests()
 		{
@@ -42,6 +43,8 @@ namespace Auctionify.UnitTests.DeleteUserTests
 			_lotRepository = new LotRepository(mockDbContext.Object);
 
 			_userRoleDbContextServiceMock = new Mock<IUserRoleDbContextService>();
+
+			_emailServiceMock = new Mock<IEmailService>();
 
 			_roleManagerMock = new Mock<RoleManager<Role>>(
 				Mock.Of<IRoleStore<Role>>(),
@@ -96,7 +99,8 @@ namespace Auctionify.UnitTests.DeleteUserTests
 				_userManager,
 				_currentUserService,
 				_userRoleDbContextServiceMock.Object,
-				_roleManagerMock.Object
+				_roleManagerMock.Object,
+				_emailServiceMock.Object
 			);
 
 			var result = await handler.Handle(command, CancellationToken.None);

@@ -70,11 +70,6 @@ namespace Auctionify.UnitTests.IdentityServiceUnitTests
 			);
 			_userRoleDbContextServiceMock = new Mock<IUserRoleDbContextService>();
 
-			//var userRoles = await _userRoleDbContextService.GetUnpaginatedListAsync(
-			//		ur => ur.UserId == user.Id && !ur.IsDeleted
-			//	);
-			// setting up userRoleDbContextServiceMock
-
 			_userRoleDbContextServiceMock
 				.Setup(
 					m =>

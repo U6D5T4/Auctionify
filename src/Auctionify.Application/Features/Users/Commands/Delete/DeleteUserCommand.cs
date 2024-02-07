@@ -15,18 +15,21 @@ namespace Auctionify.Application.Features.Users.Commands.Delete
 		private readonly ICurrentUserService _currentUserService;
 		private readonly IUserRoleDbContextService _userRoleDbContextService;
 		private readonly RoleManager<Role> _roleManager;
+		private readonly IEmailService _emailService;
 
 		public DeleteUserCommandHandler(
 			UserManager<User> userManager,
 			ICurrentUserService currentUserService,
 			IUserRoleDbContextService userRoleDbContextService,
-			RoleManager<Role> roleManager
+			RoleManager<Role> roleManager,
+			IEmailService emailService
 		)
 		{
 			_userManager = userManager;
 			_currentUserService = currentUserService;
 			_userRoleDbContextService = userRoleDbContextService;
 			_roleManager = roleManager;
+			_emailService = emailService;
 		}
 
 		public async Task<DeletedUserResponse> Handle(
@@ -78,6 +81,13 @@ namespace Auctionify.Application.Features.Users.Commands.Delete
 				userRole!.DeletionDate = DateTime.UtcNow;
 				await _userRoleDbContextService.UpdateAsync(userRole);
 			}
+
+			await _emailService.SendEmailAsync(
+				currentUserEmail,
+				"Account Deleted",
+				$"<h1>Your {currentUserRole} account has been deleted</h1>"
+					+ "<p>We are sorry to see you go</p>"
+			);
 
 			return new DeletedUserResponse
 			{
