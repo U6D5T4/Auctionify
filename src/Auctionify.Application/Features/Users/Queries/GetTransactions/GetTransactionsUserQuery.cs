@@ -56,7 +56,11 @@ namespace Auctionify.Application.Features.Users.Queries.GetTransactions
 			CancellationToken cancellationToken
 		)
 		{
-			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+			var user = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
+				cancellationToken: cancellationToken
+			);
+
 			var role = (UserRole)
 				Enum.Parse(
 					typeof(UserRole),

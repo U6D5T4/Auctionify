@@ -76,5 +76,15 @@ namespace Auctionify.Core.Persistence.Repositories
 			bool enableTracking = true,
 			CancellationToken cancellationToken = default
 		);
+
+		Task<bool> AllAsync(
+			Expression<Func<TEntity, bool>> predicate,
+			CancellationToken cancellationToken = default
+		);
+
+		Task<bool> AnyAsync(
+			Expression<Func<TEntity, bool>> predicate,
+			CancellationToken cancellationToken = default
+		);
 	}
 }

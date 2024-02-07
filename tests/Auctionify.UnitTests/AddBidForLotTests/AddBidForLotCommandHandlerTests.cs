@@ -14,7 +14,7 @@ using Moq;
 
 namespace Auctionify.UnitTests.AddBidForLotTests
 {
-	public class AddBidForLotCommandHandlerTests : IDisposable
+	public class AddBidForLotCommandHandlerTests
 	{
 		#region Initialization
 
@@ -22,8 +22,8 @@ namespace Auctionify.UnitTests.AddBidForLotTests
 		private readonly IBidRepository _bidRepository;
 		private readonly ILotRepository _lotRepository;
 		private readonly ILotStatusRepository _lotStatusRepository;
-		private readonly Mock<UserManager<User>> _userManagerMock;
-		private readonly Mock<ICurrentUserService> _currentUserServiceMock;
+		private readonly UserManager<User> _userManager;
+		private readonly ICurrentUserService _currentUserService;
 		private readonly AddBidForLotCommandValidator _validator;
 
 		public AddBidForLotCommandHandlerTests()
@@ -51,19 +51,8 @@ namespace Auctionify.UnitTests.AddBidForLotTests
 			);
 			_mapper = new Mapper(configuration);
 
-			_userManagerMock = new Mock<UserManager<User>>(
-				Mock.Of<IUserStore<User>>(),
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null
-			);
-			_currentUserServiceMock = new Mock<ICurrentUserService>();
-			_currentUserServiceMock.Setup(x => x.UserEmail).Returns(It.IsAny<string>());
+			_userManager = EntitiesSeeding.GetUserManagerMock();
+			_currentUserService = EntitiesSeeding.GetCurrentUserServiceMock();
 
 			_bidRepository = new BidRepository(mockDbContext.Object);
 			_lotRepository = new LotRepository(mockDbContext.Object);
@@ -86,18 +75,6 @@ namespace Auctionify.UnitTests.AddBidForLotTests
 			// Arrange
 			var mapperMock = new Mock<IMapper>();
 			var bidRepositoryMock = new Mock<IBidRepository>();
-			var currentUserServiceMock = new Mock<ICurrentUserService>();
-			var userManagerMock = new Mock<UserManager<User>>(
-				Mock.Of<IUserStore<User>>(),
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null
-			);
 
 			var mockClientProxy = new Mock<IClientProxy>();
 			var mockClients = new Mock<IHubClients>();
@@ -111,20 +88,17 @@ namespace Auctionify.UnitTests.AddBidForLotTests
 			var handler = new AddBidForLotCommandHandler(
 				mapperMock.Object,
 				bidRepositoryMock.Object,
-				currentUserServiceMock.Object,
-				userManagerMock.Object,
+				_currentUserService,
+				_userManager,
 				mockHubContext.Object
 			);
 
 			var command = new AddBidForLotCommand { LotId = 1, Bid = 100 };
 
-			var user = new User { Id = 1, Email = "user@example.com" };
-			userManagerMock.Setup(x => x.FindByEmailAsync(It.IsAny<string>())).ReturnsAsync(user);
-
 			var addedBid = new Bid
 			{
 				Id = 1,
-				BuyerId = user.Id,
+				BuyerId = 1,
 				NewPrice = command.Bid,
 				TimeStamp = DateTime.Now,
 				LotId = command.LotId,
@@ -158,8 +132,8 @@ namespace Auctionify.UnitTests.AddBidForLotTests
 			// Assert
 			result.Should().NotBeNull();
 			result.IsValid.Should().BeFalse();
-			result.Errors
-				.Should()
+			result
+				.Errors.Should()
 				.Contain(
 					x => x.ErrorMessage == "Bid must be greater than 0 and be a positive number"
 				);
@@ -177,8 +151,8 @@ namespace Auctionify.UnitTests.AddBidForLotTests
 			// Assert
 			result.Should().NotBeNull();
 			result.IsValid.Should().BeFalse();
-			result.Errors
-				.Should()
+			result
+				.Errors.Should()
 				.Contain(x => x.ErrorMessage == "Lot with this Id does not exist");
 		}
 
@@ -194,8 +168,8 @@ namespace Auctionify.UnitTests.AddBidForLotTests
 			// Assert
 			result.Should().NotBeNull();
 			result.IsValid.Should().BeFalse();
-			result.Errors
-				.Should()
+			result
+				.Errors.Should()
 				.Contain(x => x.ErrorMessage == "You can bid only if the lot is active");
 		}
 
@@ -211,8 +185,8 @@ namespace Auctionify.UnitTests.AddBidForLotTests
 			// Assert
 			result.Should().NotBeNull();
 			result.IsValid.Should().BeFalse();
-			result.Errors
-				.Should()
+			result
+				.Errors.Should()
 				.Contain(
 					x => x.ErrorMessage == "Bid must be greater than the lot's starting price"
 				);
@@ -322,25 +296,6 @@ namespace Auctionify.UnitTests.AddBidForLotTests
 					Bids = new List<Bid> { bids[2], }
 				}
 			};
-		}
-
-		#endregion
-
-		#region Deinitialization
-
-		public void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
-
-		protected virtual void Dispose(bool disposing)
-		{
-			if (disposing)
-			{
-				_userManagerMock.Reset();
-				_currentUserServiceMock.Reset();
-			}
 		}
 
 		#endregion

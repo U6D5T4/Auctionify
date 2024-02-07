@@ -15,11 +15,11 @@ using Moq;
 
 namespace Auctionify.UnitTests.GetAllRatesTests
 {
-    public class GetAllSenderRatesQueryHandlerTest
+	public class GetAllSenderRatesQueryHandlerTest
 	{
 		private readonly IMapper _mapper;
 		private readonly IRateRepository _rateRepository;
-		private readonly Mock<ICurrentUserService> _currentUserServiceMock;
+		private readonly ICurrentUserService _currentUserService;
 		private readonly UserManager<User> _userManager;
 
 		public GetAllSenderRatesQueryHandlerTest()
@@ -41,9 +41,10 @@ namespace Auctionify.UnitTests.GetAllRatesTests
 			);
 
 			_rateRepository = new RateRepository(mockDbContext.Object);
-			_currentUserServiceMock = new Mock<ICurrentUserService>();
+
 			_userManager = EntitiesSeeding.GetUserManagerMock();
-			_currentUserServiceMock.Setup(x => x.UserEmail).Returns(It.IsAny<string>());
+			_currentUserService = EntitiesSeeding.GetCurrentUserServiceMock();
+
 			_mapper = new Mapper(configuration);
 		}
 
@@ -79,7 +80,7 @@ namespace Auctionify.UnitTests.GetAllRatesTests
 				.Returns(testUrl);
 
 			var handler = new GetAllSenderRatesQueryHandler(
-				_currentUserServiceMock.Object,
+				_currentUserService,
 				_userManager,
 				_mapper,
 				_rateRepository,
@@ -130,7 +131,7 @@ namespace Auctionify.UnitTests.GetAllRatesTests
 				.Returns(testUrl);
 
 			var handler = new GetAllSenderRatesQueryHandler(
-				_currentUserServiceMock.Object,
+				_currentUserService,
 				_userManager,
 				_mapper,
 				rateRepository,

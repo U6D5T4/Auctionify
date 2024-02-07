@@ -262,6 +262,57 @@
         </div>
     </div>
 
+    <div class="dashboard__container-main">
+        <div class="dashboard__rating-section">
+            <div class="dashboard__rating-left">
+                <div class="dashboard__rating-title">
+                    <h1>Rating & Review</h1>
+                </div>
+                <div class="dashboard__options">
+                    <button
+                        routerLink="/rating"
+                        class="dashboard__rating-btn"
+                        mat-flat-button
+                    >
+                        My rating
+                    </button>
+                    <button
+                        routerLink="/rating/feedback"
+                        class="dashboard__feedback-btn"
+                        mat-flat-button
+                    >
+                        My feedback
+                    </button>
+                </div>
+                <div class="dashboard__rates">
+                    <div class="dashboard__container-rate">
+                        <app-average-rating-item
+                            [userProfileData]="userProfileData"
+                            [IsBtnVisible]="IsBtnVisible"
+                        ></app-average-rating-item>
+                    </div>
+                    <div class="review">
+                        <div
+                            class="single-review"
+                            *ngFor="let rate of senderRates"
+                        >
+                            <app-rate-item
+                                [rate]="rate"
+                                [IsSentRates]="IsSentRates"
+                            ></app-rate-item>
+                        </div>
+                        <div
+                            class="dashboard__no-comments"
+                            *ngIf="senderRates && senderRates.length === 0"
+                        >
+                            <h2>No comments yet.</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="dashboard__transactions-section">
         <h2 class="dashboard__transactions-title">Transactions history</h2>
         <a routerLink="/get-transactions">
@@ -393,66 +444,5 @@
                 No lots available in your wishlist.
             </p>
         </ng-template>
-    </div>
-
-    <div class="dashboard__container-main">
-        <div class="dashboard__rating-section">
-            <div class="dashboard__rating-left">
-                <div class="dashboard__rating-title">
-                    <h1>Rating & Review</h1>
-                </div>
-                <div class="dashboard__options">
-                    <button
-                        routerLink="/rating"
-                        class="dashboard__rating-btn"
-                        mat-flat-button
-                    >
-                        My rating
-                    </button>
-                    <button
-                        routerLink="/rating/feedback"
-                        class="dashboard__feedback-btn"
-                        mat-flat-button
-                    >
-                        My feedback
-                    </button>
-                </div>
-                <div class="dashboard__rates">
-                    <div class="dashboard__container-rate">
-                        <app-average-rating-item
-                            [userProfileData]="userProfileData"
-                            [senderRates]="senderRates"
-                        ></app-average-rating-item>
-
-                        <div class="dashboard__see-more-comments-btn">
-                            <button
-                                routerLink="/rating"
-                                class="dashboard__rating-btn"
-                                mat-flat-button
-                            >
-                                <div class="dashboard__btn-content">
-                                    <p>Show all comments</p>
-                                    <mat-icon>arrow_forward</mat-icon>
-                                </div>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="review">
-                        <div
-                            class="single-review"
-                            *ngFor="let rate of senderRates"
-                        >
-                            <app-rate-item [rate]="rate"></app-rate-item>
-                        </div>
-                        <div
-                            class="dashboard__no-comments"
-                            *ngIf="senderRates && senderRates.length === 0"
-                        >
-                            <h2>No comments yet.</h2>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 </div>

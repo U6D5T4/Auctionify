@@ -29,6 +29,8 @@ export class DashboardComponent implements OnInit {
     private readonly MAIN_GREEN_COLOR: string = '#2b9355';
     userProfileData: BuyerModel | null = null;
     senderRates: Rate[] = [];
+    IsBtnVisible: boolean = true;
+    IsSentRates: boolean = false;
 
     priceColor: string = 'black';
 

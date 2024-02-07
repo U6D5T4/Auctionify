@@ -25,6 +25,7 @@ import { AddBidModel } from './models/bids/bid-models';
 import { FilterLot } from './models/lots/filter';
 import {
     BuyerModel,
+    GetUserById,
     SellerModel,
     UpdateUserProfileModel,
 } from './models/users/user-models';
@@ -32,6 +33,7 @@ import {
     Rate,
     RatePaginationModel,
     RateResponse,
+    RateUserCommandModel,
 } from './models/rates/rate-models';
 
 export const API_BASE_URL = new InjectionToken('API_BASE_URL');
@@ -940,6 +942,30 @@ export class Client {
         return this.handleGetAllLotsWithStatusForSeller(url_, pageRequest);
     }
 
+    getUserById(userId: number): Observable<GetUserById> {
+        let url_ = `${this.baseUrl}/api/users/${userId}`;
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<GetUserById> => {
+                let data!: GetUserById;
+
+                if (response.body !== null) {
+                    data = response.body;
+                }
+
+                return of(data);
+            })
+        );
+    }
+
     private handleGetAllLotsWithStatusForSeller(
         url: string,
         pageRequest: PageRequest
@@ -953,6 +979,42 @@ export class Client {
         return this.http.get(url, { params: queryParams }).pipe(
             mergeMap((response: any): Observable<FilterResponse> => {
                 return of(response);
+            })
+        );
+    }
+
+    addRateToSeller(model: RateUserCommandModel): Observable<string> {
+        let url_ = this.baseUrl + '/api/rates/sellers';
+
+        let options_: any = {
+            body: model,
+            responseType: 'text',
+        };
+
+        return this.http.request('post', url_, options_).pipe(
+            map((response: any) => {
+                return response;
+            }),
+            catchError((error) => {
+                return throwError(() => error.error);
+            })
+        );
+    }
+
+    addRateToBuyer(model: RateUserCommandModel): Observable<string> {
+        let url_ = this.baseUrl + '/api/rates/buyers';
+
+        let options_: any = {
+            body: model,
+            responseType: 'text',
+        };
+
+        return this.http.request('post', url_, options_).pipe(
+            map((response: any) => {
+                return response;
+            }),
+            catchError((error) => {
+                return throwError(() => error.error);
             })
         );
     }
@@ -981,6 +1043,16 @@ export class Client {
                 } else {
                     throw new Error('Invalid response structure');
                 }
+            })
+        );
+    }
+
+    deleteAccount(): Observable<any> {
+        let url_ = this.baseUrl + `/api/users`;
+
+        return this.http.request('delete', url_).pipe(
+            catchError((error) => {
+                return throwError(() => error.error);
             })
         );
     }
@@ -1108,11 +1180,12 @@ export interface BidDto {
 }
 
 export interface UserDto {
-    id: number;
+    id: number | null;
     firstName: string;
     lastName: string;
     phoneNumber: string;
     email: string;
+    profilePicture: string;
 }
 
 export interface SearchLotResponse {
@@ -1151,6 +1224,9 @@ export interface BuyerGetLotResponse {
     isInWatchlist: boolean;
     bidCount: number | null;
     sellerEmail: string;
+    sellerId: number;
+    buyerId: number;
+    profilePictureUrl: string;
 }
 
 export interface SellerGetLotResponse {
@@ -1169,6 +1245,8 @@ export interface SellerGetLotResponse {
     bids: BidDto[];
     bidCount: number;
     sellerId: number;
+    buyerId: number;
+    profilePictureUrl: string;
 }
 
 export interface CreateLotResponse {
