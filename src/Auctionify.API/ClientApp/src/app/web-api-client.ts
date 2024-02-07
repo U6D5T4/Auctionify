@@ -144,6 +144,65 @@ export class Client {
             })
         );
     }
+
+    createNewUserRole(role: string): Observable<string> {
+        let url_ = this.baseUrl + '/api/auth/create-new-user-role';
+
+        const formData = new FormData();
+
+        formData.append('role', role);
+
+        let options_: any = {
+            body: formData,
+            responseType: 'text',
+        };
+
+        return this.http.request('post', url_, options_).pipe(
+            map((response: any) => {
+                return response;
+            }),
+            catchError((error) => {
+                return throwError(() => error.error);
+            })
+        );
+    }
+
+    loginWithSelectedRole(role: string): Observable<LoginResponse> {
+        let url_ = this.baseUrl + '/api/auth/login-with-selected-role';
+
+        const formData = new FormData();
+
+        formData.append('role', role);
+
+        let options_: any = {
+            body: formData,
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http
+            .request('post', url_, options_)
+            .pipe(
+                mergeMap((response: any): Observable<LoginResponse> => {
+                    let data: LoginResponse = {};
+
+                    if (response.body !== null) {
+                        data = response.body;
+                    }
+
+                    return of(data);
+                })
+            )
+            .pipe(
+                catchError((error) => {
+                    return throwError(() => error);
+                })
+            );
+    }
+
     signUpWithGoogle(userData: any): Observable<any> {
         const header = new HttpHeaders().set(
             'Content-type',

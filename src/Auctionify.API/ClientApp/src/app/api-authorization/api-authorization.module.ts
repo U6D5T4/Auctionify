@@ -22,6 +22,7 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { isLoggedInGuard } from '../guards/is-logged-in.guard';
 import { EmailSentComponent } from './email-sent/email-sent.component';
 import { AfterDeletionComponent } from './after-deletion/after-deletion.component';
+import { SelectLoginRoleComponent } from './select-login-role/select-login-role.component';
 
 @NgModule({
     declarations: [
@@ -32,6 +33,7 @@ import { AfterDeletionComponent } from './after-deletion/after-deletion.componen
         ResetPasswordComponent,
         EmailSentComponent,
         AfterDeletionComponent,
+        SelectLoginRoleComponent,
     ],
     imports: [
         CommonModule,
