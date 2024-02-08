@@ -145,7 +145,7 @@ export class Client {
         );
     }
 
-    createNewUserRole(role: string): Observable<string> {
+    createNewUserRole(role: string): Observable<LoginResponse> {
         let url_ = this.baseUrl + '/api/auth/create-new-user-role';
 
         const formData = new FormData();
@@ -154,15 +154,22 @@ export class Client {
 
         let options_: any = {
             body: formData,
-            responseType: 'text',
+            observe: 'response',
+            headers: new HttpHeaders({ Accept: 'text/json' }),
         };
 
         return this.http.request('post', url_, options_).pipe(
-            map((response: any) => {
-                return response;
+            mergeMap((response: any): Observable<LoginResponse> => {
+                let data: LoginResponse = {};
+
+                if (response.body !== null) {
+                    data = response.body;
+                }
+
+                return of(data);
             }),
             catchError((error) => {
-                return throwError(() => error.error);
+                return throwError(() => error);
             })
         );
     }
@@ -177,30 +184,23 @@ export class Client {
         let options_: any = {
             body: formData,
             observe: 'response',
-            headers: new HttpHeaders({
-                'Content-Type': 'application/json',
-                Accept: 'text/json',
-            }),
+            headers: new HttpHeaders({ Accept: 'text/json' }),
         };
 
-        return this.http
-            .request('post', url_, options_)
-            .pipe(
-                mergeMap((response: any): Observable<LoginResponse> => {
-                    let data: LoginResponse = {};
+        return this.http.request('post', url_, options_).pipe(
+            mergeMap((response: any): Observable<LoginResponse> => {
+                let data: LoginResponse = {};
 
-                    if (response.body !== null) {
-                        data = response.body;
-                    }
+                if (response.body !== null) {
+                    data = response.body;
+                }
 
-                    return of(data);
-                })
-            )
-            .pipe(
-                catchError((error) => {
-                    return throwError(() => error);
-                })
-            );
+                return of(data);
+            }),
+            catchError((error) => {
+                return throwError(() => error);
+            })
+        );
     }
 
     signUpWithGoogle(userData: any): Observable<any> {
@@ -574,7 +574,6 @@ export class Client {
 
         return this.http.get<BidDto[]>(url, { params, headers }).pipe(
             catchError((error: any) => {
-                console.error('Error fetching bids:', error);
                 return throwError(() => new Error('Failed to fetch bids'));
             }),
             map((response: any): BidDto[] => {
@@ -724,8 +723,6 @@ export class Client {
         let url_ = `${
             this.baseUrl
         }/api/auth/forget-password?email=${encodeURIComponent(email)}`;
-
-        console.log(email);
 
         let options_: any = {
             observe: 'response',
@@ -1325,6 +1322,7 @@ export interface TokenModel {
     expireDate: string;
     role: UserRole;
     userId: number;
+    roles: string[];
 }
 
 export interface RegisterResponse {

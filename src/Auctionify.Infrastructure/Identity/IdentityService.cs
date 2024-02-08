@@ -217,7 +217,9 @@ namespace Auctionify.Infrastructure.Identity
 				};
 			}
 
-			var userRoles = await _userManager.GetRolesAsync(user);
+			var userRoles = await _userRoleDbContextService.GetUnpaginatedListAsync(
+				ur => ur.UserId == user.Id
+			);
 
 			if (userRoles == null)
 			{
@@ -228,13 +230,34 @@ namespace Auctionify.Infrastructure.Identity
 			{
 				foreach (var userRole in userRoles)
 				{
-					if (userRole == role)
+					if (userRole.RoleId == (await _roleManager.FindByNameAsync(role))!.Id)
 					{
-						return new LoginResponse
+						userRole.IsDeleted = false;
+
+						var updateResult = await _userRoleDbContextService.UpdateAsync(userRole);
+
+						if (updateResult is not null)
 						{
-							IsSuccess = false,
-							Message = $"User already has {role} account"
-						};
+							var token = await GenerateJWTTokenWithUserClaimsAsync(user, role);
+
+							token.Role = role;
+							token.UserId = user.Id;
+
+							return new LoginResponse
+							{
+								IsSuccess = true,
+								Result = token,
+								Message = $"Role '{role}' assigned to the user successfully"
+							};
+						}
+						else
+						{
+							return new LoginResponse
+							{
+								IsSuccess = false,
+								Message = "Failed to assign role"
+							};
+						}
 					}
 				}
 			}
@@ -574,10 +597,12 @@ namespace Auctionify.Infrastructure.Identity
 
 			if (user == null)
 			{
+				var newUsername = GenerateUniqueUserName();
+
 				user = new User
 				{
 					Email = payload.Email,
-					UserName = payload.Email,
+					UserName = newUsername,
 					FirstName = payload.GivenName,
 					LastName = payload.FamilyName,
 					EmailConfirmed = true

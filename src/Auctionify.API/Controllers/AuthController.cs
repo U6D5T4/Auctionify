@@ -164,7 +164,9 @@ namespace Auctionify.API.Controllers
 
 		[Authorize]
 		[HttpPost("login-with-selected-role")]
-		public async Task<IActionResult> CheckEligibilityToLoginWithSelectedRole([FromForm] string role)
+		public async Task<IActionResult> CheckEligibilityToLoginWithSelectedRole(
+			[FromForm] string role
+		)
 		{
 			var result = await _identityService.CheckEligibilityToLoginWithSelectedRole(role);
 

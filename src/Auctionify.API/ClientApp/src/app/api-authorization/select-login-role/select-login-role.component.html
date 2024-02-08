@@ -1,1 +1,63 @@
-<p>select-login-role works!</p>
+<div class="select-login-role">
+    <div class="general-auth-background"></div>
+    <div class="select-login-role__container">
+        <div class="select-login-role__container-inner">
+            <div class="select-login-role__header">
+                <h1>Log In</h1>
+                <p>Please select your login role</p>
+            </div>
+
+            <form
+                [formGroup]="selectLoginRoleForm"
+                (ngSubmit)="onSubmit()"
+                class="select-login-role__form form"
+            >
+                <div class="form__options">
+                    <div class="form__single-option" *ngFor="let role of roles">
+                        <label class="form__option-label">
+                            <input
+                                formControlName="role"
+                                type="radio"
+                                [id]="role.name"
+                                [value]="role.name"
+                                [checked]="
+                                    role.name ===
+                                    selectLoginRoleForm.controls.role.value
+                                "
+                                required
+                            />
+                            <div class="form__user-type-option">
+                                <div class="radio">
+                                    <p>{{ role.name }}</p>
+                                </div>
+                                <label [for]="role.name">
+                                    <p class="form__option-desc">
+                                        {{ role.line1 }} <br />
+                                        {{ role.line2 }}
+                                    </p>
+                                </label>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <button
+                    type="submit"
+                    disabled="{{ isLoading }}"
+                    mat-raised-button
+                    color="primary"
+                >
+                    <mat-spinner
+                        *ngIf="isLoading; else notLoading"
+                        diameter="25"
+                    ></mat-spinner>
+                    <ng-template #notLoading>
+                        <div>Continue</div>
+                    </ng-template>
+                </button>
+            </form>
+
+            <div class="select-login-role__border"></div>
+        </div>
+    </div>
+</div>

@@ -69,6 +69,10 @@ import { SelectLoginRoleComponent } from './select-login-role/select-login-role.
                 path: ApplicationPaths.AfterDeletion,
                 component: AfterDeletionComponent,
             },
+            {
+                path: ApplicationPaths.SelectLoginRole,
+                component: SelectLoginRoleComponent,
+            },
         ]),
         UiElementsModule,
         MatFormFieldModule,
