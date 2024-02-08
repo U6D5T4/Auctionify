@@ -32,9 +32,10 @@ namespace Auctionify.Infrastructure.Interceptors
                 if (entry.State == EntityState.Added)
                 {
                     entry.Entity.CreationDate = DateTime.Now;
-                }
+					entry.Entity.ModificationDate = DateTime.Now;
+				}
 
-                if (entry.State == EntityState.Modified || entry.HasChangedOwnedEntities())
+				if (entry.State == EntityState.Modified || entry.HasChangedOwnedEntities())
                 {
                     entry.Entity.ModificationDate = DateTime.Now;
                 }
