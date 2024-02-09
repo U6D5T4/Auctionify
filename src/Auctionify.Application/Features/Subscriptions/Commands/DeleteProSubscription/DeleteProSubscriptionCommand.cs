@@ -8,6 +8,7 @@ namespace Auctionify.Application.Features.Subscriptions.Commands.DeleteProSubscr
 {
     public class DeleteProSubscriptionCommand : IRequest<bool>
     {
+
     }
 
     public class DeleteProSubscriptionCommandHandler : IRequestHandler<DeleteProSubscriptionCommand, bool>
@@ -37,7 +38,9 @@ namespace Auctionify.Application.Features.Subscriptions.Commands.DeleteProSubscr
             if (userSubscription == null)
                 throw new Exception("User does not have any subscriptions");
 
+            await _subscriptionRepository.DeleteAsync(userSubscription);
 
+            return true;
         }
     }
 

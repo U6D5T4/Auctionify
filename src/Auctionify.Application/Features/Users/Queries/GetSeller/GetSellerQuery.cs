@@ -27,6 +27,7 @@ namespace Auctionify.Application.Features.Users.Queries.GetSeller
 		private readonly ILotRepository _lotRepository;
 		private readonly ILotStatusRepository _lotStatusRepository;
 		private readonly IRateRepository _rateRepository;
+		private readonly ISubscriptionRepository _subscriptionRepository;
 
 		public GetSellerQueryHandler(
 			ICurrentUserService currentUserService,
@@ -36,7 +37,8 @@ namespace Auctionify.Application.Features.Users.Queries.GetSeller
 			IMapper mapper,
 			ILotRepository lotRepository,
 			ILotStatusRepository lotStatusRepository,
-			IRateRepository rateRepository
+			IRateRepository rateRepository,
+			ISubscriptionRepository subscriptionRepository
 		)
 		{
 			_currentUserService = currentUserService;
@@ -47,6 +49,7 @@ namespace Auctionify.Application.Features.Users.Queries.GetSeller
 			_lotRepository = lotRepository;
 			_lotStatusRepository = lotStatusRepository;
 			_rateRepository = rateRepository;
+			_subscriptionRepository = subscriptionRepository;
 		}
 
 		public async Task<GetSellerResponse> Handle(
@@ -139,6 +142,11 @@ namespace Auctionify.Application.Features.Users.Queries.GetSeller
 				}
 				response.StarCounts = starCounts;
 			}
+
+			var proSubscription = await _subscriptionRepository.GetAsync(s => s.UserId == user.Id && s.IsActive);
+
+			if (proSubscription != null)
+				response.IsPro = true;
 
 			return response;
 		}
