@@ -52,6 +52,17 @@
                         <mat-icon>account_circle</mat-icon>
                         My Profile
                     </button>
+                    <ng-container>
+                        <button
+                            [routerLink]="['/subscriptions/upgrade-to-pro']"
+                            routerLinkActive="mat-primary"
+                            color="white"
+                            class="pro-button"
+                        >
+                            <mat-icon>hotel_class</mat-icon>
+                            Upgrade to PRO
+                        </button>
+                    </ng-container>
                 </div>
             </div>
             <div class="navbar__bottom">
