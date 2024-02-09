@@ -19,9 +19,9 @@ namespace Auctionify.UnitTests.GetAllLotsTests
 		private readonly ILotRepository _lotRepository;
 		private readonly IBidRepository _bidRepository;
 		private readonly Mock<IWatchlistService> _watchListServiceMock;
-		private readonly Mock<ICurrentUserService> _currentUserServiceMock;
 		private readonly Mock<IPhotoService> _photoServiceMock;
 		private readonly UserManager<User> _userManager;
+		private readonly ICurrentUserService _currentUserService;
 
 		public GetAllLotsTests()
 		{
@@ -54,10 +54,11 @@ namespace Auctionify.UnitTests.GetAllLotsTests
 			_lotRepository = new LotRepository(mockDbContext.Object);
 			_bidRepository = new BidRepository(mockDbContext.Object);
 			_watchListServiceMock = new Mock<IWatchlistService>();
-			_currentUserServiceMock = new Mock<ICurrentUserService>();
 			_photoServiceMock = new Mock<IPhotoService>();
+
 			_userManager = EntitiesSeeding.GetUserManagerMock();
-			_currentUserServiceMock.Setup(x => x.UserEmail).Returns(It.IsAny<string>());
+			_currentUserService = EntitiesSeeding.GetCurrentUserServiceMock();
+
 			_mapper = new Mapper(configuration);
 		}
 
@@ -74,7 +75,7 @@ namespace Auctionify.UnitTests.GetAllLotsTests
 				_lotRepository,
 				_mapper,
 				_photoServiceMock.Object,
-				_currentUserServiceMock.Object,
+				_currentUserService,
 				_userManager,
 				_watchListServiceMock.Object,
 				_bidRepository
@@ -105,7 +106,7 @@ namespace Auctionify.UnitTests.GetAllLotsTests
 				lotRepository,
 				_mapper,
 				_photoServiceMock.Object,
-				_currentUserServiceMock.Object,
+				_currentUserService,
 				_userManager,
 				_watchListServiceMock.Object,
 				_bidRepository

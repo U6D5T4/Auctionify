@@ -11,12 +11,12 @@ using Moq;
 
 namespace Auctionify.UnitTests.UpdateUserTests
 {
-	public class UpdateUserCommandHandlerTests : IDisposable
+	public class UpdateUserCommandHandlerTests
 	{
 		#region Initialization
 
 		private readonly IMapper _mapper;
-		private readonly Mock<ICurrentUserService> _currentUserServiceMock;
+		private readonly ICurrentUserService _currentUserService;
 		private readonly UserManager<User> _userManager;
 
 		public UpdateUserCommandHandlerTests()
@@ -33,8 +33,8 @@ namespace Auctionify.UnitTests.UpdateUserTests
 			);
 			_mapper = new Mapper(configuration);
 
-			_currentUserServiceMock = new Mock<ICurrentUserService>();
 			_userManager = EntitiesSeeding.GetUserManagerMock();
+			_currentUserService = EntitiesSeeding.GetCurrentUserServiceMock();
 		}
 
 		#endregion
@@ -45,7 +45,6 @@ namespace Auctionify.UnitTests.UpdateUserTests
 		public async Task UpdateUserCommandHandler_WhenNewProfilePictureIsProvided_ShouldUploadNewProfilePicture()
 		{
 			// Arrange
-			_currentUserServiceMock.Setup(c => c.UserEmail).Returns("test@test.com");
 			var testUrl = "test-url";
 			var blobServiceMock = new Mock<IBlobService>();
 			var azureBlobStorageOptionsMock = new Mock<IOptions<AzureBlobStorageOptions>>();
@@ -80,7 +79,7 @@ namespace Auctionify.UnitTests.UpdateUserTests
 				.Returns(testUrl);
 
 			var handler = new UpdateUserCommandHandler(
-				_currentUserServiceMock.Object,
+				_currentUserService,
 				_userManager,
 				blobServiceMock.Object,
 				azureBlobStorageOptionsMock.Object,
@@ -125,7 +124,6 @@ namespace Auctionify.UnitTests.UpdateUserTests
 		public async Task UpdateUserCommandHandler_WhenNoNewProfilePictureIsProvidedAndDeleteProfilePictureIsTrue_ShouldDeleteProfilePicture()
 		{
 			// Arrange
-			_currentUserServiceMock.Setup(c => c.UserEmail).Returns("test@test.com");
 			var testUrl = "test-url";
 			var blobServiceMock = new Mock<IBlobService>();
 			var azureBlobStorageOptionsMock = new Mock<IOptions<AzureBlobStorageOptions>>();
@@ -160,7 +158,7 @@ namespace Auctionify.UnitTests.UpdateUserTests
 				.Returns(testUrl);
 
 			var handler = new UpdateUserCommandHandler(
-				_currentUserServiceMock.Object,
+				_currentUserService,
 				_userManager,
 				blobServiceMock.Object,
 				azureBlobStorageOptionsMock.Object,
@@ -193,23 +191,6 @@ namespace Auctionify.UnitTests.UpdateUserTests
 			result.Should().NotBeNull();
 			result.Should().BeOfType<UpdatedUserResponse>();
 			result.ProfilePictureUrl.Should().BeNull();
-		}
-
-		#endregion
-
-		#region Deinitialization
-		public void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
-
-		protected virtual void Dispose(bool disposing)
-		{
-			if (disposing)
-			{
-				_currentUserServiceMock.Reset();
-			}
 		}
 
 		#endregion

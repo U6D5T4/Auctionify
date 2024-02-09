@@ -3,11 +3,17 @@ import { RouterModule, Routes } from '@angular/router';
 import { UpdateUserProfileComponent } from './update-user-profile/update-user-profile.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
+import { PublicUserProfileComponent } from './public-user-profile/public-user-profile.component';
 
 const profileRoutes: Routes = [
     {
         path: '',
         component: UserProfileComponent,
+        pathMatch: 'full',
+    },
+    {
+        path: 'user/:id',
+        component: PublicUserProfileComponent,
         pathMatch: 'full',
     },
     {

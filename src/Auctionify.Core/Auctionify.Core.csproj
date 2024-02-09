@@ -11,6 +11,7 @@
     <Folder Include="Events\" />
     <Folder Include="Exceptions\" />
     <Folder Include="Interfaces\" />
+    <Folder Include="Persistence\Extensions\" />
   </ItemGroup>
 
     

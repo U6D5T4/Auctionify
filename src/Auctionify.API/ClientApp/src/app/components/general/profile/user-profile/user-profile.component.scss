@@ -98,4 +98,19 @@
     &__change-password-btn {
         width: 210px;
     }
+
+    .delete-account-btn {
+        color: var(--error, #ab2d25);
+        font-style: normal;
+        font-weight: 600;
+        line-height: 24px;
+        border-radius: 8px;
+        border: 2px solid var(--error, #ab2d25);
+    }
+
+    .delete-account-btn:hover {
+        background-color: var(--error, #ab2d25);
+        color: white;
+        transition: 0.3s ease;
+    }
 }

@@ -18,7 +18,7 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer
 	}
 
 	public class GetByIdForBuyerLotQueryHandler
-			: IRequestHandler<GetByIdForBuyerLotQuery, GetByIdForBuyerLotResponse>
+		: IRequestHandler<GetByIdForBuyerLotQuery, GetByIdForBuyerLotResponse>
 	{
 		private readonly ILotRepository _lotRepository;
 		private readonly IMapper _mapper;
@@ -62,8 +62,7 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer
 						.Include(x => x.Currency)
 						.Include(x => x.Location)
 						.Include(x => x.LotStatus)
-						.Include(x => x.Bids)
-						.Include(x => x.Seller),
+						.Include(x => x.Bids),
 				cancellationToken: cancellationToken
 			);
 
@@ -71,7 +70,10 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer
 
 			if (lot is not null)
 			{
-				var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+				var user = await _userManager.Users.FirstOrDefaultAsync(
+					u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
+					cancellationToken: cancellationToken
+				);
 
 				result.IsInWatchlist = await _watchlistService.IsLotInUserWatchlist(
 					lot.Id,
@@ -81,7 +83,9 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer
 
 				if (lot.Bids.Count > 0)
 				{
-					var notRemovedBids = lot.Bids.Where(x => !x.BidRemoved).OrderByDescending(x => x.TimeStamp).ToList();
+					var notRemovedBids = lot.Bids.Where(x => !x.BidRemoved)
+						.OrderByDescending(x => x.TimeStamp)
+						.ToList();
 
 					result.BidCount = notRemovedBids.Count;
 
@@ -97,9 +101,7 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer
 				var additionalDocuments = await _fileRepository.GetListAsync(
 					predicate: x =>
 						x.LotId == lot.Id
-						&& x.Path.Contains(
-							_azureBlobStorageOptions.AdditionalDocumentsFolderName
-						),
+						&& x.Path.Contains(_azureBlobStorageOptions.AdditionalDocumentsFolderName),
 					cancellationToken: cancellationToken
 				);
 
@@ -123,6 +125,19 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer
 
 				result.PhotosUrl = photoLinks;
 				result.AdditionalDocumentsUrl = additionalDocumentLinks;
+
+				var profilePictureName = user.ProfilePicture;
+
+				if (user.ProfilePicture != null)
+				{
+					var profilePictureUrl = _blobService.GetBlobUrl(
+						_azureBlobStorageOptions.UserProfilePhotosFolderName,
+						profilePictureName
+					);
+					
+					result.ProfilePictureUrl = profilePictureUrl;
+					
+				}
 			}
 			else
 			{

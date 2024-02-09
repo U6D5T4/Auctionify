@@ -7,6 +7,7 @@ import { CredentialResponse, PromptMomentNotification } from 'google-one-tap';
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import { RegisterResponse } from 'src/app/web-api-client';
 import { AuthorizeService } from '../authorize.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'app-register',
@@ -42,25 +43,25 @@ export class RegisterComponent {
     async ngOnInit(): Promise<void> {
         try {
             this.clientId = await this.authService.fetchGoogleClientId();
-                // @ts-ignore
-                google.accounts.id.initialize({
-                    client_id: this.clientId,
-                    callback: this.handleCredentialResponse.bind(this),
-                    auto_select: false,
-                    cancel_on_tap_outside: true,
-                });
+            // @ts-ignore
+            google.accounts.id.initialize({
+                client_id: this.clientId,
+                callback: this.handleCredentialResponse.bind(this),
+                auto_select: false,
+                cancel_on_tap_outside: true,
+            });
 
+            // @ts-ignore
+            google.accounts.id.renderButton(
                 // @ts-ignore
-                google.accounts.id.renderButton(
-                    // @ts-ignore
-                    document.getElementsByClassName('google-link__label')[0],
-                    { size: 'large', width: '100' }
-                );
+                document.getElementsByClassName('google-link__label')[0],
+                { size: 'large', width: '100' }
+            );
 
-                // @ts-ignore
-                google.accounts.id.prompt(
-                    (notification: PromptMomentNotification) => {}
-                );
+            // @ts-ignore
+            google.accounts.id.prompt(
+                (notification: PromptMomentNotification) => {}
+            );
         } catch (error) {
             console.error('Error fetching Google Client ID:', error);
         }
@@ -105,13 +106,8 @@ export class RegisterComponent {
                         `auth/email-sent/${this.registerForm.value.email}`,
                     ]);
                 },
-                error: (error: RegisterResponse) => {
-                    this.openDialog(
-                        error.errors! || [
-                            'Something went wrong, please try later',
-                        ],
-                        true
-                    );
+                error: (response: HttpErrorResponse) => {
+                    this.openDialog([response.error.message], true);
                 },
             });
     }

@@ -65,7 +65,10 @@ namespace Auctionify.Application.Features.Users.Queries.GetByUserWatchlist
 			CancellationToken cancellationToken
 		)
 		{
-			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+			var user = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
+				cancellationToken: cancellationToken
+			);
 
 			var watchlist = await _watchlistRepository.GetUnpaginatedListAsync(
 				predicate: x => x.UserId == user!.Id,

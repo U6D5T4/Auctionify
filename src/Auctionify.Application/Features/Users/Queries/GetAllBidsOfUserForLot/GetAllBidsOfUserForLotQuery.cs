@@ -6,6 +6,7 @@ using Auctionify.Core.Entities;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Auctionify.Application.Features.Users.Queries.GetAllBidsOfUserForLot
 {
@@ -51,7 +52,10 @@ namespace Auctionify.Application.Features.Users.Queries.GetAllBidsOfUserForLot
 			CancellationToken cancellationToken
 		)
 		{
-			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+			var user = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
+				cancellationToken: cancellationToken
+			);
 
 			var bids = await _bidRepository.GetListAsync(
 				predicate: x => x.LotId == request.LotId && x.BuyerId == user!.Id && !x.BidRemoved,

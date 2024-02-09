@@ -92,8 +92,7 @@ export class AddBidComponent implements OnInit {
             };
 
             this.apiClient.addBidForLot(bidData).subscribe({
-                next: (response) => {
-                    console.log(response);
+                next: () => {
                     this.bidForm.reset();
                     this.errorMessage = '';
                     this.closeDialog();

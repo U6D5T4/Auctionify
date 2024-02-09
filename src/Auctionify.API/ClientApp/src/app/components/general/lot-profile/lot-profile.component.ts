@@ -22,6 +22,7 @@ import { ImagePopupComponent } from '../image-popup/image-popup.component';
 import { AddBidComponent } from '../add-bid/add-bid.component';
 import { WithdrawBidComponent } from '../withdraw-bid/withdraw-bid.component';
 import { RemoveFromWatchlistComponent } from '../remove-from-watchlist/remove-from-watchlist.component';
+import { UserDataValidatorService } from 'src/app/services/user-data-validator/user-data-validator.service';
 
 @Component({
     selector: 'app-lot-profile',
@@ -39,6 +40,9 @@ export class LotProfileComponent implements OnInit {
     isDeleteLoading = false;
     recentBidOfCurrentBuyer: number = 0;
     currentUserId: number = 0;
+    soldLotStatus: string = 'Sold';
+    canBuyerRateSeller: boolean = false;
+    canSellerRateBuyer: boolean = false;
 
     private isSignalrConnected = false;
 
@@ -136,6 +140,9 @@ export class LotProfileComponent implements OnInit {
                 this.bidsToShow = this.lotData.bids.slice(0, 3);
             }
         }
+
+        this.canBuyerRate();
+        this.canSellerRate();
     }
 
     handleLotError() {
@@ -327,6 +334,25 @@ export class LotProfileComponent implements OnInit {
         });
     }
 
+    canBuyerRate(): void {
+        if (
+            this.currentUserId == this.lotData?.buyerId &&
+            this.lotData?.lotStatus.name == this.soldLotStatus
+        ) {
+            this.canBuyerRateSeller = true;
+        }
+    }
+
+    canSellerRate(): void {
+        console.log(this.lotData);
+        if (
+            this.currentUserId == this.lotData?.sellerId &&
+            this.lotData?.lotStatus.name == this.soldLotStatus
+        ) {
+            this.canSellerRateBuyer = true;
+        }
+    }
+
     isSellerOwnsLot(response: any): response is SellerGetLotResponse {
         return response['sellerId'] !== this.currentUserId;
     }
@@ -341,6 +367,14 @@ export class LotProfileComponent implements OnInit {
         if (fileName === null) return '';
 
         return decodeURI(fileName[0].split('/')[1]);
+    }
+
+    isUserSeller(): boolean {
+        return this.authService.isUserSeller();
+    }
+
+    isUserBuyer(): boolean {
+        return this.authService.isUserBuyer();
     }
 
     ngOnDestroy() {
