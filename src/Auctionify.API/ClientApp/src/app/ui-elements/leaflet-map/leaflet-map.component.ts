@@ -49,5 +49,15 @@ export class LeafletMapComponent implements AfterViewInit, OnDestroy {
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
         }).addTo(this.map);
+
+        const customIcon = L.icon({
+            iconUrl: "../../../assets/icons/map-marker.png",
+            iconSize: [30, 30],
+            iconAnchor: [22, 94],
+            popupAnchor: [-3, -76]
+        });
+    
+        // Add a marker to the map with the custom icon
+        L.marker([lat, lng], { icon: customIcon }).addTo(this.map);
     }
 }
