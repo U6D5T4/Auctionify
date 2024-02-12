@@ -12,6 +12,7 @@ import {
     UpdateUserProfileModel,
 } from 'src/app/models/users/user-models';
 import { Client } from 'src/app/web-api-client';
+import { UserDataValidatorService } from 'src/app/services/user-data-validator/user-data-validator.service';
 
 export interface ProfileFormModel {
     firstName: FormControl<string | null>;
@@ -35,7 +36,8 @@ export class UpdateUserProfileComponent {
         private authorizeService: AuthorizeService,
         private client: Client,
         private router: Router,
-        public dialog: Dialog
+        private dialog: Dialog,
+        private userDataValidator: UserDataValidatorService
     ) {}
 
     ngOnInit(): void {
@@ -125,34 +127,42 @@ export class UpdateUserProfileComponent {
     }
 
     private fetchUserProfileData() {
-        if (this.isUserBuyer()) {
-            this.client.getBuyer().subscribe(
-                (data: BuyerModel) => {
+        if (this.authorizeService.isUserBuyer()) {
+            this.client.getBuyer().subscribe({
+                next: (data: BuyerModel) => {
+                    this.userProfileData = data;
+                    this.userDataValidator.validateUserProfileData(
+                        this.userProfileData
+                    );
                     this.setFormControlData(data);
                 },
-                (error) => {
+                error: (error) => {
                     this.openDialog(
-                        error.errors! || [
+                        error.errors || [
                             'Something went wrong, please try again later',
                         ],
                         true
                     );
-                }
-            );
-        } else if (this.isUserSeller()) {
-            this.client.getSeller().subscribe(
-                (data: SellerModel) => {
+                },
+            });
+        } else if (this.authorizeService.isUserSeller()) {
+            this.client.getSeller().subscribe({
+                next: (data: SellerModel) => {
+                    this.userProfileData = data;
+                    this.userDataValidator.validateUserProfileData(
+                        this.userProfileData
+                    );
                     this.setFormControlData(data);
                 },
-                (error) => {
+                error: (error) => {
                     this.openDialog(
-                        error.errors! || [
+                        error.errors || [
                             'Something went wrong, please try again later',
                         ],
                         true
                     );
-                }
-            );
+                },
+            });
         }
     }
 

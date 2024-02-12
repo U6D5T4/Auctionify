@@ -17,6 +17,8 @@ namespace Auctionify.Application
 			services.AddSingleton<IJobSchedulerService, JobSchedulerService>();
 			services.AddSingleton<UpcomingToActiveJob>();
 			services.AddSingleton<FinishLotJob>();
+			services.AddSingleton<DraftLotDeleteJob>();
+			services.AddSingleton<GlobalLotsJob>();
 
 			services.AddQuartz(q =>
 			{

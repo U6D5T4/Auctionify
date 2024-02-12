@@ -12,15 +12,23 @@ namespace Auctionify.Core.Entities
 
 		public string? ProfilePicture { get; set; }
 
+		public bool IsDeleted { get; set; }
+
+		public DateTime DeletionDate { get; set; }
+
+		public DateTime CreationDate { get; set; }
+
 		public virtual ICollection<Lot> SellingLots { get; set; }
 
 		public virtual ICollection<Lot> BuyingLots { get; set; }
 
 		public virtual ICollection<Watchlist> Watchlists { get; set; }
 
-		public virtual ICollection<ChatMessage> SenderChatMessages { get; set; }
+		public virtual ICollection<Conversation> SellerConversations { get; set; }
 
-		public virtual ICollection<ChatMessage> ReceiverChatMessages { get; set; }
+		public virtual ICollection<Conversation> BuyerConversations { get; set; }
+
+		public virtual ICollection<ChatMessage> ChatMessages { get; set; }
 
 		public virtual ICollection<Rate> SenderRates { get; set; }
 

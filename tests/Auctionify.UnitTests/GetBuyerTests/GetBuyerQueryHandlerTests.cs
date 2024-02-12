@@ -1,7 +1,11 @@
 ﻿using Auctionify.Application.Common.Interfaces;
+using Auctionify.Application.Common.Interfaces.Repositories;
+using Auctionify.Application.Common.Models.Requests;
 using Auctionify.Application.Common.Options;
 using Auctionify.Application.Features.Users.Queries.GetBuyer;
 using Auctionify.Core.Entities;
+using Auctionify.Infrastructure.Persistence;
+using Auctionify.Infrastructure.Repositories;
 using AutoMapper;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
@@ -10,16 +14,20 @@ using Moq;
 
 namespace Auctionify.UnitTests.GetBuyerTests
 {
-	public class GetBuyerQueryHandlerTests : IDisposable
+	public class GetBuyerQueryHandlerTests
 	{
 		#region Initialization
 
 		private readonly IMapper _mapper;
-		private readonly Mock<ICurrentUserService> _currentUserServiceMock;
 		private readonly UserManager<User> _userManager;
+		private readonly ICurrentUserService _currentUserService;
+		private readonly IRateRepository _rateRepository;
 
 		public GetBuyerQueryHandlerTests()
 		{
+			var mockDbContext = DbContextMock.GetMock<Rate, ApplicationDbContext>(EntitiesSeeding.GetRates(), ctx => ctx.Rates);
+			mockDbContext = DbContextMock.GetMock(EntitiesSeeding.GetLotStatuses(), ctx => ctx.LotStatuses, mockDbContext);
+
 			var configuration = new MapperConfiguration(
 				cfg =>
 					cfg.AddProfiles(
@@ -32,8 +40,10 @@ namespace Auctionify.UnitTests.GetBuyerTests
 			);
 			_mapper = new Mapper(configuration);
 
-			_currentUserServiceMock = new Mock<ICurrentUserService>();
 			_userManager = EntitiesSeeding.GetUserManagerMock();
+			_currentUserService = EntitiesSeeding.GetCurrentUserServiceMock();
+
+			_rateRepository = new RateRepository(mockDbContext.Object);
 		}
 
 		#endregion
@@ -44,12 +54,13 @@ namespace Auctionify.UnitTests.GetBuyerTests
 		public async Task GetBuyerQueryHandler_WhenCalled_ReturnsBuyerResponse()
 		{
 			// Arrange
-			var query = new GetBuyerQuery();
+			var query = new GetBuyerQuery
+			{
+				PageRequest = new PageRequest { PageIndex = 0, PageSize = 10 }
+			};
 			var testUrl = "test-url";
 			var blobServiceMock = new Mock<IBlobService>();
 			var azureBlobStorageOptionsMock = new Mock<IOptions<AzureBlobStorageOptions>>();
-
-			_currentUserServiceMock.Setup(x => x.UserEmail).Returns(It.IsAny<string>());
 
 			azureBlobStorageOptionsMock
 				.Setup(x => x.Value)
@@ -68,11 +79,12 @@ namespace Auctionify.UnitTests.GetBuyerTests
 				.Returns(testUrl);
 
 			var handler = new GetBuyerQueryHandler(
-				_currentUserServiceMock.Object,
+				_currentUserService,
 				_userManager,
 				blobServiceMock.Object,
 				azureBlobStorageOptionsMock.Object,
-				_mapper
+				_mapper,
+				_rateRepository
 			);
 
 			// Act
@@ -82,24 +94,6 @@ namespace Auctionify.UnitTests.GetBuyerTests
 			result.Should().NotBeNull();
 			result.Should().BeOfType<GetBuyerResponse>();
 			result.ProfilePictureUrl.Should().BeEquivalentTo(testUrl);
-		}
-
-		#endregion
-
-		#region Deinitialization
-
-		public void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
-
-		protected virtual void Dispose(bool disposing)
-		{
-			if (disposing)
-			{
-				_currentUserServiceMock.Reset();
-			}
 		}
 
 		#endregion

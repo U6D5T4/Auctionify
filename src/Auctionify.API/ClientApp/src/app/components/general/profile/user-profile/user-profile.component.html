@@ -2,29 +2,10 @@
     <div class="profile__title">
         <h1>My profile</h1>
     </div>
-    <div class="profile__top-container">
-        <img
-            [src]="
-                userProfileData && userProfileData.profilePictureUrl
-                    ? userProfileData.profilePictureUrl
-                    : '../../../../../assets/images/User.png'
-            "
-            alt="User-profile-image"
-            width="100"
-            height="100"
-        />
-        <div class="profile__container-left-info">
-            <p>Welcome Back, {{ userProfileData?.firstName }}!</p>
-            <div class="profile__rate-lots">
-                <div class="profile__rate">
-                    <!-- Div for rates -->
-                </div>
-                <div class="profile__lots-count" *ngIf="isUserSeller()">
-                    Lots created {{ userProfileData?.createdLotsCount }} | Lots
-                    finished {{ userProfileData?.finishedLotsCount }}
-                </div>
-            </div>
-        </div>
+    <div class="profile__top-bar">
+        <app-user-top-bar
+            [userProfileData]="userProfileData"
+        ></app-user-top-bar>
     </div>
     <div class="main-container">
         <div class="main">
@@ -77,6 +58,15 @@
                             <mat-icon>lock</mat-icon> Change Password
                         </button>
                     </div>
+                </div>
+                <div class="delete-account">
+                    <button
+                        mat-stroked-button
+                        class="delete-account-btn"
+                        (click)="confirmDeleteAccount()"
+                    >
+                        <mat-icon>delete</mat-icon> Delete Account
+                    </button>
                 </div>
             </div>
         </div>

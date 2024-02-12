@@ -4,6 +4,7 @@ using Auctionify.Core.Entities;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Auctionify.Application.Features.Users.Commands.AddLotToWatchlist
 {
@@ -38,7 +39,10 @@ namespace Auctionify.Application.Features.Users.Commands.AddLotToWatchlist
 			CancellationToken cancellationToken
 		)
 		{
-			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+			var user = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
+				cancellationToken: cancellationToken
+			);
 
 			var watchlist = new Watchlist { LotId = request.LotId, UserId = user!.Id };
 

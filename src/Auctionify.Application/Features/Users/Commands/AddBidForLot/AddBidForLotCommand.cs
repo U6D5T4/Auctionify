@@ -6,6 +6,7 @@ using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Auctionify.Application.Features.Users.Commands.AddBidForLot
 {
@@ -44,7 +45,10 @@ namespace Auctionify.Application.Features.Users.Commands.AddBidForLot
 			CancellationToken cancellationToken
 		)
 		{
-			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+			var user = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
+				cancellationToken: cancellationToken
+			);
 
 			var bid = new Bid
 			{
@@ -57,8 +61,8 @@ namespace Auctionify.Application.Features.Users.Commands.AddBidForLot
 
 			var result = await _bidRepository.AddAsync(bid);
 
-			await _hubContext.Clients
-				.Group(request.LotId.ToString())
+			await _hubContext
+				.Clients.Group(request.LotId.ToString())
 				.SendAsync(
 					SignalRActions.ReceiveBidNotification,
 					cancellationToken: cancellationToken

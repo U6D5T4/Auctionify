@@ -81,7 +81,10 @@ namespace Auctionify.Application.Features.Lots.Queries.Filter
 			CancellationToken cancellationToken
 		)
 		{
-			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail ?? "");
+			var user = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
+				cancellationToken: cancellationToken
+			);
 
 			var filterBase = new Core.Persistence.Dynamic.Filter
 			{
@@ -217,7 +220,10 @@ namespace Auctionify.Application.Features.Lots.Queries.Filter
 			return response;
 		}
 
-		private Core.Persistence.Dynamic.Filter CreateStatusFilter(IList<int> statuses, string field)
+		private Core.Persistence.Dynamic.Filter CreateStatusFilter(
+			IList<int> statuses,
+			string field
+		)
 		{
 			var statusFiltersBase = new Core.Persistence.Dynamic.Filter
 			{
@@ -251,23 +257,36 @@ namespace Auctionify.Application.Features.Lots.Queries.Filter
 			return statusFiltersBase;
 		}
 
-		private IQueryable<Lot> CreatePriceFilter(IQueryable<Lot> queryable, decimal? minPrice, decimal? maxPrice, string field)
+		private IQueryable<Lot> CreatePriceFilter(
+			IQueryable<Lot> queryable,
+			decimal? minPrice,
+			decimal? maxPrice,
+			string field
+		)
 		{
 			queryable = queryable.Include(l => l.Bids);
 
 			if (minPrice != null)
 			{
-				queryable = queryable.Where(lot => 
-					(lot.Bids.Count() > 0 && lot.Bids.OrderByDescending(b => b.NewPrice).First().NewPrice >= minPrice) ||
-					(lot.Bids.Count() == 0 && lot.StartingPrice >= minPrice)
+				queryable = queryable.Where(
+					lot =>
+						(
+							lot.Bids.Count() > 0
+							&& lot.Bids.OrderByDescending(b => b.NewPrice).First().NewPrice
+								>= minPrice
+						) || (lot.Bids.Count() == 0 && lot.StartingPrice >= minPrice)
 				);
 			}
 
 			if (maxPrice != null)
 			{
-				queryable = queryable.Where(lot =>
-					(lot.Bids.Count() > 0 && lot.Bids.OrderByDescending(b => b.NewPrice).First().NewPrice <= maxPrice) ||
-					(lot.Bids.Count() == 0 && lot.StartingPrice <= maxPrice)
+				queryable = queryable.Where(
+					lot =>
+						(
+							lot.Bids.Count() > 0
+							&& lot.Bids.OrderByDescending(b => b.NewPrice).First().NewPrice
+								<= maxPrice
+						) || (lot.Bids.Count() == 0 && lot.StartingPrice <= maxPrice)
 				);
 			}
 

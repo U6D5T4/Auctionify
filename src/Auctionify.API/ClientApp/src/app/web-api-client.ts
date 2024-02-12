@@ -25,9 +25,16 @@ import { AddBidModel } from './models/bids/bid-models';
 import { FilterLot } from './models/lots/filter';
 import {
     BuyerModel,
+    GetUserById,
     SellerModel,
     UpdateUserProfileModel,
 } from './models/users/user-models';
+import {
+    Rate,
+    RatePaginationModel,
+    RateResponse,
+    RateUserCommandModel,
+} from './models/rates/rate-models';
 
 export const API_BASE_URL = new InjectionToken('API_BASE_URL');
 
@@ -598,6 +605,34 @@ export class Client {
         );
     }
 
+    getLotsInWatchlist(
+        pageIndex: number,
+        pageSize: number
+    ): Observable<LotModel[]> {
+        let url_ = this.baseUrl + `/api/users/watchlists/lots`;
+
+        let params = new HttpParams()
+            .set('pageIndex', pageIndex.toString())
+            .set('pageSize', pageSize.toString());
+
+        const options_: any = {
+            headers: new HttpHeaders({
+                Accept: 'text/json',
+            }),
+            params,
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<LotModel[]> => {
+                if (response && response.items) {
+                    return of(response.items as LotModel[]);
+                } else {
+                    throw new Error('Invalid response structure');
+                }
+            })
+        );
+    }
+
     resetPassword(
         body: ResetPasswordViewModel | undefined
     ): Observable<ResetPasswordResponse> {
@@ -810,6 +845,222 @@ export class Client {
     downloadDocument(documentUrl: string): Observable<any> {
         return this.http.get(documentUrl, { responseType: 'blob' });
     }
+
+    getBuyerAuctions(
+        pageIndex: number,
+        pageSize: number
+    ): Observable<GeneralAuctionResponse> {
+        let url_ = this.baseUrl + `/api/users/buyers/auctions`;
+
+        let params = new HttpParams()
+            .set('pageIndex', pageIndex.toString())
+            .set('pageSize', pageSize.toString());
+
+        const options_: any = {
+            headers: new HttpHeaders({
+                Accept: 'text/json',
+            }),
+            params,
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<GeneralAuctionResponse> => {
+                if (response) {
+                    return of(response as GeneralAuctionResponse);
+                } else {
+                    throw new Error('Invalid response structure');
+                }
+            })
+        );
+    }
+
+    getRates(params: RatePaginationModel): Observable<RateResponse> {
+        let url_ = this.baseUrl + `/api/rates/rates`;
+
+        let queryParams = new HttpParams();
+
+        if (params.pageIndex !== null) {
+            queryParams = queryParams.set(
+                'PageRequest.PageIndex',
+                params.pageIndex.toString()
+            );
+        }
+
+        if (params.pageSize !== null) {
+            queryParams = queryParams.set(
+                'PageRequest.PageSize',
+                params.pageSize.toString()
+            );
+        }
+
+        return this.http.get(url_, { params: queryParams }).pipe(
+            mergeMap((response: any): Observable<RateResponse> => {
+                return of(response);
+            })
+        );
+    }
+
+    getFeedbacks(params: RatePaginationModel): Observable<RateResponse> {
+        let url_ = this.baseUrl + `/api/rates/feedbacks`;
+
+        let queryParams = new HttpParams();
+
+        if (params.pageIndex !== null) {
+            queryParams = queryParams.set(
+                'PageRequest.PageIndex',
+                params.pageIndex.toString()
+            );
+        }
+
+        if (params.pageSize !== null) {
+            queryParams = queryParams.set(
+                'PageRequest.PageSize',
+                params.pageSize.toString()
+            );
+        }
+
+        return this.http.get(url_, { params: queryParams }).pipe(
+            mergeMap((response: any): Observable<RateResponse> => {
+                return of(response);
+            })
+        );
+    }
+
+    getAllActiveLotsForSeller(
+        pageRequest: PageRequest
+    ): Observable<FilterResponse> {
+        let url_ = this.baseUrl + `/api/lots/sellers/active`;
+
+        return this.handleGetAllLotsWithStatusForSeller(url_, pageRequest);
+    }
+
+    getAllDraftLotsForSeller(
+        pageRequest: PageRequest
+    ): Observable<FilterResponse> {
+        let url_ = this.baseUrl + `/api/lots/sellers/draft`;
+
+        return this.handleGetAllLotsWithStatusForSeller(url_, pageRequest);
+    }
+
+    getUserById(userId: number): Observable<GetUserById> {
+        let url_ = `${this.baseUrl}/api/users/${userId}`;
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<GetUserById> => {
+                let data!: GetUserById;
+
+                if (response.body !== null) {
+                    data = response.body;
+                }
+
+                return of(data);
+            })
+        );
+    }
+
+    private handleGetAllLotsWithStatusForSeller(
+        url: string,
+        pageRequest: PageRequest
+    ): Observable<FilterResponse> {
+        let queryParams = new HttpParams();
+
+        for (const [key, value] of Object.entries(pageRequest)) {
+            queryParams = queryParams.append(key, value);
+        }
+
+        return this.http.get(url, { params: queryParams }).pipe(
+            mergeMap((response: any): Observable<FilterResponse> => {
+                return of(response);
+            })
+        );
+    }
+
+    addRateToSeller(model: RateUserCommandModel): Observable<string> {
+        let url_ = this.baseUrl + '/api/rates/sellers';
+
+        let options_: any = {
+            body: model,
+            responseType: 'text',
+        };
+
+        return this.http.request('post', url_, options_).pipe(
+            map((response: any) => {
+                return response;
+            }),
+            catchError((error) => {
+                return throwError(() => error.error);
+            })
+        );
+    }
+
+    addRateToBuyer(model: RateUserCommandModel): Observable<string> {
+        let url_ = this.baseUrl + '/api/rates/buyers';
+
+        let options_: any = {
+            body: model,
+            responseType: 'text',
+        };
+
+        return this.http.request('post', url_, options_).pipe(
+            map((response: any) => {
+                return response;
+            }),
+            catchError((error) => {
+                return throwError(() => error.error);
+            })
+        );
+    }
+
+    getUserTransactions(
+        pageIndex: number,
+        pageSize: number
+    ): Observable<TransactionModel[]> {
+        let url_ = this.baseUrl + `/api/users/transactions`;
+
+        let params = new HttpParams()
+            .set('pageIndex', pageIndex.toString())
+            .set('pageSize', pageSize.toString());
+
+        const options_: any = {
+            headers: new HttpHeaders({
+                Accept: 'text/json',
+            }),
+            params,
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<TransactionModel[]> => {
+                if (response) {
+                    return of(response as TransactionModel[]);
+                } else {
+                    throw new Error('Invalid response structure');
+                }
+            })
+        );
+    }
+
+    deleteAccount(): Observable<any> {
+        let url_ = this.baseUrl + `/api/users`;
+
+        return this.http.request('delete', url_).pipe(
+            catchError((error) => {
+                return throwError(() => error.error);
+            })
+        );
+    }
+}
+
+export interface PageRequest {
+    PageSize: number;
+    PageIndex: number;
 }
 
 export interface FilterResponse {
@@ -818,6 +1069,16 @@ export interface FilterResponse {
     hasPrevious: boolean;
     index: number;
     items: FilteredLotModel[];
+    pages: number;
+    size: number;
+}
+
+export interface GeneralAuctionResponse {
+    count: number;
+    hasNext: boolean;
+    hasPrevious: boolean;
+    index: number;
+    items: AuctionModel[];
     pages: number;
     size: number;
 }
@@ -856,6 +1117,34 @@ export interface LotModel {
     isInWatchlist: boolean;
 }
 
+export interface AuctionModel {
+    id: number;
+    title: string;
+    description: string;
+    startingPrice: number | null;
+    startDate: Date | null;
+    endDate: Date | null;
+    category: CategoryDto;
+    lotStatus: LotStatusDto;
+    location: LocationDto;
+    currency: CurrencyDto;
+    bids: BidDto[];
+    bidCount: number;
+    mainPhotoUrl: string | null;
+    isInWatchlist: boolean;
+    buyerId: number | null;
+}
+
+export interface TransactionModel {
+    lotId: number | null;
+    lotTitle: string | null;
+    lotMainPhotoUrl: string | null;
+    transactionDate: Date | null;
+    transactionStatus: string | null;
+    transactionAmount: number | null;
+    transactionCurrency: string | null;
+}
+
 export interface CategoryDto {
     id: number;
     name: string;
@@ -891,11 +1180,12 @@ export interface BidDto {
 }
 
 export interface UserDto {
-    id: number;
+    id: number | null;
     firstName: string;
     lastName: string;
     phoneNumber: string;
     email: string;
+    profilePicture: string;
 }
 
 export interface SearchLotResponse {
@@ -934,6 +1224,9 @@ export interface BuyerGetLotResponse {
     isInWatchlist: boolean;
     bidCount: number | null;
     sellerEmail: string;
+    sellerId: number;
+    buyerId: number;
+    profilePictureUrl: string;
 }
 
 export interface SellerGetLotResponse {
@@ -952,6 +1245,8 @@ export interface SellerGetLotResponse {
     bids: BidDto[];
     bidCount: number;
     sellerId: number;
+    buyerId: number;
+    profilePictureUrl: string;
 }
 
 export interface CreateLotResponse {

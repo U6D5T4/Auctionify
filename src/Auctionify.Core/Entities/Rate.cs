@@ -4,9 +4,9 @@ namespace Auctionify.Core.Entities
 {
 	public class Rate : BaseAuditableEntity
 	{
-		public int RecieverId { get; set; }
+		public int ReceiverId { get; set; }
 
-		public virtual User Reciever { get; set; }
+		public virtual User Receiver { get; set; }
 
 		public int SenderId { get; set; }
 

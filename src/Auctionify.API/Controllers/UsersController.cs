@@ -1,14 +1,17 @@
 ﻿using Auctionify.Application.Common.Models.Requests;
 using Auctionify.Application.Features.Users.Commands.AddBidForLot;
 using Auctionify.Application.Features.Users.Commands.AddLotToWatchlist;
+using Auctionify.Application.Features.Users.Commands.Delete;
 using Auctionify.Application.Features.Users.Commands.RemoveBid;
 using Auctionify.Application.Features.Users.Commands.RemoveLotFromWatchlist;
 using Auctionify.Application.Features.Users.Commands.Update;
 using Auctionify.Application.Features.Users.Queries.GetAllBidsOfUserForLot;
 using Auctionify.Application.Features.Users.Queries.GetBuyer;
+using Auctionify.Application.Features.Users.Queries.GetBuyerAuctions;
 using Auctionify.Application.Features.Users.Queries.GetById;
 using Auctionify.Application.Features.Users.Queries.GetByUserWatchlist;
 using Auctionify.Application.Features.Users.Queries.GetSeller;
+using Auctionify.Application.Features.Users.Queries.GetTransactions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,8 +30,8 @@ namespace Auctionify.API.Controllers
 		}
 
 		[HttpGet("{id}")]
-		[Authorize(Roles = "Buyer")]
-		public async Task<IActionResult> GetById([FromRoute] string id)
+		[Authorize(Roles = "Buyer, Seller")]
+		public async Task<IActionResult> GetById(string id)
 		{
 			var result = await _mediator.Send(new GetByIdUserQuery { Id = id });
 
@@ -107,17 +110,19 @@ namespace Auctionify.API.Controllers
 
 		[HttpGet("buyers")]
 		[Authorize(Roles = "Buyer")]
-		public async Task<IActionResult> GetBuyer()
+		public async Task<IActionResult> GetBuyer([FromQuery] PageRequest pageRequest)
 		{
-			var result = await _mediator.Send(new GetBuyerQuery());
+			var query = new GetBuyerQuery { PageRequest = pageRequest };
+			var result = await _mediator.Send(query);
 			return Ok(result);
 		}
 
 		[HttpGet("sellers")]
 		[Authorize(Roles = "Seller")]
-		public async Task<IActionResult> GetSeller()
+		public async Task<IActionResult> GetSeller([FromQuery] PageRequest pageRequest)
 		{
-			var result = await _mediator.Send(new GetSellerQuery());
+			var query = new GetSellerQuery { PageRequest = pageRequest };
+			var result = await _mediator.Send(query);
 			return Ok(result);
 		}
 
@@ -128,6 +133,35 @@ namespace Auctionify.API.Controllers
 		)
 		{
 			var result = await _mediator.Send(updateUserCommand);
+			return Ok(result);
+		}
+
+		[HttpGet("buyers/auctions")]
+		[Authorize(Roles = "Buyer")]
+		public async Task<IActionResult> GetBuyerAuctions([FromQuery] PageRequest pageRequest)
+		{
+			var query = new GetBuyerAuctionsQuery { PageRequest = pageRequest };
+			var lots = await _mediator.Send(query);
+
+			return Ok(lots);
+		}
+
+		[HttpGet("transactions")]
+		[Authorize(Roles = "Buyer, Seller")]
+		public async Task<IActionResult> GetTransactions([FromQuery] PageRequest pageRequest)
+		{
+			var query = new GetTransactionsUserQuery { PageRequest = pageRequest };
+			var transactions = await _mediator.Send(query);
+
+			return Ok(transactions);
+		}
+
+		[HttpDelete]
+		[Authorize(Roles = "Buyer, Seller")]
+		public async Task<IActionResult> DeleteUser()
+		{
+			var result = await _mediator.Send(new DeleteUserCommand());
+
 			return Ok(result);
 		}
 	}

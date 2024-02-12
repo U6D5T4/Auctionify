@@ -14,8 +14,8 @@ namespace Auctionify.Core.Entities
 
 		public bool IsActive { get; set; }
 
-		public virtual DateTime StartDate { get; set; }
+		public DateTime StartDate { get; set; }
 
-		public virtual DateTime? EndDate { get; set; }
+		public DateTime? EndDate { get; set; }
 	}
 }

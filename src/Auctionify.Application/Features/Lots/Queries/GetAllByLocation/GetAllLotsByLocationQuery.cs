@@ -66,7 +66,10 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAllByName
 			CancellationToken cancellationToken
 		)
 		{
-			var user = await _userManager.FindByEmailAsync(_currentUserService.UserEmail!);
+			var user = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
+				cancellationToken: cancellationToken
+			);
 
 			var dynamicQuery = new DynamicQuery
 			{

@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
 
 import { ChoicePopupComponent } from 'src/app/ui-elements/choice-popup/choice-popup.component';
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
@@ -21,19 +20,23 @@ export class ProfileNavbarComponent {
     logOut() {
         const dialogRef = this.dialog.open(ChoicePopupComponent, {
             data: {
-                text: ['Sure you want to log out?'],
+                text: ['Are you sure to log out?'],
                 isError: true,
                 continueBtnText: 'Log Out',
                 breakBtnText: 'Cancel',
-                additionalText: 'Just a double-check before you go',
-                continueBtnColor: 'primary',
+                additionalText: 'Just double-check before you go',
+                continueBtnColor: 'warn',
                 breakBtnColor: 'warn',
+                breakBtnFocus: 'break',
             },
+            autoFocus: false,
         });
         dialogRef.closed.subscribe((result) => {
             if (result === 'true') {
                 this.authService.logout();
-                this.router.navigate(['/home']);
+                this.router.navigate(['/home']).then(() => {
+                    window.location.reload();
+                });
             }
         });
     }

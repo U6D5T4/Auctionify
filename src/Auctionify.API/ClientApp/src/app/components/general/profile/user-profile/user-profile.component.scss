@@ -1,34 +1,7 @@
 .profile {
     display: flex;
-    padding: 40px;
     flex-direction: column;
     gap: 32px;
-
-    &__top-container {
-        height: 148px;
-        border-radius: 16px;
-        border: 1px solid #E0E0E0;
-        display: flex;
-        gap: 40px;
-        align-items: center;
-        padding-left: 40px;
-        padding-right: 40px;
-    }
-
-    &__top-container img {
-        border-radius: 50%;
-    }
-
-    &__container-left-info {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-    }
-
-    &__rate-lots {
-        display: flex;
-        gap: 16px;
-    }
 }
 
 .main-container {
@@ -41,9 +14,9 @@
     flex-direction: column;
     gap: 32px;
     border-radius: 16px;
-    border: 1px solid #E0E0E0;
+    border: 1px solid #e0e0e0;
     padding: 40px;
-    min-width: 700px;
+    min-width: 610px;
 
     &__profile {
         display: flex;
@@ -108,12 +81,12 @@
     }
 
     &__btns-edit button {
-        border: 2px solid #E0E0E0;
+        border: 2px solid #e0e0e0;
         background-color: transparent;
     }
 
     &__btns-edit button:hover {
-        background-color: #2B5293;
+        background-color: #2b5293;
         color: white;
         transition: 0.3s ease;
     }
@@ -124,5 +97,20 @@
 
     &__change-password-btn {
         width: 210px;
+    }
+
+    .delete-account-btn {
+        color: var(--error, #ab2d25);
+        font-style: normal;
+        font-weight: 600;
+        line-height: 24px;
+        border-radius: 8px;
+        border: 2px solid var(--error, #ab2d25);
+    }
+
+    .delete-account-btn:hover {
+        background-color: var(--error, #ab2d25);
+        color: white;
+        transition: 0.3s ease;
     }
 }

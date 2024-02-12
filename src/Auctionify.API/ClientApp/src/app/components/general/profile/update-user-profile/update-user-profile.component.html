@@ -2,29 +2,10 @@
     <div class="profile__title">
         <h1>My profile</h1>
     </div>
-    <div class="profile__top-container">
-        <img
-            [src]="
-                userProfileData && userProfileData.profilePictureUrl
-                    ? userProfileData.profilePictureUrl
-                    : '../../../../../assets/images/User.png'
-            "
-            alt="User-profile-image"
-            width="100"
-            height="100"
-        />
-        <div class="profile__container-left-info">
-            <p>Welcome Back, {{ userProfileData?.firstName }}!</p>
-            <div class="profile__rate-lots">
-                <div class="profile__rate">
-                    <!-- Div for rates -->
-                </div>
-                <div class="profile__lots-count" *ngIf="isUserSeller()">
-                    Lots created {{ userProfileData?.createdLotsCount }} | Lots
-                    finished {{ userProfileData?.finishedLotsCount }}
-                </div>
-            </div>
-        </div>
+    <div class="profile__top-bar">
+        <app-user-top-bar
+            [userProfileData]="userProfileData"
+        ></app-user-top-bar>
     </div>
     <div class="main-container">
         <div class="main">
@@ -65,8 +46,8 @@
                         <button mat-button (click)="fileInput.click()">
                             {{
                                 userProfileData?.profilePictureUrl
-                                    ? 'Change picture'
-                                    : 'Add picture'
+                                    ? 'Change Picture'
+                                    : 'Add Picture'
                             }}
                         </button>
                         <input
@@ -79,7 +60,7 @@
                     </div>
                     <div class="main__name">
                         <mat-form-field color="primary" appearance="outline">
-                            <mat-label>Name</mat-label>
+                            <mat-label>First Name</mat-label>
                             <input formControlName="firstName" matInput />
                             <mat-error
                                 *ngIf="
@@ -88,7 +69,7 @@
                                     )
                                 "
                             >
-                                First name is
+                                First Name is
                                 <strong>required</strong>
                             </mat-error>
                             <mat-error
@@ -120,7 +101,7 @@
                             </mat-error>
                         </mat-form-field>
                         <mat-form-field color="primary" appearance="outline">
-                            <mat-label>Surename</mat-label>
+                            <mat-label>Last Name</mat-label>
                             <input formControlName="lastName" matInput />
                             <mat-error
                                 *ngIf="
@@ -129,7 +110,7 @@
                                     )
                                 "
                             >
-                                Last name is
+                                Last Name is
                                 <strong>required</strong>
                             </mat-error>
                             <mat-error
@@ -165,7 +146,7 @@
                 <div class="main__about-me">
                     <h2>About me</h2>
                     <mat-form-field color="primary" appearance="outline">
-                        <mat-label>About me</mat-label>
+                        <mat-label>About Me</mat-label>
                         <textarea formControlName="aboutMe" matInput></textarea>
                         <mat-error
                             *ngIf="
@@ -174,7 +155,7 @@
                                 )
                             "
                         >
-                            About me field is
+                            About Me field is
                             <strong>required</strong>
                         </mat-error>
                         <mat-error
@@ -201,7 +182,7 @@
                     <h2>Personal info</h2>
                     <div class="main__number-email">
                         <mat-form-field color="primary" appearance="outline">
-                            <mat-label>Phone number</mat-label>
+                            <mat-label>Phone Number</mat-label>
                             <input formControlName="phoneNumber" matInput />
                             <mat-error
                                 *ngIf="
@@ -210,7 +191,7 @@
                                     )
                                 "
                             >
-                                About me field is
+                                About Me field is
                                 <strong>required</strong>
                             </mat-error>
                             <mat-error

@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ImagePopupComponent } from './image-popup/image-popup.component';
 import { AddBidComponent } from './add-bid/add-bid.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -17,6 +17,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { WithdrawBidComponent } from './withdraw-bid/withdraw-bid.component';
+import { RateUserComponent } from './rate-user/rate-user.component';
+import { RemoveFromWatchlistComponent } from './remove-from-watchlist/remove-from-watchlist.component';
+import { TransactionsComponent } from './transactions/transactions.component';
 
 @NgModule({
     declarations: [
@@ -26,6 +29,9 @@ import { WithdrawBidComponent } from './withdraw-bid/withdraw-bid.component';
         AuctionComponent,
         FilterComponent,
         WithdrawBidComponent,
+        RateUserComponent,
+        RemoveFromWatchlistComponent,
+        TransactionsComponent,
     ],
     imports: [
         CommonModule,
@@ -40,8 +46,9 @@ import { WithdrawBidComponent } from './withdraw-bid/withdraw-bid.component';
         MatInputModule,
         MatCheckboxModule,
         MatSnackBarModule,
+        FormsModule,
     ],
 
-    exports: [LotProfileComponent],
+    exports: [LotProfileComponent, TransactionsComponent],
 })
 export class GeneralModule {}

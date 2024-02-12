@@ -92,8 +92,7 @@ export class AddBidComponent implements OnInit {
             };
 
             this.apiClient.addBidForLot(bidData).subscribe({
-                next: (response) => {
-                    console.log(response);
+                next: () => {
                     this.bidForm.reset();
                     this.errorMessage = '';
                     this.closeDialog();
@@ -135,7 +134,7 @@ export class AddBidComponent implements OnInit {
     }
 
     maxBidValidator(control: FormControl) {
-        const maxBid = 1000000000000; // 1 trillion
+        const maxBid = 500000; // 500К
         if (control.value && control.value > maxBid) {
             return { maxBidExceeded: true };
         }

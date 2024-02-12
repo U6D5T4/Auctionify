@@ -1,7 +1,6 @@
 .lot-details {
     display: flex;
     gap: 32px;
-    padding: 40px;
 }
 
 .left {
@@ -38,7 +37,7 @@
             width: 100%;
         }
 
-        &.not-available>.photo-element {
+        &.not-available > .photo-element {
             background-color: #f4f4f4;
             border-radius: 16px;
 
@@ -68,7 +67,7 @@
         top: 16px;
         right: 16px;
         padding: 8px 16px;
-        background-color: #2B9355;
+        background-color: #2b9355;
         border-radius: 500px;
         color: white;
     }
@@ -117,11 +116,10 @@
     }
 
     &__address {
-        color: #2B5293;
+        color: #2b5293;
     }
 
     &__docs {
-
         & h3 {
             color: var(--color-main);
         }
@@ -191,7 +189,7 @@
         font-weight: 600;
         line-height: 24px;
         text-align: left;
-        color: #2B5293;
+        color: #2b5293;
     }
 
     &__wishlist-btn {
@@ -203,7 +201,7 @@
     }
 
     &__price {
-        background-color: #F0F3FE;
+        background-color: #f0f3fe;
         border-radius: 8px;
 
         &-container {
@@ -255,7 +253,7 @@
         display: flex;
         height: 108px;
         justify-content: space-between;
-        background-color: #F0F3FE;
+        background-color: #f0f3fe;
         border-radius: 8px;
         align-items: center;
     }
@@ -285,14 +283,14 @@
     }
 
     &__btn-withdraw {
-        color: #2B5293;
+        color: #2b5293;
         background-color: transparent;
-        border: 2px solid #2B5293;
+        border: 2px solid #2b5293;
     }
 
     &__btn-place-bid {
         color: white;
-        background-color: #2B5293;
+        background-color: #2b5293;
         border: none;
     }
 
@@ -366,7 +364,7 @@
         font-weight: 600;
         line-height: 24px;
         text-align: left;
-        background-color: #F2F2F2;
+        background-color: #f2f2f2;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -375,7 +373,7 @@
     &__show-more-bids {
         display: flex;
         justify-content: center;
-        color: #2B5293;
+        color: #2b5293;
         padding-bottom: 24px;
         cursor: pointer;
         text-decoration: underline;
@@ -405,6 +403,10 @@
         display: flex;
         flex-direction: column;
         gap: 12px;
+    }
+
+    &__rate-btn {
+        width: 100px;
     }
 }
 
