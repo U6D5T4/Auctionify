@@ -1056,6 +1056,28 @@ export class Client {
             })
         );
     }
+
+    subscribeUserToPro(): Observable<boolean> {
+        let url_ = this.baseUrl + `/api/subscriptions/pro/create`;
+
+        return this.http.request('post', url_).pipe(
+            map((res: any) => {
+                console.log(res);
+                return true;
+            })
+        );
+    }
+
+    unsubscribeUserFromPro(): Observable<boolean> {
+        let url_ = this.baseUrl + `/api/subscriptions/pro/delete`;
+
+        return this.http.request('delete', url_).pipe(
+            map((res: any) => {
+                console.log(res);
+                return true;
+            })
+        );
+    }
 }
 
 export interface PageRequest {

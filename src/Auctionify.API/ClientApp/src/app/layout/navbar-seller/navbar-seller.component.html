@@ -52,7 +52,7 @@
                         <mat-icon>account_circle</mat-icon>
                         My Profile
                     </button>
-                    <ng-container>
+                    <ng-container *ngIf="!isSellerPro">
                         <button
                             [routerLink]="['/subscriptions/upgrade-to-pro']"
                             routerLinkActive="mat-primary"

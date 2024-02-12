@@ -12,7 +12,7 @@ import { Client } from 'src/app/web-api-client';
 @Component({
     selector: 'app-pro-page',
     templateUrl: './pro-page.component.html',
-    styleUrl: './pro-page.component.scss',
+    styleUrls: ['./pro-page.component.scss'],
 })
 export class ProPageComponent implements OnInit {
     userProfileData: BuyerModel | SellerModel | null = null;

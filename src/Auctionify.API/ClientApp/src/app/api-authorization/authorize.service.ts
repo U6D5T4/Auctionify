@@ -273,14 +273,10 @@ export class AuthorizeService {
 
     isUserPro = computed(() => {
         if (this.isUserSeller()) {
-            return this.client.getSeller().subscribe({
-                next: (res) => {
-                    return res.isPro;
-                },
-            });
+            return this.client.getSeller().pipe(map((res) => res.isPro));
         }
 
-        return false;
+        return of(false);
     });
 
     isUserLoggedIn(): boolean {
