@@ -8,6 +8,7 @@ using Auctionify.Infrastructure.Interceptors;
 using Auctionify.Infrastructure.Persistence;
 using Auctionify.Infrastructure.Repositories;
 using Auctionify.Infrastructure.Services;
+using Auctionify.Infrastructure.Services.ReportGeneratingServices;
 using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -15,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using QuestPDF.Infrastructure;
 using System.Text;
 
 namespace Auctionify.Infrastructure
@@ -123,6 +125,8 @@ namespace Auctionify.Infrastructure
 
 			services.AddScoped<ApplicationDbContextInitializer>();
 
+			QuestPDF.Settings.License = LicenseType.Community;
+
 			services.AddScoped<IIdentityService, IdentityService>();
 			services.AddScoped<ICategoryRepository, CategoryRepository>();
 			services.AddScoped<ILotRepository, LotRepository>();
@@ -136,11 +140,14 @@ namespace Auctionify.Infrastructure
 			services.AddScoped<IConversationRepository, ConversationRepository>();
 			services.AddScoped<IChatMessageRepository, ChatMessageRepository>();
 			services.AddScoped<IRateRepository, RateRepository>();
-
+			services.AddScoped<IReportDataRepository, ReportDataRepository>();
+			
 			services.AddTransient<IEmailService, EmailService>();
 			services.AddSingleton<IBlobService, BlobService>();
 			services.AddScoped<IPhotoService, PhotoService>();
 			services.AddScoped<IWatchlistService, WatchlistService>();
+			services.AddScoped<IPdfReportGeneratorService, PdfReportGeneratorService>();
+			services.AddScoped<IXlsxReportGeneratorService, XlsxReportGeneratorService>();
 
 			return services;
 		}
