@@ -7,10 +7,9 @@ import {
     AfterViewInit,
     OnInit,
 } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormGroup, Validators } from '@angular/forms';
 import { LotFormModel } from '../../create-lot.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { GoogleMapService } from 'src/app/services/map-service/map.service';
 
 declare var google: any;
 
