@@ -9,72 +9,32 @@
     </div>
     <div class="main-container">
         <div class="main">
-            <div class="main__profile">
-                <div class="main__photo">
+            <div class="main__subscription">
+                <h2 class="main__subscription-details">
+                    Subscription details&nbsp;&nbsp;
                     <img
-                        [src]="
-                            userProfileData && userProfileData.profilePictureUrl
-                                ? userProfileData.profilePictureUrl
-                                : '../../../../../assets/images/User.png'
-                        "
-                        alt="User-profile-image"
-                        width="200"
-                        height="200"
+                        src="../../../../assets/icons/UpgradeToProIconMain.svg"
+                        alt="Upgrade To Pro"
                     />
-                </div>
-                <div class="main__name-date">
-                    <h1>
-                        {{ userProfileData?.firstName }}
-                        {{ userProfileData?.lastName }}
-                    </h1>
-                </div>
+                </h2>
+                <p class="main__subscription-text">
+                    Your PRO subscription is currently active, unlocking a
+                    premium experience tailored to enhance your utilization of
+                    our platform. Enjoy exclusive features, advanced tools, and
+                    priority access to the latest updates, ensuring a seamless
+                    and enriched user experience throughout your subscription
+                    period.
+                </p>
             </div>
-            <div class="main__about-me">
-                <h2>About me</h2>
-                <p>{{ userProfileData?.aboutMe }}</p>
-            </div>
-            <div class="main__personal-info">
-                <h2>Personal info</h2>
-                <div class="main__number-email">
-                    <p>{{ userProfileData?.phoneNumber }}</p>
-                    <p>{{ userProfileData?.email }}</p>
-                </div>
-            </div>
-            <div class="main-btn">
-                <button
-                    mat-raised-button
-                    type="button"
-                    color="primary"
-                    (click)="unsubscribeFromPro()"
-                >
-                    Unsubscribe from pro
-                </button>
-            </div>
-            <div class="main__btns">
-                <div class="main__btns-edit">
-                    <div class="main__edit-btn">
-                        <button
-                            mat-flat-button
-                            [routerLink]="['./update-profile']"
-                        >
-                            <mat-icon>edit</mat-icon> Change Info
-                        </button>
-                    </div>
-                    <div class="main__change-password-btn">
-                        <button
-                            mat-flat-button
-                            [routerLink]="['./change-password']"
-                        >
-                            <mat-icon>lock</mat-icon> Change Password
-                        </button>
-                    </div>
-                </div>
-                <div class="delete-account">
-                    <button mat-stroked-button class="delete-account-btn">
-                        <mat-icon>delete</mat-icon> Delete Account
-                    </button>
-                </div>
-            </div>
+            <button
+                mat-stroked-button
+                type="button"
+                color="primary"
+                class="main__unsubscribe-btn"
+                (click)="confirmunsubscribeFromPro()"
+            >
+                <p class="main__unsubscribe-text">Unsubscribe</p>
+            </button>
         </div>
         <div class="nav">
             <app-profile-navbar></app-profile-navbar>

@@ -1,6 +1,7 @@
+import { Dialog } from '@angular/cdk/dialog';
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { Client } from 'src/app/web-api-client';
+
+import { ConfirmProComponent } from '../confirm-pro/confirm-pro.component';
 
 @Component({
     selector: 'app-upgrade-to-pro',
@@ -8,18 +9,11 @@ import { Client } from 'src/app/web-api-client';
     styleUrls: ['./upgrade-to-pro.component.scss'],
 })
 export class UpgradeToProComponent {
-    public constructor(private client: Client, private router: Router) {}
+    public constructor(private dialog: Dialog) {}
 
-    upgradeToPro() {
-        this.client.subscribeUserToPro().subscribe({
-            next: (res: boolean) => {
-                if (res) {
-                    this.router.navigate(['/home']).then(() => {
-                        window.location.reload();
-                    });
-                } else {
-                }
-            },
+    openConfirmProSubscriptionDialog() {
+        const dialogRef = this.dialog.open(ConfirmProComponent, {
+            autoFocus: false,
         });
     }
 }

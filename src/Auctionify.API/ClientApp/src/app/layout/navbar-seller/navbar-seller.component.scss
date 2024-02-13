@@ -1,7 +1,6 @@
 .seller {
     &-navigation {
         display: flex;
-
     }
 
     &-navigation__navbar {
@@ -38,8 +37,6 @@
         display: flex;
         flex-direction: column;
         gap: 32px;
-
-
     }
 
     &__top-header {
@@ -65,7 +62,8 @@
         gap: 64px;
     }
 
-    &__bottom-header {}
+    &__bottom-header {
+    }
 }
 
 .burger {
@@ -119,6 +117,7 @@
         background: rgb(61, 106, 255);
         color: #fff;
         box-shadow: 0 0 30px 5px rgba(0, 142, 236, 0.815);
+        border: 1px solid rgb(61, 106, 255);
         -webkit-transition: all 0.2s ease-out;
         -moz-transition: all 0.2s ease-out;
         transition: all 0.2s ease-out;

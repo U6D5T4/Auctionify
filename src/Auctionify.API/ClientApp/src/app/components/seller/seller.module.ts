@@ -20,8 +20,6 @@ import { DashboardActiveLotsComponent } from './components/dashboard-active-lots
 import { UiElementsModule } from 'src/app/ui-elements/ui-elements.module';
 import { GeneralModule } from '../general/general.module';
 import { DashboardDraftLotsComponent } from './components/dashboard-draft-lots/dashboard-draft-lots.component';
-import { ProSubscriptionComponent } from './pro-subscription/pro-subscription.component';
-import { ConfirmProSubscriptionComponent } from './confirm-pro-subscription/confirm-pro-subscription.component';
 
 @NgModule({
     declarations: [
@@ -32,8 +30,6 @@ import { ConfirmProSubscriptionComponent } from './confirm-pro-subscription/conf
         DashboardComponent,
         DashboardActiveLotsComponent,
         DashboardDraftLotsComponent,
-        ProSubscriptionComponent,
-        ConfirmProSubscriptionComponent,
     ],
     imports: [
         CommonModule,

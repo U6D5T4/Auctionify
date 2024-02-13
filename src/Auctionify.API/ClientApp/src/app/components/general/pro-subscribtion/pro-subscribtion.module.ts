@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { UiElementsModule } from 'src/app/ui-elements/ui-elements.module';
 import { ProfileModule } from '../profile/profile.module';
 import { UpgradeToProComponent } from './upgrade-to-pro/upgrade-to-pro.component';
+import { ConfirmProComponent } from './confirm-pro/confirm-pro.component';
 
 @NgModule({
     imports: [
@@ -18,6 +19,6 @@ import { UpgradeToProComponent } from './upgrade-to-pro/upgrade-to-pro.component
         ProfileModule,
         MatButtonModule,
     ],
-    declarations: [ProPageComponent, UpgradeToProComponent],
+    declarations: [ProPageComponent, UpgradeToProComponent, ConfirmProComponent],
 })
 export class ProSubscribtionModule {}
