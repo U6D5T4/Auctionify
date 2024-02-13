@@ -20,4 +20,4 @@ import { UpgradeToProComponent } from './upgrade-to-pro/upgrade-to-pro.component
     ],
     declarations: [ProPageComponent, UpgradeToProComponent],
 })
-export class ProSubscribtionModule {}
+export class ProSubscriptionModule {}
