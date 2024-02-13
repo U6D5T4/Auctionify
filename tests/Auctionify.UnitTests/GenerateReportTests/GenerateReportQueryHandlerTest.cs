@@ -40,16 +40,18 @@ namespace Auctionify.UnitTests.GenerateReportTests
 			var reportData = new ReportData { TotalItemsCount = 10, SoldItemsCount = 5, TotalSoldItemsValue = 1000 };
 			var byteArray = new byte[] { 0x01, 0x02, 0x03 };
 
+			var reportDataMock = new Mock<IReportDataRepository>();
+			var pdfReportServiceMock = new Mock<IPdfReportGeneratorService>();
 
-			_reportDataRepositoryMock.Setup(x => x.GetReportDataAsync(It.IsAny<ReportRequest>())).ReturnsAsync(reportData);
-			_pdfReportGeneratorServiceMock.Verify(x => x.GenerateReportAsync(It.IsAny<ReportData>(), It.IsAny<User>()), Times.Once);
+			reportDataMock.Setup(x => x.GetReportDataAsync(It.IsAny<ReportRequest>())).ReturnsAsync(reportData);
+			pdfReportServiceMock.Setup(x => x.GenerateReportAsync(reportData, user)).ReturnsAsync(byteArray);
 
 			var handler = new GenerateReportHandler(
-				_reportDataRepositoryMock.Object,
+				reportDataMock.Object,
 				_currentUserService,
 				_userManager,
 				_xlsxReportGeneratorServiceMock.Object,
-				_pdfReportGeneratorServiceMock.Object
+				pdfReportServiceMock.Object
 			);
 
 			var query = new GenerateReportQuery { Format = "PDF", MonthsDuration = 1 };
@@ -60,8 +62,8 @@ namespace Auctionify.UnitTests.GenerateReportTests
 			// Assert
 			Assert.NotNull(result);
 			Assert.Equal(byteArray, result);
-			_pdfReportGeneratorServiceMock.Verify(x => x.GenerateReportAsync(reportData, user), Times.Once);
 		}
+
 
 		[Fact]
 		public async Task Handle_XlsxRequestForNonExistingUser_ReturnsEmptyByteArray()
