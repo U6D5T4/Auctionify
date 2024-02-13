@@ -34,8 +34,8 @@ const routes: Routes = [
         path: 'subscriptions',
         loadChildren: () =>
             import(
-                './components/general/pro-subscribtion/pro-subscribtion.module'
-            ).then((m) => m.ProSubscribtionModule),
+                './components/general/pro-subscription/pro-subscription.module'
+            ).then((m) => m.ProSubscriptionModule),
         canActivate: [isSellerGuard],
     },
     {

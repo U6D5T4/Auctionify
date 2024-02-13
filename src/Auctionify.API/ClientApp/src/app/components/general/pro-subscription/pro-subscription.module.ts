@@ -19,6 +19,10 @@ import { ConfirmProComponent } from './confirm-pro/confirm-pro.component';
         ProfileModule,
         MatButtonModule,
     ],
-    declarations: [ProPageComponent, UpgradeToProComponent, ConfirmProComponent],
+    declarations: [
+        ProPageComponent,
+        UpgradeToProComponent,
+        ConfirmProComponent,
+    ],
 })
-export class ProSubscribtionModule {}
+export class ProSubscriptionModule {}
