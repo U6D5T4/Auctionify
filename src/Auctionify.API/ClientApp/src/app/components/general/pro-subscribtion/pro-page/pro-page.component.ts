@@ -27,6 +27,18 @@ export class ProPageComponent implements OnInit {
         private snackBar: MatSnackBar
     ) {}
 
+    unsubscribeFromPro() {
+        this.client.unsubscribeUserFromPro().subscribe({
+            next: (res) => {
+                if (res) {
+                    this.router.navigate(['/home']).then(() => {
+                        window.location.reload();
+                    });
+                }
+            },
+        });
+    }
+
     ngOnInit(): void {
         this.fetchUserProfileData();
     }

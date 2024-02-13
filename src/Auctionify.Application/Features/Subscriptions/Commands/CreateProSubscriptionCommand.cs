@@ -7,54 +7,55 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Auctionify.Application.Features.Subscriptions.Commands
 {
-    public class CreateProSubscriptionCommand : IRequest<bool>
-    {
+	public class CreateProSubscriptionCommand : IRequest<bool>
+	{
 
-    }
+	}
 
-    public class CreateProSubscritionCommandHandler : IRequestHandler<CreateProSubscriptionCommand, bool>
-    {
-        private readonly ISubscriptionRepository _subscriptionRepository;
-        private readonly ICurrentUserService _currentUserService;
-        private readonly UserManager<User> _userManager;
+	public class CreateProSubscriptionCommandHandler : IRequestHandler<CreateProSubscriptionCommand, bool>
+	{
+		private readonly ISubscriptionRepository _subscriptionRepository;
+		private readonly ICurrentUserService _currentUserService;
+		private readonly UserManager<User> _userManager;
 
-        public CreateProSubscritionCommandHandler(ISubscriptionRepository subscriptionRepository, ICurrentUserService currentUserService, UserManager<User> userManager)
-        {
-            _subscriptionRepository = subscriptionRepository;
-            _currentUserService = currentUserService;
-            _userManager = userManager;
-        }
 
-        public async Task<bool> Handle(CreateProSubscriptionCommand request, CancellationToken cancellationToken)
-        {
-            try
-            {
-                var user = _userManager.Users.FirstOrDefault(u => u.Email == _currentUserService.UserEmail && !u.IsDeleted);
+		public CreateProSubscriptionCommandHandler(ISubscriptionRepository subscriptionRepository, ICurrentUserService currentUserService, UserManager<User> userManager)
+		{
+			_subscriptionRepository = subscriptionRepository;
+			_currentUserService = currentUserService;
+			_userManager = userManager;
+		}
 
-                if (user == null)
-                    throw new ArgumentException("User is not found");
+		public async Task<bool> Handle(CreateProSubscriptionCommand request, CancellationToken cancellationToken)
+		{
+			try
+			{
+				var user = _userManager.Users.FirstOrDefault(u => u.Email == _currentUserService.UserEmail && !u.IsDeleted);
 
-                var subscription = new Subscription
-                {
-                    CreationDate = DateTime.UtcNow,
-                    EndDate = DateTime.UtcNow.AddYears(1),
-                    SubscriptionTypeId = (int)SubscriptionTypeEnum.Pro,
-                    IsActive = true,
-                    UserId = user.Id,
-                };
+				if (user == null)
+					throw new ArgumentException("User is not found");
 
-                var response = await _subscriptionRepository.AddAsync(subscription);
+				var subscription = new Subscription
+				{
+					CreationDate = DateTime.UtcNow,
+					EndDate = DateTime.UtcNow.AddYears(1),
+					SubscriptionTypeId = (int)SubscriptionTypeEnum.Pro,
+					IsActive = true,
+					UserId = user.Id,
+				};
 
-                if (response == null)
-                    throw new Exception("Something went wrong when creating subscription");
+				var response = await _subscriptionRepository.AddAsync(subscription);
 
-                return true;
-            }
-            catch (Exception)
-            {
+				if (response == null)
+					throw new Exception("Something went wrong when creating subscription");
 
-                throw;
-            }
-        }
-    }
+				return true;
+			}
+			catch (Exception)
+			{
+
+				throw;
+			}
+		}
+	}
 }

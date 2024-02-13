@@ -6,6 +6,7 @@ import { SubscriptionRoutingModule } from './subscription-routing.module';
 import { MatButtonModule } from '@angular/material/button';
 import { UiElementsModule } from 'src/app/ui-elements/ui-elements.module';
 import { ProfileModule } from '../profile/profile.module';
+import { UpgradeToProComponent } from './upgrade-to-pro/upgrade-to-pro.component';
 
 @NgModule({
     imports: [
@@ -15,7 +16,8 @@ import { ProfileModule } from '../profile/profile.module';
         UiElementsModule,
         SubscriptionRoutingModule,
         ProfileModule,
+        MatButtonModule,
     ],
-    declarations: [ProPageComponent],
+    declarations: [ProPageComponent, UpgradeToProComponent],
 })
 export class ProSubscribtionModule {}
