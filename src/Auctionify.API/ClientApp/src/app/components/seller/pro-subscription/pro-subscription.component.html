@@ -173,7 +173,11 @@
                 </div>
             </div>
         </div>
-        <button mat-flat-button class="get-started-button">
+        <button
+            mat-flat-button
+            class="get-started-button"
+            (click)="openConfirmProSubscriptionDialog()"
+        >
             Get started today
         </button>
     </div>

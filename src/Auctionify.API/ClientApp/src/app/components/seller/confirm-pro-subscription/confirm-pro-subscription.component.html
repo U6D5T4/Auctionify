@@ -1,1 +1,28 @@
-<p>confirm-pro-subscription works!</p>
+<div class="confirm-pro-subscription">
+    <h1 class="confirm-pro-subscription__title">
+        Confirm Pro Subscription&nbsp;&nbsp;
+        <img
+            src="../../../../assets/icons/UpgradeToProIcon.svg"
+            alt="Upgrade To Pro"
+        />
+    </h1>
+    <p class="confirm-pro-subscription__description">
+        Are you sure you want to subscribe to Pro?
+    </p>
+    <div class="confirm-pro-subscription__buttons">
+        <button
+            mat-button
+            class="confirm-pro-subscription-button"
+            (click)="confirmProSubscription()"
+        >
+            Confirm
+        </button>
+        <button
+            mat-button
+            class="cancel-confirm-pro-subscription-button"
+            (click)="closeDialog()"
+        >
+            Cancel
+        </button>
+    </div>
+</div>
