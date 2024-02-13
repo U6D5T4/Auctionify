@@ -11,6 +11,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Moq;
+using System.Linq.Expressions;
 
 namespace Auctionify.UnitTests.GetSellerTests
 {
@@ -24,6 +25,7 @@ namespace Auctionify.UnitTests.GetSellerTests
 		private readonly ILotRepository _lotRepository;
 		private readonly ILotStatusRepository _lotStatusRepository;
 		private readonly IRateRepository _rateRepository;
+		private readonly Mock<ISubscriptionRepository> subscriptionRepositoryMock;
 
 		public GetSellerQueryHandlerTests()
 		{
@@ -60,6 +62,8 @@ namespace Auctionify.UnitTests.GetSellerTests
 			_lotRepository = new LotRepository(mockDbContext.Object);
 			_lotStatusRepository = new LotStatusRepository(mockDbContext.Object);
 			_rateRepository = new RateRepository(mockDbContext.Object);
+
+			subscriptionRepositoryMock = new Mock<ISubscriptionRepository>();
 		}
 
 		#endregion
@@ -94,6 +98,22 @@ namespace Auctionify.UnitTests.GetSellerTests
 				.Setup(x => x.GetBlobUrl(It.IsAny<string>(), It.IsAny<string>()))
 				.Returns(testUrl);
 
+			subscriptionRepositoryMock
+				.Setup(
+					x =>
+						x.GetAsync(
+							It.IsAny<Expression<Func<Subscription, bool>>>(),
+							null,
+							false,
+							true,
+							default
+						)
+				)
+				.ReturnsAsync(new Subscription
+				{
+					IsActive = true,
+				});
+
 			var handler = new GetSellerQueryHandler(
 				_currentUserService,
 				_userManager,
@@ -102,7 +122,8 @@ namespace Auctionify.UnitTests.GetSellerTests
 				_mapper,
 				_lotRepository,
 				_lotStatusRepository,
-				_rateRepository
+				_rateRepository,
+				subscriptionRepositoryMock.Object
 			);
 
 			// Act
