@@ -28,34 +28,26 @@ namespace Auctionify.Application.Features.Subscriptions.Commands
 
 		public async Task<bool> Handle(CreateProSubscriptionCommand request, CancellationToken cancellationToken)
 		{
-			try
-			{
-				var user = _userManager.Users.FirstOrDefault(u => u.Email == _currentUserService.UserEmail && !u.IsDeleted);
+			var user = _userManager.Users.FirstOrDefault(u => u.Email == _currentUserService.UserEmail && !u.IsDeleted);
 
-				if (user == null)
-					throw new ArgumentException("User is not found");
+			if (user == null)
+				throw new ArgumentException("User is not found");
 
-				var subscription = new Subscription
-				{
-					CreationDate = DateTime.UtcNow,
-					EndDate = DateTime.UtcNow.AddYears(1),
-					SubscriptionTypeId = (int)SubscriptionTypeEnum.Pro,
-					IsActive = true,
-					UserId = user.Id,
-				};
+			var subscription = new Subscription
+            {
+				CreationDate = DateTime.UtcNow,
+				EndDate = DateTime.UtcNow.AddYears(1),
+				SubscriptionTypeId = (int)Core.Enums.SubscriptionType.Pro,
+				IsActive = true,
+				UserId = user.Id,
+			};
 
-				var response = await _subscriptionRepository.AddAsync(subscription);
+			var response = await _subscriptionRepository.AddAsync(subscription);
 
-				if (response == null)
-					throw new Exception("Something went wrong when creating subscription");
+			if (response == null)
+				throw new ArgumentNullException("Something went wrong when creating subscription");
 
-				return true;
-			}
-			catch (Exception)
-			{
-
-				throw;
-			}
+			return true;
 		}
 	}
 }

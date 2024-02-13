@@ -36,7 +36,7 @@ namespace Auctionify.Application.Features.Subscriptions.Commands.DeleteProSubscr
             var userSubscription = await _subscriptionRepository.GetAsync(s => s.User.Id == user.Id);
 
             if (userSubscription == null)
-                throw new Exception("User does not have any subscriptions");
+                throw new ArgumentNullException("User does not have any subscriptions");
 
             await _subscriptionRepository.DeleteAsync(userSubscription);
 

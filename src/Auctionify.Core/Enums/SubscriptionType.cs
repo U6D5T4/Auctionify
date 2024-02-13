@@ -1,6 +1,6 @@
 ﻿namespace Auctionify.Core.Enums
 {
-    public enum SubscriptionTypeEnum
+    public enum SubscriptionType
     {
         None = 0,
         Pro = 1,
