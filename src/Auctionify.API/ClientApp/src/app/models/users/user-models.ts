@@ -10,6 +10,7 @@ export interface SellerModel {
     averageRate: number;
     ratesCount: number | null;
     starCounts?: { [key: number]: number };
+    isPro: boolean;
 }
 
 export interface BuyerModel {

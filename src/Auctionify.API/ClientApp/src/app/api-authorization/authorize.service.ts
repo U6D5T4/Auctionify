@@ -5,6 +5,7 @@ import {
     catchError,
     firstValueFrom,
     map,
+    mergeMap,
     of,
     throwError,
 } from 'rxjs';
@@ -269,6 +270,14 @@ export class AuthorizeService {
     });
 
     getUserId = computed(() => this.user?.userId());
+
+    isUserPro = computed(() => {
+        if (this.isUserSeller()) {
+            return this.client.getSeller().pipe(map((res) => res.isPro));
+        }
+
+        return of(false);
+    });
 
     isUserLoggedIn(): boolean {
         return this.user?.userToken !== null && this.getAccessToken() !== null;

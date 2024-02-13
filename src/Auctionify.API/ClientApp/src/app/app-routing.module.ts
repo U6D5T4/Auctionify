@@ -31,6 +31,14 @@ const routes: Routes = [
         canActivate: [isLoggedInGuard],
     },
     {
+        path: 'subscriptions',
+        loadChildren: () =>
+            import(
+                './components/general/pro-subscribtion/pro-subscribtion.module'
+            ).then((m) => m.ProSubscribtionModule),
+        canActivate: [isSellerGuard],
+    },
+    {
         path: 'seller',
         loadChildren: () =>
             import('./components/seller/seller.module').then(
@@ -58,7 +66,7 @@ const routes: Routes = [
         component: RateUserComponent,
         canActivate: [isLoggedInGuard],
     },
-    { 
+    {
         path: 'get-transactions',
         component: TransactionsComponent,
         canActivate: [isLoggedInGuard],

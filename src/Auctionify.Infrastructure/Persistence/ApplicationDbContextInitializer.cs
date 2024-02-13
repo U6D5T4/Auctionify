@@ -498,6 +498,18 @@ namespace Auctionify.Infrastructure.Persistence
 
 				await _context.SaveChangesAsync();
 			}
+
+			if (!_context.SubscriptionTypes.Any())
+			{
+				_context.SubscriptionTypes.Add(new SubscriptionType
+				{
+					Name = "Pro"
+				});
+
+				await _context.SaveChangesAsync();
+			}
+
+			await _context.SaveChangesAsync();
 		}
 	}
 }
