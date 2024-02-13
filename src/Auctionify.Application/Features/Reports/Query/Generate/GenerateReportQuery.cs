@@ -54,9 +54,9 @@ public class GenerateReportHandler : IRequestHandler<GenerateReportQuery, byte[]
 		switch (reportType)
 		{
 			case "PDF":
-				return await _pdfReportGeneratorService.GenerateReportAsync(reportData);
+				return await _pdfReportGeneratorService.GenerateReportAsync(reportData, user);
 			case "XLSX":
-				return await _xlsxReportGeneratorService.GenerateReportAsync(reportData);
+				return await _xlsxReportGeneratorService.GenerateReportAsync(reportData, user);
 			default:
 				return Array.Empty<byte>();
 		}

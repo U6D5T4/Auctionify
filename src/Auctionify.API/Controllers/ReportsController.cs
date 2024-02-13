@@ -36,5 +36,4 @@ namespace Auctionify.API.Controllers
 			return File(reportBytes, "application/octet-stream", $"Report.For{monthsDuration}.{reportType.ToLowerInvariant()}");
 		}
 	}
-
 }
