@@ -371,6 +371,8 @@ export class Client {
         formData.append('city', body.city);
         formData.append('address', body.address);
         formData.append('country', body.country);
+        formData.append('latitude', body.latitude);
+        formData.append('longitude', body.longitude);
         formData.append('startDate', new Date(body.startDate!).toISOString());
         formData.append('endDate', new Date(body.endDate!).toISOString());
         formData.append('startingPrice', body.startingPrice?.toString() ?? '');

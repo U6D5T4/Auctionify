@@ -29,6 +29,8 @@ export interface UpdateLotModel {
     state: string | null;
     country: string;
     address: string;
+    latitude: string;
+    longitude: string;
     currencyId: number | null;
     photos: File[] | null;
     additionalDocuments: File[] | null;
