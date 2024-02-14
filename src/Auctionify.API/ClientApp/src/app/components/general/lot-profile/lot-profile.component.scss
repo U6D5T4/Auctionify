@@ -421,3 +421,67 @@
         flex-wrap: wrap-reverse;
     }
 }
+
+.my-rate-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 24px;
+    letter-spacing: 0em;
+    text-align: left;
+}
+
+.rate {
+    display: flex;
+    gap: 16px;
+    border-radius: 10px;
+    padding: 10px;
+    padding-left: 20px;
+    margin-top: -15px;
+    cursor: pointer;
+
+    &__profile-img img {
+        border-radius: 500px;
+        object-fit: cover;
+    }
+
+    &__data {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    &__name-date-value {
+        display: flex;
+        gap: 24px;
+        align-items: flex-start;
+    }
+
+    &__name-date {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    &__name {
+        font-size: 18px;
+    }
+
+    &__date {
+        font-size: 14px;
+        color: #828282;
+    }
+
+    &__stars mat-icon {
+        color: #ffc72c;
+    }
+
+    &:hover {
+        background-color: #ffffffdb;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    }
+}

@@ -54,11 +54,28 @@ namespace Auctionify.Application.Features.Rates.Queries.GetSenderRate
 
 			var senderRate = await _rateRepository.GetAsync(
 				predicate: r => r.SenderId == user.Id && r.LotId == request.LotId,
-				enableTracking: false
+				include: x => x.Include(u => u.Sender),
+				enableTracking: false,
+				cancellationToken: cancellationToken
 			);
 
-			return _mapper.Map<GetSenderRateResponse>(senderRate);
+			var mappedResponse = _mapper.Map<GetSenderRateResponse>(senderRate);
 
+			if (
+				senderRate is not null
+				&& senderRate.Sender is not null
+				&& senderRate.Sender.ProfilePicture is not null
+			)
+			{
+				var profilePictureUrl = _blobService.GetBlobUrl(
+					_azureBlobStorageOptions.UserProfilePhotosFolderName,
+					senderRate.Sender.ProfilePicture
+				);
+
+				mappedResponse.Sender.ProfilePicture = profilePictureUrl;
+			}
+
+			return mappedResponse;
 		}
 	}
 }
