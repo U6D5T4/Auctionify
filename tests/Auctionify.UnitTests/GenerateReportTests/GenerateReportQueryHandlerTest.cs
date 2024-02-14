@@ -3,10 +3,8 @@ using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Common.Models.Report;
 using Auctionify.Application.Features.Reports.Query.Generate;
 using Auctionify.Core.Entities;
-using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Moq;
-using System.Reflection.Metadata;
 
 namespace Auctionify.UnitTests.GenerateReportTests
 {
@@ -36,15 +34,31 @@ namespace Auctionify.UnitTests.GenerateReportTests
 		public async Task Handle_GivenValidPdfRequest_ReturnsPdfByteArray()
 		{
 			// Arrange
-			var user = new User { Email = "test@example.com", IsDeleted = false };
-			var reportData = new ReportData { TotalItemsCount = 10, SoldItemsCount = 5, TotalSoldItemsValue = 1000 };
+			var user = new User
+			{
+				Id = 1,
+				Email = "test@example.com",
+				IsDeleted = false
+			};
+			var reportData = new ReportData
+			{
+				TotalItemsCount = 10,
+				SoldItemsCount = 5,
+				TotalSoldItemsValue = 1000
+			};
+
 			var byteArray = new byte[] { 0x01, 0x02, 0x03 };
 
 			var reportDataMock = new Mock<IReportDataRepository>();
 			var pdfReportServiceMock = new Mock<IPdfReportGeneratorService>();
 
-			reportDataMock.Setup(x => x.GetReportDataAsync(It.IsAny<ReportRequest>())).ReturnsAsync(reportData);
-			pdfReportServiceMock.Setup(x => x.GenerateReportAsync(reportData, user)).ReturnsAsync(byteArray);
+			reportDataMock
+				.Setup(x => x.GetReportDataAsync(It.IsAny<ReportRequest>()))
+				.ReturnsAsync(reportData);
+
+			pdfReportServiceMock
+				.Setup(x => x.GenerateReportAsync(It.IsAny<ReportData>(), It.IsAny<User>()))
+				.ReturnsAsync(byteArray);
 
 			var handler = new GenerateReportHandler(
 				reportDataMock.Object,
@@ -63,7 +77,6 @@ namespace Auctionify.UnitTests.GenerateReportTests
 			Assert.NotNull(result);
 			Assert.Equal(byteArray, result);
 		}
-
 
 		[Fact]
 		public async Task Handle_XlsxRequestForNonExistingUser_ReturnsEmptyByteArray()
@@ -86,6 +99,5 @@ namespace Auctionify.UnitTests.GenerateReportTests
 			Assert.NotNull(result);
 			Assert.Empty(result);
 		}
-
 	}
 }
