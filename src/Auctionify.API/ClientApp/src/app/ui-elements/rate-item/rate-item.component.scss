@@ -1,6 +1,9 @@
 .review {
     display: flex;
     gap: 16px;
+    border-radius: 10px;
+    padding: 10px;
+    cursor: pointer;
 
     &__profile-img img {
         border-radius: 500px;
@@ -38,5 +41,9 @@
         color: #ffc72c;
     }
 
-    cursor: pointer;
+    &:hover {
+        background-color: #ffffffdb;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    }
 }
