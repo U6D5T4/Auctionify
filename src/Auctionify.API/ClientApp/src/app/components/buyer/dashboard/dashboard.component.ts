@@ -30,7 +30,7 @@ export class DashboardComponent implements OnInit {
     userProfileData: BuyerModel | null = null;
     senderRates: Rate[] = [];
     IsBtnVisible: boolean = true;
-    IsSentRates: boolean = false;
+    IsSentRates: boolean = true;
 
     priceColor: string = 'black';
 

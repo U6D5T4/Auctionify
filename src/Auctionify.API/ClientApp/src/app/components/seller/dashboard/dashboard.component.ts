@@ -16,7 +16,7 @@ export class DashboardComponent implements OnInit {
     userProfileData: SellerModel | null = null;
     senderRates: Rate[] = [];
     IsBtnVisible: boolean = true;
-    IsSentRates: boolean = false;
+    IsSentRates: boolean = true;
 
     constructor(
         private client: Client,
