@@ -42,8 +42,6 @@ namespace Auctionify.Core.Entities
 
 		public virtual ICollection<Rate> Rates { get; set; }
 
-		public int? RateId { get; set; }
-
 		public virtual ICollection<Bid> Bids { get; set; }
 	}
 }

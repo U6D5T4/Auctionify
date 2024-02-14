@@ -406,7 +406,13 @@
     }
 
     &__rate-btn {
-        width: 100px;
+        width: 110px;
+
+        & mat-icon {
+            font-size: 25px;
+            width: 25px;
+            height: 25px;
+        }
     }
 }
 
