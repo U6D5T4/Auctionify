@@ -529,7 +529,7 @@ namespace Auctionify.Infrastructure.Persistence
                        ,[CreationDate]
                        ,[ModificationDate])
                  VALUES
-                       (3, 1, 1, 1, 1, 'Sample Lot 1', 'This is a sample lot description for Lot 1.', 100.00, '2023-10-12 10:00:00', '2023-10-15 15:00:00', '2023-10-12 09:00:00', '2023-10-12 09:00:00'),
+                       (3, 1, 4, 1, 1, 'Sample Lot 1', 'This is a sample lot description for Lot 1.', 100.00, '2023-10-12 10:00:00', '2023-10-15 15:00:00', '2023-10-12 09:00:00', '2023-10-12 09:00:00'),
                        (3, 2, 5, 2, 1, 'Sample Lot 2', 'This is a sample lot description for Lot 2.', 150.00, '2023-10-13 11:00:00', '2023-10-16 16:00:00', '2023-10-13 10:00:00', '2023-10-13 10:00:00'),
                        (3, 2, 4, 3, 1, 'Sample Lot 3', 'This is a sample lot description for Lot 3.', 200.00, '2023-10-14 12:00:00', '2023-10-17 17:00:00', '2023-10-14 11:00:00', '2023-10-14 11:00:00')
                      "
