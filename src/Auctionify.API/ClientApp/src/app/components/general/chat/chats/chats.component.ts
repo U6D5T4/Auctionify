@@ -3,7 +3,6 @@ import {
     EventEmitter,
     Input,
     OnChanges,
-    OnInit,
     Output,
     SimpleChanges,
 } from '@angular/core';
@@ -25,7 +24,7 @@ export class ChatsComponent implements OnChanges {
         }
     }
 
-    conversationClick(id: number) {
+    onConversationClick(id: number) {
         this.conversationChosen.emit(id);
         this.handleConversationChange(id);
     }

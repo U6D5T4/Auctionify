@@ -40,11 +40,7 @@
     <div class="chat" [ngClass]="getMainChatContainerWidthClass()">
         <div class="chat__conversations">
             <h2>Messages</h2>
-            <ng-container
-                *ngIf="
-                    chatConversations != null && chatConversations.length > 0
-                "
-            >
+            <ng-container *ngIf="chatConversations.length > 0">
                 <app-chats
                     #chats
                     class="chats"

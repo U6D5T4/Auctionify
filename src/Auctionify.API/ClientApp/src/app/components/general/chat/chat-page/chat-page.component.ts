@@ -1,14 +1,7 @@
-import {
-    Component,
-    ElementRef,
-    OnInit,
-    ViewChild,
-    effect,
-} from '@angular/core';
+import { Component, OnInit, effect } from '@angular/core';
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 import { Conversation } from 'src/app/models/chats/chat-models';
 import { Client } from 'src/app/web-api-client';
-import { ChatsComponent } from '../chats/chats.component';
 import { SignalRService } from 'src/app/services/signalr-service/signalr.service';
 import { Subject } from 'rxjs';
 
