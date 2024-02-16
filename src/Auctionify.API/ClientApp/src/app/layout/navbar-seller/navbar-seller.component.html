@@ -27,6 +27,15 @@
                         Dashboard
                     </button>
                     <button
+                        [routerLink]="['/seller/analytics']"
+                        routerLinkActive="mat-primary"
+                        mat-flat-button
+                        color="white"
+                    >
+                        <mat-icon>trending_up</mat-icon>
+                        Analytics
+                    </button>
+                    <button
                         mat-flat-button
                         [routerLink]="['/seller/create-lot']"
                         routerLinkActive="mat-primary"
