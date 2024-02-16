@@ -22,7 +22,6 @@ import { ImagePopupComponent } from '../image-popup/image-popup.component';
 import { AddBidComponent } from '../add-bid/add-bid.component';
 import { WithdrawBidComponent } from '../withdraw-bid/withdraw-bid.component';
 import { RemoveFromWatchlistComponent } from '../remove-from-watchlist/remove-from-watchlist.component';
-import { UserDataValidatorService } from 'src/app/services/user-data-validator/user-data-validator.service';
 import { Rate } from 'src/app/models/rates/rate-models';
 
 @Component({

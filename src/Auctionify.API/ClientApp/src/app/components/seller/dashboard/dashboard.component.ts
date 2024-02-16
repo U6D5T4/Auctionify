@@ -17,6 +17,7 @@ export class DashboardComponent implements OnInit {
     senderRates: Rate[] = [];
     IsBtnVisible: boolean = true;
     IsSentRates: boolean = true;
+    averageRatingWidth: number = 200;
 
     constructor(
         private client: Client,

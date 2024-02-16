@@ -16,6 +16,7 @@ export class PublicUserProfileComponent implements OnInit {
     userProfileData: GetUserById | null = null;
     IsBtnVisible: boolean = true;
     currentUserId: number = 0;
+    averageRatingWidth: number = 200;
 
     constructor(
         private client: Client,

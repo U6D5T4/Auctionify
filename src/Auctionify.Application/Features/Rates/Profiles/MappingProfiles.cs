@@ -1,6 +1,7 @@
 ﻿using Auctionify.Application.Common.DTOs;
 using Auctionify.Application.Features.Rates.Commands.AddRateToBuyer;
 using Auctionify.Application.Features.Rates.Commands.AddRateToSeller;
+using Auctionify.Application.Features.Rates.Queries.GetPublicUserRates;
 using Auctionify.Application.Features.Rates.Queries.GetReceiverRates;
 using Auctionify.Application.Features.Rates.Queries.GetSenderRate;
 using Auctionify.Application.Features.Rates.Queries.GetSenderRates;
@@ -21,6 +22,8 @@ namespace Auctionify.Application.Features.Rates.Profiles
 			CreateMap<Rate, AddRateToBuyerResponse>().ReverseMap();
 			CreateMap<Rate, AddRateToSellerResponse>().ReverseMap();
 			CreateMap<Rate, GetSenderRateResponse>().ReverseMap();
+			CreateMap<Rate, GetPublicUserRatesResponse>().ReverseMap();
+			CreateMap<Rate, GetListResponseDto<GetPublicUserRatesResponse>>().ReverseMap();
 		}
 	}
 }
