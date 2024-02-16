@@ -180,7 +180,14 @@ namespace Auctionify.UnitTests
 					SenderId = 3,
 					RatingValue = 5,
 					Comment = "Some comment 2",
-					LotId = 1
+					LotId = 1,
+					Sender = new User
+					{
+						Id = 3,
+						FirstName = "TestFirstName",
+						LastName = "TestLastName",
+						ProfilePicture = "TestProfilePicture.png"
+					}
 				},
 				new Rate
 				{
