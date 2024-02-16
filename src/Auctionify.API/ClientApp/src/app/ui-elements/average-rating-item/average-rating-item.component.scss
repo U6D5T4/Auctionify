@@ -21,7 +21,8 @@
 
     &__average-rating {
         display: flex;
-        flex-direction: column;
+        flex-direction: column-reverse;
+        align-items: flex-end;
     }
 
     &__rating-level {

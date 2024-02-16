@@ -14,7 +14,7 @@ import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 })
 export class PublicUserProfileComponent implements OnInit {
     userProfileData: GetUserById | null = null;
-    IsBtnVisible: boolean = false;
+    IsBtnVisible: boolean = true;
     currentUserId: number = 0;
 
     constructor(
@@ -37,11 +37,13 @@ export class PublicUserProfileComponent implements OnInit {
         const userId = this.activeRoute.snapshot.params['id'];
 
         if (this.currentUserId == userId) {
-            this.router.navigate(['profile'])
+            this.router.navigate(['profile']);
         }
 
         this.client.getUserById(userId).subscribe({
-            next: (data: GetUserById) => (this.userProfileData = data),
+            next: (data: GetUserById) => {
+                this.userProfileData = data;
+            },
             error: (error) =>
                 this.openDialog(
                     error.errors! || [
