@@ -68,7 +68,7 @@ namespace Auctionify.UnitTests.GenerateReportTests
 				pdfReportServiceMock.Object
 			);
 
-			var query = new GenerateReportQuery { Format = "PDF", MonthsDuration = 1 };
+			var query = new GenerateReportQuery { Format = ReportType.PDF,  MonthsDuration = 1 };
 
 			// Act
 			var result = await handler.Handle(query, CancellationToken.None);
@@ -116,7 +116,7 @@ namespace Auctionify.UnitTests.GenerateReportTests
 				_pdfReportGeneratorServiceMock.Object
 			);
 
-			var query = new GenerateReportQuery { Format = "XLSX", MonthsDuration = 1 };
+			var query = new GenerateReportQuery { Format = ReportType.XLSX, MonthsDuration = 1 };
 
 			// Act
 			var result = await handler.Handle(query, CancellationToken.None);

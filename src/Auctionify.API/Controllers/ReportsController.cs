@@ -18,7 +18,7 @@ namespace Auctionify.API.Controllers
 
 		[HttpGet]
 		[Authorize(Roles ="Seller")]
-		public async Task<IActionResult> GetReport(int monthsDuration, string reportType)
+		public async Task<IActionResult> GetReport([FromBody]int monthsDuration, ReportType reportType)
 		{
 			var query = new GenerateReportQuery
 			{
@@ -28,12 +28,7 @@ namespace Auctionify.API.Controllers
 
 			var reportBytes = await _mediator.Send(query);
 
-			if (reportBytes.Length == 0)
-			{
-				return NotFound("Report could not be generated.");
-			}
-
-			return File(reportBytes, "application/octet-stream", $"Report.For{monthsDuration}.{reportType.ToLowerInvariant()}");
+			return File(reportBytes, "application/octet-stream", $"Report.For{monthsDuration}.{reportType.ToString()}");
 		}
 	}
 }

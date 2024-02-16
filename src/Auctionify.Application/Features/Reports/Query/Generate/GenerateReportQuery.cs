@@ -11,7 +11,7 @@ namespace Auctionify.Application.Features.Reports.Query.Generate
 	public class GenerateReportQuery : IRequest<byte[]>
 	{
 		public int MonthsDuration { get; set; }
-		public string Format { get; set; }
+		public ReportType Format { get; set; }
 	}
 }
 
@@ -41,21 +41,19 @@ public class GenerateReportHandler : IRequestHandler<GenerateReportQuery, byte[]
 	public async Task<byte[]> Handle(GenerateReportQuery request, CancellationToken cancellationToken)
 	{
 		var user = await _userManager.Users.FirstOrDefaultAsync(
-				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
-				cancellationToken: cancellationToken
-			);
+			u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
+			cancellationToken: cancellationToken
+		);
 
 		var reportData = await _reportDataRepository.GetReportDataAsync(
 			new ReportRequest { MonthsDuration = request.MonthsDuration, UserId = user.Id }
 			);
 
-		string reportType = request.Format.ToUpperInvariant();
-
-		switch (reportType)
+		switch (request.Format)
 		{
-			case "PDF":
+			case ReportType.PDF:
 				return await _pdfReportGeneratorService.GenerateReportAsync(reportData, user);
-			case "XLSX":
+			case ReportType.XLSX:
 				return await _xlsxReportGeneratorService.GenerateReportAsync(reportData, user);
 			default:
 				return Array.Empty<byte>();
