@@ -9,6 +9,7 @@ export const LoginActions = {
     ForgetPassword: 'forget-password',
     ResetPassword: 'reset-password',
     EmailSent: 'email-sent',
+    ResetEmailSent: 'reset-email-sent',
     AfterDeletion: 'after-deletion',
     SelectLoginRole: 'select-login-role',
 };
@@ -22,6 +23,7 @@ let applicationPaths: ApplicationPathsType = {
     ForgetPassword: `auth/${LoginActions.ForgetPassword}`,
     ResetPassword: `auth/${LoginActions.ResetPassword}`,
     EmailSent: `auth/${LoginActions.EmailSent}/:email`,
+    ResetEmailSent: `auth/${LoginActions.ResetEmailSent}/:email`,
     AfterDeletion: `auth/${LoginActions.AfterDeletion}`,
     SelectLoginRole: `auth/${LoginActions.SelectLoginRole}`,
     LoginPathComponents: [],
@@ -31,6 +33,7 @@ let applicationPaths: ApplicationPathsType = {
     ForgetPasswordComponents: [],
     ResetPasswordComponents: [],
     EmailSentComponents: [],
+    ResetEmailSentComponent: [],
     AfterDeletionComponents: [],
     SelectLoginRoleComponents: [],
 };
@@ -44,6 +47,7 @@ applicationPaths = {
     ResetPasswordComponents: applicationPaths.ResetPassword.split('/'),
     RegisterRolePathComponent: applicationPaths.Profile.split('/'),
     EmailSentComponents: applicationPaths.Profile.split('/'),
+    ResetEmailSentComponent: applicationPaths.Profile.split('/'),
     AfterDeletionComponents: applicationPaths.AfterDeletion.split('/'),
     SelectLoginRoleComponents: applicationPaths.SelectLoginRole.split('/'),
 };
@@ -57,6 +61,7 @@ interface ApplicationPathsType {
     readonly ForgetPassword: string;
     readonly ResetPassword: string;
     readonly EmailSent: string;
+    readonly ResetEmailSent: string;
     readonly AfterDeletion: string;
     readonly SelectLoginRole: string;
     readonly LoginPathComponents: string[];
@@ -66,6 +71,7 @@ interface ApplicationPathsType {
     readonly ForgetPasswordComponents: string[];
     readonly ResetPasswordComponents: string[];
     readonly EmailSentComponents: string[];
+    readonly ResetEmailSentComponent: string[];
     readonly AfterDeletionComponents: string[];
     readonly SelectLoginRoleComponents: string[];
 }

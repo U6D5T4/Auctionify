@@ -5,6 +5,8 @@ import { BuyerModel, SellerModel } from 'src/app/models/users/user-models';
     providedIn: 'root',
 })
 export class UserDataValidatorService {
+    private userIdString: string = 'userId';
+
     constructor() {}
 
     validateUserProfileData(

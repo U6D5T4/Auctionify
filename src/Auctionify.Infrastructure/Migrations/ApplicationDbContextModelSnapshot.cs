@@ -385,8 +385,7 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LotId")
-                        .IsUnique();
+                    b.HasIndex("LotId");
 
                     b.HasIndex("ReceiverId");
 
@@ -835,8 +834,9 @@ namespace Auctionify.Infrastructure.Migrations
             modelBuilder.Entity("Auctionify.Core.Entities.Rate", b =>
                 {
                     b.HasOne("Auctionify.Core.Entities.Lot", "Lot")
-                        .WithOne("Rate")
-                        .HasForeignKey("Auctionify.Core.Entities.Rate", "LotId");
+                        .WithMany("Rates")
+                        .HasForeignKey("LotId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Auctionify.Core.Entities.User", "Receiver")
                         .WithMany("ReceiverRates")
@@ -973,7 +973,7 @@ namespace Auctionify.Infrastructure.Migrations
                 {
                     b.Navigation("Bids");
 
-                    b.Navigation("Rate");
+                    b.Navigation("Rates");
 
                     b.Navigation("Watchlists");
                 });

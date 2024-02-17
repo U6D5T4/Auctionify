@@ -404,6 +404,10 @@
         flex-direction: column;
         gap: 12px;
     }
+
+    &__rate-btn {
+        width: 100px;
+    }
 }
 
 @media only screen and (max-width: 1450px) {

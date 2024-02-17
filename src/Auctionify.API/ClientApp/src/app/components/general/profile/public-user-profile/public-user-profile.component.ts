@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, effect } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { DialogPopupComponent } from 'src/app/ui-elements/dialog-popup/dialog-popup.component';
 import { GetUserById } from 'src/app/models/users/user-models';
@@ -15,13 +15,19 @@ import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 export class PublicUserProfileComponent implements OnInit {
     userProfileData: GetUserById | null = null;
     IsBtnVisible: boolean = false;
+    currentUserId: number = 0;
 
     constructor(
         private client: Client,
         public dialog: Dialog,
         public authClient: AuthorizeService,
-        private activeRoute: ActivatedRoute
-    ) {}
+        private activeRoute: ActivatedRoute,
+        private router: Router
+    ) {
+        effect(() => {
+            this.currentUserId = this.authClient.getUserId()!;
+        });
+    }
 
     ngOnInit(): void {
         this.fetchUserProfileData();
@@ -29,6 +35,10 @@ export class PublicUserProfileComponent implements OnInit {
 
     private fetchUserProfileData() {
         const userId = this.activeRoute.snapshot.params['id'];
+
+        if (this.currentUserId == userId) {
+            this.router.navigate(['profile'])
+        }
 
         this.client.getUserById(userId).subscribe({
             next: (data: GetUserById) => (this.userProfileData = data),

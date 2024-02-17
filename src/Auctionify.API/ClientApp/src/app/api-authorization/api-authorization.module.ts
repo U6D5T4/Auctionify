@@ -21,6 +21,7 @@ import { UiElementsModule } from '../ui-elements/ui-elements.module';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { isLoggedInGuard } from '../guards/is-logged-in.guard';
 import { EmailSentComponent } from './email-sent/email-sent.component';
+import { ResetEmailSentComponent } from './reset-email-sent/reset-email-sent.component';
 import { AfterDeletionComponent } from './after-deletion/after-deletion.component';
 import { SelectLoginRoleComponent } from './select-login-role/select-login-role.component';
 
@@ -32,6 +33,7 @@ import { SelectLoginRoleComponent } from './select-login-role/select-login-role.
         RegisterRoleComponent,
         ResetPasswordComponent,
         EmailSentComponent,
+        ResetEmailSentComponent,
         AfterDeletionComponent,
         SelectLoginRoleComponent,
     ],
@@ -64,6 +66,10 @@ import { SelectLoginRoleComponent } from './select-login-role/select-login-role.
             {
                 path: ApplicationPaths.EmailSent,
                 component: EmailSentComponent,
+            },
+            {
+                path: ApplicationPaths.ResetEmailSent,
+                component: ResetEmailSentComponent,
             },
             {
                 path: ApplicationPaths.AfterDeletion,

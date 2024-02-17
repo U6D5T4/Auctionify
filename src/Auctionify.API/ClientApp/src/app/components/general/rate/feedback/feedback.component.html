@@ -29,7 +29,10 @@
                 </button>
             </div>
             <div class="review" *ngFor="let rate of receiverRates">
-                <app-rate-item [rate]="rate"></app-rate-item>
+                <app-rate-item
+                    [rate]="rate"
+                    [IsSentRates]="IsSentRates"
+                ></app-rate-item>
             </div>
 
             <div

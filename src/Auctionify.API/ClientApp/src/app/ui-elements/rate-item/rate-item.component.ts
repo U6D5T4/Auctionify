@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { formatDate } from '@angular/common';
 
 import { Rate } from 'src/app/models/rates/rate-models';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-rate-item',
@@ -11,6 +12,18 @@ import { Rate } from 'src/app/models/rates/rate-models';
 export class RateItemComponent {
     @Input()
     rate!: Rate;
+    @Input()
+    IsSentRates!: boolean;
+
+    constructor(private router: Router) {}
+
+    onClick() {
+        if (this.IsSentRates) {
+            this.router.navigate([`profile/user/${this.rate.senderId}`]);
+        } else {
+            this.router.navigate([`profile/user/${this.rate.receiverId}`]);
+        }
+    }
 
     formatDate(date: Date | null): string {
         return date ? formatDate(date, 'dd LLLL, h:mm', 'en-US') : '';
