@@ -1,7 +1,7 @@
 ﻿using Auctionify.Application.Common.Interfaces;
 using Microsoft.Extensions.Configuration;
-using System.Net.Mail;
 using System.Net;
+using System.Net.Mail;
 
 namespace Auctionify.Infrastructure.Identity
 {
@@ -23,10 +23,12 @@ namespace Auctionify.Infrastructure.Identity
 
 			var from = new MailAddress(smtpUsername, "Auctionify");
 			var to = new MailAddress(toEmail);
-			var message = new MailMessage(from, to);
-			message.Subject = subject;
-			message.Body = content;
-			message.IsBodyHtml = true;
+			var message = new MailMessage(from, to)
+			{
+				Subject = subject,
+				Body = content,
+				IsBodyHtml = true
+			};
 
 			using (var client = new SmtpClient(smtpServer, int.Parse(smtpPort)))
 			{

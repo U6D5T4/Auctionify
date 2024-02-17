@@ -42,25 +42,25 @@ export class LoginComponent {
     async ngOnInit(): Promise<void> {
         try {
             this.clientId = await this.authService.fetchGoogleClientId();
-                // @ts-ignore
-                google.accounts.id.initialize({
-                    client_id: this.clientId,
-                    callback: this.handleCredentialResponse.bind(this),
-                    auto_select: false,
-                    cancel_on_tap_outside: true,
-                });
+            // @ts-ignore
+            google.accounts.id.initialize({
+                client_id: this.clientId,
+                callback: this.handleCredentialResponse.bind(this),
+                auto_select: false,
+                cancel_on_tap_outside: true,
+            });
 
+            // @ts-ignore
+            google.accounts.id.renderButton(
                 // @ts-ignore
-                google.accounts.id.renderButton(
-                    // @ts-ignore
-                    document.getElementsByClassName('google-link__label')[0],
-                    { size: 'large', width: '100' }
-                );
+                document.getElementsByClassName('google-link__label')[0],
+                { size: 'large', width: '100' }
+            );
 
-                // @ts-ignore
-                google.accounts.id.prompt(
-                    (notification: PromptMomentNotification) => {}
-                );
+            // @ts-ignore
+            google.accounts.id.prompt(
+                (notification: PromptMomentNotification) => {}
+            );
         } catch (error) {
             console.error('Error fetching Google Client ID:', error);
         }
@@ -77,7 +77,13 @@ export class LoginComponent {
                         ) {
                             this.router.navigate(['/home']);
                         } else {
-                            this.router.navigate(['/auth/register-role']);
+                            if (this.authService.areLoginRolesProvided()) {
+                                this.router.navigate([
+                                    '/auth/select-login-role',
+                                ]);
+                            } else {
+                                this.router.navigate(['/auth/register-role']);
+                            }
                         }
                     }
                 });
@@ -107,7 +113,13 @@ export class LoginComponent {
                         ) {
                             this.router.navigate(['/home']);
                         } else {
-                            this.router.navigate(['/auth/register-role']);
+                            if (this.authService.areLoginRolesProvided()) {
+                                this.router.navigate([
+                                    '/auth/select-login-role',
+                                ]);
+                            } else {
+                                this.router.navigate(['/auth/register-role']);
+                            }
                         }
                     }
                 },
