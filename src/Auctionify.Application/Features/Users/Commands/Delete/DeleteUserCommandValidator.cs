@@ -5,6 +5,7 @@ using Auctionify.Core.Enums;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using AccountRole = Auctionify.Core.Enums.AccountRole;
 
 namespace Auctionify.Application.Features.Users.Commands.Delete
 {
@@ -36,13 +37,12 @@ namespace Auctionify.Application.Features.Users.Commands.Delete
 							cancellationToken: cancellationToken
 						);
 
-						var currentUserRole = (UserRole)
-							Enum.Parse(
-								typeof(UserRole),
-								(await _userManager.GetRolesAsync(currentUser!)).FirstOrDefault()!
-							);
+						var currentUserRoleName = _currentUserService.UserRole!;
 
-						if (currentUserRole == UserRole.Buyer)
+						var currentUserRole = (AccountRole)
+							Enum.Parse(typeof(AccountRole), currentUserRoleName);
+
+						if (currentUserRole == AccountRole.Buyer)
 						{
 							var hasActiveBids = await _bidRepository.AnyAsync(
 								predicate: x =>
@@ -53,7 +53,7 @@ namespace Auctionify.Application.Features.Users.Commands.Delete
 
 							return !hasActiveBids;
 						}
-						else if (currentUserRole == UserRole.Seller)
+						else if (currentUserRole == AccountRole.Seller)
 						{
 							var hasInvalidLotStatuses = await _lotRepository.AnyAsync(
 								predicate: x =>

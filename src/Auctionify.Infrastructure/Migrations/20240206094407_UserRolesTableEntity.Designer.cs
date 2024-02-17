@@ -4,6 +4,7 @@ using Auctionify.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Auctionify.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240206094407_UserRolesTableEntity")]
+    partial class UserRolesTableEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -385,7 +388,8 @@ namespace Auctionify.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LotId");
+                    b.HasIndex("LotId")
+                        .IsUnique();
 
                     b.HasIndex("ReceiverId");
 
@@ -834,9 +838,8 @@ namespace Auctionify.Infrastructure.Migrations
             modelBuilder.Entity("Auctionify.Core.Entities.Rate", b =>
                 {
                     b.HasOne("Auctionify.Core.Entities.Lot", "Lot")
-                        .WithMany("Rates")
-                        .HasForeignKey("LotId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .WithOne("Rate")
+                        .HasForeignKey("Auctionify.Core.Entities.Rate", "LotId");
 
                     b.HasOne("Auctionify.Core.Entities.User", "Receiver")
                         .WithMany("ReceiverRates")
@@ -973,7 +976,7 @@ namespace Auctionify.Infrastructure.Migrations
                 {
                     b.Navigation("Bids");
 
-                    b.Navigation("Rates");
+                    b.Navigation("Rate");
 
                     b.Navigation("Watchlists");
                 });

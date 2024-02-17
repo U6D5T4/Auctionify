@@ -14,5 +14,8 @@ namespace Auctionify.API.Services
 
 		public string? UserEmail =>
 			_httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Email);
+
+		public string? UserRole =>
+			_httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Role);
 	}
 }
