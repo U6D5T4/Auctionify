@@ -9,6 +9,7 @@ namespace Auctionify.Application.Features.Rates.Commands.AddRateToBuyer
 		private readonly IRateRepository _rateRepository;
 		private readonly ILotRepository _lotRepository;
 		private readonly ILotStatusRepository _lotStatusRepository;
+		private const int MaxRatingsPerLot = 2;
 
 		public AddRateToBuyerCommandValidator(
 			IRateRepository rateRepository,
@@ -77,11 +78,14 @@ namespace Auctionify.Application.Features.Rates.Commands.AddRateToBuyer
 						);
 
 						var ratings = await _rateRepository.GetListAsync(
-								predicate: l => l.LotId == request.LotId,
-								cancellationToken: cancellationToken
+							predicate: l => l.LotId == request.LotId,
+							cancellationToken: cancellationToken
 						);
 
-						if (ratings.Items.Count <= 2 && !ratings.Items.Any(item => item.SenderId == lot.SellerId))
+						if (
+							ratings.Items.Count <= MaxRatingsPerLot
+							&& !ratings.Items.Any(item => item.SenderId == lot.SellerId)
+						)
 						{
 							return true;
 						}
