@@ -3,7 +3,6 @@
     margin: 0 auto;
     justify-content: flex-end;
     align-items: center;
-    margin-bottom: 24px;
 
     &__btns-right {
         display: flex;
@@ -53,6 +52,15 @@
         flex-direction: column;
     }
 
+    &__btn {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 24px;
+        padding-bottom: 20px;
+    }
+
     &__auction-active {
         display: flex;
         flex-wrap: wrap;
@@ -61,13 +69,12 @@
         gap: 8px;
     }
 
-    &__btn {
+    &__auction-active-title {
         display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: 24px;
-        padding-bottom: 20px;
+        width: 100%;
+        justify-content: flex-start;
+        padding-top: 30px;
+        padding-bottom: 30px;
     }
 
     &__auction-upcoming {

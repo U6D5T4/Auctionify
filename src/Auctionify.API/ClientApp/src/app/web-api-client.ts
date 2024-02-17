@@ -480,6 +480,44 @@ export class Client {
         );
     }
 
+    getUserOwnRateLot(lotId: number): Observable<Rate> {
+        let url_ = this.baseUrl + `/api/rates/senders/${lotId}`;
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            map((response: any): Rate => {
+                return response.body;
+            })
+        );
+    }
+
+    getUserRates(userId: number): Observable<Rate[]> {
+        let url_ = this.baseUrl + `/api/users/${userId}/rates`;
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<Rate[]> => {
+                if (response.body !== null) {
+                    return of(response.body.items);
+                } else return of([]);
+            })
+        );
+    }
+
     deleteLotFile(id: number, url: string): Observable<any> {
         let url_ = this.baseUrl + `/api/lots/${id}/files`;
 

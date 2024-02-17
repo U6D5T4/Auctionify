@@ -4,7 +4,6 @@ using Auctionify.Application.Common.Interfaces.Repositories;
 using Auctionify.Application.Common.Options;
 using Auctionify.Core.Entities;
 using AutoMapper;
-using Azure;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -126,7 +125,7 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForSeller
 						_azureBlobStorageOptions.UserProfilePhotosFolderName,
 						profilePictureName
 					);
-					
+
 					result.ProfilePictureUrl = profilePictureUrl;
 				}
 			}

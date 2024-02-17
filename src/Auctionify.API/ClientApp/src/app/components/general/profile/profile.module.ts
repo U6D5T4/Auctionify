@@ -15,6 +15,7 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
 import { ProfileRoutingModule } from './profile-routing.module';
 import { PublicUserProfileComponent } from './public-user-profile/public-user-profile.component';
 import { UiElementsModule } from 'src/app/ui-elements/ui-elements.module';
+import { PublicUserRatingComponent } from './public-user-rating/public-user-rating.component';
 
 @NgModule({
     imports: [
@@ -36,6 +37,7 @@ import { UiElementsModule } from 'src/app/ui-elements/ui-elements.module';
         UpdateUserProfileComponent,
         ChangePasswordComponent,
         PublicUserProfileComponent,
+        PublicUserRatingComponent,
     ],
 
     exports: [
