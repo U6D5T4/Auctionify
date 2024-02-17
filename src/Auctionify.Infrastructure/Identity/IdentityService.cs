@@ -170,9 +170,11 @@ namespace Auctionify.Infrastructure.Identity
 
 			if (userRoles.Any())
 			{
+				var selectedUserRoleId = (await _roleManager.FindByNameAsync(role))!.Id;
+
 				foreach (var userRole in userRoles)
 				{
-					if (userRole.RoleId == (await _roleManager.FindByNameAsync(role))!.Id)
+					if (userRole.RoleId == selectedUserRoleId)
 					{
 						var token = await GenerateJWTTokenWithUserClaimsAsync(user, role);
 
@@ -228,9 +230,11 @@ namespace Auctionify.Infrastructure.Identity
 
 			if (userRoles.Any())
 			{
+				var selectedUserRoleId = (await _roleManager.FindByNameAsync(role))!.Id;
+
 				foreach (var userRole in userRoles)
 				{
-					if (userRole.RoleId == (await _roleManager.FindByNameAsync(role))!.Id)
+					if (userRole.RoleId == selectedUserRoleId)
 					{
 						userRole.IsDeleted = false;
 
