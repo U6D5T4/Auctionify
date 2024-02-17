@@ -9,7 +9,6 @@ namespace Auctionify.Application.Features.Rates.Commands.AddRateToSeller
 		private readonly IRateRepository _rateRepository;
 		private readonly ILotRepository _lotRepository;
 		private readonly ILotStatusRepository _lotStatusRepository;
-		private const int MaxRatingsPerLot = 2;
 
 		public AddRateToSellerCommandValidator(
 			IRateRepository rateRepository,
@@ -84,10 +83,7 @@ namespace Auctionify.Application.Features.Rates.Commands.AddRateToSeller
 								cancellationToken: cancellationToken
 							);
 
-							if (
-								ratings.Items.Count <= MaxRatingsPerLot
-								&& !ratings.Items.Any(item => item.SenderId == lot.BuyerId)
-							)
+							if (!ratings.Items.Any(item => item.SenderId == lot.BuyerId))
 							{
 								return true;
 							}
