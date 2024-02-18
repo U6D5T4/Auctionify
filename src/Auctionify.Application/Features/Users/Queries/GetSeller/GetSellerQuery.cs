@@ -143,10 +143,7 @@ namespace Auctionify.Application.Features.Users.Queries.GetSeller
 				response.StarCounts = starCounts;
 			}
 
-			var proSubscription = await _subscriptionRepository.GetAsync(s => s.UserId == user.Id && s.IsActive);
-
-			if (proSubscription != null)
-				response.IsPro = true;
+			response.IsPro = await _subscriptionRepository.AnyAsync(s => s.UserId == user.Id && s.IsActive);
 
 			return response;
 		}

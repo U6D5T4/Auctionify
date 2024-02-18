@@ -1,4 +1,4 @@
-﻿using Auctionify.Application.Features.Subscriptions.Commands.CreateProSubscription;
+using Auctionify.Application.Features.Subscriptions.Commands.CreateProSubscription;
 using Auctionify.Application.Features.Subscriptions.Commands.DeleteProSubscription;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
