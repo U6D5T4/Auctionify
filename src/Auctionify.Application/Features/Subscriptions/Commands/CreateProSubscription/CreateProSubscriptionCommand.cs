@@ -1,11 +1,10 @@
-﻿using Auctionify.Application.Common.Interfaces;
-using Auctionify.Application.Common.Interfaces.Repositories;
+﻿using Auctionify.Application.Common.Interfaces.Repositories;
+using Auctionify.Application.Common.Interfaces;
 using Auctionify.Core.Entities;
-using Auctionify.Core.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 
-namespace Auctionify.Application.Features.Subscriptions.Commands
+namespace Auctionify.Application.Features.Subscriptions.Commands.CreateProSubscription
 {
 	public class CreateProSubscriptionCommand : IRequest<bool>
 	{
@@ -34,7 +33,7 @@ namespace Auctionify.Application.Features.Subscriptions.Commands
 				throw new ArgumentException("User is not found");
 
 			var subscription = new Subscription
-            {
+			{
 				CreationDate = DateTime.UtcNow,
 				EndDate = DateTime.UtcNow.AddYears(1),
 				SubscriptionTypeId = (int)Core.Enums.SubscriptionType.Pro,
