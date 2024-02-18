@@ -385,7 +385,6 @@ export class LotProfileComponent implements OnInit {
         this.client.getUserOwnRateLot(lotId).subscribe({
             next: (result) => {
                 this.userOwnRate = result;
-                console.log(this.userOwnRate);
             },
         });
         return this.userOwnRate!;
