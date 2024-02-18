@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Auctionify.API.Controllers
 {
@@ -18,8 +19,16 @@ namespace Auctionify.API.Controllers
 
 		[HttpGet]
 		[Authorize(Roles ="Seller")]
-		public async Task<IActionResult> GetReport([FromBody]int monthsDuration, ReportType reportType)
+		public async Task<IActionResult> GetReport(
+			[FromQuery][Required] int monthsDuration, 
+			[FromQuery] ReportType reportType = ReportType.PDF
+		)
 		{
+			if (monthsDuration < 1)
+			{
+				return BadRequest("Months duration must be greater than 0");
+			}
+
 			var query = new GenerateReportQuery
 			{
 				MonthsDuration = monthsDuration,
