@@ -132,6 +132,13 @@ $ClientApp-theme: mat.define-light-theme(
     --color-grey-4: #bdbdbd;
     --color-grey-5: #e0e0e0;
     --color-grey-6: #ecedee;
+
+    --color-grey-scale-white: #ffffff;
+
+    --color-neutral-100: #ffffff;
+    --color-neutral-300: #eff0f6;
+
+    --general-shadow-02-box-shadow: 0px 2px 12px 0px rgba(20, 20, 43, 0.08);
 }
 
 * {

@@ -24,6 +24,8 @@ namespace Auctionify.Application.Features.Users.Queries.GetSeller
 
 		public int RatesCount { get; set; }
 
+		public bool IsPro { get; set; } = false;
+
 		public Dictionary<byte, int> StarCounts { get; set; } = new Dictionary<byte, int>();
 	}
 }
