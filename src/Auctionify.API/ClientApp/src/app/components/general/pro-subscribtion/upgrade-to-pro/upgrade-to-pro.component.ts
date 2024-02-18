@@ -8,7 +8,7 @@ import { Client } from 'src/app/web-api-client';
     styleUrls: ['./upgrade-to-pro.component.scss'],
 })
 export class UpgradeToProComponent {
-    public constructor(private client: Client, private router: Router) {}
+    public constructor(private client: Client, private router: Router) { }
 
     upgradeToPro() {
         this.client.subscribeUserToPro().subscribe({
@@ -17,7 +17,6 @@ export class UpgradeToProComponent {
                     this.router.navigate(['/home']).then(() => {
                         window.location.reload();
                     });
-                } else {
                 }
             },
         });

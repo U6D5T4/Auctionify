@@ -24,8 +24,6 @@ namespace Auctionify.Application.Features.Subscriptions.Commands
             _roleManager = roleManager;
             _currentUserService = currentUserService;
 
-            ClassLevelCascadeMode = CascadeMode.Stop;
-
             RuleFor(x => x)
                 .MustAsync(
                     async (item, cancellationToken) =>
