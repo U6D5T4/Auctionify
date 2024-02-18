@@ -328,32 +328,84 @@
                 </ul>
             </div>
         </div>
-        <div class="right__rate-btn" *ngIf="canSellerRateBuyer">
-            <button
-                [routerLink]="['/rate-user', lotData.id]"
-                class="mat-mdc-outlined-button-custom price-button"
-                mat-flat-button
-                type="button"
-                color="primary"
+        <ng-container *ngIf="!userOwnRate; else userOwnRateExist">
+            <div class="right__rate-btn" *ngIf="canSellerRateBuyer">
+                <button
+                    [routerLink]="['/rate-user', lotData.id]"
+                    class="mat-mdc-outlined-button-custom price-button"
+                    mat-flat-button
+                    type="button"
+                    color="primary"
+                >
+                    <mat-icon>star_border</mat-icon>
+                    Rate
+                </button>
+            </div>
+            <div
+                class="right__rate-btn"
+                *ngIf="isUserBuyer() && canBuyerRateSeller"
             >
-                <mat-icon>edit</mat-icon>
-                rate
-            </button>
-        </div>
-        <div
-            class="right__rate-btn"
-            *ngIf="isUserBuyer() && canBuyerRateSeller"
-        >
-            <button
-                [routerLink]="['/rate-user', lotData.id]"
-                class="mat-mdc-outlined-button-custom price-button"
-                mat-flat-button
-                type="button"
-                color="primary"
-            >
-                <mat-icon>edit</mat-icon>
-                rate
-            </button>
-        </div>
+                <button
+                    [routerLink]="['/rate-user', lotData.id]"
+                    class="mat-mdc-outlined-button-custom price-button"
+                    mat-flat-button
+                    type="button"
+                    color="primary"
+                >
+                    Rate
+                    <mat-icon>star_border</mat-icon>
+                </button>
+            </div>
+        </ng-container>
     </div>
+
+    <ng-template #userOwnRateExist>
+        <p class="my-rate-title">My rate for this auction</p>
+        <div class="rate" (click)="onRateClick()">
+            <div class="rate__profile-img">
+                <img
+                    [src]="
+                        this.userOwnRate?.sender?.profilePicture ||
+                        '../../../../../assets/images/User.png'
+                    "
+                    alt="rate-user-profile-pic"
+                    width="48"
+                    height="48"
+                />
+            </div>
+            <div class="rate__data">
+                <div class="rate__name-date-value">
+                    <div class="rate__name-date">
+                        <div class="rate__name">
+                            <p>
+                                {{ this.userOwnRate?.sender?.firstName }}
+                                {{ this.userOwnRate?.sender?.lastName }}
+                            </p>
+                        </div>
+
+                        <div class="rate__date">
+                            <p>
+                                {{
+                                    formatDate(this.userOwnRate!.creationDate!)
+                                }}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="rate__stars">
+                        <mat-icon
+                            *ngFor="
+                                let star of getStars(
+                                    this.userOwnRate?.ratingValue!
+                                )
+                            "
+                            >{{ star }}</mat-icon
+                        >
+                    </div>
+                </div>
+                <div class="rate__comment">
+                    <p>{{ this.userOwnRate?.comment }}</p>
+                </div>
+            </div>
+        </div>
+    </ng-template>
 </div>

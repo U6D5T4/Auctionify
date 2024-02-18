@@ -161,5 +161,35 @@ namespace Auctionify.API.Controllers
 		{
 			return Ok(_signInWithGoogleOptions.ClientId);
 		}
+
+		[Authorize]
+		[HttpPost("login-with-selected-role")]
+		public async Task<IActionResult> CheckEligibilityToLoginWithSelectedRole(
+			[FromForm] string role
+		)
+		{
+			var result = await _identityService.CheckEligibilityToLoginWithSelectedRole(role);
+
+			if (!result.IsSuccess)
+			{
+				return BadRequest(result);
+			}
+
+			return Ok(result);
+		}
+
+		[Authorize]
+		[HttpPost("create-new-user-role")]
+		public async Task<IActionResult> CreateNewUserWithNewRole([FromForm] string role)
+		{
+			var result = await _identityService.CreateNewUserWithNewRole(role);
+
+			if (!result.IsSuccess)
+			{
+				return BadRequest(result);
+			}
+
+			return Ok(result);
+		}
 	}
 }

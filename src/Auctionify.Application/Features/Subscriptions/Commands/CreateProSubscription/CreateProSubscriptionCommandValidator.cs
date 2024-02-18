@@ -31,7 +31,7 @@ namespace Auctionify.Application.Features.Subscriptions.Commands.CreateProSubscr
 						if (user == null)
 							return false;
 
-						return await _userManager.IsInRoleAsync(user, UserRole.Seller.ToString());
+						return await _userManager.IsInRoleAsync(user, AccountRole.Seller.ToString());
 					}
 				)
 				.WithMessage("User is not a seller!");

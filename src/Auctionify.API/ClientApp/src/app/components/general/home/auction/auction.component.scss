@@ -52,13 +52,6 @@
         flex-direction: column;
     }
 
-    &__auction-active {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        gap: 8px;
-    }
-
     &__btn {
         display: flex;
         flex-direction: column;
@@ -67,6 +60,21 @@
         gap: 24px;
         padding-top: 20px;
         padding-bottom: 20px;
+    }
+
+    &__auction-active {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        gap: 8px;
+    }
+
+    &__auction-active-title {
+        display: flex;
+        width: 100%;
+        justify-content: flex-start;
+        padding-top: 30px;
+        padding-bottom: 30px;
     }
 
     &__auction-upcoming {
