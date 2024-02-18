@@ -78,7 +78,13 @@ export class RegisterComponent {
                         ) {
                             this.router.navigate(['/home']);
                         } else {
-                            this.router.navigate(['/auth/register-role']);
+                            if (this.service.areLoginRolesProvided()) {
+                                this.router.navigate([
+                                    '/auth/select-login-role',
+                                ]);
+                            } else {
+                                this.router.navigate(['/auth/register-role']);
+                            }
                         }
                     }
                 });

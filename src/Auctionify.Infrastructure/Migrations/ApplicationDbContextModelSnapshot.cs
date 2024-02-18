@@ -303,9 +303,6 @@ namespace Auctionify.Infrastructure.Migrations
                     b.Property<DateTime>("ModificationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("RateId")
-                        .HasColumnType("int");
-
                     b.Property<int>("SellerId")
                         .HasColumnType("int");
 
@@ -568,6 +565,30 @@ namespace Auctionify.Infrastructure.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
+            modelBuilder.Entity("Auctionify.Core.Entities.UserRole", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DeletionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("UserRoles", (string)null);
+                });
+
             modelBuilder.Entity("Auctionify.Core.Entities.Watchlist", b =>
                 {
                     b.Property<int>("Id")
@@ -664,21 +685,6 @@ namespace Auctionify.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserLogins", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("UserRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
@@ -875,6 +881,21 @@ namespace Auctionify.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Auctionify.Core.Entities.UserRole", b =>
+                {
+                    b.HasOne("Auctionify.Core.Entities.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Auctionify.Core.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Auctionify.Core.Entities.Watchlist", b =>
                 {
                     b.HasOne("Auctionify.Core.Entities.Lot", "Lot")
@@ -914,21 +935,6 @@ namespace Auctionify.Infrastructure.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("Auctionify.Core.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
-                {
-                    b.HasOne("Auctionify.Core.Entities.Role", null)
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Auctionify.Core.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")

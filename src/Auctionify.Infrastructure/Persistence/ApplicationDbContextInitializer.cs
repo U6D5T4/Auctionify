@@ -161,7 +161,47 @@ namespace Auctionify.Infrastructure.Persistence
 
 				var jewelryCategory = _context.Categories.Add(new Category { Name = "Jewelry" });
 
+				var carsCategory = _context.Categories.Add(new Category { Name = "Cars" });
+
 				await _context.SaveChangesAsync();
+
+				_context.Categories.AddRange(
+					new Category
+					{
+						Name = "Motorcycles",
+						ParentCategoryId = carsCategory.Entity.Id
+					},
+					new Category { Name = "Trucks", ParentCategoryId = carsCategory.Entity.Id },
+					new Category { Name = "Boats", ParentCategoryId = carsCategory.Entity.Id },
+					new Category { Name = "Aircraft", ParentCategoryId = carsCategory.Entity.Id },
+					new Category { Name = "RVs", ParentCategoryId = carsCategory.Entity.Id },
+					new Category
+					{
+						Name = "Commercial Vehicles",
+						ParentCategoryId = carsCategory.Entity.Id
+					},
+					new Category { Name = "Trailers", ParentCategoryId = carsCategory.Entity.Id },
+					new Category
+					{
+						Name = "Classic Cars",
+						ParentCategoryId = carsCategory.Entity.Id
+					},
+					new Category
+					{
+						Name = "Modern Cars",
+						ParentCategoryId = carsCategory.Entity.Id
+					},
+					new Category
+					{
+						Name = "Collectible Cars",
+						ParentCategoryId = carsCategory.Entity.Id
+					},
+					new Category
+					{
+						Name = "Other Vehicles",
+						ParentCategoryId = carsCategory.Entity.Id
+					}
+				);
 
 				_context.Categories.AddRange(
 					new Category
@@ -486,13 +526,12 @@ namespace Auctionify.Infrastructure.Persistence
                        ,[StartingPrice]
                        ,[StartDate]
                        ,[EndDate]
-                       ,[RateId]
                        ,[CreationDate]
                        ,[ModificationDate])
                  VALUES
-                       (3, 1, 1, 1, 1, 'Sample Lot 1', 'This is a sample lot description for Lot 1.', 100.00, '2023-10-12 10:00:00', '2023-10-15 15:00:00', 6, '2023-10-12 09:00:00', '2023-10-12 09:00:00'),
-                       (3, 2, 5, 2, 1, 'Sample Lot 2', 'This is a sample lot description for Lot 2.', 150.00, '2023-10-13 11:00:00', '2023-10-16 16:00:00', 7, '2023-10-13 10:00:00', '2023-10-13 10:00:00'),
-                       (3, 2, 1, 3, 1, 'Sample Lot 3', 'This is a sample lot description for Lot 3.', 200.00, '2023-10-14 12:00:00', '2023-10-17 17:00:00', 8, '2023-10-14 11:00:00', '2023-10-14 11:00:00')
+                       (3, 1, 4, 1, 1, 'Sample Lot 1', 'This is a sample lot description for Lot 1.', 100.00, '2023-10-12 10:00:00', '2023-10-15 15:00:00', '2023-10-12 09:00:00', '2023-10-12 09:00:00'),
+                       (3, 2, 5, 2, 1, 'Sample Lot 2', 'This is a sample lot description for Lot 2.', 150.00, '2023-10-13 11:00:00', '2023-10-16 16:00:00', '2023-10-13 10:00:00', '2023-10-13 10:00:00'),
+                       (3, 2, 4, 3, 1, 'Sample Lot 3', 'This is a sample lot description for Lot 3.', 200.00, '2023-10-14 12:00:00', '2023-10-17 17:00:00', '2023-10-14 11:00:00', '2023-10-14 11:00:00')
                      "
 				);
 

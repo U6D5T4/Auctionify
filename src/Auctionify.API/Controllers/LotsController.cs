@@ -6,8 +6,8 @@ using Auctionify.Application.Features.Lots.Commands.Update;
 using Auctionify.Application.Features.Lots.Commands.UpdateLotStatus;
 using Auctionify.Application.Features.Lots.Queries.Filter;
 using Auctionify.Application.Features.Lots.Queries.GetAll;
-using Auctionify.Application.Features.Lots.Queries.GetAllLotsWithStatusForSeller;
 using Auctionify.Application.Features.Lots.Queries.GetAllByName;
+using Auctionify.Application.Features.Lots.Queries.GetAllLotsWithStatusForSeller;
 using Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer;
 using Auctionify.Application.Features.Lots.Queries.GetByIdForSeller;
 using Auctionify.Application.Features.Lots.Queries.GetHighestLotPrice;
@@ -177,18 +177,34 @@ namespace Auctionify.API.Controllers
 
 		[HttpGet("sellers/active")]
 		[Authorize(Roles = "Seller")]
-		public async Task<IActionResult> GetAllActiveLotsForSeller([FromQuery] PageRequest pageRequest)
+		public async Task<IActionResult> GetAllActiveLotsForSeller(
+			[FromQuery] PageRequest pageRequest
+		)
 		{
-			var result = await _mediator.Send(new GetAllLotsWithStatusForSellerQuery { LotStatus = AuctionStatus.Active, PageRequest = pageRequest });
+			var result = await _mediator.Send(
+				new GetAllLotsWithStatusForSellerQuery
+				{
+					LotStatus = AuctionStatus.Active,
+					PageRequest = pageRequest
+				}
+			);
 
 			return Ok(result);
 		}
 
-        [HttpGet("sellers/draft")]
-        [Authorize(Roles = "Seller")]
-        public async Task<IActionResult> GetAllDraftLotsForSeller([FromQuery] PageRequest pageRequest)
-        {
-            var result = await _mediator.Send(new GetAllLotsWithStatusForSellerQuery { LotStatus = AuctionStatus.Draft, PageRequest = pageRequest });
+		[HttpGet("sellers/draft")]
+		[Authorize(Roles = "Seller")]
+		public async Task<IActionResult> GetAllDraftLotsForSeller(
+			[FromQuery] PageRequest pageRequest
+		)
+		{
+			var result = await _mediator.Send(
+				new GetAllLotsWithStatusForSellerQuery
+				{
+					LotStatus = AuctionStatus.Draft,
+					PageRequest = pageRequest
+				}
+			);
 
             return Ok(result);
         }
