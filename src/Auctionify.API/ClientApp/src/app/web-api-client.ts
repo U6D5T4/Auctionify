@@ -30,6 +30,11 @@ import {
     UpdateUserProfileModel,
 } from './models/users/user-models';
 import {
+    AllChatMessagesResponse,
+    Conversation,
+    ConversationsResponse,
+} from './models/chats/chat-models';
+import {
     Rate,
     RatePaginationModel,
     RateResponse,
@@ -1137,6 +1142,89 @@ export class Client {
                 } else {
                     throw new Error('Invalid response structure');
                 }
+            })
+        );
+    }
+
+    getAllUserConversations(): Observable<ConversationsResponse> {
+        let url_ = this.baseUrl + `/api/chats/users/conversations`;
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<ConversationsResponse> => {
+                return of(response.body);
+            })
+        );
+    }
+
+    getAllConversationChatMessages(
+        conversationId: number
+    ): Observable<AllChatMessagesResponse> {
+        let url_ =
+            this.baseUrl +
+            `/api/chats/users/conversations/${conversationId}/messages`;
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<AllChatMessagesResponse> => {
+                return of(response.body);
+            })
+        );
+    }
+
+    sendChatMessage(conversationId: number, body: string): Observable<boolean> {
+        let url_ =
+            this.baseUrl +
+            `/api/chats/users/conversations/${conversationId}/messages`;
+
+        let form = new FormData();
+
+        form.append('body', body);
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                Accept: 'text/json',
+            }),
+            body: form,
+        };
+
+        return this.http.request('post', url_, options_).pipe(
+            mergeMap((response: any): Observable<boolean> => {
+                return of(true);
+            })
+        );
+    }
+
+    chatMessageRead(messageId: number): Observable<boolean> {
+        let url_ =
+            this.baseUrl +
+            `/api/chats/users/conversations/messages/${messageId}`;
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('put', url_, options_).pipe(
+            mergeMap((response: any): Observable<boolean> => {
+                return of(true);
             })
         );
     }

@@ -68,6 +68,7 @@ namespace Auctionify.Application.Features.Chats.Queries.GetAllUserConversations
 				Email = currentUser!.Email!
 			};
 
+			
 			var currentUserProfilePictureName = currentUser!.ProfilePicture;
 
 			if (currentUserProfilePictureName != null)
@@ -102,7 +103,8 @@ namespace Auctionify.Application.Features.Chats.Queries.GetAllUserConversations
 
 			foreach (var conversation in currentUserConversations)
 			{
-				var userConversation = new Common.Models.UserConversations.Conversation
+                
+                var userConversation = new Common.Models.UserConversations.Conversation
 				{
 					Id = conversation.Id,
 					LotId = conversation.LotId,
@@ -129,7 +131,7 @@ namespace Auctionify.Application.Features.Chats.Queries.GetAllUserConversations
 								? _blobService.GetBlobUrl(
 									_azureBlobStorageOptions.UserProfilePhotosFolderName,
 									conversation.Seller!.ProfilePicture
-								)
+								) 
 								: _blobService.GetBlobUrl(
 									_azureBlobStorageOptions.UserProfilePhotosFolderName,
 									conversation.Buyer!.ProfilePicture
@@ -151,7 +153,7 @@ namespace Auctionify.Application.Features.Chats.Queries.GetAllUserConversations
 					),
 				};
 
-				userConversationsList.Add(userConversation);
+                userConversationsList.Add(userConversation);
 			}
 
 			#endregion

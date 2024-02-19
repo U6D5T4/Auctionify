@@ -534,6 +534,17 @@ namespace Auctionify.Infrastructure.Persistence
                        (3, 2, 4, 3, 1, 'Sample Lot 3', 'This is a sample lot description for Lot 3.', 200.00, '2023-10-14 12:00:00', '2023-10-17 17:00:00', '2023-10-14 11:00:00', '2023-10-14 11:00:00')
                      "
 				);
+			}
+
+			if (!_context.Conversations.Any())
+			{
+				_context.Conversations.AddRange(
+					new Conversation
+					{
+						SellerId = 2,
+						BuyerId = 3,
+						LotId = 3
+					});
 
 				await _context.SaveChangesAsync();
 			}

@@ -1,6 +1,6 @@
 <div class="seller-navigation">
     <div class="seller-navigation__container">
-        <div class="seller-navigation__navbar navbar">
+        <div class="seller-navigation__navbar">
             <div class="navbar__top">
                 <div class="navbar__top-header">
                     <a [routerLink]="['/home']">
@@ -42,6 +42,15 @@
                     >
                         <mat-icon>local_mall</mat-icon>
                         Active lots
+                    </button>
+                    <button
+                        mat-flat-button
+                        [routerLink]="['/chat']"
+                        routerLinkActive="mat-primary"
+                        color="white"
+                    >
+                        <mat-icon>mail_outline</mat-icon>
+                        My messages
                     </button>
                     <button
                         mat-flat-button
