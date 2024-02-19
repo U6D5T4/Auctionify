@@ -1,0 +1,62 @@
+.profile {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.main-container {
+    display: flex;
+    gap: 16px;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    border-radius: 16px;
+    border: 1px solid #e0e0e0;
+    padding: 40px;
+    min-width: 610px;
+    max-width: 1136px;
+
+    &__subscription-details {
+        color: var(--color-text-primary);
+        text-align: left;
+        font-size: 24px;
+        line-height: 32px;
+        font-weight: 600;
+        position: relative;
+        padding-bottom: 24px;
+    }
+
+    &__subscription-text {
+        color: var(--color-text-primary);
+        text-align: left;
+        font-size: 18px;
+        line-height: 24px;
+        font-weight: 500;
+        position: relative;
+    }
+
+    &__unsubscribe-btn {
+        color: var(--color-main);
+        border: 3px solid var(--color-main);
+        width: 136px;
+        text-align: center;
+        position: relative;
+        display: flex;
+        justify-content: flex-start;
+
+        &:hover {
+            background-color: var(--color-main);
+            color: white;
+            transition: 0.3s ease-in-out;
+        }
+    }
+
+    &__unsubscribe-txt {
+        font-size: 16px;
+        line-height: 24px;
+        font-weight: 600;
+    }
+}

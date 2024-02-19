@@ -9,24 +9,36 @@ using System.Reflection;
 
 namespace Auctionify.Infrastructure.Persistence
 {
-	public class ApplicationDbContext : IdentityDbContext<User, Role, int>
+	public class ApplicationDbContext
+		: IdentityDbContext<
+			User,
+			Role,
+			int,
+			IdentityUserClaim<int>,
+			UserRole,
+			IdentityUserLogin<int>,
+			IdentityRoleClaim<int>,
+			IdentityUserToken<int>
+		>
 	{
 		private readonly IMediator? _mediator;
 		private readonly AuditableEntitySaveChangesInterceptor? _auditableEntitiesInterceptor;
 
 		public ApplicationDbContext() { }
 
-		public ApplicationDbContext(DbContextOptions options,
+		public ApplicationDbContext(
+			DbContextOptions options,
 			AuditableEntitySaveChangesInterceptor auditableEntitiesInterceptor,
-			IMediator mediator) : base(options)
+			IMediator mediator
+		)
+			: base(options)
 		{
 			_auditableEntitiesInterceptor = auditableEntitiesInterceptor;
 			_mediator = mediator;
 		}
 
-		public ApplicationDbContext(DbContextOptions options) : base(options)
-		{
-		}
+		public ApplicationDbContext(DbContextOptions options)
+			: base(options) { }
 
 		public virtual DbSet<Category> Categories => Set<Category>();
 
@@ -58,7 +70,8 @@ namespace Auctionify.Infrastructure.Persistence
 		{
 			base.OnModelCreating(builder);
 
-			builder.Entity<User>()
+			builder
+				.Entity<User>()
 				.Ignore(u => u.AccessFailedCount)
 				.Ignore(u => u.LockoutEnabled)
 				.Ignore(u => u.LockoutEnd)
@@ -67,7 +80,7 @@ namespace Auctionify.Infrastructure.Persistence
 
 			builder.Entity<User>().ToTable("Users");
 			builder.Entity<Role>().ToTable("Roles");
-			builder.Entity<IdentityUserRole<int>>().ToTable("UserRoles");
+			builder.Entity<UserRole>().ToTable("UserRoles");
 			builder.Entity<IdentityRoleClaim<int>>().ToTable("RoleClaims");
 			builder.Entity<IdentityUserClaim<int>>().ToTable("UserClaims");
 			builder.Entity<IdentityUserLogin<int>>().ToTable("UserLogins");
@@ -81,7 +94,9 @@ namespace Auctionify.Infrastructure.Persistence
 			optionsBuilder.AddInterceptors(_auditableEntitiesInterceptor);
 		}
 
-		public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+		public override async Task<int> SaveChangesAsync(
+			CancellationToken cancellationToken = default
+		)
 		{
 			await _mediator.DispatchDomainEvents(this);
 

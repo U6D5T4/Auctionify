@@ -18,7 +18,10 @@
                         <span class="main__review-number">{{
                             rating.key
                         }}</span>
-                        <div class="main__progress-bar">
+                        <div
+                            class="main__progress-bar"
+                            [style.width.px]="width"
+                        >
                             <div
                                 class="main__progress"
                                 [style.width]="getPercentage(rating.value)"
@@ -35,7 +38,10 @@
                         <span class="main__review-number">{{
                             rating.key
                         }}</span>
-                        <div class="main__progress-bar"></div>
+                        <div
+                            class="main__progress-bar"
+                            [style.width.px]="width"
+                        ></div>
                         <span class="main__count">0</span>
                     </div>
                 </ng-template>
@@ -64,7 +70,11 @@
         </div>
     </div>
     <div class="main__see-more-comments-btn" *ngIf="IsBtnVisible">
-        <button routerLink="/rating" class="main__rating-btn" mat-flat-button>
+        <button
+            class="main__rating-btn"
+            mat-flat-button
+            (click)="onShowAllCommentsClick()"
+        >
             <div class="main__btn-content">
                 <p>Show all comments</p>
                 <mat-icon>arrow_forward</mat-icon>

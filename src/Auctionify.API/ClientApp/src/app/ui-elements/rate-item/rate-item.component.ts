@@ -26,7 +26,7 @@ export class RateItemComponent {
     }
 
     formatDate(date: Date | null): string {
-        return date ? formatDate(date, 'dd LLLL, h:mm', 'en-US') : '';
+        return date ? formatDate(date, 'HH:mm, MMMM d, y', 'en-US') : '';
     }
 
     getStars(count: number): string[] {

@@ -3,20 +3,21 @@ import { AuthorizeService } from '../api-authorization/authorize.service';
 import { inject } from '@angular/core';
 
 export const isLoggedInGuard: CanActivateFn = (route, state) => {
+    const authService = inject(AuthorizeService);
+    const router: Router = inject(Router);
 
-  const authService = inject(AuthorizeService);
-  const router: Router = inject(Router);
+    const isLoggedIn = authService.isUserLoggedIn();
+    const areLoginRolesProvided = authService.areLoginRolesProvided();
 
-  const isLoggedIn = authService.isUserLoggedIn();
+    switch (route.routeConfig?.path) {
+        case 'auth/login':
+        case 'auth/register':
+            if (isLoggedIn && !areLoginRolesProvided)
+                return router.parseUrl('/home');
+            return true;
+        default:
+            if (isLoggedIn && !areLoginRolesProvided) return true;
+    }
 
-  switch(route.routeConfig?.path) {
-    case 'auth/login':
-    case 'auth/register':
-      if (isLoggedIn) return router.parseUrl('/home');
-      return true;
-    default:
-      if (isLoggedIn) return true;
-  }
-
-  return router.parseUrl('auth/login');
+    return router.parseUrl('auth/login');
 };

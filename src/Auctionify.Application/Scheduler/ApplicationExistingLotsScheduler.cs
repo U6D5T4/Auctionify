@@ -45,7 +45,21 @@ namespace Auctionify.Application.Scheduler
 						);
 					}
 				}
+				else if (lotStatus == AuctionStatus.Active)
+				{
+					if (lot.EndDate > DateTime.UtcNow)
+					{
+						await _jobSchedulerService.ScheduleLotFinishJob(lot.Id, lot.EndDate);
+					}
+				}
+				else if (lotStatus == AuctionStatus.Draft)
+				{
+					var deleteTime = lot.ModificationDate.AddDays(7);
+					await _jobSchedulerService.ScheduleDraftLotDeleteJob(lot.Id, deleteTime);
+				}
 			}
+
+			await _jobSchedulerService.ScheduleGlobalLotsJob();
 		}
 
 		public Task StopAsync(CancellationToken cancellationToken)

@@ -61,6 +61,7 @@ namespace Auctionify.Application.Features.Rates.Queries.GetReceiverRates
 				enableTracking: false,
 				size: request.PageRequest.PageSize,
 				index: request.PageRequest.PageIndex,
+				orderBy: x => x.OrderByDescending(r => r.CreationDate),
 				cancellationToken: cancellationToken
 			);
 

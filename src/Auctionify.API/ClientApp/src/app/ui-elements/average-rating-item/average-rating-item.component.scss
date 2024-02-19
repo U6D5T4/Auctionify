@@ -27,7 +27,8 @@
 
     &__average-rating {
         display: flex;
-        flex-direction: column;
+        flex-direction: column-reverse;
+        align-items: flex-end;
     }
 
     &__rating-level {
@@ -38,7 +39,6 @@
     }
 
     &__progress-bar {
-        width: 200px;
         height: 8px;
         border-radius: 500px;
         background-color: #e0e0e0;
