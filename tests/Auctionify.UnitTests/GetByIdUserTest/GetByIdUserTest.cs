@@ -44,6 +44,10 @@ namespace Auctionify.UnitTests.GetByIdUserTest
 			_rateRepository = new RateRepository(mockDbContext.Object);
 		}
 
+		#endregion
+
+		#region Tests
+
 		[Fact]
 		public async Task Handle_ValidId_ReturnsUser()
 		{

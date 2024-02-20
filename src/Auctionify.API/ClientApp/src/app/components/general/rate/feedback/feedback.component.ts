@@ -112,8 +112,4 @@ export class FeedbackComponent {
     isUserBuyer(): boolean {
         return this.authorizeService.isUserBuyer();
     }
-
-    formatDate(date: Date | null): string {
-        return date ? formatDate(date, 'dd LLLL, h:mm', 'en-US') : '';
-    }
 }

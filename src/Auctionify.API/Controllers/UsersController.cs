@@ -1,4 +1,5 @@
 ﻿using Auctionify.Application.Common.Models.Requests;
+using Auctionify.Application.Features.Rates.Queries.GetPublicUserRates;
 using Auctionify.Application.Features.Users.Commands.AddBidForLot;
 using Auctionify.Application.Features.Users.Commands.AddLotToWatchlist;
 using Auctionify.Application.Features.Users.Commands.Delete;
@@ -34,6 +35,16 @@ namespace Auctionify.API.Controllers
 		public async Task<IActionResult> GetById(string id)
 		{
 			var result = await _mediator.Send(new GetByIdUserQuery { Id = id });
+
+			return Ok(result);
+		}
+
+		[HttpGet("{userId}/rates")]
+		[Authorize(Roles = "Buyer, Seller")]
+		public async Task<IActionResult> GetPublicUserRates(string userId)
+		{
+			var query = new GetPublicUserRatesQuery { UserId = userId };
+			var result = await _mediator.Send(query);
 
 			return Ok(result);
 		}

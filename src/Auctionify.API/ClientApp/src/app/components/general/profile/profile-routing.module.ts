@@ -4,6 +4,7 @@ import { UpdateUserProfileComponent } from './update-user-profile/update-user-pr
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { PublicUserProfileComponent } from './public-user-profile/public-user-profile.component';
+import { PublicUserRatingComponent } from './public-user-rating/public-user-rating.component';
 
 const profileRoutes: Routes = [
     {
@@ -24,6 +25,11 @@ const profileRoutes: Routes = [
     {
         path: 'change-password',
         component: ChangePasswordComponent,
+        pathMatch: 'full',
+    },
+    {
+        path: 'user/:id/rating',
+        component: PublicUserRatingComponent,
         pathMatch: 'full',
     },
 ];

@@ -22,7 +22,7 @@ import { ImagePopupComponent } from '../image-popup/image-popup.component';
 import { AddBidComponent } from '../add-bid/add-bid.component';
 import { WithdrawBidComponent } from '../withdraw-bid/withdraw-bid.component';
 import { RemoveFromWatchlistComponent } from '../remove-from-watchlist/remove-from-watchlist.component';
-import { UserDataValidatorService } from 'src/app/services/user-data-validator/user-data-validator.service';
+import { Rate } from 'src/app/models/rates/rate-models';
 
 @Component({
     selector: 'app-lot-profile',
@@ -43,6 +43,7 @@ export class LotProfileComponent implements OnInit {
     soldLotStatus: string = 'Sold';
     canBuyerRateSeller: boolean = false;
     canSellerRateBuyer: boolean = false;
+    userOwnRate: Rate | null = null;
 
     private isSignalrConnected = false;
 
@@ -64,6 +65,7 @@ export class LotProfileComponent implements OnInit {
 
     ngOnInit() {
         this.getLotFromRoute();
+        this.getUserOwnRateLot(this.lotId);
     }
 
     getLotFromRoute() {
@@ -343,7 +345,6 @@ export class LotProfileComponent implements OnInit {
     }
 
     canSellerRate(): void {
-        console.log(this.lotData);
         if (
             this.currentUserId == this.lotData?.sellerId &&
             this.lotData?.lotStatus.name == this.soldLotStatus
@@ -378,5 +379,34 @@ export class LotProfileComponent implements OnInit {
 
     ngOnDestroy() {
         this.signalRService.leaveLotGroup(this.lotId);
+    }
+
+    getUserOwnRateLot(lotId: number): Rate {
+        this.client.getUserOwnRateLot(lotId).subscribe({
+            next: (result) => {
+                this.userOwnRate = result;
+            },
+        });
+        return this.userOwnRate!;
+    }
+
+    formatDate(date: Date | null): string {
+        return date ? formatDate(date, 'HH:mm, MMMM d, y', 'en-US') : '';
+    }
+
+    getStars(count: number): string[] {
+        const stars: string[] = [];
+        for (let i = 1; i <= 5; i++) {
+            if (i <= count) {
+                stars.push('star');
+            } else {
+                stars.push('star_border');
+            }
+        }
+        return stars;
+    }
+
+    onRateClick() {
+        this.router.navigate([`profile/user/${this.userOwnRate?.senderId}`]);
     }
 }

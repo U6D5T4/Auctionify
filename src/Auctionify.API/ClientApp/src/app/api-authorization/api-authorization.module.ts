@@ -22,6 +22,8 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { isLoggedInGuard } from '../guards/is-logged-in.guard';
 import { EmailSentComponent } from './email-sent/email-sent.component';
 import { ResetEmailSentComponent } from './reset-email-sent/reset-email-sent.component';
+import { AfterDeletionComponent } from './after-deletion/after-deletion.component';
+import { SelectLoginRoleComponent } from './select-login-role/select-login-role.component';
 
 @NgModule({
     declarations: [
@@ -32,6 +34,8 @@ import { ResetEmailSentComponent } from './reset-email-sent/reset-email-sent.com
         ResetPasswordComponent,
         EmailSentComponent,
         ResetEmailSentComponent,
+        AfterDeletionComponent,
+        SelectLoginRoleComponent,
     ],
     imports: [
         CommonModule,
@@ -66,6 +70,14 @@ import { ResetEmailSentComponent } from './reset-email-sent/reset-email-sent.com
             {
                 path: ApplicationPaths.ResetEmailSent,
                 component: ResetEmailSentComponent,
+            },
+            {
+                path: ApplicationPaths.AfterDeletion,
+                component: AfterDeletionComponent,
+            },
+            {
+                path: ApplicationPaths.SelectLoginRole,
+                component: SelectLoginRoleComponent,
             },
         ]),
         UiElementsModule,

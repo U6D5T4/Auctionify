@@ -1,0 +1,43 @@
+<div class="profile">
+    <div class="profile__title">
+        <h1>My profile</h1>
+    </div>
+    <div class="profile__top-bar">
+        <app-user-top-bar
+            [userProfileData]="userProfileData"
+        ></app-user-top-bar>
+    </div>
+    <div class="main-container">
+        <div class="main">
+            <div class="main__subscription">
+                <h2 class="main__subscription-details">
+                    Subscription details&nbsp;&nbsp;
+                    <img
+                        src="../../../../assets/icons/UpgradeToProIconMain.svg"
+                        alt="Upgrade To Pro"
+                    />
+                </h2>
+                <p class="main__subscription-text">
+                    Your PRO subscription is currently active, unlocking a
+                    premium experience tailored to enhance your utilization of
+                    our platform. Enjoy exclusive features, advanced tools, and
+                    priority access to the latest updates, ensuring a seamless
+                    and enriched user experience throughout your subscription
+                    period.
+                </p>
+            </div>
+            <button
+                mat-stroked-button
+                type="button"
+                color="primary"
+                class="main__unsubscribe-btn"
+                (click)="confirmunsubscribeFromPro()"
+            >
+                <p class="main__unsubscribe-text">Unsubscribe</p>
+            </button>
+        </div>
+        <div class="nav">
+            <app-profile-navbar></app-profile-navbar>
+        </div>
+    </div>
+</div>

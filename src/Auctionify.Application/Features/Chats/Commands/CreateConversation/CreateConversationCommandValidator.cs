@@ -61,14 +61,13 @@ namespace Auctionify.Application.Features.Chats.Commands.CreateConversation
 							cancellationToken: cancellationToken
 						);
 
-						var currentUserRole = (UserRole)
-							Enum.Parse(
-								typeof(UserRole),
-								(await _userManager.GetRolesAsync(currentUser!)).FirstOrDefault()!
-							);
+						var currentUserRoleName = _currentUserService.UserRole!;
+
+						var currentUserRole = (AccountRole)
+							Enum.Parse(typeof(AccountRole), currentUserRoleName);
 
 						var buyerId =
-							currentUserRole == UserRole.Buyer ? currentUser!.Id : lot!.BuyerId;
+							currentUserRole == AccountRole.Buyer ? currentUser!.Id : lot!.BuyerId;
 
 						return buyerId == lot!.BuyerId;
 					}

@@ -28,7 +28,6 @@ export class RemoveFromWatchlistComponent implements OnInit {
         if (this.lotId !== null) {
             this.apiClient.removeFromWatchList(this.lotId).subscribe({
                 next: (response) => {
-                    console.log(response);
                     this.showSnackBar(
                         'Lot successfully removed from wishlist',
                         'success'

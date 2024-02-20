@@ -1,0 +1,86 @@
+<div class="profile">
+    <div class="profile__title">
+        <h1 class="profile__title-text">User Profile</h1>
+    </div>
+    <div class="profile__top-container">
+        <img
+            class="profile__photo"
+            [src]="
+                userProfileData && userProfileData.profilePictureUrl
+                    ? userProfileData.profilePictureUrl
+                    : '../../../../../assets/images/User.png'
+            "
+            alt="User-profile-image"
+            width="100"
+            height="100"
+        />
+        <div class="profile__container-left-info">
+            <div class="profile__name-container">
+                <a
+                    [routerLink]="['/profile/user', userProfileData?.id]"
+                    class="profile__name"
+                    >{{ userProfileData?.firstName }}
+                    {{ userProfileData?.lastName }}</a
+                >
+                <p
+                    class="profile__is-deleted"
+                    *ngIf="userProfileData?.isDeleted == true"
+                >
+                    Deleted user
+                </p>
+            </div>
+            <div class="profile__rate">
+                <div class="profile__rate-stars">
+                    <mat-icon
+                        *ngFor="
+                            let star of getAverageStars(
+                                userProfileData?.averageRate!
+                            )
+                        "
+                        >{{ star }}</mat-icon
+                    >
+                </div>
+                <p
+                    class="profile__rate-count"
+                    *ngIf="userProfileData?.ratesCount !== 0; else noRates"
+                >
+                    &nbsp;&nbsp;&nbsp;Rates count:
+                    {{ userProfileData?.ratesCount }}
+                </p>
+                <ng-template #noRates>
+                    <p class="profile__rate-count">
+                        &nbsp;&nbsp;&nbsp; This user has no rates yet.
+                    </p>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="rating-container">
+        <p class="rating-container__title">Rating & Reviews</p>
+        <div class="rating-container__average-rating">
+            <app-average-rating-item
+                [userProfileData]="userProfileData"
+                [IsBtnVisible]="false"
+                [width]="averageRatingWidth"
+            ></app-average-rating-item>
+        </div>
+        <div class="rating-container__reviews">
+            <div
+                class="rating-container__review"
+                *ngFor="let rate of userRates"
+            >
+                <app-rate-item
+                    [rate]="rate"
+                    [IsSentRates]="IsSentRates"
+                ></app-rate-item>
+            </div>
+            <div
+                class="rating-container__no-reviews"
+                *ngIf="userRates && userRates.length === 0"
+            >
+                <p>This user has no reviews yet.</p>
+            </div>
+        </div>
+    </div>
+</div>

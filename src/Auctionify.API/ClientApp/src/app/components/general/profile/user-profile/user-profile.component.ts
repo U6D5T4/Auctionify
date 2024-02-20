@@ -120,7 +120,7 @@ export class UserProfileComponent {
                     }
                 );
                 this.authorizeService.logout();
-                this.router.navigate(['/home']);
+                this.router.navigate(['/auth/after-deletion']);
             },
             error: (result: any) => {
                 if (this.isUserBuyer()) {
