@@ -173,8 +173,8 @@ namespace Auctionify.Application.Features.Users.Queries.GetTransactions
 
 						var highestBid = await GetHighestBidAsync(lot, cancellationToken);
 
-						transactionSeller.TransactionAmount = highestBid!.NewPrice;
-						transactionSeller.TransactionDate = highestBid.TimeStamp;
+						transactionSeller.TransactionAmount = highestBid?.NewPrice;
+						transactionSeller.TransactionDate = highestBid?.TimeStamp;
 
 						transactions.Add(transactionSeller);
 					}

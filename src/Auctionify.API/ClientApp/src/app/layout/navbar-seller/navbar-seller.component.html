@@ -1,6 +1,6 @@
 <div class="seller-navigation">
     <div class="seller-navigation__container">
-        <div class="seller-navigation__navbar navbar">
+        <div class="seller-navigation__navbar">
             <div class="navbar__top">
                 <div class="navbar__top-header">
                     <a [routerLink]="['/home']">
@@ -45,6 +45,15 @@
                     </button>
                     <button
                         mat-flat-button
+                        [routerLink]="['/chat']"
+                        routerLinkActive="mat-primary"
+                        color="white"
+                    >
+                        <mat-icon>mail_outline</mat-icon>
+                        My messages
+                    </button>
+                    <button
+                        mat-flat-button
                         [routerLink]="['/profile']"
                         routerLinkActive="mat-primary"
                         color="white"
@@ -52,6 +61,17 @@
                         <mat-icon>account_circle</mat-icon>
                         My Profile
                     </button>
+                    <ng-container *ngIf="!isSellerPro">
+                        <button
+                            [routerLink]="['/subscriptions/upgrade-to-pro']"
+                            routerLinkActive="mat-primary"
+                            color="white"
+                            class="pro-button"
+                        >
+                            <mat-icon>hotel_class</mat-icon>
+                            Upgrade to PRO
+                        </button>
+                    </ng-container>
                 </div>
             </div>
             <div class="navbar__bottom">

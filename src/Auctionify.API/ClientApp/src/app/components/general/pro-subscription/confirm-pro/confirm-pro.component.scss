@@ -1,0 +1,133 @@
+.confirm-pro-subscription {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 400px;
+    height: fit-content;
+    transform: translate(-50%, -50%);
+    padding: 30px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    border-radius: 24px;
+    background-color: var(--color-main);
+    animation: glowAnimation 3s infinite alternate;
+
+    &__title {
+        color: #f8f8f8;
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 32px;
+    }
+
+    &__description {
+        color: #f8f8f8;
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 24px;
+    }
+
+    &__buttons {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 50px;
+    }
+
+    @keyframes glowAnimation {
+        0% {
+            box-shadow: 0 0 20px 3px rgba(255, 255, 255, 0.9);
+        }
+        50% {
+            box-shadow: 0 0 20px 10px rgba(255, 255, 255, 0.9);
+        }
+        100% {
+            box-shadow: 0 0 20px 3px rgba(255, 255, 255, 0.9);
+        }
+    }
+}
+
+.confirm-pro-subscription-button {
+    color: var(--color-main);
+    font-weight: bold;
+    font-size: 16px;
+    background-color: #f8f8f8;
+    border: 2px solid #f8f8f8;
+
+    &:hover {
+        background: rgb(61, 106, 255);
+        border: 2px solid rgb(61, 106, 255);
+        color: #f8f8f8;
+        box-shadow: 0 0 30px 5px var(--color-main);
+        -webkit-transition: all 0.2s ease-out;
+        -moz-transition: all 0.2s ease-out;
+        transition: all 0.2s ease-out;
+    }
+
+    &:hover::before {
+        -webkit-animation: sh02 0.5s 0s linear;
+        -moz-animation: sh02 0.5s 0s linear;
+        animation: sh02 0.5s 0s linear;
+    }
+
+    &::before {
+        content: '';
+        display: block;
+        width: 0px;
+        height: 86%;
+        position: absolute;
+        top: 7%;
+        left: 0%;
+        opacity: 0;
+        background: #fff;
+        box-shadow: 0 0 50px 30px #fff;
+        -webkit-transform: skewX(-20deg);
+        -moz-transform: skewX(-20deg);
+        -ms-transform: skewX(-20deg);
+        -o-transform: skewX(-20deg);
+        transform: skewX(-20deg);
+    }
+
+    @keyframes sh02 {
+        from {
+            opacity: 0;
+            left: 0%;
+        }
+
+        50% {
+            opacity: 1;
+        }
+
+        to {
+            opacity: 0;
+            left: 100%;
+        }
+    }
+
+    &:active {
+        box-shadow: 0 0 0 0 transparent;
+        -webkit-transition: box-shadow 0.2s ease-in;
+        -moz-transition: box-shadow 0.2s ease-in;
+        transition: box-shadow 0.2s ease-in;
+    }
+}
+
+.cancel-confirm-pro-subscription-button {
+    font-weight: bold;
+    font-size: 16px;
+    color: var(--color-error);
+    background-color: #f8f8f8;
+    border: 2px solid #f8f8f8;
+
+    &:hover {
+        color: #f8f8f8;
+        border: 2px solid rgb(255, 61, 61);
+        background-color: rgb(255, 61, 61);
+        box-shadow: 0 0 30px 5px var(--color-error);
+        -webkit-transition: all 0.2s ease-out;
+        -moz-transition: all 0.2s ease-out;
+        transition: all 0.2s ease-out;
+    }
+}

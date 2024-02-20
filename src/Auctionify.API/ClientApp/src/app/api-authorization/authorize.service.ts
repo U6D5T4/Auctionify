@@ -1,13 +1,14 @@
 import { Injectable, WritableSignal, computed, signal } from '@angular/core';
 import {
     Observable,
-    Subject,
     catchError,
     firstValueFrom,
     map,
     of,
     throwError,
 } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+
 import {
     AssignRoleResponse,
     AssignRoleViewModel,
@@ -15,7 +16,6 @@ import {
     ChangeUserPasswordModel,
     Client,
     ForgetPasswordResponse,
-    ForgetPasswordViewModel,
     LoginResponse,
     LoginViewModel,
     RegisterResponse,
@@ -23,11 +23,6 @@ import {
     ResetPasswordViewModel,
     ResetPasswordResponse,
 } from '../web-api-client';
-import {
-    HttpClient,
-    HttpErrorResponse,
-    HttpHeaders,
-} from '@angular/common/http';
 
 export enum UserRole {
     Administrator = 'Administrator',
@@ -48,6 +43,7 @@ export interface IUser {
     providedIn: 'root',
 })
 export class AuthorizeService {
+    private readonly NO_ROLES = 1;
     private tokenString: string = 'token';
     private expireString: string = 'expires_at';
     private roleString: string = 'role';
@@ -321,11 +317,19 @@ export class AuthorizeService {
 
     getUserId = computed(() => this.user?.userId());
 
+    isUserPro = computed(() => {
+        if (this.isUserSeller()) {
+            return this.client.getSeller().pipe(map((res) => res.isPro));
+        }
+
+        return of(false);
+    });
+
     isUserLoggedIn(): boolean {
         return this.user?.userToken !== null && this.getAccessToken() !== null;
     }
 
     areLoginRolesProvided(): boolean {
-        return this.user?.roles()?.length! > 0;
+        return this.user?.roles()?.length! > this.NO_ROLES;
     }
 }

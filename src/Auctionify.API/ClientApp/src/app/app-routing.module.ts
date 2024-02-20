@@ -8,6 +8,7 @@ import { isLoggedInGuard } from './guards/is-logged-in.guard';
 import { AuctionComponent } from './components/general/home/auction/auction.component';
 import { RateUserComponent } from './components/general/rate-user/rate-user.component';
 import { TransactionsComponent } from './components/general/transactions/transactions.component';
+import { ChatPageComponent } from './components/general/chat/chat-page/chat-page.component';
 
 const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -29,6 +30,14 @@ const routes: Routes = [
             ),
         data: { breadcrumb: { skip: true } },
         canActivate: [isLoggedInGuard],
+    },
+    {
+        path: 'subscriptions',
+        loadChildren: () =>
+            import(
+                './components/general/pro-subscription/pro-subscription.module'
+            ).then((m) => m.ProSubscriptionModule),
+        canActivate: [isSellerGuard],
     },
     {
         path: 'seller',
@@ -58,9 +67,14 @@ const routes: Routes = [
         component: RateUserComponent,
         canActivate: [isLoggedInGuard],
     },
-    { 
+    {
         path: 'get-transactions',
         component: TransactionsComponent,
+        canActivate: [isLoggedInGuard],
+    },
+    {
+        path: 'chat',
+        component: ChatPageComponent,
         canActivate: [isLoggedInGuard],
     },
 ];

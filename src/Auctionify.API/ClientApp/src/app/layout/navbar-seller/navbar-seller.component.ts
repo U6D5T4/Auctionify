@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, effect } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { ChoicePopupComponent } from 'src/app/ui-elements/choice-popup/choice-popup.component';
@@ -11,11 +11,19 @@ import { Dialog } from '@angular/cdk/dialog';
     styleUrls: ['./navbar-seller.component.scss'],
 })
 export class NavbarSellerComponent {
+    isSellerPro: boolean = false;
+
     constructor(
         private authService: AuthorizeService,
         private router: Router,
         private dialog: Dialog
-    ) {}
+    ) {
+        effect(() => {
+            authService.isUserPro().subscribe({
+                next: (isPro) => (this.isSellerPro = isPro),
+            });
+        });
+    }
 
     logOut() {
         const dialogRef = this.dialog.open(ChoicePopupComponent, {
