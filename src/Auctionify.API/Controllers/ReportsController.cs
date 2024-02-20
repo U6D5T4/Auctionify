@@ -37,7 +37,7 @@ namespace Auctionify.API.Controllers
 
 			var reportBytes = await _mediator.Send(query);
 
-			return File(reportBytes, "application/octet-stream", $"Report.For{monthsDuration}.{reportType.ToString()}");
+			return File(reportBytes, "application/octet-stream", $"Report For {monthsDuration} months.{reportType.ToString()}");
 		}
 	}
 }
