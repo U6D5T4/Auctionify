@@ -39,32 +39,32 @@
 
         &::-webkit-scrollbar-track {
             border-radius: 20px;
-            background-color: #DFE9EB;
+            background-color: #dfe9eb;
         }
 
         &::-webkit-scrollbar-track:hover {
-            background-color: #DFE9EB;
+            background-color: #dfe9eb;
         }
 
         &::-webkit-scrollbar-track:active {
-            background-color: #DFE9EB;
+            background-color: #dfe9eb;
         }
 
         &::-webkit-scrollbar-thumb {
             border-radius: 16px;
-            background-color: rgba(#2B5293, 0.5);
+            background-color: rgba(#2b5293, 0.5);
         }
 
         &::-webkit-scrollbar-thumb:hover {
-            background-color: #3362AF;
+            background-color: #3362af;
         }
 
         &::-webkit-scrollbar-thumb:active {
-            background-color: #2B5293;
+            background-color: #2b5293;
         }
 
         scrollbar-width: thin;
-        scrollbar-color: #2B5293 #DFE9EB;
+        scrollbar-color: #2b5293 #dfe9eb;
         position: relative;
 
         &-inner {
@@ -77,7 +77,6 @@
         display: flex;
         flex-direction: column;
     }
-
 
     &__date {
         text-align: center;
@@ -102,8 +101,28 @@
         border-radius: 8px;
 
         &-inner {
-            padding: 20px;
+            padding-top: 20px;
+            padding-right: 60px;
+            padding-left: 20px;
             word-break: break-word;
+        }
+
+        &-time {
+            font-size: 0.8rem;
+            color: #9e9e9e;
+            text-align: right;
+            padding-right: 0.7rem;
+            padding-bottom: 0.3rem;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: flex-end;
+            padding-left: 50px;
+        }
+
+        &-is-read {
+            font-size: 18px;
+            height: 14px;
         }
 
         &.self {
@@ -128,7 +147,10 @@
         display: flex;
         gap: 4px;
     }
+}
 
+.conversation__message-inner--owner {
+    border-bottom-right-radius: 0;
 }
 
 .profile {
@@ -169,7 +191,6 @@
             display: block;
         }
     }
-
 }
 
 .send-message-input {

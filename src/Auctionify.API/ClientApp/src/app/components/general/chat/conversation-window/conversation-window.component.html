@@ -58,9 +58,30 @@
                             [isOwner]="currentUserId == message.senderId"
                             [isRead]="message.isRead"
                         >
-                            <!-- Display your individual messages here -->
                             <div class="conversation__message-inner">
                                 {{ message.body }}
+                            </div>
+                            <div class="conversation__message-time">
+                                {{ message.timeStamp | date : 'HH:mm' }}
+                                <div
+                                    class="conversation__message-read"
+                                    *ngIf="message.isRead"
+                                >
+                                    <mat-icon
+                                        class="conversation__message-is-read"
+                                        >done_all</mat-icon
+                                    >
+                                </div>
+
+                                <div
+                                    class="conversation__message-delivered"
+                                    *ngIf="!message.isRead"
+                                >
+                                    <mat-icon
+                                        class="conversation__message-is-read"
+                                        >done</mat-icon
+                                    >
+                                </div>
                             </div>
                         </div>
                     </div>
