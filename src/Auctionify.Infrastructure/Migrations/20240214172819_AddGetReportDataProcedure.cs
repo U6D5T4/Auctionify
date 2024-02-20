@@ -17,40 +17,36 @@ namespace Auctionify.Infrastructure.Migrations
                     BEGIN
                         DECLARE @StartDate DATETIME = DATEADD(MONTH, -@MonthsBack, GETDATE());
     
-                        -- Total count of all lots listed by the user
                         DECLARE @TotalLots INT = (
-                            SELECT COUNT(*)
+                            SELECT ISNULL(COUNT(*), 0)
                             FROM Lots
                             WHERE SellerId = @UserId
-                            AND Lots.CreationDate >= @StartDate -- Specify the table name before CreationDate
+                            AND Lots.CreationDate >= @StartDate
                         );
     
-                        -- Count of lots that have been sold
                         DECLARE @SoldLotsCount INT = (
-                            SELECT COUNT(*)
+                            SELECT ISNULL(COUNT(*), 0)
                             FROM Lots
                             INNER JOIN LotStatuses ON Lots.LotStatusId = LotStatuses.Id
                             WHERE SellerId = @UserId
                             AND LotStatuses.Name = 'Sold'
-                            AND Lots.CreationDate >= @StartDate -- Specify the table name before CreationDate
+                            AND Lots.CreationDate >= @StartDate
                         );
     
-                        -- Total sum of the highest bids for the sold lots
                         DECLARE @TotalSoldAmount DECIMAL(18,2) = (
-                            SELECT SUM(MaxBid)
+                            SELECT ISNULL(SUM(MaxBid), 0.00)
                             FROM (
-                                SELECT MAX(NewPrice) AS MaxBid -- Replace 'Amount' with the actual column name for bid amount
+                                SELECT MAX(NewPrice) AS MaxBid
                                 FROM Bids
                                 INNER JOIN Lots ON Bids.LotId = Lots.Id
                                 INNER JOIN LotStatuses ON Lots.LotStatusId = LotStatuses.Id
                                 WHERE Lots.SellerId = @UserId
                                 AND LotStatuses.Name = 'Sold'
-                                AND Lots.CreationDate >= @StartDate -- Specify the table name before CreationDate
+                                AND Lots.CreationDate >= @StartDate
                                 GROUP BY Bids.LotId
                             ) AS SoldLotsMaxBids
                         );
     
-                        -- Return the results
                         SELECT @TotalLots AS TotalLots, @SoldLotsCount AS SoldLotsCount, @TotalSoldAmount AS TotalSoldAmount;
                     END;
                     GO";
