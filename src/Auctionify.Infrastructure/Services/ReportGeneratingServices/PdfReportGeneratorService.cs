@@ -17,7 +17,7 @@ namespace Auctionify.Infrastructure.Services.ReportGeneratingServices
 				{
 					page.Margin(50);
 					page.Size(PageSizes.A4);
-					page.Header().Text($"User Sales Report - {user.FirstName} {user.LastName}").Bold().FontSize(20);
+					page.Header().Text($"Auctionify Sales Report").Bold().FontSize(20);
 
 					page.Content().Column(column =>
 					{
