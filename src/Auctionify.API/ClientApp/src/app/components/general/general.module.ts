@@ -19,6 +19,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { WithdrawBidComponent } from './withdraw-bid/withdraw-bid.component';
 import { RateUserComponent } from './rate-user/rate-user.component';
 import { RemoveFromWatchlistComponent } from './remove-from-watchlist/remove-from-watchlist.component';
+import { ChatModule } from './chat/chat.module';
 import { TransactionsComponent } from './transactions/transactions.component';
 
 @NgModule({
@@ -42,11 +43,12 @@ import { TransactionsComponent } from './transactions/transactions.component';
         MatSliderModule,
         MatProgressSpinnerModule,
         ReactiveFormsModule,
+        FormsModule,
         MatFormFieldModule,
         MatInputModule,
         MatCheckboxModule,
         MatSnackBarModule,
-        FormsModule,
+        ChatModule,
     ],
 
     exports: [LotProfileComponent, TransactionsComponent],

@@ -35,6 +35,12 @@ namespace Auctionify.UnitTests
 					},
 					StartingPrice = 100,
 					SellerId = 1,
+					Seller = new User
+					{
+						Id = 1,
+						UserName = "TestUserName",
+						Email = "test@email.com"
+					},
 					BuyerId = 2,
 					CategoryId = 1,
 					CurrencyId = 1,
@@ -58,6 +64,12 @@ namespace Auctionify.UnitTests
 					},
 					StartingPrice = 100,
 					SellerId = 1,
+					Seller = new User
+					{
+						Id = 1,
+						UserName = "TestUserName",
+						Email = "test@email.com"
+					},
 					BuyerId = 2,
 					CategoryId = 1,
 					CurrencyId = 1,
@@ -81,6 +93,12 @@ namespace Auctionify.UnitTests
 					},
 					StartingPrice = 100,
 					SellerId = 1,
+					Seller = new User
+					{
+						Id = 1,
+						UserName = "TestUserName",
+						Email = "test@email.com"
+					},
 					BuyerId = 2,
 					CategoryId = 1,
 					CurrencyId = 1,
@@ -103,6 +121,12 @@ namespace Auctionify.UnitTests
 					},
 					StartingPrice = 100,
 					SellerId = 2,
+					Seller = new User
+					{
+						Id = 2,
+						UserName = "TestUserName",
+						Email = "test@email.com"
+					},
 					BuyerId = 2,
 					CategoryId = 1,
 					CurrencyId = 1,
@@ -156,7 +180,14 @@ namespace Auctionify.UnitTests
 					SenderId = 3,
 					RatingValue = 5,
 					Comment = "Some comment 2",
-					LotId = 1
+					LotId = 1,
+					Sender = new User
+					{
+						Id = 3,
+						FirstName = "TestFirstName",
+						LastName = "TestLastName",
+						ProfilePicture = "TestProfilePicture.png"
+					}
 				},
 				new Rate
 				{

@@ -83,7 +83,7 @@ namespace Auctionify.Application.Features.Rates.Commands.AddRateToSeller
 								cancellationToken: cancellationToken
 							);
 
-							if (ratings.Items.Count < 1 && !ratings.Items.Any(item => item.SenderId == lot.BuyerId))
+							if (!ratings.Items.Any(item => item.SenderId == lot.BuyerId))
 							{
 								return true;
 							}

@@ -36,6 +36,17 @@
         min-width: 200px;
     }
 
+    &__rating-title {
+        display: flex;
+        padding-top: 16px;
+        padding-bottom: 32px;
+        color: var(--color-text-primary);
+        font-size: 32px;
+        font-style: normal;
+        font-weight: 700;
+        line-height: 40px;
+    }
+
     &__auction-title {
         display: flex;
         align-items: center;
@@ -68,6 +79,7 @@
 
     &__auction-no-more {
         font-size: 18px;
+        margin: 0 auto;
     }
 
     &__auction-empty {
@@ -259,8 +271,12 @@
     }
 
     &__description {
-        display: block;
-        word-break: break-word;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+
         max-width: 40ch;
         color: var(--color-grey-3);
     }
@@ -335,6 +351,10 @@
         border-radius: 8px;
         size: 16px;
     }
+}
+
+.show-more {
+    margin: 0 auto;
 }
 
 .show-more-button {

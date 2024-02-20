@@ -26,7 +26,8 @@
                 <h1>Describe your feelings</h1>
             </div>
             <div class="main__rate-stars">
-                <p>How would you rate the seller?</p>
+                <p *ngIf="isUserSeller()">How would you rate the buyer?</p>
+                <p *ngIf="isUserBuyer()">How would you rate the seller?</p>
                 <div class="main__stars">
                     <mat-icon
                         *ngFor="let star of [1, 2, 3, 4, 5]"

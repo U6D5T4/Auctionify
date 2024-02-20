@@ -1,0 +1,97 @@
+<div class="conversation-window">
+    <div class="conversation__profile-top">
+        <div class="profile-top__user">
+            <div class="user__avatar">
+                <img
+                    [src]="
+                        conversation.chatUser.profilePictureUrl
+                            ? conversation.chatUser.profilePictureUrl
+                            : '../../../../assets/icons/NoImage\.svg'
+                    "
+                    alt="avatar"
+                />
+            </div>
+            <div class="user__fullname">
+                {{
+                    conversation.chatUser.fullName == ' '
+                        ? conversation.chatUser.email
+                        : conversation.chatUser.fullName
+                }}
+            </div>
+        </div>
+        <div class="profile-top__settings">
+            <mat-icon>more_vert</mat-icon>
+        </div>
+    </div>
+    <div class="conversation__separator"></div>
+    <div class="conversation__main" #main_conversation>
+        <div class="conversation__main-inner">
+            <ng-container
+                *ngIf="messages.length == 0; else conversation_loaded"
+            >
+                <div class="conversation-not-loaded">
+                    <h1>No messages!</h1>
+                </div>
+            </ng-container>
+            <ng-template #conversation_loaded>
+                <div
+                    class="conversation__main-group"
+                    *ngFor="let group of messages"
+                    #messagePool
+                >
+                    <div class="conversation__date">
+                        <span>{{ group.date }}</span>
+                    </div>
+                    <div class="conversation__messages-container">
+                        <div
+                            class="conversation__message"
+                            [id]="message.id"
+                            [ngClass]="generateMessageClass(message)"
+                            *ngFor="let message of group.messages"
+                            appMessageObserver
+                            (isIntersecting)="intersect($event)"
+                            #messages="intersection"
+                            [isContinuous]="true"
+                            [threshold]="1"
+                            [attr.messageId]="message.id"
+                            [parentWindow]="messagePool"
+                            [isOwner]="currentUserId == message.senderId"
+                            [isRead]="message.isRead"
+                        >
+                            <!-- Display your individual messages here -->
+                            <div class="conversation__message-inner">
+                                {{ message.body }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+    <div class="conversation__separator"></div>
+    <div class="">
+        <form
+            class="conversation__controls"
+            (submit)="sendMessage($event, msg_input.value)"
+        >
+            <button class="control__button" mat-stroked-button>
+                <mat-icon class="control__icon"> attach_file </mat-icon>
+            </button>
+            <mat-form-field
+                class="send-message-input"
+                color="primary"
+                appearance="outline"
+            >
+                <input #msg_input matInput placeholder="Type a message" />
+            </mat-form-field>
+            <button
+                type="submit"
+                class="control__button"
+                mat-flat-button
+                color="primary"
+            >
+                <mat-icon class="control__icon"> send </mat-icon>
+            </button>
+        </form>
+    </div>
+</div>

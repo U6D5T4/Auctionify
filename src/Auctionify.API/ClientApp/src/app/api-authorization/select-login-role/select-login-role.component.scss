@@ -1,0 +1,115 @@
+.select-login-role {
+    width: 100%;
+    height: 100%;
+    padding-bottom: 194px;
+
+    &__container {
+        width: 496px;
+        border-radius: 24px;
+        background-color: white;
+        margin: 0 auto;
+    }
+
+    &__container-inner {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+        padding: 40px 48px;
+    }
+
+    &__header {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        & p {
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 24px;
+            letter-spacing: 0em;
+            text-align: left;
+            color: var(--color-grey-3);
+        }
+    }
+
+    &__form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    &__border {
+        height: 1px;
+        background: linear-gradient(
+            90deg,
+            rgba(189, 189, 189, 0) 0%,
+            #bdbdbd 51.04%,
+            rgba(189, 189, 189, 0) 100%
+        );
+    }
+}
+
+.form {
+    &__options {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &__single-option {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    &__single-option input {
+        opacity: 0;
+    }
+
+    &__single-option p {
+        color: #828282;
+        cursor: pointer;
+    }
+
+    &__user-type-option {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-evenly;
+        width: 192px;
+        height: 152px;
+        border-radius: 8px;
+        border: 2px solid #e0e0e0;
+        cursor: pointer;
+    }
+
+    &__option-desc {
+        display: flex;
+        justify-content: center;
+    }
+}
+
+.radio {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 144px;
+    height: 55px;
+    border-radius: 500px;
+}
+
+.form__single-option input:checked + .form__user-type-option {
+    border-color: #2b5293;
+}
+
+.form__single-option input:checked + .form__user-type-option label {
+    color: #2b5293;
+}
+
+.form__single-option input:checked + .form__user-type-option .radio {
+    background-color: #c5d1ea80;
+}
+
+.form__single-option:hover .form__user-type-option {
+    box-shadow: 0 0 10px 0 #2b5293;
+    transition: box-shadow 0.2s ease;
+}

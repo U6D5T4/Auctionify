@@ -10,6 +10,8 @@ export const LoginActions = {
     ResetPassword: 'reset-password',
     EmailSent: 'email-sent',
     ResetEmailSent: 'reset-email-sent',
+    AfterDeletion: 'after-deletion',
+    SelectLoginRole: 'select-login-role',
 };
 
 let applicationPaths: ApplicationPathsType = {
@@ -22,6 +24,8 @@ let applicationPaths: ApplicationPathsType = {
     ResetPassword: `auth/${LoginActions.ResetPassword}`,
     EmailSent: `auth/${LoginActions.EmailSent}/:email`,
     ResetEmailSent: `auth/${LoginActions.ResetEmailSent}/:email`,
+    AfterDeletion: `auth/${LoginActions.AfterDeletion}`,
+    SelectLoginRole: `auth/${LoginActions.SelectLoginRole}`,
     LoginPathComponents: [],
     RegisterPathComponents: [],
     RegisterRolePathComponent: [],
@@ -30,6 +34,8 @@ let applicationPaths: ApplicationPathsType = {
     ResetPasswordComponents: [],
     EmailSentComponents: [],
     ResetEmailSentComponent: [],
+    AfterDeletionComponents: [],
+    SelectLoginRoleComponents: [],
 };
 
 applicationPaths = {
@@ -42,6 +48,8 @@ applicationPaths = {
     RegisterRolePathComponent: applicationPaths.Profile.split('/'),
     EmailSentComponents: applicationPaths.Profile.split('/'),
     ResetEmailSentComponent: applicationPaths.Profile.split('/'),
+    AfterDeletionComponents: applicationPaths.AfterDeletion.split('/'),
+    SelectLoginRoleComponents: applicationPaths.SelectLoginRole.split('/'),
 };
 
 interface ApplicationPathsType {
@@ -54,6 +62,8 @@ interface ApplicationPathsType {
     readonly ResetPassword: string;
     readonly EmailSent: string;
     readonly ResetEmailSent: string;
+    readonly AfterDeletion: string;
+    readonly SelectLoginRole: string;
     readonly LoginPathComponents: string[];
     readonly RegisterPathComponents: string[];
     readonly RegisterRolePathComponent: string[];
@@ -62,6 +72,8 @@ interface ApplicationPathsType {
     readonly ResetPasswordComponents: string[];
     readonly EmailSentComponents: string[];
     readonly ResetEmailSentComponent: string[];
+    readonly AfterDeletionComponents: string[];
+    readonly SelectLoginRoleComponents: string[];
 }
 
 export const ApplicationPaths: ApplicationPathsType = applicationPaths;

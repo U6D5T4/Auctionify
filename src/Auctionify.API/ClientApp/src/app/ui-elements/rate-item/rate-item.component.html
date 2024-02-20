@@ -2,9 +2,9 @@
     <div class="review__profile-img">
         <img
             [src]="
-                rate.sender && rate.sender.profilePicture
-                    ? rate.sender.profilePicture
-                    : '../../../../../assets/images/User.png'
+                rate.sender?.profilePicture ||
+                rate.receiver?.profilePicture ||
+                '../../../../../assets/images/User.png'
             "
             alt="rate-user-profile-pic"
             width="48"
@@ -15,8 +15,13 @@
         <div class="review__name-date-value">
             <div class="review__name-date">
                 <div class="review__name">
-                    <p>
-                        {{ rate.sender?.firstName }} {{ rate.sender?.lastName }}
+                    <p *ngIf="IsSentRates">
+                        {{ rate.sender?.firstName }}
+                        {{ rate.sender?.lastName }}
+                    </p>
+                    <p *ngIf="!IsSentRates">
+                        {{ rate.receiver?.firstName }}
+                        {{ rate.receiver?.lastName }}
                     </p>
                 </div>
                 <div class="review__date">

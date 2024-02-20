@@ -2,8 +2,8 @@
 
 namespace Auctionify.Application.Common.Models.Account
 {
-    public class LoginResponse: BaseResponse
-    {
-        public TokenModel Result { get; set; }
-    }
+	public class LoginResponse : BaseResponse
+	{
+		public TokenModel Result { get; set; }
+	}
 }

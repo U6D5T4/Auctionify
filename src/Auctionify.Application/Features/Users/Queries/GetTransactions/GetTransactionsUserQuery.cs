@@ -61,15 +61,11 @@ namespace Auctionify.Application.Features.Users.Queries.GetTransactions
 				cancellationToken: cancellationToken
 			);
 
-			var role = (UserRole)
-				Enum.Parse(
-					typeof(UserRole),
-					(await _userManager.GetRolesAsync(user!)).FirstOrDefault()!
-				);
+			var role = (AccountRole)Enum.Parse(typeof(AccountRole), _currentUserService.UserRole!);
 
 			var transactions = new List<TransactionInfo>();
 
-			if (role == UserRole.Buyer)
+			if (role == AccountRole.Buyer)
 			{
 				var lotsForBuyer = await _lotRepository.GetUnpaginatedListAsync(
 					include: x => x.Include(l => l.Currency).Include(l => l.LotStatus),
@@ -153,7 +149,7 @@ namespace Auctionify.Application.Features.Users.Queries.GetTransactions
 					}
 				}
 			}
-			else if (role == UserRole.Seller)
+			else if (role == AccountRole.Seller)
 			{
 				var lotsForSeller = await _lotRepository.GetUnpaginatedListAsync(
 					x => x.SellerId == user!.Id,
@@ -177,8 +173,8 @@ namespace Auctionify.Application.Features.Users.Queries.GetTransactions
 
 						var highestBid = await GetHighestBidAsync(lot, cancellationToken);
 
-						transactionSeller.TransactionAmount = highestBid!.NewPrice;
-						transactionSeller.TransactionDate = highestBid.TimeStamp;
+						transactionSeller.TransactionAmount = highestBid?.NewPrice;
+						transactionSeller.TransactionDate = highestBid?.TimeStamp;
 
 						transactions.Add(transactionSeller);
 					}

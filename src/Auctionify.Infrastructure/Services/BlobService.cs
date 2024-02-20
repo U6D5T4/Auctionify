@@ -55,6 +55,8 @@ namespace Auctionify.Infrastructure.Services
 
 		public string GetBlobUrl(string filePath, string fileName)
 		{
+			if (string.IsNullOrEmpty(fileName))
+				return string.Empty;
 			var containerClient = _blobServiceClient.GetBlobContainerClient(
 				_azureBlobStorageOptions.ContainerName
 			);

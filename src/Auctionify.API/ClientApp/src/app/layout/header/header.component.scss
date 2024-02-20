@@ -6,8 +6,6 @@
     align-items: center;
     justify-content: space-between;
     gap: 64px;
-    padding-left: 200px;
-    padding-right: 200px;
 
     &__search {
         flex: 1 1;
@@ -15,14 +13,11 @@
     }
 }
 
-.header img {
-    width: 160px;
-}
-
 .navigation {
     gap: 16px;
     list-style: none;
     display: flex;
+    margin-bottom: 0;
 }
 
 .navigation li {
@@ -39,7 +34,6 @@
 }
 
 .navigation li img {
-    width: 20px;
     padding: 12px;
 }
 
