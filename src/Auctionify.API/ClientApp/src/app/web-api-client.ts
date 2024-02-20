@@ -235,6 +235,27 @@ export class Client {
         });
     }
 
+    loadApiKeyFor(): Observable<string> {
+        let url_ = this.baseUrl + '/api/lots/google-map-apikey';
+
+        let options_: any = {
+            responseType: 'text',
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/plain',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<string> => {
+                if (response.body !== null) {
+                    return of(response.body as string);
+                } else return throwError(() => new Error('data is empty!'));
+            })
+        );
+    }
+
     register(
         body: RegisterViewModel | undefined
     ): Observable<RegisterResponse> {
@@ -370,6 +391,8 @@ export class Client {
         formData.append('city', body.city);
         formData.append('address', body.address);
         formData.append('country', body.country);
+        formData.append('latitude', body.latitude);
+        formData.append('longitude', body.longitude);
         formData.append('startDate', new Date(body.startDate!).toISOString());
         formData.append('endDate', new Date(body.endDate!).toISOString());
         formData.append('startingPrice', body.startingPrice?.toString() ?? '');
@@ -411,6 +434,8 @@ export class Client {
         formData.append('city', body.city);
         formData.append('address', body.address);
         formData.append('country', body.country);
+        formData.append('latitude', body.latitude);
+        formData.append('longitude', body.longitude);
         formData.append('startDate', new Date(body.startDate!).toISOString());
         formData.append('endDate', new Date(body.endDate!).toISOString());
         formData.append('startingPrice', body.startingPrice?.toString() ?? '');
@@ -1365,6 +1390,8 @@ export interface LocationDto {
     city: string;
     country: string;
     address: string;
+    latitude: string;
+    longitude: string;
     state: string | null;
 }
 

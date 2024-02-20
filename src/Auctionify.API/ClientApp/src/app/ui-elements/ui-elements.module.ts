@@ -5,7 +5,6 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
-
 import { InputComponent } from './input/input.component';
 import { ButtonComponent } from './button/button.component';
 import { DialogPopupComponent } from './dialog-popup/dialog-popup.component';
@@ -14,7 +13,7 @@ import { RateItemComponent } from './rate-item/rate-item.component';
 import { UserTopBarComponent } from './user-top-bar/user-top-bar.component';
 import { AverageRatingItemComponent } from './average-rating-item/average-rating-item.component';
 import { LotItemComponent } from './lot-item/lot-item.component';
-
+import { LeafletMapComponent } from './leaflet-map/leaflet-map.component';
 
 @NgModule({
     declarations: [
@@ -26,8 +25,15 @@ import { LotItemComponent } from './lot-item/lot-item.component';
         UserTopBarComponent,
         AverageRatingItemComponent,
         LotItemComponent,
+        LeafletMapComponent,
     ],
-    imports: [CommonModule, FormsModule, MatButtonModule, MatIconModule, RouterModule,],
+    imports: [
+        CommonModule,
+        FormsModule,
+        MatButtonModule,
+        MatIconModule,
+        RouterModule,
+    ],
     exports: [
         InputComponent,
         ButtonComponent,
@@ -35,6 +41,7 @@ import { LotItemComponent } from './lot-item/lot-item.component';
         UserTopBarComponent,
         AverageRatingItemComponent,
         LotItemComponent,
+        LeafletMapComponent,
     ],
 })
 export class UiElementsModule {}

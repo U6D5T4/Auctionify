@@ -24,7 +24,11 @@ namespace Auctionify.Application.Features.Lots.BaseValidators.Lots
 
 		public string Address { get; set; }
 
-		public int? CurrencyId { get; set; }
+        public string Latitude { get; set; }
+
+        public string Longitude { get; set; }
+
+        public int? CurrencyId { get; set; }
 
 		public IList<IFormFile>? Photos { get; set; }
 

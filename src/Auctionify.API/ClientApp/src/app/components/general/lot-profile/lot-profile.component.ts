@@ -103,6 +103,7 @@ export class LotProfileComponent implements OnInit {
 
     handleLotResponse(result: BuyerGetLotResponse | SellerGetLotResponse) {
         this.lotData = result;
+
         if (this.lotData.additionalDocumentsUrl) {
             this.files = this.lotData.additionalDocumentsUrl.map(
                 (url: string): FileModel => {

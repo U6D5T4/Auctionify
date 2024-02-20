@@ -25,6 +25,8 @@ namespace Auctionify.Application.Features.Lots.Commands.Update
 		public string? State { get; set; }
 		public string Country { get; set; }
 		public string Address { get; set; }
+		public string Latitude { get; set; }
+		public string Longitude { get; set; }
 		public int? CurrencyId { get; set; }
 		public IList<IFormFile>? Photos { get; set; }
 		public IList<IFormFile>? AdditionalDocuments { get; set; }
