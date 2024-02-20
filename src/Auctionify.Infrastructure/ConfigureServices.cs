@@ -141,13 +141,13 @@ namespace Auctionify.Infrastructure
 			services.AddScoped<IChatMessageRepository, ChatMessageRepository>();
 			services.AddScoped<IRateRepository, RateRepository>();
 			services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
-
 			services.AddScoped<IReportDataRepository, ReportDataRepository>();
 			
             services.AddTransient<IEmailService, EmailService>();
 			services.AddSingleton<IBlobService, BlobService>();
 			services.AddScoped<IPhotoService, PhotoService>();
 			services.AddScoped<IWatchlistService, WatchlistService>();
+			services.AddTransient<IUserRoleDbContextService, UserRoleDbContextService>();
 
 			services.AddScoped<IPdfReportGeneratorService, PdfReportGeneratorService>();
 			services.AddScoped<IXlsxReportGeneratorService, XlsxReportGeneratorService>();
