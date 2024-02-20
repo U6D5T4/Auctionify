@@ -15,22 +15,22 @@
                 Address is <strong>required</strong>
             </mat-error>
         </mat-form-field>
-        <mat-form-field color="primary" appearance="outline">
-            <mat-label>Country</mat-label>
-            <input formControlName="country" matInput />
-            <mat-error
-                *ngIf="locationGroup.controls.country.hasError('required')"
-            >
-                Country is <strong>required</strong>
-            </mat-error>
-        </mat-form-field>
-        <mat-form-field color="primary" appearance="outline">
-            <mat-label>City</mat-label>
-            <input formControlName="city" matInput />
-            <mat-error *ngIf="locationGroup.controls.city.hasError('required')">
-                City is <strong>required</strong>
-            </mat-error>
-        </mat-form-field>
+        <div class="country-city">
+            <input
+                type="text"
+                class="country"
+                formControlName="country"
+                placeholder="Country*"
+                readonly
+            />
+            <input
+                type="text"
+                class="city"
+                formControlName="city"
+                placeholder="City*"
+                readonly
+            />
+        </div>
         <input type="hidden" formControlName="latitude" />
         <input type="hidden" formControlName="longitude" />
         <button

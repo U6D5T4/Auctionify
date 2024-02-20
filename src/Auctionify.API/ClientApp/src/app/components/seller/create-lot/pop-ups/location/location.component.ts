@@ -30,7 +30,6 @@ export class LocationPopUpComponent implements AfterViewInit {
 
     latitude!: number;
     longitude!: number;
-    disabled: boolean = true;
 
     constructor(
         public dialogRef: DialogRef<string>,
@@ -43,8 +42,6 @@ export class LocationPopUpComponent implements AfterViewInit {
     submit() {
         const controls = this.locationGroup.controls;
         controls.address.markAsTouched();
-        controls.country.markAsTouched();
-        controls.city.markAsTouched();
 
         if (
             controls.address.valid &&
@@ -80,9 +77,6 @@ export class LocationPopUpComponent implements AfterViewInit {
 
     ngAfterViewInit() {
         this.initAutocomplete();
-        
-        this.locationGroup.controls['country'].disable();
-        this.locationGroup.controls['city'].disable();
     }
 
     initAutocomplete(): void {
