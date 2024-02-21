@@ -154,6 +154,8 @@ export class CreateLotComponent implements OnInit {
                     lotFormData.country.setValue(result.location.country);
                     lotFormData.address.setValue(result.location.address);
                     lotFormData.city.setValue(result.location.city);
+                    lotFormData.latitude.setValue(result.location.latitude);
+                    lotFormData.longitude.setValue(result.location.longitude);
                     lotFormData.startingPrice.setValue(result.startingPrice);
 
                     if (result.additionalDocumentsUrl !== null) {
