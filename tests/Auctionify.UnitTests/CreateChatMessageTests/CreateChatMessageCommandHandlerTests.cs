@@ -29,10 +29,10 @@ namespace Auctionify.UnitTests.CreateChatMessageTests
 
 		public CreateChatMessageCommandHandlerTests()
 		{
-			var mockDbContext = DbContextMock.GetMock<
-				Core.Entities.Conversation,
-				ApplicationDbContext
-			>(EntitiesSeeding.GetConversations(), ctx => ctx.Conversations);
+			var mockDbContext = DbContextMock.GetMock<Conversation, ApplicationDbContext>(
+				EntitiesSeeding.GetConversations(),
+				ctx => ctx.Conversations
+			);
 
 			mockDbContext = DbContextMock.GetMock(
 				EntitiesSeeding.GetChatMessages(),
@@ -137,7 +137,8 @@ namespace Auctionify.UnitTests.CreateChatMessageTests
 				chatMessageRepositoryMock.Object,
 				currentUserServiceMock.Object,
 				userManagerMock.Object,
-				mockHubContext.Object
+				mockHubContext.Object,
+				_conversationRepository
 			);
 
 			var sentChatMessage = new ChatMessage
