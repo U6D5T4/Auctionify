@@ -1,4 +1,5 @@
 ﻿using Auctionify.Application.Common.Interfaces.Repositories;
+using Auctionify.Application.Common.Options;
 using Auctionify.Application.Features.Lots.Commands.UpdateLotStatus;
 using Auctionify.Application.Hubs;
 using Auctionify.Core.Entities;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Quartz;
 
 namespace Auctionify.Application.Scheduler.Jobs
@@ -38,9 +40,17 @@ namespace Auctionify.Application.Scheduler.Jobs
 				scope.ServiceProvider.GetRequiredService<IChatMessageRepository>();
 			var hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<AuctionHub>>();
 
+			var appUrlOptions = scope
+				.ServiceProvider.GetRequiredService<IOptions<AppUrlOptions>>()
+				.Value;
+
 			var lot = await lotRepository.GetAsync(
 				x => x.Id == lotId,
-				include: x => x.Include(l => l.LotStatus).Include(l => l.Bids)
+				include: x =>
+					x.Include(l => l.Currency)
+						.Include(l => l.LotStatus)
+						.Include(l => l.Bids)
+						.Include(x => x.Seller)
 			);
 
 			if (lot == null)
@@ -98,7 +108,10 @@ namespace Auctionify.Application.Scheduler.Jobs
 						SenderId = lot.SellerId,
 						ConversationId = conversation.Id,
 						Body =
-							$"Congratulations, Dear Buyer! You won the auction for lot with id: {lotId}!",
+							$"Congratulations, Dear Buyer! "
+							+ $"My name is {lot.Seller.FirstName} {lot.Seller.LastName} and I am the seller of the lot with id: {lotId}. "
+							+ $"I am happy to inform you that you won this auction with a bid of {highestBid.NewPrice} {lot.Currency.Code}! "
+							+ $"Access the lot details through link: {appUrlOptions.ClientApp}/get-lot/{lotId}",
 						IsRead = false,
 					};
 

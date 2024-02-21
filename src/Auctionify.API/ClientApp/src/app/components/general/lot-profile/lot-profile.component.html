@@ -210,7 +210,8 @@
                             [disabled]="
                                 lotData.bids.length == 0 ||
                                 lotData.bids.at(0)?.buyerId !==
-                                    this.currentUserId
+                                    this.currentUserId ||
+                                lotData.lotStatus.name !== 'Active'
                             "
                         >
                             Withdraw
@@ -221,6 +222,7 @@
                             type="button"
                             (click)="openBidModal()"
                             color="primary"
+                            [disabled]="lotData.lotStatus.name !== 'Active'"
                         >
                             Place a bid
                         </button>
@@ -232,7 +234,10 @@
                             type="button"
                             color="primary"
                             (click)="deleteLot()"
-                            [disabled]="isSellerOwnsLot(lotData)"
+                            [disabled]="
+                                isSellerOwnsLot(lotData) ||
+                                lotData.lotStatus.name === 'Sold'
+                            "
                         >
                             <mat-spinner
                                 *ngIf="isDeleteLoading"
@@ -250,7 +255,11 @@
                             mat-flat-button
                             type="button"
                             color="primary"
-                            [disabled]="isSellerOwnsLot(lotData)"
+                            [disabled]="
+                                isSellerOwnsLot(lotData) ||
+                                lotData.lotStatus.name === 'Active' ||
+                                lotData.lotStatus.name === 'Sold'
+                            "
                         >
                             <mat-icon>edit</mat-icon>
                             Edit lot
