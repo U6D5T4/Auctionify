@@ -6,7 +6,6 @@ using Auctionify.Core.Enums;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Quartz;
 using Quartz.Spi;
 
@@ -15,19 +14,16 @@ namespace Auctionify.Application.Scheduler.Jobs
 	public class GlobalLotsJob : IJob
 	{
 		private readonly IServiceScopeFactory _scopeFactory;
-		private readonly ILogger<GlobalLotsJob> _logger;
 		private readonly ISchedulerFactory _schedulerFactory;
 		private readonly IJobFactory _customJobFactory;
 
 		public GlobalLotsJob(
 			IServiceScopeFactory scopeFactory,
-			ILogger<GlobalLotsJob> logger,
 			ISchedulerFactory schedulerFactory,
 			IJobFactory customJobFactory
 		)
 		{
 			_scopeFactory = scopeFactory;
-			_logger = logger;
 			_schedulerFactory = schedulerFactory;
 			_customJobFactory = customJobFactory;
 		}
@@ -36,15 +32,11 @@ namespace Auctionify.Application.Scheduler.Jobs
 		{
 			using var scope = _scopeFactory.CreateScope();
 			var lotRepository = scope.ServiceProvider.GetRequiredService<ILotRepository>();
-			var lotStatusRepository =
-				scope.ServiceProvider.GetRequiredService<ILotStatusRepository>();
-			var bidRepository = scope.ServiceProvider.GetRequiredService<IBidRepository>();
 			var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
 			var jobSchedulerService =
 				scope.ServiceProvider.GetRequiredService<IJobSchedulerService>();
 
 			var lots = await lotRepository.Query().Include(l => l.LotStatus).ToListAsync();
-			var lotStatuses = await lotStatusRepository.Query().ToListAsync();
 
 			foreach (var lot in lots)
 			{
@@ -52,8 +44,8 @@ namespace Auctionify.Application.Scheduler.Jobs
 				{
 					if (lot.LotStatus.Name == AuctionStatus.Draft.ToString())
 					{
-						var modDateDifferenece = DateTime.UtcNow - lot.ModificationDate;
-						if (modDateDifferenece.Days >= 7)
+						var modDateDifference = DateTime.UtcNow - lot.ModificationDate;
+						if (modDateDifference.Days >= 7)
 						{
 							await lotRepository.DeleteAsync(lot);
 						}
@@ -71,12 +63,12 @@ namespace Auctionify.Application.Scheduler.Jobs
 							);
 						}
 					}
-					else if (lot.LotStatus.Name == AuctionStatus.Active.ToString())
+					else if (
+						lot.LotStatus.Name == AuctionStatus.Active.ToString()
+						&& lot.EndDate <= DateTime.UtcNow
+					)
 					{
-						if (lot.EndDate <= DateTime.UtcNow)
-						{
-							await jobSchedulerService.ScheduleLotFinishJob(lot.Id, DateTime.UtcNow);
-						}
+						await jobSchedulerService.ScheduleLotFinishJob(lot.Id, DateTime.UtcNow);
 					}
 				}
 			}
