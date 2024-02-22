@@ -39,9 +39,23 @@ namespace Auctionify.Infrastructure.Repositories
 
 			if (await reader.ReadAsync())
 			{
-				reportData.TotalItemsCount = reader.GetInt32(0);
-				reportData.SoldItemsCount = reader.GetInt32(1);
-				reportData.TotalSoldItemsValue = reader.GetDecimal(2);
+				reportData.TotalSoldItems = reader.GetInt32(0);
+				reportData.TotalCostOfSoldItems = reader.GetDecimal(1);
+			}
+
+			if (await reader.NextResultAsync())
+			{
+				while (await reader.ReadAsync())
+				{
+					var monthlyData = new MonthlyReportData
+					{
+						ReportMonth = reader.GetString(0),
+						SoldLotsCount = reader.GetInt32(1),
+						SoldLotsTotalCost = reader.GetDecimal(2),
+						CreatedLotsCount = reader.GetInt32(3)
+					};
+					reportData.MonthlyReports.Add(monthlyData);
+				}
 			}
 
 			return reportData;

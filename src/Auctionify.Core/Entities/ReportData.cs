@@ -1,9 +1,11 @@
-﻿namespace Auctionify.Application.Common.Models.Report
+﻿using Auctionify.Core.Entities;
+
+namespace Auctionify.Application.Common.Models.Report
 {
 	public class ReportData
 	{
-		public int TotalItemsCount { get; set; }
-		public int SoldItemsCount { get; set; }
-		public decimal TotalSoldItemsValue { get; set; }
+		public int TotalSoldItems { get; set; }
+		public decimal TotalCostOfSoldItems { get; set; }
+		public List<MonthlyReportData> MonthlyReports { get; set; } = new List<MonthlyReportData>();
 	}
 }
