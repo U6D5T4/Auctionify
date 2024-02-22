@@ -40,12 +40,22 @@ namespace Auctionify.UnitTests.GenerateReportTests
 				Email = "test@example.com",
 				IsDeleted = false
 			};
+
+			var monthlyReport = new MonthlyReportData
+			{
+				ReportMonth = "09",
+				CreatedLotsCount = 1,
+				SoldLotsCount = 1,
+				SoldLotsTotalCost = 1,
+			};
+
 			var reportData = new ReportData
 			{
-				TotalItemsCount = 10,
-				SoldItemsCount = 5,
-				TotalSoldItemsValue = 1000
+				TotalSoldItems = 10,
+				TotalCostOfSoldItems = 1000,
 			};
+
+			reportData.MonthlyReports.Add(monthlyReport);
 
 			var byteArray = new byte[] { 0x01, 0x02, 0x03 };
 
@@ -88,12 +98,22 @@ namespace Auctionify.UnitTests.GenerateReportTests
 				Email = "test@example.com",
 				IsDeleted = false
 			};
+
+			var monthlyReport = new MonthlyReportData
+			{
+				ReportMonth = "09",
+				CreatedLotsCount = 1,
+				SoldLotsCount = 1,
+				SoldLotsTotalCost = 1,
+			};
+
 			var reportData = new ReportData
 			{
-				TotalItemsCount = 10,
-				SoldItemsCount = 5,
-				TotalSoldItemsValue = 1000
+				TotalSoldItems = 10,
+				TotalCostOfSoldItems = 1000,
 			};
+
+			reportData.MonthlyReports.Add(monthlyReport);
 
 			var byteArray = new byte[] { 0x01, 0x02, 0x03 };
 
