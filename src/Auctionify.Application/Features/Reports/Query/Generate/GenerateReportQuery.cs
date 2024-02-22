@@ -20,22 +20,19 @@ public class GenerateReportHandler : IRequestHandler<GenerateReportQuery, byte[]
 	private readonly IReportDataRepository _reportDataRepository;
 	private readonly ICurrentUserService _currentUserService;
 	private readonly UserManager<User> _userManager;
-	private readonly IXlsxReportGeneratorService _xlsxReportGeneratorService;
-	private readonly IPdfReportGeneratorService _pdfReportGeneratorService;
+	private readonly IReportService _reportGeneratorService;
 
 	public GenerateReportHandler(
 		IReportDataRepository reportDataRepository,
 		ICurrentUserService currentUserService,
 		UserManager<User> userManager,
-		IXlsxReportGeneratorService xlsxReportGeneratorService,
-		IPdfReportGeneratorService pdfReportGeneratorService
+		IReportService reportGeneratorService
 	)
 	{
 		_reportDataRepository = reportDataRepository;
 		_currentUserService = currentUserService;
 		_userManager = userManager;
-		_xlsxReportGeneratorService = xlsxReportGeneratorService;
-		_pdfReportGeneratorService = pdfReportGeneratorService;
+		_reportGeneratorService = reportGeneratorService;
 	}
 
 	public async Task<byte[]> Handle(GenerateReportQuery request, CancellationToken cancellationToken)
@@ -49,14 +46,6 @@ public class GenerateReportHandler : IRequestHandler<GenerateReportQuery, byte[]
 			new ReportRequest { MonthsDuration = request.MonthsDuration, UserId = user.Id }
 			);
 
-		switch (request.Format)
-		{
-			case ReportType.PDF:
-				return await _pdfReportGeneratorService.GenerateReportAsync(reportData, user);
-			case ReportType.XLSX:
-				return await _xlsxReportGeneratorService.GenerateReportAsync(reportData, user);
-			default:
-				return Array.Empty<byte>();
-		}
+		return await _reportGeneratorService.GenerateReportAsync(reportData, user, request.Format);
 	}
 }

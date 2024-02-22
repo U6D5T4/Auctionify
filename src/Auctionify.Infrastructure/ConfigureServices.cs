@@ -148,9 +148,7 @@ namespace Auctionify.Infrastructure
 			services.AddScoped<IPhotoService, PhotoService>();
 			services.AddScoped<IWatchlistService, WatchlistService>();
 			services.AddTransient<IUserRoleDbContextService, UserRoleDbContextService>();
-
-			services.AddScoped<IPdfReportGeneratorService, PdfReportGeneratorService>();
-			services.AddScoped<IXlsxReportGeneratorService, XlsxReportGeneratorService>();
+			services.AddScoped<IReportService, ReportGeneratorService>();
 
 			return services;
 		}

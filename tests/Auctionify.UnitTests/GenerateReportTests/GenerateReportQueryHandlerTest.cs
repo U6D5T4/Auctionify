@@ -60,21 +60,20 @@ namespace Auctionify.UnitTests.GenerateReportTests
 			var byteArray = new byte[] { 0x01, 0x02, 0x03 };
 
 			var reportDataMock = new Mock<IReportDataRepository>();
-			var pdfReportServiceMock = new Mock<IPdfReportGeneratorService>();
+			var pdfReportServiceMock = new Mock<IReportService>();
 
 			reportDataMock
 				.Setup(x => x.GetReportDataAsync(It.IsAny<ReportRequest>()))
 				.ReturnsAsync(reportData);
 
 			pdfReportServiceMock
-				.Setup(x => x.GenerateReportAsync(It.IsAny<ReportData>(), It.IsAny<User>()))
+				.Setup(x => x.GenerateReportAsync(It.IsAny<ReportData>(), It.IsAny<User>(), ReportType.PDF))
 				.ReturnsAsync(byteArray);
 
 			var handler = new GenerateReportHandler(
 				reportDataMock.Object,
 				_currentUserService,
 				_userManager,
-				_xlsxReportGeneratorServiceMock.Object,
 				pdfReportServiceMock.Object
 			);
 
@@ -118,22 +117,21 @@ namespace Auctionify.UnitTests.GenerateReportTests
 			var byteArray = new byte[] { 0x01, 0x02, 0x03 };
 
 			var reportDataMock = new Mock<IReportDataRepository>();
-			var xlsxReportServiceMock = new Mock<IXlsxReportGeneratorService>();
+			var xlsxReportServiceMock = new Mock<IReportService>();
 
 			reportDataMock
 				.Setup(x => x.GetReportDataAsync(It.IsAny<ReportRequest>()))
 				.ReturnsAsync(reportData);
 
 			xlsxReportServiceMock
-				.Setup(x => x.GenerateReportAsync(It.IsAny<ReportData>(), It.IsAny<User>()))
+				.Setup(x => x.GenerateReportAsync(It.IsAny<ReportData>(), It.IsAny<User>(), ReportType.XLSX))
 				.ReturnsAsync(byteArray);
 
 			var handler = new GenerateReportHandler(
 				reportDataMock.Object,
 				_currentUserService,
 				_userManager,
-				xlsxReportServiceMock.Object,
-				_pdfReportGeneratorServiceMock.Object
+				xlsxReportServiceMock.Object
 			);
 
 			var query = new GenerateReportQuery { Format = ReportType.XLSX, MonthsDuration = 1 };

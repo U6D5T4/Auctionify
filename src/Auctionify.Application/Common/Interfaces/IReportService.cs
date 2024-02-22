@@ -3,13 +3,8 @@ using Auctionify.Core.Entities;
 
 namespace Auctionify.Application.Common.Interfaces
 {
-	public interface IPdfReportGeneratorService 
+	public interface IReportService
 	{
-		Task<byte[]> GenerateReportAsync(ReportData reportData, User user);
-	}
-
-	public interface IXlsxReportGeneratorService 
-	{
-		Task<byte[]> GenerateReportAsync(ReportData reportData, User user);
+		Task<byte[]> GenerateReportAsync(ReportData reportData, User user, ReportType format);
 	}
 }
