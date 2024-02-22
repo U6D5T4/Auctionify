@@ -109,7 +109,7 @@ namespace Auctionify.Application.Scheduler.Jobs
 						ConversationId = conversation.Id,
 						Body =
 							$"Congratulations, Dear Buyer! "
-							+ $"My name is {lot.Seller.FirstName} {lot.Seller.LastName} and I am the seller of the lot with id: {lotId}. "
+							+ $"My name is {lot.Seller.FirstName} {lot.Seller.LastName} and I am the seller of the lot: \"{lot.Title}\". "
 							+ $"I am happy to inform you that you won this auction with a bid of {highestBid.NewPrice} {lot.Currency.Code}! "
 							+ $"Access the lot details through link: {appUrlOptions.ClientApp}/get-lot/{lotId}",
 						IsRead = false,
