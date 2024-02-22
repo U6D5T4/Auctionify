@@ -317,7 +317,8 @@
                     <li>Item ID:</li>
                     <li>Start date:</li>
                     <li>End date:</li>
-                    <li *ngIf="isResponseForBuyer(lotData)">Seller email:</li>
+                    <li>Seller profile:</li>
+                    <li>Seller email:</li>
                 </ul>
             </div>
             <div class="right__info">
@@ -325,9 +326,12 @@
                     <li>{{ lotData.id }}</li>
                     <li>{{ formatStartDate(lotData.startDate) }}</li>
                     <li>{{ formatEndDate(lotData.endDate) }}</li>
-                    <li *ngIf="isResponseForBuyer(lotData)">
-                        {{ lotData.sellerEmail }}
+                    <li>
+                        <a [routerLink]="['/profile/user', lotData.sellerId]">
+                            {{ lotData.sellerFullName }}
+                        </a>
                     </li>
+                    <li>{{ lotData.sellerEmail }}</li>
                 </ul>
             </div>
         </div>
