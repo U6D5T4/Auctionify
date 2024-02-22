@@ -13,16 +13,12 @@ namespace Auctionify.UnitTests.GenerateReportTests
 		#region Initialization
 
 		private readonly Mock<IReportDataRepository> _reportDataRepositoryMock;
-		private readonly Mock<IXlsxReportGeneratorService> _xlsxReportGeneratorServiceMock;
-		private readonly Mock<IPdfReportGeneratorService> _pdfReportGeneratorServiceMock;
 		private readonly UserManager<User> _userManager;
 		private readonly ICurrentUserService _currentUserService;
 
 		public GenerateReportQueryHandlerTest()
 		{
 			_reportDataRepositoryMock = new Mock<IReportDataRepository>();
-			_xlsxReportGeneratorServiceMock = new Mock<IXlsxReportGeneratorService>();
-			_pdfReportGeneratorServiceMock = new Mock<IPdfReportGeneratorService>();
 
 			_userManager = EntitiesSeeding.GetUserManagerMock();
 			_currentUserService = EntitiesSeeding.GetCurrentUserServiceMock();

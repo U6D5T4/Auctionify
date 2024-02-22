@@ -8,7 +8,6 @@ using Auctionify.Infrastructure.Interceptors;
 using Auctionify.Infrastructure.Persistence;
 using Auctionify.Infrastructure.Repositories;
 using Auctionify.Infrastructure.Services;
-using Auctionify.Infrastructure.Services.ReportGeneratingServices;
 using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
