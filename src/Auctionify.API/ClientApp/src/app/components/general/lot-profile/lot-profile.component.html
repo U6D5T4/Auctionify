@@ -211,7 +211,7 @@
                                 lotData.bids.length == 0 ||
                                 lotData.bids.at(0)?.buyerId !==
                                     this.currentUserId ||
-                                lotData.lotStatus.name !== 'Active'
+                                lotData.lotStatus.id !== LotStatus.Active
                             "
                         >
                             Withdraw
@@ -222,7 +222,9 @@
                             type="button"
                             (click)="openBidModal()"
                             color="primary"
-                            [disabled]="lotData.lotStatus.name !== 'Active'"
+                            [disabled]="
+                                lotData.lotStatus.id !== LotStatus.Active
+                            "
                         >
                             Place a bid
                         </button>
@@ -236,7 +238,7 @@
                             (click)="deleteLot()"
                             [disabled]="
                                 isSellerOwnsLot(lotData) ||
-                                lotData.lotStatus.name === 'Sold'
+                                lotData.lotStatus.id === LotStatus.Sold
                             "
                         >
                             <mat-spinner
@@ -257,8 +259,8 @@
                             color="primary"
                             [disabled]="
                                 isSellerOwnsLot(lotData) ||
-                                lotData.lotStatus.name === 'Active' ||
-                                lotData.lotStatus.name === 'Sold'
+                                lotData.lotStatus.id === LotStatus.Active ||
+                                lotData.lotStatus.id === LotStatus.Sold
                             "
                         >
                             <mat-icon>edit</mat-icon>
