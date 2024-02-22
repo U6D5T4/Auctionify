@@ -64,7 +64,7 @@ namespace Auctionify.UnitTests.GenerateReportTests
 
 			pdfReportServiceMock
 				.Setup(x => x.GenerateReportAsync(It.IsAny<ReportData>(), It.IsAny<User>(), ReportType.PDF))
-				.ReturnsAsync(byteArray);
+				.Returns(byteArray);
 
 			var handler = new GenerateReportHandler(
 				reportDataMock.Object,
@@ -121,7 +121,7 @@ namespace Auctionify.UnitTests.GenerateReportTests
 
 			xlsxReportServiceMock
 				.Setup(x => x.GenerateReportAsync(It.IsAny<ReportData>(), It.IsAny<User>(), ReportType.XLSX))
-				.ReturnsAsync(byteArray);
+				.Returns(byteArray);
 
 			var handler = new GenerateReportHandler(
 				reportDataMock.Object,

@@ -10,7 +10,7 @@ namespace Auctionify.Infrastructure.Services
 {
 	public class ReportGeneratorService : IReportService
 	{
-		public async Task<byte[]> GenerateReportAsync(ReportData reportData, User user, ReportType format)
+		public byte[] GenerateReportAsync(ReportData reportData, User user, ReportType format)
 		{
 			switch (format)
 			{
@@ -35,15 +35,13 @@ namespace Auctionify.Infrastructure.Services
 
 					page.Content().Column(column =>
 					{
-						column.Item().Text($"User: {user.FirstName} {user.LastName}", 
-							TextStyle.Default.Bold().Size(16));
-						column.Item().Text($"Total Sold Items: {reportData.TotalSoldItems}", 
-							TextStyle.Default.Size(14));
-						column.Item().Text($"Total Cost Of Sold Items: {reportData.TotalCostOfSoldItems.ToString()}", TextStyle.Default.Size(14));
+						column.Item().Text($"User: {user.FirstName} {user.LastName}").Bold().FontSize(16);
+						column.Item().Text($"Total Sold Items: {reportData.TotalSoldItems}").Bold().FontSize(14);
+						column.Item().Text($"Total Cost Of Sold Items: {reportData.TotalCostOfSoldItems.ToString()}").FontSize(14);
 
 						column.Item().Padding(5);
 
-						column.Item().Text("Monthly Breakdown:", TextStyle.Default.Bold().Size(16));
+						column.Item().Text("Monthly Breakdown:").Bold().FontSize(16);
 
 						column.Item().Table(table =>
 						{
@@ -57,10 +55,10 @@ namespace Auctionify.Infrastructure.Services
 
 							table.Header(header =>
 							{
-								header.Cell().Text("Month", TextStyle.Default.Bold());
-								header.Cell().Text("Sold Lots Count", TextStyle.Default.Bold());
-								header.Cell().Text("Total Sold Amount", TextStyle.Default.Bold());
-								header.Cell().Text("Created Lots Count", TextStyle.Default.Bold());
+								header.Cell().Text("Month").Bold();
+								header.Cell().Text("Sold Lots Count").Bold();
+								header.Cell().Text("Total Sold Amount").Bold();
+								header.Cell().Text("Created Lots Count").Bold();
 							});
 
 							foreach (var monthlyData in reportData.MonthlyReports)

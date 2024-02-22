@@ -46,6 +46,6 @@ public class GenerateReportHandler : IRequestHandler<GenerateReportQuery, byte[]
 			new ReportRequest { MonthsDuration = request.MonthsDuration, UserId = user.Id }
 			);
 
-		return await _reportGeneratorService.GenerateReportAsync(reportData, user, request.Format);
+		return _reportGeneratorService.GenerateReportAsync(reportData, user, request.Format);
 	}
 }
