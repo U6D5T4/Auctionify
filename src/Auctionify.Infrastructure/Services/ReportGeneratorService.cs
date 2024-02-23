@@ -10,7 +10,7 @@ namespace Auctionify.Infrastructure.Services
 {
 	public class ReportGeneratorService : IReportService
 	{
-		public byte[] GenerateReportAsync(ReportData reportData, User user, ReportType format)
+		public byte[] GenerateReport(ReportData reportData, User user, ReportType format)
 		{
 			switch (format)
 			{

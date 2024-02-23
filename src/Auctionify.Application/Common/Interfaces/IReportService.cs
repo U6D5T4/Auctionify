@@ -5,6 +5,6 @@ namespace Auctionify.Application.Common.Interfaces
 {
 	public interface IReportService
 	{
-		byte[] GenerateReportAsync(ReportData reportData, User user, ReportType format);
+		byte[] GenerateReport(ReportData reportData, User user, ReportType format);
 	}
 }
