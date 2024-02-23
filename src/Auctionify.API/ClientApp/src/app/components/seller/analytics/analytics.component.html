@@ -1,1 +1,61 @@
-<p>analytics works!</p>
+<div class="analytics">
+    <h1>Analytics</h1>
+    <section class="analytics__main">
+        <div class="analytics__left">
+            <div class="analytics__right-middle">
+                <div class="analytics__element">
+                    <div class="analytics__element-inner">
+                        <div class="analytics__element-head">
+                            <mat-icon>receipt_long</mat-icon>
+                            <h2 class="">Net income</h2>
+                        </div>
+                        <section class="analytics__element-main">
+                            <apx-chart
+                                [series]="chartOptions.series!"
+                                [chart]="chartOptions.chart!"
+                                [xaxis]="chartOptions.xaxis!"
+                                [stroke]="chartOptions.stroke!"
+                                [tooltip]="chartOptions.tooltip!"
+                                [dataLabels]="chartOptions.dataLabels!"
+                            ></apx-chart>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="analytics__right">
+            <div class="analytics__element">
+                <div class="analytics__element-inner">
+                    <apx-chart
+                        [series]="polarChartOptions.series!"
+                        [chart]="polarChartOptions.chart!"
+                        [labels]="polarChartOptions.labels!"
+                        [title]="polarChartOptions.title!"
+                        [theme]="polarChartOptions.theme!"
+                        [fill]="polarChartOptions.fill!"
+                        [yaxis]="polarChartOptions.yaxis!"
+                        [stroke]="polarChartOptions.stroke!"
+                        [legend]="polarChartOptions.legend!"
+                        [plotOptions]="polarChartOptions.plotOptions!"
+                    ></apx-chart>
+                </div>
+            </div>
+            <div class="analytics__element">
+                <div class="analytics__element-inner">
+                    <apx-chart
+                        [series]="polarChartOptions.series!"
+                        [chart]="polarChartOptions.chart!"
+                        [labels]="polarChartOptions.labels!"
+                        [title]="polarChartOptions.title!"
+                        [theme]="polarChartOptions.theme!"
+                        [fill]="polarChartOptions.fill!"
+                        [yaxis]="polarChartOptions.yaxis!"
+                        [stroke]="polarChartOptions.stroke!"
+                        [legend]="polarChartOptions.legend!"
+                        [plotOptions]="polarChartOptions.plotOptions!"
+                    ></apx-chart>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

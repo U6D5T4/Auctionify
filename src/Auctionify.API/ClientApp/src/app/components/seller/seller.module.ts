@@ -21,6 +21,7 @@ import { UiElementsModule } from 'src/app/ui-elements/ui-elements.module';
 import { GeneralModule } from '../general/general.module';
 import { DashboardDraftLotsComponent } from './components/dashboard-draft-lots/dashboard-draft-lots.component';
 import { AnalyticsComponent } from './analytics/analytics.component';
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 @NgModule({
     declarations: [
@@ -48,8 +49,9 @@ import { AnalyticsComponent } from './analytics/analytics.component';
         MatSnackBarModule,
         UiElementsModule,
         GeneralModule,
+        NgApexchartsModule
     ],
     exports: [CreateLotComponent, DashboardComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class SellerModule {}
+export class SellerModule { }
