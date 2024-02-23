@@ -1,6 +1,7 @@
 import { formatDate } from '@angular/common';
 import {
     AfterViewInit,
+    ChangeDetectorRef,
     Component,
     ElementRef,
     EventEmitter,
@@ -147,12 +148,14 @@ export class ConversationWindowComponent
     }
 
     scrollToBottom() {
-        let mainWindowScrollHeight =
-            this.mainConversationWindow.nativeElement.scrollHeight;
-        this.mainConversationWindow.nativeElement.scrollTo({
-            top: mainWindowScrollHeight,
-            behavior: 'smooth',
-        });
+        setTimeout(() => {
+            let mainWindowScrollHeight =
+                this.mainConversationWindow.nativeElement.scrollHeight;
+            this.mainConversationWindow.nativeElement.scrollTo({
+                top: mainWindowScrollHeight,
+                behavior: 'auto',
+            });
+        }, 500);
     }
 
     groupMessagesByDate(messages: ChatMessage[]): GroupedMessages[] {

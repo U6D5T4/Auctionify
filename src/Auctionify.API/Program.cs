@@ -26,7 +26,7 @@ namespace Auctionify.API
 				var builder = WebApplication.CreateBuilder(args);
 
 				builder.Services.AddSignalR();
-				builder.Services.AddApplicationServices();
+				builder.Services.AddApplicationServices(builder.Configuration);
 				builder.Services.AddInfrastructureServices(builder.Configuration);
 				builder.Services.AddQuartzService();
 
