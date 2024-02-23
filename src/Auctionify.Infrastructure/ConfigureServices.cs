@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using QuestPDF.Infrastructure;
 using System.Text;
 
 namespace Auctionify.Infrastructure
@@ -125,6 +126,8 @@ namespace Auctionify.Infrastructure
 
 			services.AddScoped<ApplicationDbContextInitializer>();
 
+			QuestPDF.Settings.License = LicenseType.Community;
+
 			services.AddScoped<IIdentityService, IdentityService>();
 			services.AddScoped<ICategoryRepository, CategoryRepository>();
 			services.AddScoped<ILotRepository, LotRepository>();
@@ -139,12 +142,14 @@ namespace Auctionify.Infrastructure
 			services.AddScoped<IChatMessageRepository, ChatMessageRepository>();
 			services.AddScoped<IRateRepository, RateRepository>();
 			services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
-
-			services.AddTransient<IEmailService, EmailService>();
+			services.AddScoped<IReportDataRepository, ReportDataRepository>();
+			
+            services.AddTransient<IEmailService, EmailService>();
 			services.AddSingleton<IBlobService, BlobService>();
 			services.AddScoped<IPhotoService, PhotoService>();
 			services.AddScoped<IWatchlistService, WatchlistService>();
 			services.AddTransient<IUserRoleDbContextService, UserRoleDbContextService>();
+			services.AddScoped<IReportService, ReportGeneratorService>();
 
 			return services;
 		}
