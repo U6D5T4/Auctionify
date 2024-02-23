@@ -12,6 +12,8 @@ namespace Auctionify.Infrastructure.Data.Config
 			builder.Property(l => l.State).HasMaxLength(50).IsRequired(false);
 			builder.Property(l => l.City).HasMaxLength(50).IsRequired(true);
 			builder.Property(l => l.Address).HasMaxLength(150).IsRequired(true);
+			builder.Property(l => l.Latitude).IsRequired(true);
+			builder.Property(l => l.Longitude).IsRequired(true);
 		}
 	}
 }

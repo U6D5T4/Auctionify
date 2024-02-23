@@ -1,6 +1,10 @@
-﻿using Auctionify.Application.Common.Interfaces.Repositories;
+﻿using Auctionify.Application.Common.Interfaces;
+using Auctionify.Application.Common.Interfaces.Repositories;
+using Auctionify.Core.Entities;
 using Auctionify.Core.Enums;
 using FluentValidation;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Auctionify.Application.Features.Users.Commands.AddBidForLot
 {
@@ -9,16 +13,22 @@ namespace Auctionify.Application.Features.Users.Commands.AddBidForLot
 		private readonly IBidRepository _bidRepository;
 		private readonly ILotRepository _lotRepository;
 		private readonly ILotStatusRepository _lotStatusRepository;
+		private readonly UserManager<User> _userManager;
+		private readonly ICurrentUserService _currentUserService;
 
 		public AddBidForLotCommandValidator(
 			IBidRepository bidRepository,
 			ILotRepository lotRepository,
-			ILotStatusRepository lotStatusRepository
+			ILotStatusRepository lotStatusRepository,
+			UserManager<User> userManager,
+			ICurrentUserService currentUserService
 		)
 		{
 			_bidRepository = bidRepository;
 			_lotRepository = lotRepository;
 			_lotStatusRepository = lotStatusRepository;
+			_userManager = userManager;
+			_currentUserService = currentUserService;
 
 			ClassLevelCascadeMode = CascadeMode.Stop;
 
@@ -126,6 +136,37 @@ namespace Auctionify.Application.Features.Users.Commands.AddBidForLot
 				.WithMessage("Bid must be greater than the current bid of the lot")
 				.OverridePropertyName("Bid")
 				.WithName("Bid");
+
+			// If user has Buyer and Seller roles at the same time - he cannot participate in his own auctions.
+			RuleFor(x => x)
+				.Cascade(CascadeMode.Stop)
+				.MustAsync(
+					async (request, cancellationToken) =>
+					{
+						var lot = await _lotRepository.GetAsync(
+							predicate: x => x.Id == request.LotId,
+							cancellationToken: cancellationToken
+						);
+
+						if (lot is not null)
+						{
+							var currentUser = await _userManager.Users.FirstOrDefaultAsync(
+								u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
+								cancellationToken: cancellationToken
+							);
+
+							if (currentUser is not null && lot.SellerId == currentUser.Id)
+							{
+								return false;
+							}
+						}
+
+						return true;
+					}
+				)
+				.WithMessage("You cannot bid on your own lot")
+				.OverridePropertyName("LotId")
+				.WithName("Lot Id");
 		}
 	}
 }

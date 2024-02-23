@@ -27,7 +27,6 @@ export class WithdrawBidComponent implements OnInit {
         if (this.bidId !== null) {
             this.apiClient.removeBid(this.bidId).subscribe({
                 next: (response) => {
-                    console.log(response);
                     this.showSnackBar('Bid successfully withdrawn', 'success');
                     this.dialogRef.close();
                 },

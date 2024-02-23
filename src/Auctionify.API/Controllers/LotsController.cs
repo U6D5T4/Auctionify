@@ -6,8 +6,8 @@ using Auctionify.Application.Features.Lots.Commands.Update;
 using Auctionify.Application.Features.Lots.Commands.UpdateLotStatus;
 using Auctionify.Application.Features.Lots.Queries.Filter;
 using Auctionify.Application.Features.Lots.Queries.GetAll;
-using Auctionify.Application.Features.Lots.Queries.GetAllLotsWithStatusForSeller;
 using Auctionify.Application.Features.Lots.Queries.GetAllByName;
+using Auctionify.Application.Features.Lots.Queries.GetAllLotsWithStatusForSeller;
 using Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer;
 using Auctionify.Application.Features.Lots.Queries.GetByIdForSeller;
 using Auctionify.Application.Features.Lots.Queries.GetHighestLotPrice;
@@ -15,6 +15,8 @@ using Auctionify.Core.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Auctionify.Application.Common.Options;
+using Microsoft.Extensions.Options;
 
 namespace Auctionify.API.Controllers
 {
@@ -23,10 +25,12 @@ namespace Auctionify.API.Controllers
 	public class LotsController : ControllerBase
 	{
 		private readonly IMediator _mediator;
+		private readonly GoogleMapOptions _googleMapOptions;
 
-		public LotsController(IMediator mediator)
+		public LotsController(IMediator mediator, IOptions<GoogleMapOptions> googleMapOptions)
 		{
 			_mediator = mediator;
+			_googleMapOptions = googleMapOptions.Value;
 		}
 
 		[HttpPost]
@@ -173,20 +177,43 @@ namespace Auctionify.API.Controllers
 
 		[HttpGet("sellers/active")]
 		[Authorize(Roles = "Seller")]
-		public async Task<IActionResult> GetAllActiveLotsForSeller([FromQuery] PageRequest pageRequest)
+		public async Task<IActionResult> GetAllActiveLotsForSeller(
+			[FromQuery] PageRequest pageRequest
+		)
 		{
-			var result = await _mediator.Send(new GetAllLotsWithStatusForSellerQuery { LotStatus = AuctionStatus.Active, PageRequest = pageRequest });
+			var result = await _mediator.Send(
+				new GetAllLotsWithStatusForSellerQuery
+				{
+					LotStatus = AuctionStatus.Active,
+					PageRequest = pageRequest
+				}
+			);
 
 			return Ok(result);
 		}
 
-        [HttpGet("sellers/draft")]
-        [Authorize(Roles = "Seller")]
-        public async Task<IActionResult> GetAllDraftLotsForSeller([FromQuery] PageRequest pageRequest)
-        {
-            var result = await _mediator.Send(new GetAllLotsWithStatusForSellerQuery { LotStatus = AuctionStatus.Draft, PageRequest = pageRequest });
+		[HttpGet("sellers/draft")]
+		[Authorize(Roles = "Seller")]
+		public async Task<IActionResult> GetAllDraftLotsForSeller(
+			[FromQuery] PageRequest pageRequest
+		)
+		{
+			var result = await _mediator.Send(
+				new GetAllLotsWithStatusForSellerQuery
+				{
+					LotStatus = AuctionStatus.Draft,
+					PageRequest = pageRequest
+				}
+			);
 
             return Ok(result);
         }
-    }
+
+		[HttpGet("google-map-apikey")]
+		[Authorize]
+		public IActionResult GetGoogleClientId()
+		{
+			return Ok(_googleMapOptions.ApiKey);
+		}
+	}
 }

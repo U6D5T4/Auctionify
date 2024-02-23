@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { Rate } from 'src/app/models/rates/rate-models';
 import { SellerModel, BuyerModel } from 'src/app/models/users/user-models';
@@ -14,8 +15,14 @@ export class AverageRatingItemComponent {
     userProfileData: BuyerModel | SellerModel | null = null;
     @Input()
     IsBtnVisible!: boolean;
+    @Input()
+    width!: number;
 
-    constructor(public ratesCalculator: RateCalculatorService) {}
+    constructor(
+        public ratesCalculator: RateCalculatorService,
+        private activeRoute: ActivatedRoute,
+        private router: Router
+    ) {}
 
     getPercentage(count: number): string {
         const total = this.getTotalCount();
@@ -43,5 +50,15 @@ export class AverageRatingItemComponent {
 
     isUserHaveRates(): boolean {
         return this.getTotalCount() == 0;
+    }
+
+    onShowAllCommentsClick() {
+        const userId = this.activeRoute.snapshot.params['id'];
+
+        if (userId) {
+            this.router.navigate(['profile', 'user', userId, 'rating']);
+        } else {
+            this.router.navigate(['rating']);
+        }
     }
 }

@@ -37,6 +37,8 @@ namespace Auctionify.Infrastructure
 
 			services.Configure<AppOptions>(configuration.GetSection(AppOptions.App));
 
+			services.Configure<GoogleMapOptions>(configuration.GetSection(GoogleMapOptions.GoogleMap));
+
 			// Register Google sign-in options
 			services.Configure<SignInWithGoogleOptions>(
 				configuration.GetSection(SignInWithGoogleOptions.Google)
@@ -108,7 +110,7 @@ namespace Auctionify.Infrastructure
 							if (
 								!string.IsNullOrEmpty(accessToken)
 								&& path.StartsWithSegments(configuration["SignalR:HubStartPath"])
-								)
+							)
 							{
 								context.Token = accessToken;
 							}
@@ -136,11 +138,13 @@ namespace Auctionify.Infrastructure
 			services.AddScoped<IConversationRepository, ConversationRepository>();
 			services.AddScoped<IChatMessageRepository, ChatMessageRepository>();
 			services.AddScoped<IRateRepository, RateRepository>();
+			services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
 
-			services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<IEmailService, EmailService>();
 			services.AddSingleton<IBlobService, BlobService>();
 			services.AddScoped<IPhotoService, PhotoService>();
 			services.AddScoped<IWatchlistService, WatchlistService>();
+			services.AddTransient<IUserRoleDbContextService, UserRoleDbContextService>();
 
 			return services;
 		}

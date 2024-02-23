@@ -30,6 +30,11 @@ import {
     UpdateUserProfileModel,
 } from './models/users/user-models';
 import {
+    AllChatMessagesResponse,
+    Conversation,
+    ConversationsResponse,
+} from './models/chats/chat-models';
+import {
     Rate,
     RatePaginationModel,
     RateResponse,
@@ -145,6 +150,65 @@ export class Client {
             })
         );
     }
+
+    createNewUserRole(role: string): Observable<LoginResponse> {
+        let url_ = this.baseUrl + '/api/auth/create-new-user-role';
+
+        const formData = new FormData();
+
+        formData.append('role', role);
+
+        let options_: any = {
+            body: formData,
+            observe: 'response',
+            headers: new HttpHeaders({ Accept: 'text/json' }),
+        };
+
+        return this.http.request('post', url_, options_).pipe(
+            mergeMap((response: any): Observable<LoginResponse> => {
+                let data: LoginResponse = {};
+
+                if (response.body !== null) {
+                    data = response.body;
+                }
+
+                return of(data);
+            }),
+            catchError((error) => {
+                return throwError(() => error);
+            })
+        );
+    }
+
+    loginWithSelectedRole(role: string): Observable<LoginResponse> {
+        let url_ = this.baseUrl + '/api/auth/login-with-selected-role';
+
+        const formData = new FormData();
+
+        formData.append('role', role);
+
+        let options_: any = {
+            body: formData,
+            observe: 'response',
+            headers: new HttpHeaders({ Accept: 'text/json' }),
+        };
+
+        return this.http.request('post', url_, options_).pipe(
+            mergeMap((response: any): Observable<LoginResponse> => {
+                let data: LoginResponse = {};
+
+                if (response.body !== null) {
+                    data = response.body;
+                }
+
+                return of(data);
+            }),
+            catchError((error) => {
+                return throwError(() => error);
+            })
+        );
+    }
+
     signUpWithGoogle(userData: any): Observable<any> {
         const header = new HttpHeaders().set(
             'Content-type',
@@ -169,6 +233,27 @@ export class Client {
             headers: header,
             withCredentials: true,
         });
+    }
+
+    loadApiKeyFor(): Observable<string> {
+        let url_ = this.baseUrl + '/api/lots/google-map-apikey';
+
+        let options_: any = {
+            responseType: 'text',
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/plain',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<string> => {
+                if (response.body !== null) {
+                    return of(response.body as string);
+                } else return throwError(() => new Error('data is empty!'));
+            })
+        );
     }
 
     register(
@@ -306,6 +391,8 @@ export class Client {
         formData.append('city', body.city);
         formData.append('address', body.address);
         formData.append('country', body.country);
+        formData.append('latitude', body.latitude);
+        formData.append('longitude', body.longitude);
         formData.append('startDate', new Date(body.startDate!).toISOString());
         formData.append('endDate', new Date(body.endDate!).toISOString());
         formData.append('startingPrice', body.startingPrice?.toString() ?? '');
@@ -347,6 +434,8 @@ export class Client {
         formData.append('city', body.city);
         formData.append('address', body.address);
         formData.append('country', body.country);
+        formData.append('latitude', body.latitude);
+        formData.append('longitude', body.longitude);
         formData.append('startDate', new Date(body.startDate!).toISOString());
         formData.append('endDate', new Date(body.endDate!).toISOString());
         formData.append('startingPrice', body.startingPrice?.toString() ?? '');
@@ -417,6 +506,44 @@ export class Client {
 
                     return of(data);
                 } else return throwError(() => new Error('data is empty!'));
+            })
+        );
+    }
+
+    getUserOwnRateLot(lotId: number): Observable<Rate> {
+        let url_ = this.baseUrl + `/api/rates/senders/${lotId}`;
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            map((response: any): Rate => {
+                return response.body;
+            })
+        );
+    }
+
+    getUserRates(userId: number): Observable<Rate[]> {
+        let url_ = this.baseUrl + `/api/users/${userId}/rates`;
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<Rate[]> => {
+                if (response.body !== null) {
+                    return of(response.body.items);
+                } else return of([]);
             })
         );
     }
@@ -516,7 +643,6 @@ export class Client {
 
         return this.http.get<BidDto[]>(url, { params, headers }).pipe(
             catchError((error: any) => {
-                console.error('Error fetching bids:', error);
                 return throwError(() => new Error('Failed to fetch bids'));
             }),
             map((response: any): BidDto[] => {
@@ -666,8 +792,6 @@ export class Client {
         let url_ = `${
             this.baseUrl
         }/api/auth/forget-password?email=${encodeURIComponent(email)}`;
-
-        console.log(email);
 
         let options_: any = {
             observe: 'response',
@@ -1047,12 +1171,117 @@ export class Client {
         );
     }
 
+    getAllUserConversations(): Observable<ConversationsResponse> {
+        let url_ = this.baseUrl + `/api/chats/users/conversations`;
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<ConversationsResponse> => {
+                return of(response.body);
+            })
+        );
+    }
+
+    getAllConversationChatMessages(
+        conversationId: number
+    ): Observable<AllChatMessagesResponse> {
+        let url_ =
+            this.baseUrl +
+            `/api/chats/users/conversations/${conversationId}/messages`;
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<AllChatMessagesResponse> => {
+                return of(response.body);
+            })
+        );
+    }
+
+    sendChatMessage(conversationId: number, body: string): Observable<boolean> {
+        let url_ =
+            this.baseUrl +
+            `/api/chats/users/conversations/${conversationId}/messages`;
+
+        let form = new FormData();
+
+        form.append('body', body);
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                Accept: 'text/json',
+            }),
+            body: form,
+        };
+
+        return this.http.request('post', url_, options_).pipe(
+            mergeMap((response: any): Observable<boolean> => {
+                return of(true);
+            })
+        );
+    }
+
+    chatMessageRead(messageId: number): Observable<boolean> {
+        let url_ =
+            this.baseUrl +
+            `/api/chats/users/conversations/messages/${messageId}`;
+
+        let options_: any = {
+            observe: 'response',
+            headers: new HttpHeaders({
+                Accept: 'text/json',
+            }),
+        };
+
+        return this.http.request('put', url_, options_).pipe(
+            mergeMap((response: any): Observable<boolean> => {
+                return of(true);
+            })
+        );
+    }
+
     deleteAccount(): Observable<any> {
         let url_ = this.baseUrl + `/api/users`;
 
         return this.http.request('delete', url_).pipe(
             catchError((error) => {
                 return throwError(() => error.error);
+            })
+        );
+    }
+
+    subscribeUserToPro(): Observable<boolean> {
+        let url_ = this.baseUrl + `/api/subscriptions/pro/create`;
+
+        return this.http.request('post', url_).pipe(
+            map((res: any) => {
+                console.log(res);
+                return true;
+            })
+        );
+    }
+
+    unsubscribeUserFromPro(): Observable<boolean> {
+        let url_ = this.baseUrl + `/api/subscriptions/pro/delete`;
+
+        return this.http.request('delete', url_).pipe(
+            map((res: any) => {
+                console.log(res);
+                return true;
             })
         );
     }
@@ -1161,6 +1390,8 @@ export interface LocationDto {
     city: string;
     country: string;
     address: string;
+    latitude: string;
+    longitude: string;
     state: string | null;
 }
 
@@ -1309,6 +1540,7 @@ export interface TokenModel {
     expireDate: string;
     role: UserRole;
     userId: number;
+    roles: string[];
 }
 
 export interface RegisterResponse {

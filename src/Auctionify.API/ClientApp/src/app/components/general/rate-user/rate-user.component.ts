@@ -70,7 +70,7 @@ export class RateUserComponent implements OnInit {
                     this.errorMessage = '';
                     this.showSnackBar('Rate submitted successfully', 'success');
                     this.isLoading = false;
-                    this.router.navigate(['/home']);
+                    this.router.navigate(['/get-lot', this.lotId]);
                 },
                 error: (error) => {
                     if (
@@ -90,7 +90,7 @@ export class RateUserComponent implements OnInit {
                     this.errorMessage = '';
                     this.showSnackBar('Rate submitted successfully', 'success');
                     this.isLoading = false;
-                    this.router.navigate(['/home']);
+                    this.router.navigate(['/get-lot', this.lotId]);
                 },
                 error: (error) => {
                     if (
@@ -149,5 +149,9 @@ export class RateUserComponent implements OnInit {
 
     isUserSeller(): boolean {
         return this.authorizeService.isUserSeller();
+    }
+
+    isUserBuyer(): boolean {
+        return this.authorizeService.isUserBuyer();
     }
 }

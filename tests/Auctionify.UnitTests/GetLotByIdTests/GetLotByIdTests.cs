@@ -37,6 +37,7 @@ namespace Auctionify.UnitTests.GetLotByIdTests
 				ctx => ctx.Files,
 				mockDbContext
 			);
+
 			var blobStorageOptionsMock = new Mock<IOptions<AzureBlobStorageOptions>>();
 			var configuration = new MapperConfiguration(
 				cfg =>

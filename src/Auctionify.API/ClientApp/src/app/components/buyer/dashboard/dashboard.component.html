@@ -41,12 +41,7 @@
                                 </a>
                             </p>
                             <p class="auction__description">
-                                {{ auction.description | slice : 0 : 150 }}
-                                {{
-                                    auction.description.length > 150
-                                        ? '...'
-                                        : ''
-                                }}
+                                {{ auction.description }}
                             </p>
                         </div>
                         <div class="auction__price">
@@ -265,9 +260,7 @@
     <div class="dashboard__container-main">
         <div class="dashboard__rating-section">
             <div class="dashboard__rating-left">
-                <div class="dashboard__rating-title">
-                    <h1>Rating & Review</h1>
-                </div>
+                <h2 class="dashboard__rating-title">Rating & Review</h2>
                 <div class="dashboard__options">
                     <button
                         routerLink="/rating"
@@ -289,6 +282,7 @@
                         <app-average-rating-item
                             [userProfileData]="userProfileData"
                             [IsBtnVisible]="IsBtnVisible"
+                            [width]="averageRatingWidth"
                         ></app-average-rating-item>
                     </div>
                     <div class="review">

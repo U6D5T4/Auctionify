@@ -10,6 +10,7 @@ export interface SellerModel {
     averageRate: number;
     ratesCount: number | null;
     starCounts?: { [key: number]: number };
+    isPro: boolean;
 }
 
 export interface BuyerModel {
@@ -27,6 +28,7 @@ export interface BuyerModel {
 }
 
 export interface GetUserById {
+    id: number;
     firstName: string | null;
     lastName: string | null;
     email: string;
@@ -56,4 +58,5 @@ export interface UserDto {
     email: string;
     phoneNumber: string | null;
     profilePicture: string | null;
+    isDeleted: boolean;
 }
