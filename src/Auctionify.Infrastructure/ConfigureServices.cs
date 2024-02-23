@@ -140,7 +140,7 @@ namespace Auctionify.Infrastructure
 			services.AddScoped<IRateRepository, RateRepository>();
 			services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
 
-            services.AddTransient<IEmailService, EmailService>();
+			services.AddTransient<IEmailService, EmailService>();
 			services.AddSingleton<IBlobService, BlobService>();
 			services.AddScoped<IPhotoService, PhotoService>();
 			services.AddScoped<IWatchlistService, WatchlistService>();

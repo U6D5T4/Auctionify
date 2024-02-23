@@ -113,7 +113,11 @@ export class RegisterComponent {
                     ]);
                 },
                 error: (response: HttpErrorResponse) => {
-                    this.openDialog([response.error.message], true);
+                    if (response.error.errors.Password) {
+                        this.openDialog([response.error.errors.Password], true);
+                    } else {
+                        this.openDialog(response.error.errors, true);
+                    }
                 },
             });
     }
