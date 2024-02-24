@@ -21,6 +21,7 @@ import { RateUserComponent } from './rate-user/rate-user.component';
 import { RemoveFromWatchlistComponent } from './remove-from-watchlist/remove-from-watchlist.component';
 import { ChatModule } from './chat/chat.module';
 import { TransactionsComponent } from './transactions/transactions.component';
+import { UiElementsModule } from "../../ui-elements/ui-elements.module";
 
 @NgModule({
     declarations: [
@@ -48,6 +49,8 @@ import { TransactionsComponent } from './transactions/transactions.component';
         MatInputModule,
         MatCheckboxModule,
         MatSnackBarModule,
+        UiElementsModule,
+        FormsModule,
         ChatModule,
     ],
 

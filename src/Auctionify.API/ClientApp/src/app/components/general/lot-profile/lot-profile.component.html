@@ -74,22 +74,14 @@
 
         <div class="left__location">
             <h1>Location</h1>
-            <iframe
-                class="left__location-map"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d366.4323639308003!2d69.28140568640073!3d41.297167709949846!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38ae8bf5210ab4a3%3A0x86209464b9b26bcd!2sTanuki!5e0!3m2!1sru!2s!4v1700680822796!5m2!1sru!2s"
-                style="border: 0"
-                allowfullscreen=""
-                loading="lazy"
-                referrerpolicy="no-referrer-when-downgrade"
-            ></iframe>
+
+            <app-leaflet-map
+                [latitude]="lotData.location.latitude"
+                [longitude]="lotData.location.longitude"
+            ></app-leaflet-map>
+
             <p class="left__address">
-                {{
-                    lotData.location.country +
-                        ', ' +
-                        lotData.location.city +
-                        ' ' +
-                        lotData.location.address
-                }}
+                {{ lotData.location.address }}
             </p>
         </div>
 
@@ -218,7 +210,8 @@
                             [disabled]="
                                 lotData.bids.length == 0 ||
                                 lotData.bids.at(0)?.buyerId !==
-                                    this.currentUserId
+                                    this.currentUserId ||
+                                lotData.lotStatus.id !== LotStatus.Active
                             "
                         >
                             Withdraw
@@ -229,6 +222,9 @@
                             type="button"
                             (click)="openBidModal()"
                             color="primary"
+                            [disabled]="
+                                lotData.lotStatus.id !== LotStatus.Active
+                            "
                         >
                             Place a bid
                         </button>
@@ -240,7 +236,10 @@
                             type="button"
                             color="primary"
                             (click)="deleteLot()"
-                            [disabled]="isSellerOwnsLot(lotData)"
+                            [disabled]="
+                                isSellerOwnsLot(lotData) ||
+                                lotData.lotStatus.id === LotStatus.Sold
+                            "
                         >
                             <mat-spinner
                                 *ngIf="isDeleteLoading"
@@ -258,7 +257,11 @@
                             mat-flat-button
                             type="button"
                             color="primary"
-                            [disabled]="isSellerOwnsLot(lotData)"
+                            [disabled]="
+                                isSellerOwnsLot(lotData) ||
+                                lotData.lotStatus.id === LotStatus.Active ||
+                                lotData.lotStatus.id === LotStatus.Sold
+                            "
                         >
                             <mat-icon>edit</mat-icon>
                             Edit lot
@@ -314,7 +317,8 @@
                     <li>Item ID:</li>
                     <li>Start date:</li>
                     <li>End date:</li>
-                    <li *ngIf="isResponseForBuyer(lotData)">Seller email:</li>
+                    <li>Seller profile:</li>
+                    <li>Seller email:</li>
                 </ul>
             </div>
             <div class="right__info">
@@ -322,9 +326,12 @@
                     <li>{{ lotData.id }}</li>
                     <li>{{ formatStartDate(lotData.startDate) }}</li>
                     <li>{{ formatEndDate(lotData.endDate) }}</li>
-                    <li *ngIf="isResponseForBuyer(lotData)">
-                        {{ lotData.sellerEmail }}
+                    <li>
+                        <a [routerLink]="['/profile/user', lotData.sellerId]">
+                            {{ lotData.sellerFullName }}
+                        </a>
                     </li>
+                    <li>{{ lotData.sellerEmail }}</li>
                 </ul>
             </div>
         </div>

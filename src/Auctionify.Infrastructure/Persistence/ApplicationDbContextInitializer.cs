@@ -455,56 +455,74 @@ namespace Auctionify.Infrastructure.Persistence
 						City = "New York",
 						State = "NY",
 						Country = "USA",
-						Address = "1234 Elm St"
+						Address = "1234 Elm St",
+						Latitude = "41.297058598477896",
+						Longitude = "69.28170151929137"
 					},
 					new Location
 					{
 						City = "Los Angeles",
 						State = "CA",
 						Country = "USA",
-						Address = "5678 Oak Ave"
+						Address = "5678 Oak Ave",
+						Latitude = "41.297058598477896",
+						Longitude = "69.28170151929137"
 					},
 					new Location
 					{
 						City = "London",
 						Country = "UK",
-						Address = "90 Baker St"
+						Address = "90 Baker St",
+						Latitude = "41.297058598477896",
+						Longitude = "69.28170151929137"
 					},
 					new Location
 					{
 						City = "Moscow",
 						Country = "Russia",
-						Address = "1 Red Square"
+						Address = "1 Red Square",
+						Latitude = "41.297058598477896",
+						Longitude = "69.28170151929137"
 					},
 					new Location
 					{
 						City = "Paris",
 						Country = "France",
-						Address = "2 Champs Elysees"
+						Address = "2 Champs Elysees",
+						Latitude = "41.297058598477896",
+						Longitude = "69.28170151929137"
 					},
 					new Location
 					{
 						City = "Berlin",
 						Country = "Germany",
-						Address = "3 Unter den Linden"
+						Address = "3 Unter den Linden",
+						Latitude = "41.297058598477896",
+						Longitude = "69.28170151929137"
 					},
 					new Location
 					{
 						City = "Tokyo",
 						Country = "Japan",
-						Address = "4 Ginza"
+						Address = "4 Ginza",
+						Latitude = "41.297058598477896",
+						Longitude = "69.28170151929137"
 					},
 					new Location
 					{
 						City = "Tashkent",
 						Country = "Uzbekistan",
-						Address = "5 Amir Temur"
+						Address = "5 Amir Temur",
+						Latitude = "41.297058598477896",
+						Longitude = "69.28170151929137"
 					},
 					new Location
 					{
 						City = "Sydney",
 						Country = "Australia",
-						Address = "6 George St"
+						Address = "6 George St",
+						Latitude = "41.297058598477896",
+						Longitude = "69.28170151929137"
 					}
 				);
 
