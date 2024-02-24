@@ -32,6 +32,8 @@ export class RegisterComponent {
             Validators.required,
             Validators.email,
         ]),
+        firstName: new FormControl('', [Validators.required]),
+        lastName: new FormControl('', [Validators.required]),
         password: new FormControl('', [Validators.required]),
         confirmPassword: new FormControl('', [Validators.required]),
     });
@@ -103,6 +105,8 @@ export class RegisterComponent {
         this.authService
             .register(
                 this.registerForm.controls.email.value!,
+                this.registerForm.controls.firstName.value!,
+                this.registerForm.controls.lastName.value!,
                 this.registerForm.controls.password.value!,
                 this.registerForm.controls.confirmPassword.value!
             )

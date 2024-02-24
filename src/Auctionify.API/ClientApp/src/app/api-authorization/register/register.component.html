@@ -23,6 +23,18 @@
                 </mat-form-field>
 
                 <mat-form-field color="primary" appearance="outline">
+                    <mat-label>First name</mat-label>
+                    <mat-error>First name required</mat-error>
+                    <input formControlName="firstName" matInput />
+                </mat-form-field>
+
+                <mat-form-field color="primary" appearance="outline">
+                    <mat-label>Last name</mat-label>
+                    <mat-error>Last name required</mat-error>
+                    <input formControlName="lastName" matInput />
+                </mat-form-field>
+
+                <mat-form-field color="primary" appearance="outline">
                     <mat-label>Password</mat-label>
                     <input
                         formControlName="password"
