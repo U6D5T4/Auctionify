@@ -31,7 +31,7 @@
 
     &__element {
         border-radius: 16px;
-        box-shadow: 0px 2px 12px 0px #14142B14;
+        box-shadow: 0px 2px 12px 0px #14142b14;
         height: 100%;
 
         &-inner {
@@ -43,8 +43,6 @@
         display: flex;
         align-items: center;
         gap: 8px;
+        padding-bottom: 16px;
     }
-
-    &__element-main {}
-
 }

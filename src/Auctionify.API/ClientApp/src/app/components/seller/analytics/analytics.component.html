@@ -7,7 +7,7 @@
                     <div class="analytics__element-inner">
                         <div class="analytics__element-head">
                             <mat-icon>receipt_long</mat-icon>
-                            <h2 class="">Net income</h2>
+                            <h2 class="analytics__chart-title">Net income</h2>
                         </div>
                         <section class="analytics__element-main">
                             <ng-container
@@ -23,6 +23,10 @@
                                     [stroke]="chartOptions.stroke!"
                                     [tooltip]="chartOptions.tooltip!"
                                     [dataLabels]="chartOptions.dataLabels!"
+                                    [plotOptions]="chartOptions.plotOptions!"
+                                    [annotations]="chartOptions.annotations!"
+                                    [grid]="chartOptions.grid!"
+                                    [fill]="chartOptions.fill!"
                                 ></apx-chart>
                             </ng-container>
                         </section>
@@ -34,8 +38,8 @@
             <div class="analytics__element">
                 <div class="analytics__element-inner">
                     <div class="analytics__element-head">
-                        <mat-icon>receipt_long</mat-icon>
-                        <h2 class="">Lots statuses</h2>
+                        <mat-icon>pie_chart</mat-icon>
+                        <h2 class="analytics__chart-title">Status of lots</h2>
                     </div>
                     <ng-container
                         *ngIf="
@@ -62,8 +66,8 @@
             <div class="analytics__element">
                 <div class="analytics__element-inner">
                     <div class="analytics__element-head">
-                        <mat-icon>receipt_long</mat-icon>
-                        <h2 class="">Created lots</h2>
+                        <mat-icon>bar_chart</mat-icon>
+                        <h2 class="analytics__chart-title">Created lots</h2>
                     </div>
                     <ng-container
                         *ngIf="
