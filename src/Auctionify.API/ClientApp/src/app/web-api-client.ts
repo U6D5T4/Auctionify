@@ -789,9 +789,8 @@ export class Client {
     }
 
     forgetPassword(email: string): Observable<ForgetPasswordResponse> {
-        let url_ = `${
-            this.baseUrl
-        }/api/auth/forget-password?email=${encodeURIComponent(email)}`;
+        let url_ = `${this.baseUrl
+            }/api/auth/forget-password?email=${encodeURIComponent(email)}`;
 
         let options_: any = {
             observe: 'response',
@@ -833,8 +832,7 @@ export class Client {
                 if (value !== null) {
                     if (value !== null) {
                         queryParams = queryParams.append(
-                            `PageRequest.${
-                                key.charAt(0).toUpperCase() + key.slice(1)
+                            `PageRequest.${key.charAt(0).toUpperCase() + key.slice(1)
                             }`,
                             value.toString()
                         );
@@ -1285,6 +1283,65 @@ export class Client {
             })
         );
     }
+
+    getCreatedLotsCount(period: string, periodNumber: number): Observable<CreatedLotsCountResponse> {
+        let url_ = this.baseUrl + `/api/reports/analytics/created-count`;
+
+        let queryParams = new HttpParams()
+            .set('Period', period)
+            .set('PeriodNumber', periodNumber);
+
+
+        return this.http.get(url_, { params: queryParams }).pipe(
+            map((res: any) => {
+                return res as CreatedLotsCountResponse;
+            })
+        );
+    }
+
+    getLotsStatuses(): Observable<LotStatusesResponse[]> {
+        let url_ = this.baseUrl + `/api/reports/analytics/lots-statuses`;
+
+        return this.http.get(url_).pipe(
+            map((res: any) => {
+                return res as LotStatusesResponse[];
+            })
+        );
+    }
+
+    getUserIncome(period: string, periodNumber: number): Observable<UserIncomeResponse[]> {
+        let url_ = this.baseUrl + `/api/reports/analytics/income`;
+
+        let queryParams = new HttpParams()
+            .set('Period', period)
+            .set('PeriodNumber', periodNumber);
+
+        return this.http.get(url_, { params: queryParams }).pipe(
+            map((res: any) => {
+                return res as UserIncomeResponse[];
+            })
+        );
+    }
+}
+
+export interface UserIncomeResponse {
+    date: Date,
+    amount: number
+}
+
+export interface LotStatusesResponse {
+    status: string,
+    count: number
+}
+
+export interface CreatedLotsDay {
+    date: Date,
+    count: number,
+}
+
+export interface CreatedLotsCountResponse {
+    period: string,
+    data: CreatedLotsDay[]
 }
 
 export interface PageRequest {

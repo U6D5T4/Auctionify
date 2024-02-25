@@ -10,14 +10,21 @@
                             <h2 class="">Net income</h2>
                         </div>
                         <section class="analytics__element-main">
-                            <apx-chart
-                                [series]="chartOptions.series!"
-                                [chart]="chartOptions.chart!"
-                                [xaxis]="chartOptions.xaxis!"
-                                [stroke]="chartOptions.stroke!"
-                                [tooltip]="chartOptions.tooltip!"
-                                [dataLabels]="chartOptions.dataLabels!"
-                            ></apx-chart>
+                            <ng-container
+                                *ngIf="
+                                    chartOptions != null ||
+                                    chartOptions != undefined
+                                "
+                            >
+                                <apx-chart
+                                    [series]="chartOptions.series!"
+                                    [chart]="chartOptions.chart!"
+                                    [xaxis]="chartOptions.xaxis!"
+                                    [stroke]="chartOptions.stroke!"
+                                    [tooltip]="chartOptions.tooltip!"
+                                    [dataLabels]="chartOptions.dataLabels!"
+                                ></apx-chart>
+                            </ng-container>
                         </section>
                     </div>
                 </div>
@@ -26,34 +33,57 @@
         <div class="analytics__right">
             <div class="analytics__element">
                 <div class="analytics__element-inner">
-                    <apx-chart
-                        [series]="polarChartOptions.series!"
-                        [chart]="polarChartOptions.chart!"
-                        [labels]="polarChartOptions.labels!"
-                        [title]="polarChartOptions.title!"
-                        [theme]="polarChartOptions.theme!"
-                        [fill]="polarChartOptions.fill!"
-                        [yaxis]="polarChartOptions.yaxis!"
-                        [stroke]="polarChartOptions.stroke!"
-                        [legend]="polarChartOptions.legend!"
-                        [plotOptions]="polarChartOptions.plotOptions!"
-                    ></apx-chart>
+                    <div class="analytics__element-head">
+                        <mat-icon>receipt_long</mat-icon>
+                        <h2 class="">Lots statuses</h2>
+                    </div>
+                    <ng-container
+                        *ngIf="
+                            polarChartOptions != null ||
+                            polarChartOptions != undefined
+                        "
+                    >
+                        <apx-chart
+                            [series]="polarChartOptions.series!"
+                            [chart]="polarChartOptions.chart!"
+                            [labels]="polarChartOptions.labels!"
+                            [title]="polarChartOptions.title!"
+                            [theme]="polarChartOptions.theme!"
+                            [fill]="polarChartOptions.fill!"
+                            [yaxis]="polarChartOptions.yaxis!"
+                            [stroke]="polarChartOptions.stroke!"
+                            [legend]="polarChartOptions.legend!"
+                            [plotOptions]="polarChartOptions.plotOptions!"
+                            [tooltip]="polarChartOptions.tooltip!"
+                        ></apx-chart>
+                    </ng-container>
                 </div>
             </div>
             <div class="analytics__element">
                 <div class="analytics__element-inner">
-                    <apx-chart
-                        [series]="polarChartOptions.series!"
-                        [chart]="polarChartOptions.chart!"
-                        [labels]="polarChartOptions.labels!"
-                        [title]="polarChartOptions.title!"
-                        [theme]="polarChartOptions.theme!"
-                        [fill]="polarChartOptions.fill!"
-                        [yaxis]="polarChartOptions.yaxis!"
-                        [stroke]="polarChartOptions.stroke!"
-                        [legend]="polarChartOptions.legend!"
-                        [plotOptions]="polarChartOptions.plotOptions!"
-                    ></apx-chart>
+                    <div class="analytics__element-head">
+                        <mat-icon>receipt_long</mat-icon>
+                        <h2 class="">Created lots</h2>
+                    </div>
+                    <ng-container
+                        *ngIf="
+                            barChartOptions != null ||
+                            barChartOptions != undefined
+                        "
+                    >
+                        <apx-chart
+                            [series]="barChartOptions.series!"
+                            [chart]="barChartOptions.chart!"
+                            [dataLabels]="barChartOptions.dataLabels!"
+                            [plotOptions]="barChartOptions.plotOptions!"
+                            [yaxis]="barChartOptions.yaxis!"
+                            [xaxis]="barChartOptions.xaxis!"
+                            [fill]="barChartOptions.fill!"
+                            [title]="barChartOptions.title!"
+                            [grid]="barChartOptions.grid!"
+                            [states]="barChartOptions.states!"
+                        ></apx-chart>
+                    </ng-container>
                 </div>
             </div>
         </div>

@@ -22,7 +22,7 @@ export class AuthorizeInterceptor implements HttpInterceptor {
     constructor(
         private authService: AuthorizeService,
         private router: Router
-    ) {}
+    ) { }
 
     intercept(
         request: HttpRequest<unknown>,
