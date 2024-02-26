@@ -119,6 +119,8 @@ export class RegisterComponent {
                 error: (response: HttpErrorResponse) => {
                     if (response.error.errors.Password) {
                         this.openDialog([response.error.errors.Password], true);
+                    } else if (response.error.errors.confirmPassword) {
+                        this.openDialog(response.error.errors.confirmPassword, true);
                     } else {
                         this.openDialog(response.error.errors, true);
                     }
