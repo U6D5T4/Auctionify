@@ -789,8 +789,9 @@ export class Client {
     }
 
     forgetPassword(email: string): Observable<ForgetPasswordResponse> {
-        let url_ = `${this.baseUrl
-            }/api/auth/forget-password?email=${encodeURIComponent(email)}`;
+        let url_ = `${
+            this.baseUrl
+        }/api/auth/forget-password?email=${encodeURIComponent(email)}`;
 
         let options_: any = {
             observe: 'response',
@@ -832,7 +833,8 @@ export class Client {
                 if (value !== null) {
                     if (value !== null) {
                         queryParams = queryParams.append(
-                            `PageRequest.${key.charAt(0).toUpperCase() + key.slice(1)
+                            `PageRequest.${
+                                key.charAt(0).toUpperCase() + key.slice(1)
                             }`,
                             value.toString()
                         );
@@ -1284,13 +1286,15 @@ export class Client {
         );
     }
 
-    getCreatedLotsCount(period: string, periodNumber: number): Observable<CreatedLotsCountResponse> {
+    getCreatedLotsCount(
+        period: string,
+        periodNumber: number
+    ): Observable<CreatedLotsCountResponse> {
         let url_ = this.baseUrl + `/api/reports/analytics/created-count`;
 
         let queryParams = new HttpParams()
             .set('Period', period)
             .set('PeriodNumber', periodNumber);
-
 
         return this.http.get(url_, { params: queryParams }).pipe(
             map((res: any) => {
@@ -1309,7 +1313,10 @@ export class Client {
         );
     }
 
-    getUserIncome(period: string, periodNumber: number): Observable<UserIncomeResponse[]> {
+    getUserIncome(
+        period: string,
+        periodNumber: number
+    ): Observable<UserIncomeResponse[]> {
         let url_ = this.baseUrl + `/api/reports/analytics/income`;
 
         let queryParams = new HttpParams()
@@ -1325,23 +1332,24 @@ export class Client {
 }
 
 export interface UserIncomeResponse {
-    date: Date,
-    amount: number
+    date: Date;
+    amount: number;
+    currency: string;
 }
 
 export interface LotStatusesResponse {
-    status: string,
-    count: number
+    status: string;
+    count: number;
 }
 
 export interface CreatedLotsDay {
-    date: Date,
-    count: number,
+    date: Date;
+    count: number;
 }
 
 export interface CreatedLotsCountResponse {
-    period: string,
-    data: CreatedLotsDay[]
+    period: string;
+    data: CreatedLotsDay[];
 }
 
 export interface PageRequest {

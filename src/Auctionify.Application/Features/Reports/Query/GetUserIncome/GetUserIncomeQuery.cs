@@ -41,6 +41,7 @@ namespace Auctionify.Application.Features.Reports.Query.GetUserIncome
 				.Include(l => l.Seller)
 				.Include(l => l.Bids)
 				.Include(l => l.LotStatus)
+				.Include(l => l.Currency)
 				.Where(
 					l =>
 						l.Seller.Email == _currentUserService.UserEmail
@@ -97,7 +98,8 @@ namespace Auctionify.Application.Features.Reports.Query.GetUserIncome
 					Amount = highestBids
 						.Where(x => x.LotId == grouped.Last().Id)
 						.Select(x => x.HighestBid)
-						.FirstOrDefault()
+						.FirstOrDefault(),
+					Currency = grouped.Last().Currency.Code
 				}
 			).ToList();
 

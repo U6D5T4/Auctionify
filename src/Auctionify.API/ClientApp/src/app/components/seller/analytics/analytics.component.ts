@@ -93,6 +93,11 @@ export type PolarChartOptions = {
     dataLabels: ApexDataLabels;
 };
 
+export interface TotalIncome {
+    currency: string;
+    totalIncome: number;
+}
+
 @Component({
     selector: 'app-analytics',
     templateUrl: './analytics.component.html',
@@ -109,8 +114,8 @@ export class AnalyticsComponent implements OnInit {
 
     public linePeriod: string = 'Total'; // Default period
     public linePeriodNum: number = 1; // Default period number
-    public totalIncomeForPeriod: number = 0;
     public selectedLinePeriod: string = 'Total|1'; // Default line selected period
+    public totalIncome: TotalIncome[] = [];
 
     public selectedExportType: string | null = null;
 
@@ -321,10 +326,21 @@ export class AnalyticsComponent implements OnInit {
             .getUserIncome(this.linePeriod, this.linePeriodNum)
             .subscribe({
                 next: (res) => {
-                    this.totalIncomeForPeriod = res.reduce(
-                        (acc, curr) => acc + curr.amount,
-                        0
-                    );
+                    this.totalIncome = res.reduce((acc: any, curr: any) => {
+                        const index = acc.findIndex(
+                            (item: any) => item.currency === curr.currency
+                        );
+                        if (index !== -1) {
+                            acc[index].totalIncome += curr.amount;
+                        } else {
+                            acc.push({
+                                currency: curr.currency,
+                                totalIncome: curr.amount,
+                            });
+                        }
+                        return acc;
+                    }, []);
+
                     this.chartOptions = {
                         series: [
                             {
@@ -424,8 +440,8 @@ export class AnalyticsComponent implements OnInit {
         this.constructLineChart();
     }
 
-    onExportSelect(selectedExport: string) {
-        console.log(selectedExport);
+    onExportFileSelect(selectedExportType: string) {
+        console.log(selectedExportType);
     }
 
     onBarChartPeriodChange(selectedValue: string) {

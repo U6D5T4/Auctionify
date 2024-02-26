@@ -26,15 +26,17 @@
                         <mat-icon>home</mat-icon>
                         Dashboard
                     </button>
-                    <button
-                        [routerLink]="['/seller/analytics']"
-                        routerLinkActive="mat-primary"
-                        mat-flat-button
-                        color="white"
-                    >
-                        <mat-icon>trending_up</mat-icon>
-                        Analytics
-                    </button>
+                    <ng-container *ngIf="isSellerPro">
+                        <button
+                            [routerLink]="['/seller/analytics']"
+                            routerLinkActive="mat-primary"
+                            mat-flat-button
+                            color="white"
+                        >
+                            <mat-icon>trending_up</mat-icon>
+                            Analytics
+                        </button>
+                    </ng-container>
                     <button
                         mat-flat-button
                         [routerLink]="['/seller/create-lot']"

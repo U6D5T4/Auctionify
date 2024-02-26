@@ -13,12 +13,18 @@
                                         Net income
                                     </h2>
                                 </div>
-                                <p
-                                    class="analytics__total-income"
-                                    *ngIf="totalIncomeForPeriod !== 0"
+                                <div
+                                    class="analytics__total-stats"
+                                    *ngIf="totalIncome.length > 0"
                                 >
-                                    +{{ totalIncomeForPeriod.toFixed(2) }}
-                                </p>
+                                    <p
+                                        class="analytics__total-income"
+                                        *ngFor="let income of totalIncome"
+                                    >
+                                        +{{ income.totalIncome.toFixed(2) }}
+                                        {{ income.currency }}
+                                    </p>
+                                </div>
                             </div>
                             <div class="analytics__filter-components">
                                 <div class="analytics__export">
@@ -27,14 +33,14 @@
                                         <mat-select
                                             [(ngModel)]="selectedExportType"
                                             (ngModelChange)="
-                                                onExportSelect($event)
+                                                onExportFileSelect($event)
                                             "
                                             panelClass="filter-select"
                                         >
-                                            <mat-option value="pdf"
+                                            <mat-option value="PDF"
                                                 >PDF</mat-option
                                             >
-                                            <mat-option value="excel"
+                                            <mat-option value="XLSX"
                                                 >Excel</mat-option
                                             >
                                         </mat-select>

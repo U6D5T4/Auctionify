@@ -3,6 +3,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { CreateLotComponent } from './create-lot/create-lot.component';
 import { NgModule } from '@angular/core';
 import { AnalyticsComponent } from './analytics/analytics.component';
+import { isProGuard } from 'src/app/guards/seller/is-pro.guard';
 
 const sellerRoutes: Routes = [
     {
@@ -28,12 +29,12 @@ const sellerRoutes: Routes = [
         path: 'analytics',
         component: AnalyticsComponent,
         pathMatch: 'full',
-        canActivate: []
-    }
+        canActivate: [isProGuard],
+    },
 ];
 
 @NgModule({
     imports: [RouterModule.forChild(sellerRoutes)],
     exports: [RouterModule],
 })
-export class sellerRoutingModule { }
+export class sellerRoutingModule {}
