@@ -21,16 +21,16 @@ import {
 import { Client } from 'src/app/web-api-client';
 
 enum LotStatusColor {
-    Draft = '#2b5293',
-    PendingApproval = '#40639e',
-    Rejected = '#5575a9',
-    Upcoming = '#6b86b3',
-    Active = '#8097be',
-    Sold = '#95a9c9',
-    NotSold = '#aabad4',
-    Cancelled = '#bfcbdf',
-    Reopened = '#d5dce9',
-    Archive = '#eaeef4',
+    Draft = '#3768BA',
+    PendingApproval = '#4673C0',
+    Rejected = '#557FC5',
+    Upcoming = '#648ACB',
+    Active = '#7396D0',
+    Sold = '#81A1D6',
+    NotSold = '#90ADDB',
+    Cancelled = '#9FB8E1',
+    Reopened = '#AEC4E6',
+    Archive = '#BDCFEC',
 }
 
 const lotStatusOrder = [
@@ -180,7 +180,10 @@ export class AnalyticsComponent implements OnInit {
                                         fontSize: '36px',
                                         fontFamily: 'Onest',
                                         fontWeight: 600,
-                                        label: totalCount.toString() + ' lots',
+                                        label:
+                                            totalCount +
+                                            ' lot' +
+                                            (totalCount > 1 ? 's' : ''),
                                         color: '#000',
                                         formatter: function (w) {
                                             return '';
@@ -256,11 +259,7 @@ export class AnalyticsComponent implements OnInit {
                                 },
                             },
                             tooltip: {
-                                enabled: true,
-                                offsetY: -35,
-                                style: {
-                                    fontFamily: 'Onest',
-                                },
+                                enabled: false,
                             },
                         },
                         states: {
@@ -284,7 +283,7 @@ export class AnalyticsComponent implements OnInit {
                             labels: {
                                 show: false,
                                 formatter: function (val) {
-                                    return val + ' lot(s)';
+                                    return val.toFixed(0);
                                 },
                                 style: {
                                     fontFamily: 'Onest',
@@ -337,10 +336,16 @@ export class AnalyticsComponent implements OnInit {
                             categories: res.map((d) =>
                                 new Date(d.date).toDateString()
                             ),
+                            axisTicks: {
+                                show: false,
+                            },
+                            tooltip: {
+                                enabled: false,
+                            },
                         },
                         tooltip: {
                             x: {
-                                format: 'dd/MM/yy HH:mm',
+                                format: 'MMM dd, yyyy',
                             },
                         },
                         grid: {
