@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgModule, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import {
     ApexAxisChartSeries,
     ApexChart,
@@ -46,6 +47,10 @@ const lotStatusOrder = [
     'Archive',
 ];
 
+const FONT_FAMILY = 'Onest';
+const COLOR_MAIN = '#2B5293';
+const COLOR_NEUTRAL_100 = '#FFFFFF';
+
 export type ChartOptions = {
     series: ApexAxisChartSeries;
     chart: ApexChart;
@@ -85,6 +90,7 @@ export type PolarChartOptions = {
     legend: ApexLegend;
     plotOptions: ApexPlotOptions;
     tooltip: ApexTooltip;
+    dataLabels: ApexDataLabels;
 };
 
 @Component({
@@ -99,9 +105,14 @@ export class AnalyticsComponent implements OnInit {
 
     public barPeriod: string = 'Total';
     public barPeriodNum: number = 1;
+    public selectedBarPeriod: string = 'Total|1'; // Default bar selected period
 
-    public linePeriod: string = 'Total';
-    public linePeriodNum: number = 1;
+    public linePeriod: string = 'Total'; // Default period
+    public linePeriodNum: number = 1; // Default period number
+    public totalIncomeForPeriod: number = 0;
+    public selectedLinePeriod: string = 'Total|1'; // Default line selected period
+
+    public selectedExportType: string | null = null;
 
     constructor(private client: Client) {
         this.chartOptions = null;
@@ -131,11 +142,18 @@ export class AnalyticsComponent implements OnInit {
                         width: '80%',
                         type: 'donut',
                         foreColor: '#000',
-                        fontFamily: 'Onest',
+                        fontFamily: FONT_FAMILY,
                     },
                     labels: res
                         .sort((a, b) => a.count - b.count)
                         .map((d) => d.status),
+
+                    dataLabels: {
+                        style: {
+                            fontSize: '12px',
+                            fontFamily: FONT_FAMILY,
+                        },
+                    },
                     fill: {
                         colors: lotStatusOrder.map(
                             (status) =>
@@ -158,7 +176,7 @@ export class AnalyticsComponent implements OnInit {
                             ),
                         },
                         fontSize: '16px',
-                        fontFamily: 'Onest',
+                        fontFamily: FONT_FAMILY,
                     },
                     tooltip: {
                         fillSeriesColor: false,
@@ -178,7 +196,7 @@ export class AnalyticsComponent implements OnInit {
                                         show: true,
                                         showAlways: true,
                                         fontSize: '36px',
-                                        fontFamily: 'Onest',
+                                        fontFamily: FONT_FAMILY,
                                         fontWeight: 600,
                                         label:
                                             totalCount +
@@ -211,9 +229,9 @@ export class AnalyticsComponent implements OnInit {
                             },
                         ],
                         chart: {
-                            width: '80%',
+                            width: '85%',
                             type: 'bar',
-                            fontFamily: 'Onest',
+                            fontFamily: FONT_FAMILY,
                         },
                         plotOptions: {
                             bar: {
@@ -227,8 +245,8 @@ export class AnalyticsComponent implements OnInit {
                             enabled: true,
                             style: {
                                 fontSize: '12px',
-                                colors: ['#fff'],
-                                fontFamily: 'Onest',
+                                colors: [COLOR_NEUTRAL_100],
+                                fontFamily: FONT_FAMILY,
                             },
                         },
                         xaxis: {
@@ -286,7 +304,7 @@ export class AnalyticsComponent implements OnInit {
                                     return val.toFixed(0);
                                 },
                                 style: {
-                                    fontFamily: 'Onest',
+                                    fontFamily: FONT_FAMILY,
                                 },
                             },
                         },
@@ -303,6 +321,10 @@ export class AnalyticsComponent implements OnInit {
             .getUserIncome(this.linePeriod, this.linePeriodNum)
             .subscribe({
                 next: (res) => {
+                    this.totalIncomeForPeriod = res.reduce(
+                        (acc, curr) => acc + curr.amount,
+                        0
+                    );
                     this.chartOptions = {
                         series: [
                             {
@@ -319,17 +341,17 @@ export class AnalyticsComponent implements OnInit {
                             toolbar: {
                                 show: false,
                             },
-                            fontFamily: 'Onest',
+                            fontFamily: FONT_FAMILY,
                         },
                         dataLabels: {
                             enabled: false,
                             style: {
-                                fontFamily: 'Onest',
+                                fontFamily: FONT_FAMILY,
                             },
                         },
                         stroke: {
                             curve: 'smooth',
-                            colors: ['#2B5293'],
+                            colors: [COLOR_MAIN],
                         },
                         xaxis: {
                             type: 'datetime',
@@ -358,17 +380,17 @@ export class AnalyticsComponent implements OnInit {
                                     y: d.amount,
                                     marker: {
                                         size: 6,
-                                        fillColor: '#fff',
-                                        strokeColor: '#2B5293',
+                                        fillColor: COLOR_NEUTRAL_100,
+                                        strokeColor: COLOR_MAIN,
                                         strokeWidth: 3,
-                                        fontFamily: 'Onest',
+                                        fontFamily: FONT_FAMILY,
                                     },
                                     label: {
-                                        borderColor: '#2B5293',
+                                        borderColor: COLOR_MAIN,
                                         style: {
-                                            color: '#fff',
-                                            background: '#2B5293',
-                                            fontFamily: 'Onest',
+                                            color: COLOR_NEUTRAL_100,
+                                            background: COLOR_MAIN,
+                                            fontFamily: FONT_FAMILY,
                                         },
                                     },
                                 };
@@ -387,5 +409,35 @@ export class AnalyticsComponent implements OnInit {
                     };
                 },
             });
+    }
+
+    onLineChartPeriodChange(selectedValue: string) {
+        const [period, periodNumString] = selectedValue.split('|');
+        const periodNum = parseInt(periodNumString);
+
+        this.filterLineChartNetIncome(period, periodNum);
+    }
+
+    filterLineChartNetIncome(period: string, periodNum: number) {
+        this.linePeriod = period;
+        this.linePeriodNum = periodNum;
+        this.constructLineChart();
+    }
+
+    onExportSelect(selectedExport: string) {
+        console.log(selectedExport);
+    }
+
+    onBarChartPeriodChange(selectedValue: string) {
+        const [period, periodNumString] = selectedValue.split('|');
+        const periodNum = parseInt(periodNumString);
+
+        this.filterBarChart(period, periodNum);
+    }
+
+    filterBarChart(period: string, periodNum: number) {
+        this.barPeriod = period;
+        this.barPeriodNum = periodNum;
+        this.constructBarChart();
     }
 }

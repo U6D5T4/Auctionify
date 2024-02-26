@@ -5,17 +5,75 @@
             <div class="analytics__right-middle">
                 <div class="analytics__element">
                     <div class="analytics__element-inner">
-                        <div class="analytics__element-head">
-                            <mat-icon>receipt_long</mat-icon>
-                            <h2 class="analytics__chart-title">Net income</h2>
+                        <div class="analytics__top">
+                            <div class="analytics__element-head">
+                                <div class="analytics__title">
+                                    <mat-icon>receipt_long</mat-icon>
+                                    <h2 class="analytics__chart-title">
+                                        Net income
+                                    </h2>
+                                </div>
+                                <p
+                                    class="analytics__total-income"
+                                    *ngIf="totalIncomeForPeriod !== 0"
+                                >
+                                    +{{ totalIncomeForPeriod.toFixed(2) }}
+                                </p>
+                            </div>
+                            <div class="analytics__filter-components">
+                                <div class="analytics__export">
+                                    <mat-form-field appearance="outline">
+                                        <mat-label>Export as</mat-label>
+                                        <mat-select
+                                            [(ngModel)]="selectedExportType"
+                                            (ngModelChange)="
+                                                onExportSelect($event)
+                                            "
+                                            panelClass="filter-select"
+                                        >
+                                            <mat-option value="pdf"
+                                                >PDF</mat-option
+                                            >
+                                            <mat-option value="excel"
+                                                >Excel</mat-option
+                                            >
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                                <div
+                                    class="analytics__line-chart-element-filter"
+                                >
+                                    <mat-form-field appearance="outline">
+                                        <mat-label>Period</mat-label>
+                                        <mat-select
+                                            [(ngModel)]="selectedLinePeriod"
+                                            (ngModelChange)="
+                                                onLineChartPeriodChange($event)
+                                            "
+                                            panelClass="filter-select"
+                                        >
+                                            <mat-option value="Day|7"
+                                                >1 week</mat-option
+                                            >
+                                            <mat-option value="Month|1"
+                                                >1 month</mat-option
+                                            >
+                                            <mat-option value="Month|6"
+                                                >6 months</mat-option
+                                            >
+                                            <mat-option value="Year|1"
+                                                >1 year</mat-option
+                                            >
+                                            <mat-option value="Total|1"
+                                                >Total</mat-option
+                                            >
+                                        </mat-select>
+                                    </mat-form-field>
+                                </div>
+                            </div>
                         </div>
                         <section class="analytics__element-main">
-                            <ng-container
-                                *ngIf="
-                                    chartOptions != null ||
-                                    chartOptions != undefined
-                                "
-                            >
+                            <ng-container *ngIf="chartOptions">
                                 <apx-chart
                                     [series]="chartOptions.series!"
                                     [chart]="chartOptions.chart!"
@@ -34,12 +92,17 @@
                 </div>
             </div>
         </div>
+
         <div class="analytics__right">
             <div class="analytics__element">
                 <div class="analytics__element-inner">
                     <div class="analytics__element-head">
-                        <mat-icon>pie_chart</mat-icon>
-                        <h2 class="analytics__chart-title">Status of lots</h2>
+                        <div class="analytics__title">
+                            <mat-icon>pie_chart</mat-icon>
+                            <h2 class="analytics__chart-title">
+                                Status of lots
+                            </h2>
+                        </div>
                     </div>
                     <ng-container
                         *ngIf="
@@ -59,15 +122,52 @@
                             [legend]="polarChartOptions.legend!"
                             [plotOptions]="polarChartOptions.plotOptions!"
                             [tooltip]="polarChartOptions.tooltip!"
+                            [dataLabels]="polarChartOptions.dataLabels!"
                         ></apx-chart>
                     </ng-container>
                 </div>
             </div>
             <div class="analytics__element">
                 <div class="analytics__element-inner">
-                    <div class="analytics__element-head">
-                        <mat-icon>bar_chart</mat-icon>
-                        <h2 class="analytics__chart-title">Created lots</h2>
+                    <div class="analytics__top-part">
+                        <div class="analytics__element-head">
+                            <div class="analytics__title">
+                                <mat-icon>bar_chart</mat-icon>
+                                <h2 class="analytics__chart-title">
+                                    Created lots
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="analytics__filter-components">
+                            <div class="analytics__bar-chart-element-filter">
+                                <mat-form-field appearance="outline">
+                                    <mat-label>Period</mat-label>
+                                    <mat-select
+                                        [(ngModel)]="selectedBarPeriod"
+                                        (ngModelChange)="
+                                            onBarChartPeriodChange($event)
+                                        "
+                                        panelClass="filter-select"
+                                    >
+                                        <mat-option value="Day|7"
+                                            >1 week</mat-option
+                                        >
+                                        <mat-option value="Week|7"
+                                            >7 weeks</mat-option
+                                        >
+                                        <mat-option value="Month|7"
+                                            >7 months</mat-option
+                                        >
+                                        <mat-option value="Year|7"
+                                            >7 years</mat-option
+                                        >
+                                        <mat-option value="Total|1"
+                                            >Total</mat-option
+                                        >
+                                    </mat-select>
+                                </mat-form-field>
+                            </div>
+                        </div>
                     </div>
                     <ng-container
                         *ngIf="
