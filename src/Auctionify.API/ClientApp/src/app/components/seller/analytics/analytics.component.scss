@@ -38,6 +38,13 @@
         flex-direction: row;
     }
 
+    &__export-button {
+        padding-top: 27px;
+        padding-bottom: 27px;
+        color: var(--color-text-primary);
+        border: 1px solid #9e9e9e;
+    }
+
     &__main {
         display: flex;
         gap: 16px;
@@ -60,7 +67,7 @@
         display: flex;
         flex-direction: column;
         gap: 16px;
-        min-width: 600px;
+        min-width: 610px;
     }
 
     &__right-middle {

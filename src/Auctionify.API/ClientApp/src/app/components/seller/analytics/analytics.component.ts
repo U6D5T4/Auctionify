@@ -1,6 +1,7 @@
-import { Component, NgModule, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { Dialog } from '@angular/cdk/dialog';
 import {
+    ApexAnnotations,
     ApexAxisChartSeries,
     ApexChart,
     ApexXAxis,
@@ -17,9 +18,10 @@ import {
     ApexYAxis,
     ApexStates,
     ApexGrid,
-    ApexAnnotations,
 } from 'ng-apexcharts';
+
 import { Client } from 'src/app/web-api-client';
+import { ExportToFileComponent } from '../export-to-file/export-to-file.component';
 
 enum LotStatusColor {
     Draft = '#3768BA',
@@ -117,9 +119,7 @@ export class AnalyticsComponent implements OnInit {
     public selectedLinePeriod: string = 'Total|1'; // Default line selected period
     public totalIncome: TotalIncome[] = [];
 
-    public selectedExportType: string | null = null;
-
-    constructor(private client: Client) {
+    constructor(private client: Client, private dialog: Dialog) {
         this.chartOptions = null;
         this.barChartOptions = null;
         this.polarChartOptions = null;
@@ -440,8 +440,10 @@ export class AnalyticsComponent implements OnInit {
         this.constructLineChart();
     }
 
-    onExportFileSelect(selectedExportType: string) {
-        console.log(selectedExportType);
+    exportToFile(): void {
+        const dialog = this.dialog.open(ExportToFileComponent, {
+            autoFocus: false,
+        });
     }
 
     onBarChartPeriodChange(selectedValue: string) {
