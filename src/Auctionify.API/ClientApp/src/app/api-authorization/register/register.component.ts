@@ -119,10 +119,12 @@ export class RegisterComponent {
                 error: (response: HttpErrorResponse) => {
                     if (response.error.errors.Password) {
                         this.openDialog([response.error.errors.Password], true);
-                    } else if (response.error.errors.confirmPassword) {
-                        this.openDialog(response.error.errors.confirmPassword, true);
+                    } else if (response.error.errors.ConfirmPassword) {
+                        this.openDialog(response.error.errors.ConfirmPassword, true);
+                    } else if (response.error.errors.Email) {
+                        this.openDialog([response.error.errors.Email], true);
                     } else {
-                        this.openDialog(response.error.errors, true);
+                        this.openDialog(["Something went wrong please try again later"], true);
                     }
                 },
             });
