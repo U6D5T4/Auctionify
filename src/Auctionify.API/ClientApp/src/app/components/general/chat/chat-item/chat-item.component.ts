@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { formatDate } from '@angular/common';
+import { Component, Inject, Input, LOCALE_ID } from '@angular/core';
 
 @Component({
     selector: 'app-chat-item',
@@ -14,5 +15,9 @@ export class ChatItemComponent {
     @Input() isActive!: boolean;
     @Input() email!: string;
 
-    constructor() {}
+    constructor(@Inject(LOCALE_ID) public locale: string) {}
+
+    formatDate(date: Date | null): string {
+        return date ? formatDate(date, 'hh:mm aa', this.locale) : '';
+    }
 }
