@@ -217,14 +217,18 @@ export class AuthorizeService {
             throw new Error('Unable to fetch Google Client ID');
         }
     }
-
+    
     register(
         email: string,
+        firstName: string,
+        lastName: string,
         password: string,
         confirmPassword: string
     ): Observable<RegisterResponse | undefined> {
         const registerData: RegisterViewModel = {
             email,
+            firstName,
+            lastName,
             password,
             confirmPassword,
         };

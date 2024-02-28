@@ -210,7 +210,6 @@ namespace Auctionify.API.Controllers
         }
 
 		[HttpGet("google-map-apikey")]
-		[Authorize]
 		public IActionResult GetGoogleClientId()
 		{
 			return Ok(_googleMapOptions.ApiKey);
