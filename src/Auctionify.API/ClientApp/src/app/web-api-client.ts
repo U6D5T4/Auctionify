@@ -1455,6 +1455,7 @@ export interface BuyerGetLotResponse {
     isInWatchlist: boolean;
     bidCount: number | null;
     sellerEmail: string;
+    sellerFullName: string | null;
     sellerId: number;
     buyerId: number;
     profilePictureUrl: string;
@@ -1475,6 +1476,8 @@ export interface SellerGetLotResponse {
     currency: CurrencyDto;
     bids: BidDto[];
     bidCount: number;
+    sellerEmail: string;
+    sellerFullName: string | null;
     sellerId: number;
     buyerId: number;
     profilePictureUrl: string;
@@ -1575,6 +1578,8 @@ export interface LoginViewModel {
 export interface RegisterViewModel {
     email: string;
     password: string;
+    firstName: string;
+    lastName: string;
     confirmPassword: string;
 }
 

@@ -31,7 +31,10 @@ namespace Auctionify.Application.Features.Lots.Queries.GetAll
 			{
 				AuctionStatus.Active.ToString(),
 				AuctionStatus.Upcoming.ToString(),
-				AuctionStatus.Archive.ToString()
+				AuctionStatus.Archive.ToString(),
+				AuctionStatus.Cancelled.ToString(),
+				AuctionStatus.Sold.ToString(),
+				AuctionStatus.NotSold.ToString(),
 			};
 
 		public GetAllLotsQueryHandler(

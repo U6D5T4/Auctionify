@@ -3,7 +3,6 @@ import { formatDate } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, Inject, LOCALE_ID, OnInit, effect } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { AuthorizeService } from 'src/app/api-authorization/authorize.service';
 import { FileModel } from 'src/app/models/fileModel';
@@ -24,12 +23,26 @@ import { WithdrawBidComponent } from '../withdraw-bid/withdraw-bid.component';
 import { RemoveFromWatchlistComponent } from '../remove-from-watchlist/remove-from-watchlist.component';
 import { Rate } from 'src/app/models/rates/rate-models';
 
+enum LotStatus {
+    Draft = 1,
+    PendingApproval = 2,
+    Rejected = 3,
+    Upcoming = 4,
+    Active = 5,
+    Sold = 6,
+    NotSold = 7,
+    Cancelled = 8,
+    Reopened = 9,
+    Archive = 10,
+}
+
 @Component({
     selector: 'app-lot-profile',
     templateUrl: './lot-profile.component.html',
     styleUrls: ['./lot-profile.component.scss'],
 })
 export class LotProfileComponent implements OnInit {
+    LotStatus = LotStatus;
     lotData: BuyerGetLotResponse | SellerGetLotResponse | null = null;
     bidsToShow: BidDto[] = [];
     files: FileModel[] | null = null;
@@ -55,7 +68,6 @@ export class LotProfileComponent implements OnInit {
         private signalRService: SignalRService,
         private dialog: Dialog,
         private snackBar: MatSnackBar,
-        private sanitizer: DomSanitizer,
         @Inject(LOCALE_ID) public locale: string
     ) {
         effect(() => {

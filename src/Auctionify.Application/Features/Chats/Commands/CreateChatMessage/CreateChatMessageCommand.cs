@@ -24,13 +24,15 @@ namespace Auctionify.Application.Features.Chats.Commands.CreateChatMessage
 		private readonly ICurrentUserService _currentUserService;
 		private readonly UserManager<User> _userManager;
 		private readonly IHubContext<AuctionHub> _hubContext;
+		private readonly IConversationRepository _conversationRepository;
 
 		public CreateChatMessageCommandHandler(
 			IMapper mapper,
 			IChatMessageRepository chatMessageRepository,
 			ICurrentUserService currentUserService,
 			UserManager<User> userManager,
-			IHubContext<AuctionHub> hubContext
+			IHubContext<AuctionHub> hubContext,
+			IConversationRepository conversationRepository
 		)
 		{
 			_mapper = mapper;
@@ -38,6 +40,7 @@ namespace Auctionify.Application.Features.Chats.Commands.CreateChatMessage
 			_currentUserService = currentUserService;
 			_userManager = userManager;
 			_hubContext = hubContext;
+			_conversationRepository = conversationRepository;
 		}
 
 		public async Task<CreatedChatMessageResponse> Handle(
@@ -60,6 +63,15 @@ namespace Auctionify.Application.Features.Chats.Commands.CreateChatMessage
 			};
 
 			var result = await _chatMessageRepository.AddAsync(chatMessage);
+
+			var conversation = await _conversationRepository.GetAsync(
+				predicate: x => x.Id == request.ConversationId,
+				cancellationToken: cancellationToken
+			);
+
+			conversation!.ModificationDate = DateTime.Now;
+
+			await _conversationRepository.UpdateAsync(conversation);
 
 			await _hubContext
 				.Clients.Group(request.ConversationId.ToString())

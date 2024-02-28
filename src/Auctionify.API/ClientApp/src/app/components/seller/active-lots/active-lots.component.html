@@ -1,0 +1,13 @@
+<h2 class="active-lots-container__title">My active lots</h2>
+<div *ngIf="activeLots.length > 0">
+    <ul class="active-lots-container__list">
+        <li *ngFor="let item of activeLots">
+            <app-lot-item
+                class="active-lots-container__lot-item"
+                [lot]="item"
+                [isUserBuyer]="false"
+            ></app-lot-item>
+        </li>
+    </ul>
+</div>
+<p *ngIf="!activeLots.length">You do not have any active lots!</p>

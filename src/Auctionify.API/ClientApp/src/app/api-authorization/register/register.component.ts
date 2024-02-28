@@ -32,6 +32,8 @@ export class RegisterComponent {
             Validators.required,
             Validators.email,
         ]),
+        firstName: new FormControl('', [Validators.required]),
+        lastName: new FormControl('', [Validators.required]),
         password: new FormControl('', [Validators.required]),
         confirmPassword: new FormControl('', [Validators.required]),
     });
@@ -103,6 +105,8 @@ export class RegisterComponent {
         this.authService
             .register(
                 this.registerForm.controls.email.value!,
+                this.registerForm.controls.firstName.value!,
+                this.registerForm.controls.lastName.value!,
                 this.registerForm.controls.password.value!,
                 this.registerForm.controls.confirmPassword.value!
             )
@@ -113,7 +117,15 @@ export class RegisterComponent {
                     ]);
                 },
                 error: (response: HttpErrorResponse) => {
-                    this.openDialog([response.error.message], true);
+                    if (response.error.errors.Password) {
+                        this.openDialog([response.error.errors.Password], true);
+                    } else if (response.error.errors.ConfirmPassword) {
+                        this.openDialog(response.error.errors.ConfirmPassword, true);
+                    } else if (response.error.errors.Email) {
+                        this.openDialog([response.error.errors.Email], true);
+                    } else {
+                        this.openDialog(["Something went wrong please try again later"], true);
+                    }
                 },
             });
     }
