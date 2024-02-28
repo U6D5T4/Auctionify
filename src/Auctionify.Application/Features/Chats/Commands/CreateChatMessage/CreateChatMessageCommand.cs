@@ -56,7 +56,7 @@ namespace Auctionify.Application.Features.Chats.Commands.CreateChatMessage
 				ConversationId = request.ConversationId,
 				Body = request.Body,
 				IsRead = false,
-				TimeStamp = DateTime.Now
+				TimeStamp = DateTime.UtcNow
 			};
 
 			var result = await _chatMessageRepository.AddAsync(chatMessage);
