@@ -59,7 +59,7 @@ export class ExportToFileComponent {
                 window.URL.revokeObjectURL(url);
 
                 this.snackBar.open(
-                    res.filename + ' has been downloaded',
+                    'Started downloading ' + res.filename,
                     'Close',
                     {
                         horizontalPosition: 'center',

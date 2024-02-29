@@ -20,6 +20,7 @@ import { DashboardActiveLotsComponent } from './components/dashboard-active-lots
 import { UiElementsModule } from 'src/app/ui-elements/ui-elements.module';
 import { GeneralModule } from '../general/general.module';
 import { DashboardDraftLotsComponent } from './components/dashboard-draft-lots/dashboard-draft-lots.component';
+import { ActiveLotsComponent } from './active-lots/active-lots.component';
 import { AnalyticsComponent } from './analytics/analytics.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { ExportToFileComponent } from './export-to-file/export-to-file.component';
@@ -33,6 +34,7 @@ import { ExportToFileComponent } from './export-to-file/export-to-file.component
         DashboardComponent,
         DashboardActiveLotsComponent,
         DashboardDraftLotsComponent,
+        ActiveLotsComponent,
         AnalyticsComponent,
         ExportToFileComponent,
     ],

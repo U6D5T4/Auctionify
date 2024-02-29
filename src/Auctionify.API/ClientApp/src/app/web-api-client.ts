@@ -1689,6 +1689,8 @@ export interface LoginViewModel {
 export interface RegisterViewModel {
     email: string;
     password: string;
+    firstName: string;
+    lastName: string;
     confirmPassword: string;
 }
 

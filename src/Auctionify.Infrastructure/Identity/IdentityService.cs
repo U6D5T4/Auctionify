@@ -458,6 +458,8 @@ namespace Auctionify.Infrastructure.Identity
 			{
 				Email = model.Email,
 				UserName = newUsername,
+				FirstName = model.FirstName,
+				LastName = model.LastName,
 				IsDeleted = false,
 				CreationDate = DateTime.UtcNow
 			};

@@ -22,7 +22,7 @@
                     }}
                 </h4>
                 <p class="chat__top-time">
-                    {{ messageDate | date : 'HH:mm, dd.MM.YY' }}
+                    {{ formatDate(messageDate) }}
                 </p>
             </div>
             <div class="chat__bottom">

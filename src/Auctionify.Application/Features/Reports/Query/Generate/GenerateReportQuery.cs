@@ -13,39 +13,39 @@ namespace Auctionify.Application.Features.Reports.Query.Generate
 		public int MonthsDuration { get; set; }
 		public ReportType Format { get; set; }
 	}
-}
 
-public class GenerateReportHandler : IRequestHandler<GenerateReportQuery, byte[]>
-{
-	private readonly IReportDataRepository _reportDataRepository;
-	private readonly ICurrentUserService _currentUserService;
-	private readonly UserManager<User> _userManager;
-	private readonly IReportService _reportGeneratorService;
-
-	public GenerateReportHandler(
-		IReportDataRepository reportDataRepository,
-		ICurrentUserService currentUserService,
-		UserManager<User> userManager,
-		IReportService reportGeneratorService
-	)
+	public class GenerateReportHandler : IRequestHandler<GenerateReportQuery, byte[]>
 	{
-		_reportDataRepository = reportDataRepository;
-		_currentUserService = currentUserService;
-		_userManager = userManager;
-		_reportGeneratorService = reportGeneratorService;
-	}
+		private readonly IReportDataRepository _reportDataRepository;
+		private readonly ICurrentUserService _currentUserService;
+		private readonly UserManager<User> _userManager;
+		private readonly IReportService _reportGeneratorService;
 
-	public async Task<byte[]> Handle(GenerateReportQuery request, CancellationToken cancellationToken)
-	{
-		var user = await _userManager.Users.FirstOrDefaultAsync(
-			u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
-			cancellationToken: cancellationToken
-		);
+		public GenerateReportHandler(
+			IReportDataRepository reportDataRepository,
+			ICurrentUserService currentUserService,
+			UserManager<User> userManager,
+			IReportService reportGeneratorService
+		)
+		{
+			_reportDataRepository = reportDataRepository;
+			_currentUserService = currentUserService;
+			_userManager = userManager;
+			_reportGeneratorService = reportGeneratorService;
+		}
 
-		var reportData = await _reportDataRepository.GetReportDataAsync(
-			new ReportRequest { MonthsDuration = request.MonthsDuration, UserId = user.Id }
+		public async Task<byte[]> Handle(GenerateReportQuery request, CancellationToken cancellationToken)
+		{
+			var user = await _userManager.Users.FirstOrDefaultAsync(
+				u => u.Email == _currentUserService.UserEmail! && !u.IsDeleted,
+				cancellationToken: cancellationToken
 			);
 
-		return _reportGeneratorService.GenerateReport(reportData, user, request.Format);
+			var reportData = await _reportDataRepository.GetReportDataAsync(
+				new ReportRequest { MonthsDuration = request.MonthsDuration, UserId = user.Id }
+				);
+
+			return _reportGeneratorService.GenerateReport(reportData, user, request.Format);
+		}
 	}
 }

@@ -26,6 +26,7 @@ namespace Auctionify.Infrastructure.Data.Config
 
 			builder.Property(r => r.RatingValue).IsRequired(true);
 			builder.Property(r => r.Comment).HasMaxLength(2048).IsRequired(false);
+			builder.Property(r => r.CreationDate).HasConversion(v => v, v => DateTime.SpecifyKind(v, DateTimeKind.Utc));
 		}
 	}
 }
