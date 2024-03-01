@@ -1,0 +1,52 @@
+.export-to-file {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 450px;
+    height: fit-content;
+    max-height: 360px;
+    min-height: 216px;
+    transform: translate(-50%, -50%);
+    padding: 40px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    border-radius: 24px;
+    background-color: #f8f8f8;
+
+    &__top {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    &__description {
+        color: var(--color-grey-3);
+        font-size: 18px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 24px;
+    }
+
+    &__filter {
+        display: flex;
+        gap: 24px;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 15px;
+        margin-bottom: -10px;
+    }
+
+    .close-button {
+        position: absolute;
+        color: var(--color-error);
+        top: 0;
+        right: 0;
+        margin: 10px;
+    }
+    .close-button:hover {
+        cursor: pointer;
+        color: red;
+        background-color: white;
+    }
+}

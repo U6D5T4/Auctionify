@@ -1285,6 +1285,117 @@ export class Client {
             })
         );
     }
+
+    getCreatedLotsCount(
+        period: string,
+        periodNumber: number
+    ): Observable<CreatedLotsCountResponse> {
+        let url_ = this.baseUrl + `/api/reports/analytics/created-count`;
+
+        let queryParams = new HttpParams()
+            .set('Period', period)
+            .set('PeriodNumber', periodNumber);
+
+        return this.http.get(url_, { params: queryParams }).pipe(
+            map((res: any) => {
+                return res as CreatedLotsCountResponse;
+            })
+        );
+    }
+
+    getLotsStatuses(): Observable<LotStatusesResponse[]> {
+        let url_ = this.baseUrl + `/api/reports/analytics/lots-statuses`;
+
+        return this.http.get(url_).pipe(
+            map((res: any) => {
+                return res as LotStatusesResponse[];
+            })
+        );
+    }
+
+    getUserIncome(
+        period: string,
+        periodNumber: number
+    ): Observable<UserIncomeResponse[]> {
+        let url_ = this.baseUrl + `/api/reports/analytics/income`;
+
+        let queryParams = new HttpParams()
+            .set('Period', period)
+            .set('PeriodNumber', periodNumber);
+
+        return this.http.get(url_, { params: queryParams }).pipe(
+            map((res: any) => {
+                return res as UserIncomeResponse[];
+            })
+        );
+    }
+
+    downloadReport(
+        monthsDuration: number,
+        reportType: string
+    ): Observable<any> {
+        let url_ = this.baseUrl + `/api/reports`;
+
+        let queryParams = new HttpParams()
+            .set('monthsDuration', monthsDuration.toString())
+            .set('reportType', reportType);
+
+        return this.http
+            .get(url_, {
+                params: queryParams,
+                responseType: 'blob',
+                observe: 'response',
+            })
+            .pipe(
+                map((res: any) => {
+                    const contentDisposition = res.headers.get(
+                        'content-disposition'
+                    );
+                    const filename = this.getFileNameFromContentDisposition(
+                        contentDisposition!,
+                        reportType
+                    );
+
+                    return { data: res.body, filename: filename };
+                })
+            );
+    }
+
+    private getFileNameFromContentDisposition(
+        contentDisposition: string,
+        defaultType: string
+    ): string {
+        const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(
+            contentDisposition
+        );
+
+        if (matches != null && matches[1]) {
+            return matches[1].replace(/['"]/g, '');
+        }
+
+        return 'report.' + defaultType;
+    }
+}
+
+export interface UserIncomeResponse {
+    date: Date;
+    amount: number;
+    currency: string;
+}
+
+export interface LotStatusesResponse {
+    status: string;
+    count: number;
+}
+
+export interface CreatedLotsDay {
+    date: Date;
+    count: number;
+}
+
+export interface CreatedLotsCountResponse {
+    period: string;
+    data: CreatedLotsDay[];
 }
 
 export interface PageRequest {
