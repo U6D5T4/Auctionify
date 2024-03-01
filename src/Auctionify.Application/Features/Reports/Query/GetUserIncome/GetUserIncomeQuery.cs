@@ -37,8 +37,7 @@ namespace Auctionify.Application.Features.Reports.Query.GetUserIncome
 		)
 		{
 			var query = _lotRepository
-				.Query()
-				.Include(l => l.Seller)
+				.QueryAsNoTracking()
 				.Include(l => l.Bids)
 				.Include(l => l.LotStatus)
 				.Include(l => l.Currency)
@@ -77,13 +76,11 @@ namespace Auctionify.Application.Features.Reports.Query.GetUserIncome
 				_ => query,
 			};
 
-			var lots = query.ToList();
+			var lots = await query.ToListAsync(cancellationToken: cancellationToken);
 
 			var highestBids = lots.Select(item =>
 			{
-				var highestBid = _bidRepository
-					.Query()
-					.Where(b => b.LotId == item.Id)
+				var highestBid = item.Bids
 					.OrderBy(b => b.NewPrice)
 					.LastOrDefault();
 				return new { LotId = item.Id, HighestBid = highestBid?.NewPrice ?? 0 };
