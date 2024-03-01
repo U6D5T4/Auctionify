@@ -80,9 +80,7 @@ namespace Auctionify.Application.Features.Reports.Query.GetUserIncome
 
 			var highestBids = lots.Select(item =>
 			{
-				var highestBid = item.Bids
-					.OrderBy(b => b.NewPrice)
-					.LastOrDefault();
+				var highestBid = item.Bids.OrderBy(b => b.NewPrice).LastOrDefault();
 				return new { LotId = item.Id, HighestBid = highestBid?.NewPrice ?? 0 };
 			});
 
@@ -98,7 +96,7 @@ namespace Auctionify.Application.Features.Reports.Query.GetUserIncome
 						.FirstOrDefault(),
 					Currency = grouped.Last().Currency.Code
 				}
-			).ToList();
+			).OrderBy(x => x.Date).ToList();
 
 			return result;
 		}
