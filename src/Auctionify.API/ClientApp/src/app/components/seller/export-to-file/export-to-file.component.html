@@ -1,0 +1,48 @@
+<div class="export-to-file">
+    <div class="export-to-file__top">
+        <h1 class="export-to-file__title">Export to file</h1>
+        <button mat-icon-button (click)="closeDialog()" class="close-button">
+            <mat-icon>close</mat-icon>
+        </button>
+        <p class="export-to-file__description">
+            Choose the export period and file format
+        </p>
+    </div>
+    <div class="export-to-file__filter">
+        <div class="export-to-file__export">
+            <mat-form-field appearance="outline">
+                <mat-label>Last</mat-label>
+                <mat-select
+                    [(ngModel)]="selectedExportPeriod"
+                    (ngModelChange)="onExportPeriodSelect($event)"
+                    panelClass="filter-select"
+                >
+                    <mat-option value="3">3 months</mat-option>
+                    <mat-option value="6">6 months</mat-option>
+                    <mat-option value="12">12 months</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="export-to-file__export">
+            <mat-form-field appearance="outline">
+                <mat-label>Export as</mat-label>
+                <mat-select
+                    [(ngModel)]="selectedExportType"
+                    (ngModelChange)="onExportFileTypeSelect($event)"
+                    panelClass="filter-select"
+                >
+                    <mat-option value="PDF">PDF</mat-option>
+                    <mat-option value="XLSX">Excel</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+    <button
+        mat-raised-button
+        color="primary"
+        (click)="onExportSubmit()"
+        class="export-to-file__download"
+    >
+        Download
+    </button>
+</div>

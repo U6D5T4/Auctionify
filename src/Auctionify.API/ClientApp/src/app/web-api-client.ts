@@ -235,6 +235,27 @@ export class Client {
         });
     }
 
+    loadApiKeyFor(): Observable<string> {
+        let url_ = this.baseUrl + '/api/lots/google-map-apikey';
+
+        let options_: any = {
+            responseType: 'text',
+            observe: 'response',
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json',
+                Accept: 'text/plain',
+            }),
+        };
+
+        return this.http.request('get', url_, options_).pipe(
+            mergeMap((response: any): Observable<string> => {
+                if (response.body !== null) {
+                    return of(response.body as string);
+                } else return throwError(() => new Error('data is empty!'));
+            })
+        );
+    }
+
     register(
         body: RegisterViewModel | undefined
     ): Observable<RegisterResponse> {
@@ -370,6 +391,8 @@ export class Client {
         formData.append('city', body.city);
         formData.append('address', body.address);
         formData.append('country', body.country);
+        formData.append('latitude', body.latitude);
+        formData.append('longitude', body.longitude);
         formData.append('startDate', new Date(body.startDate!).toISOString());
         formData.append('endDate', new Date(body.endDate!).toISOString());
         formData.append('startingPrice', body.startingPrice?.toString() ?? '');
@@ -411,6 +434,8 @@ export class Client {
         formData.append('city', body.city);
         formData.append('address', body.address);
         formData.append('country', body.country);
+        formData.append('latitude', body.latitude);
+        formData.append('longitude', body.longitude);
         formData.append('startDate', new Date(body.startDate!).toISOString());
         formData.append('endDate', new Date(body.endDate!).toISOString());
         formData.append('startingPrice', body.startingPrice?.toString() ?? '');
@@ -1260,6 +1285,117 @@ export class Client {
             })
         );
     }
+
+    getCreatedLotsCount(
+        period: string,
+        periodNumber: number
+    ): Observable<CreatedLotsCountResponse> {
+        let url_ = this.baseUrl + `/api/reports/analytics/created-count`;
+
+        let queryParams = new HttpParams()
+            .set('Period', period)
+            .set('PeriodNumber', periodNumber);
+
+        return this.http.get(url_, { params: queryParams }).pipe(
+            map((res: any) => {
+                return res as CreatedLotsCountResponse;
+            })
+        );
+    }
+
+    getLotsStatuses(): Observable<LotStatusesResponse[]> {
+        let url_ = this.baseUrl + `/api/reports/analytics/lots-statuses`;
+
+        return this.http.get(url_).pipe(
+            map((res: any) => {
+                return res as LotStatusesResponse[];
+            })
+        );
+    }
+
+    getUserIncome(
+        period: string,
+        periodNumber: number
+    ): Observable<UserIncomeResponse[]> {
+        let url_ = this.baseUrl + `/api/reports/analytics/income`;
+
+        let queryParams = new HttpParams()
+            .set('Period', period)
+            .set('PeriodNumber', periodNumber);
+
+        return this.http.get(url_, { params: queryParams }).pipe(
+            map((res: any) => {
+                return res as UserIncomeResponse[];
+            })
+        );
+    }
+
+    downloadReport(
+        monthsDuration: number,
+        reportType: string
+    ): Observable<any> {
+        let url_ = this.baseUrl + `/api/reports`;
+
+        let queryParams = new HttpParams()
+            .set('monthsDuration', monthsDuration.toString())
+            .set('reportType', reportType);
+
+        return this.http
+            .get(url_, {
+                params: queryParams,
+                responseType: 'blob',
+                observe: 'response',
+            })
+            .pipe(
+                map((res: any) => {
+                    const contentDisposition = res.headers.get(
+                        'content-disposition'
+                    );
+                    const filename = this.getFileNameFromContentDisposition(
+                        contentDisposition!,
+                        reportType
+                    );
+
+                    return { data: res.body, filename: filename };
+                })
+            );
+    }
+
+    private getFileNameFromContentDisposition(
+        contentDisposition: string,
+        defaultType: string
+    ): string {
+        const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(
+            contentDisposition
+        );
+
+        if (matches != null && matches[1]) {
+            return matches[1].replace(/['"]/g, '');
+        }
+
+        return 'report.' + defaultType;
+    }
+}
+
+export interface UserIncomeResponse {
+    date: Date;
+    amount: number;
+    currency: string;
+}
+
+export interface LotStatusesResponse {
+    status: string;
+    count: number;
+}
+
+export interface CreatedLotsDay {
+    date: Date;
+    count: number;
+}
+
+export interface CreatedLotsCountResponse {
+    period: string;
+    data: CreatedLotsDay[];
 }
 
 export interface PageRequest {
@@ -1365,6 +1501,8 @@ export interface LocationDto {
     city: string;
     country: string;
     address: string;
+    latitude: string;
+    longitude: string;
     state: string | null;
 }
 
@@ -1428,6 +1566,7 @@ export interface BuyerGetLotResponse {
     isInWatchlist: boolean;
     bidCount: number | null;
     sellerEmail: string;
+    sellerFullName: string | null;
     sellerId: number;
     buyerId: number;
     profilePictureUrl: string;
@@ -1448,6 +1587,8 @@ export interface SellerGetLotResponse {
     currency: CurrencyDto;
     bids: BidDto[];
     bidCount: number;
+    sellerEmail: string;
+    sellerFullName: string | null;
     sellerId: number;
     buyerId: number;
     profilePictureUrl: string;
@@ -1548,6 +1689,8 @@ export interface LoginViewModel {
 export interface RegisterViewModel {
     email: string;
     password: string;
+    firstName: string;
+    lastName: string;
     confirmPassword: string;
 }
 

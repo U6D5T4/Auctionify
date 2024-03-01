@@ -8,6 +8,10 @@
 
         &.active {
             background-color: var(--color-container);
+
+            .chat__top-nickname {
+                color: #06193e;
+            }
         }
     }
 
@@ -45,6 +49,15 @@
             font-weight: 500;
             line-height: 24px;
             color: rgba(43, 82, 147, 0.4);
+            white-space: nowrap;
+        }
+
+        &-nickname {
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 24px;
+            color: var(--color-primary);
+            padding-right: 20px;
         }
     }
 
@@ -80,7 +93,6 @@
                 font-weight: 600;
                 color: white;
                 padding: 4px;
-
             }
         }
     }

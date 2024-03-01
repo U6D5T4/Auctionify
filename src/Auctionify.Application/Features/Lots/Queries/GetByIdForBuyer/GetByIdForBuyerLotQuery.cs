@@ -128,6 +128,7 @@ namespace Auctionify.Application.Features.Lots.Queries.GetByIdForBuyer
 				result.AdditionalDocumentsUrl = additionalDocumentLinks;
 
 				result.SellerEmail = lot.Seller.Email;
+				result.SellerFullName = lot.Seller.FirstName + " " + lot.Seller.LastName;
 
 				var profilePictureName = user.ProfilePicture;
 

@@ -37,4 +37,35 @@
         gap: 12px;
         padding: 20px;
     }
+
+    .country-city {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        width: 260px;
+    }
+
+    .city {
+        background-color: #f4f4f4;
+        border-radius: 10px;
+        height: 56px;
+        border: 0.5px solid grey;
+    }
+
+    .city::content {
+        padding-left: 18px;
+        font-size: 15px;
+    }
+
+    .country {
+        background-color: #f4f4f4;
+        border-radius: 10px;
+        height: 56px;
+        border: 0.5px solid grey;
+    }
+
+    .country::content {
+        padding-left: 18px;
+        font-size: 15px;
+    }
 }

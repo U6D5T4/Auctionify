@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { CreateLotComponent } from './create-lot/create-lot.component';
 import { sellerRoutingModule } from './seller-routing.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -20,6 +20,10 @@ import { DashboardActiveLotsComponent } from './components/dashboard-active-lots
 import { UiElementsModule } from 'src/app/ui-elements/ui-elements.module';
 import { GeneralModule } from '../general/general.module';
 import { DashboardDraftLotsComponent } from './components/dashboard-draft-lots/dashboard-draft-lots.component';
+import { ActiveLotsComponent } from './active-lots/active-lots.component';
+import { AnalyticsComponent } from './analytics/analytics.component';
+import { NgApexchartsModule } from 'ng-apexcharts';
+import { ExportToFileComponent } from './export-to-file/export-to-file.component';
 
 @NgModule({
     declarations: [
@@ -30,6 +34,9 @@ import { DashboardDraftLotsComponent } from './components/dashboard-draft-lots/d
         DashboardComponent,
         DashboardActiveLotsComponent,
         DashboardDraftLotsComponent,
+        ActiveLotsComponent,
+        AnalyticsComponent,
+        ExportToFileComponent,
     ],
     imports: [
         CommonModule,
@@ -46,6 +53,8 @@ import { DashboardDraftLotsComponent } from './components/dashboard-draft-lots/d
         MatSnackBarModule,
         UiElementsModule,
         GeneralModule,
+        NgApexchartsModule,
+        FormsModule,
     ],
     exports: [CreateLotComponent, DashboardComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],

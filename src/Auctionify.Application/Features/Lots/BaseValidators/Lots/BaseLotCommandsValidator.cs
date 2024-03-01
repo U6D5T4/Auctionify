@@ -99,8 +99,14 @@ namespace Auctionify.Application.Features.Lots.BaseValidators.Lots
 
 			RuleFor(l => l.Address).NotEmpty();
 
+			    RuleFor(l => l.Longitude)
+					    .NotEmpty();
+
+			    RuleFor(l => l.Latitude)
+					    .NotEmpty();
+
 			ConfigureValidationWhenConcreteCreating();
-		}
+        }
 
 		private void ConfigureValidationWhenConcreteCreating()
 		{

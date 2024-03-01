@@ -23,6 +23,11 @@ namespace Auctionify.Core.Persistence.Repositories
 			return _context.Set<TEntity>();
 		}
 
+		public IQueryable<TEntity> QueryAsNoTracking()
+		{
+			return _context.Set<TEntity>().AsNoTracking();
+		}
+
 		public async Task<TEntity> AddAsync(TEntity entity)
 		{
 			await _context.AddAsync(entity);

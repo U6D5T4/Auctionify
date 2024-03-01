@@ -15,6 +15,8 @@ using Auctionify.Core.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Auctionify.Application.Common.Options;
+using Microsoft.Extensions.Options;
 
 namespace Auctionify.API.Controllers
 {
@@ -23,10 +25,12 @@ namespace Auctionify.API.Controllers
 	public class LotsController : ControllerBase
 	{
 		private readonly IMediator _mediator;
+		private readonly GoogleMapOptions _googleMapOptions;
 
-		public LotsController(IMediator mediator)
+		public LotsController(IMediator mediator, IOptions<GoogleMapOptions> googleMapOptions)
 		{
 			_mediator = mediator;
+			_googleMapOptions = googleMapOptions.Value;
 		}
 
 		[HttpPost]
@@ -202,7 +206,13 @@ namespace Auctionify.API.Controllers
 				}
 			);
 
-			return Ok(result);
+            return Ok(result);
+        }
+
+		[HttpGet("google-map-apikey")]
+		public IActionResult GetGoogleClientId()
+		{
+			return Ok(_googleMapOptions.ApiKey);
 		}
 	}
 }

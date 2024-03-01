@@ -20,8 +20,6 @@ namespace Auctionify.UnitTests.CreateChatMessageTests
 	{
 		#region Initialization
 
-		private readonly IMapper _mapper;
-		private readonly IChatMessageRepository _chatMessageRepository;
 		private readonly IConversationRepository _conversationRepository;
 		private readonly Mock<ICurrentUserService> _currentUserServiceMock;
 		private readonly Mock<UserManager<User>> _userManagerMock;
@@ -29,31 +27,16 @@ namespace Auctionify.UnitTests.CreateChatMessageTests
 
 		public CreateChatMessageCommandHandlerTests()
 		{
-			var mockDbContext = DbContextMock.GetMock<
-				Core.Entities.Conversation,
-				ApplicationDbContext
-			>(EntitiesSeeding.GetConversations(), ctx => ctx.Conversations);
+			var mockDbContext = DbContextMock.GetMock<Conversation, ApplicationDbContext>(
+				EntitiesSeeding.GetConversations(),
+				ctx => ctx.Conversations
+			);
 
 			mockDbContext = DbContextMock.GetMock(
 				EntitiesSeeding.GetChatMessages(),
 				ctx => ctx.ChatMessages,
 				mockDbContext
 			);
-
-			var configuration = new MapperConfiguration(
-				cfg =>
-					cfg.AddProfiles(
-						new List<Profile>
-						{
-							new Application.Common.Profiles.MappingProfiles(),
-							new Application.Features.Lots.Profiles.MappingProfiles(),
-							new Application.Features.Users.Profiles.MappingProfiles(),
-							new Application.Features.Chats.Profiles.MappingProfiles(),
-						}
-					)
-			);
-
-			_mapper = new Mapper(configuration);
 
 			_currentUserServiceMock = new Mock<ICurrentUserService>();
 			_userManagerMock = new Mock<UserManager<User>>(
@@ -76,7 +59,6 @@ namespace Auctionify.UnitTests.CreateChatMessageTests
 			_userManagerMock.Setup(m => m.Users).Returns(mock.Object);
 			_currentUserServiceMock.Setup(m => m.UserEmail).Returns(newUser.Email);
 
-			_chatMessageRepository = new ChatMessageRepository(mockDbContext.Object);
 			_conversationRepository = new ConversationRepository(mockDbContext.Object);
 
 			_validator = new CreateChatMessageCommandValidator(
@@ -137,7 +119,8 @@ namespace Auctionify.UnitTests.CreateChatMessageTests
 				chatMessageRepositoryMock.Object,
 				currentUserServiceMock.Object,
 				userManagerMock.Object,
-				mockHubContext.Object
+				mockHubContext.Object,
+				_conversationRepository
 			);
 
 			var sentChatMessage = new ChatMessage

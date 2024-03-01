@@ -34,6 +34,8 @@ export interface LotFormModel {
     city: FormControl<string | null>;
     country: FormControl<string | null>;
     address: FormControl<string | null>;
+    latitude: FormControl<string | null>;
+    longitude: FormControl<string | null>;
     currencyId: FormControl<number | null>;
     files: FormControl<FileModel[] | null>;
     images: FormControl<FileModel[] | null>;
@@ -83,6 +85,8 @@ export class CreateLotComponent implements OnInit {
         city: new FormControl<string>('', Validators.required),
         country: new FormControl<string>('', Validators.required),
         address: new FormControl<string>('', Validators.required),
+        latitude: new FormControl<string>('', Validators.required),
+        longitude: new FormControl<string>('', Validators.required),
         currencyId: new FormControl<number | null>(null),
         files: new FormControl<FileModel[]>([]),
         images: new FormControl<FileModel[]>([]),
@@ -150,6 +154,8 @@ export class CreateLotComponent implements OnInit {
                     lotFormData.country.setValue(result.location.country);
                     lotFormData.address.setValue(result.location.address);
                     lotFormData.city.setValue(result.location.city);
+                    lotFormData.latitude.setValue(result.location.latitude);
+                    lotFormData.longitude.setValue(result.location.longitude);
                     lotFormData.startingPrice.setValue(result.startingPrice);
 
                     if (result.additionalDocumentsUrl !== null) {
@@ -223,9 +229,15 @@ export class CreateLotComponent implements OnInit {
             if (
                 controls.country.invalid ||
                 controls.city.invalid ||
-                controls.address.invalid
+                controls.address.invalid ||
+                controls.latitude.invalid ||
+                controls.longitude.invalid
             ) {
                 this.isLocationValid = false;
+                this.showSnackBar(
+                    'Incorrect location. Please ensure the address is correct and try again.',
+                    'error'
+                );
             }
 
             if (controls.startingPrice.invalid || controls.currencyId.invalid) {
@@ -248,6 +260,8 @@ export class CreateLotComponent implements OnInit {
             endDate: this.lotForm.value.endDate!,
             categoryId: this.lotForm.value.categoryId!,
             city: this.lotForm.value.city!,
+            latitude: this.lotForm.value.latitude!,
+            longitude: this.lotForm.value.longitude!,
             state: null,
             country: this.lotForm.value.country!,
             address: this.lotForm.value.address!,
@@ -735,6 +749,22 @@ export class CreateLotComponent implements OnInit {
                 isErrorShown,
             },
             autoFocus: false,
+        });
+    }
+
+    showSnackBar(message: string, messageType: 'success' | 'error') {
+        let panelClass = ['custom-snackbar'];
+        if (messageType === 'success') {
+            panelClass.push('success-snackbar');
+        } else if (messageType === 'error') {
+            panelClass.push('error-snackbar');
+        }
+
+        this.snackBar.open(message, 'Close', {
+            duration: 3000,
+            horizontalPosition: 'center',
+            verticalPosition: 'bottom',
+            panelClass: panelClass,
         });
     }
 
